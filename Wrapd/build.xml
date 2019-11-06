@@ -1,0 +1,33 @@
+<project name="org.reldb.wrapd" basedir="." default="main">
+
+  <property name="src.dir"     value="src"/>
+  <property name="bin.dir"     value="bin"/>
+  <property name="lib.dir"     value="lib"/>
+  
+  <target name="clean">
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="compile">
+    <mkdir dir="${bin.dir}"/>
+    <javac srcdir="${src.dir}" destdir="${bin.dir}" includeantruntime="false"/>
+  </target>
+
+  <target name="jar" depends="compile">
+    <loadproperties srcFile="ant.properties"/>
+    <buildnumber/>
+    <mkdir dir="${lib.dir}"/>
+  	<delete>
+  		<fileset dir="${lib.dir}" includes="${ant.project.name}_*.jar"/>
+  	</delete>
+    <jar destfile="${lib.dir}/${ant.project.name}_${version}.${build.number}.jar" basedir="${bin.dir}">
+      <manifest>
+      </manifest>
+    </jar>
+  </target>
+
+  <target name="clean-build" depends="clean,jar"/>
+
+  <target name="main" depends="jar"/>
+
+</project>
