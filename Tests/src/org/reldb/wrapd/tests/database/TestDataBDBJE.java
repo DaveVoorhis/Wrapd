@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.main;
+package org.reldb.wrapd.tests.database;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.main;
+package org.reldb.wrapd.tests.junit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

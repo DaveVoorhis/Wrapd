@@ -20,7 +20,8 @@ public class WrapdTests {
 	    final LauncherDiscoveryRequest request = 
 		        LauncherDiscoveryRequestBuilder.request()
 		                                   .selectors(
-		                                		   selectPackage("org.reldb.wrapd.tests.main")
+		                                		   selectPackage("org.reldb.wrapd.tests.junit"),
+		                                		   selectPackage("org.reldb.wrapd.tests.database")
 		                                		   )
 		                                   .build();
 

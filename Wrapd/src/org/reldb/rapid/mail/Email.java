@@ -10,9 +10,9 @@ public class Email {
 	
 	public static boolean send(String smtpServerHost, String smtpServerPort, String smtpServerAuthname, String smtpServerAuthpass, 
 			String from, String to, String subject, String message) {
-		Properties properties = System.getProperties();		
-		properties.setProperty("mail.smtp.host", (smtpServerHost.length() == 0) ? "localhost" : smtpServerHost);
-		if (smtpServerPort.length() > 0)
+		Properties properties = System.getProperties();
+		properties.setProperty("mail.smtp.host", (smtpServerHost == null || smtpServerHost.length() == 0) ? "localhost" : smtpServerHost);
+		if (smtpServerPort != null && smtpServerPort.length() > 0)
 			properties.setProperty("mail.smtp.port", smtpServerPort);
 		
 		Session session = Session.getDefaultInstance(properties);
@@ -26,7 +26,7 @@ public class Email {
 	
 			String username = smtpServerAuthname;
 			String password = smtpServerAuthpass;
-			if (username.length() == 0)
+			if (username == null || username.length() == 0)
 				Transport.send(msg);
 			else
 				Transport.send(msg, username, password);
