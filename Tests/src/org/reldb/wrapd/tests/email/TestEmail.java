@@ -3,8 +3,7 @@ package org.reldb.wrapd.tests.email;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-
-import org.reldb.rapid.mail.Email;
+import org.reldb.wrapd.mail.Email;
 
 public class TestEmail {
 	

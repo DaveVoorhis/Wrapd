@@ -5,4 +5,4 @@
  * @author d.voorhis@derby.ac.uk
  *
  */
-package org.reldb.rapid.mail;
+package org.reldb.wrapd.mail;

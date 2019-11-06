@@ -1,4 +1,4 @@
-package org.reldb.rapid.mail;
+package org.reldb.wrapd.mail;
 
 import java.util.*;
 import javax.mail.*;
