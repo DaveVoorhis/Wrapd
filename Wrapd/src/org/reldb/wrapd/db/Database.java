@@ -205,5 +205,19 @@ public class Database {
 			}
 		}
 	}
+
+	public static String emptyToNull(String str) {
+		if (str == null || str.trim().length() == 0)
+			return null;
+		return str;
+	}
+	
+	public static String nullTo(String str, String replacement) {
+		return (emptyToNull(str) == null) ? replacement : str;
+	}
+	
+	public static String nullToEmptyString(String str) {
+		return nullTo(str, "");
+	}
 	
 }
