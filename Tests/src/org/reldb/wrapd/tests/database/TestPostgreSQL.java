@@ -3,8 +3,10 @@ package org.reldb.wrapd.tests.database;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
 import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
+import org.reldb.wrapd.db.ResultSetToTuple;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.version.VersionProxy;
 import org.junit.AfterClass;
@@ -12,13 +14,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestPostgreSQL {
+	
+	private static String codeDir = "./testcode";
 
 	private static Database database;
 	private static boolean setupCompleted;
 	
+	private static boolean test1Done;
+	private static boolean test2Done;
+	
 	@BeforeClass
 	public static void setup() {
 		setupCompleted = false;
+		test1Done = false;
+		test2Done = false;
 
 		System.out.println("Executing TestPostgreSQL setup.");
 		System.out.println("If you see 'New configuration file WrapdConfiguration.xml written', the tests will fail and");
@@ -52,17 +61,44 @@ public class TestPostgreSQL {
 		setupCompleted = true;
 	}
 
+	private void checkSetupCompleted() {
+		if (!setupCompleted)
+			throw new ExceptionFatal("Database test setup failed.");		
+	}
+	
 	@Test
 	public void test01() throws SQLException {
-		if (!setupCompleted)
-			throw new ExceptionFatal("Database test setup failed.");
-		
+		checkSetupCompleted();
 		database.new Transaction(connection -> {
 			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
 			database.updateAll(connection, "INSERT INTO $$Version VALUES (0, 0);");
 			return true;
 		});
-		
+		test1Done = true;
+	}
+	
+	@Test
+	public void test02() throws SQLException {
+		checkSetupCompleted();
+		database.new Transaction(connection -> {
+			database.updateAll(connection, "CREATE TABLE $$Test (x INTEGER, y INTEGER);");
+			for (int i = 0; i < 20; i++) {
+				database.update(connection, "INSERT INTO $$Test VALUES ($1, $2);", i, i * 10);
+			}
+			database.queryAll("SELECT * FROM $$Test", result -> {
+				CompilationResults makeTupleResult = null;
+				try {
+					makeTupleResult = ResultSetToTuple.resultSetToTuple(codeDir, "testSelect", result);
+				} catch (Exception e) {
+					System.out.println("Query failed: " + e);
+				}
+				if (!makeTupleResult.compiled)
+					System.out.println("ERROR: " + makeTupleResult.compilerMessages);
+				return makeTupleResult;
+			});
+			return true;
+		});
+		test2Done = true;
 	}
 	
 	@AfterClass
@@ -72,7 +108,10 @@ public class TestPostgreSQL {
 		
 		try {
 			database.new Transaction(connection -> {
-				database.updateAll(connection, "DROP TABLE $$Version;");
+				if (test1Done)
+					database.updateAll(connection, "DROP TABLE $$Version;");
+				if (test2Done)
+					database.updateAll(connection, "DROP TABLE $$Test;");
 				return true;
 			});
 		} catch (SQLException e) {
