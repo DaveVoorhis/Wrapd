@@ -14,11 +14,11 @@ import org.reldb.wrapd.utilities.ProgressIndicator;
 import org.reldb.wrapd.version.VersionProxy;
 
 /*
- * PostgreSQL database definitions specific to the RAPid framework: user management, etc., and wrapper around the Database database abstraction. 
+ * PostgreSQL database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
  */
-public class RapidDB extends WrapdDatabaseBase {
+public class WrapdDB extends WrapdDatabaseBase {
 	
-	public RapidDB() throws IOException {
+	public WrapdDB() throws IOException {
 		if (database != null)
 			return;
 		
@@ -42,7 +42,7 @@ public class RapidDB extends WrapdDatabaseBase {
 	public DBVersion getDBVersion() throws SQLException {
 		return (DBVersion) database.queryAll("SELECT * FROM $$Version", version -> {
 			if (!version.next()) {
-				System.out.println("RapidDB: Error: Version table appears to be empty!");
+				System.out.println("WrapdDB: Error: Version table appears to be empty!");
 				return null;
 			}
 			return new DBVersion(version.getInt("framework_db_version"), version.getInt("user_db_version"));			
@@ -58,10 +58,7 @@ public class RapidDB extends WrapdDatabaseBase {
 	public void putUserDBVersion(int version) throws SQLException {
 		database.update("UPDATE $$Version SET user_db_version = ?", version);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#initialise(org.reldb.rapid.ui.ProgressIndicator)
-	 */
+	
 	@Override
 	public void initialise(ProgressIndicator progress) throws SQLException {
 		progress.initialise(9);
@@ -112,7 +109,7 @@ public class RapidDB extends WrapdDatabaseBase {
 
 	private void version1() throws SQLException {
 		database.new Transaction(connection -> {	
-			System.out.println("RAPid framework database update version 1");
+			System.out.println("Wrapd framework database update version 1");
 			getDatabase().update("ALTER TABLE $$Users ADD COLUMN lastLogin TIMESTAMP");
 			return true;
 		});
@@ -139,9 +136,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		database.update(connection, "INSERT INTO $$Groups VALUES (?, ?, ?);", groupName, groupDescription, privilege);		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#addGroup(java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void addGroup(String groupName, String groupDescription, String privilege) throws SQLException {
 		database.new Transaction(connection -> {
@@ -164,9 +158,6 @@ public class RapidDB extends WrapdDatabaseBase {
 			database.update(connection, "INSERT INTO $$UserGroups (userID, userGroup) VALUES (?, ?)", userID, group);
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#addUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public void addUser(String userName, String email, String password, String group) throws SQLException {		
 		database.new Transaction(connection -> {
@@ -235,9 +226,6 @@ public class RapidDB extends WrapdDatabaseBase {
 			emailTrimmed);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserAttribute(java.lang.String)
-	 */
 	@Override
 	public String getLoggedInUserAttribute(String attributeName) {
 		try {
@@ -251,25 +239,16 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserEmail()
-	 */
 	@Override
 	public String getLoggedInUserEmail() {
 		return getLoggedInUserAttribute("userEmail");
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserName()
-	 */
 	@Override
 	public String getLoggedInUserName() {
 		return getLoggedInUserAttribute("userName");
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getUserGroups()
-	 */
 	@Override
 	public String[] getUserGroups(Integer userID) {
 		try {
@@ -287,9 +266,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserGroups()
-	 */
 	@Override
 	public String[] getLoggedInUserGroups() {
 		if (getLoggedInUserID() == null)
@@ -297,9 +273,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		return getUserGroups(getLoggedInUserID());
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserPrivilege()
-	 */
 	@Override
 	public String[] getLoggedInUserPrivileges() {
 		if (getLoggedInUserID() == null)
@@ -320,22 +293,16 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#verifyPassword(java.lang.String)
-	 */
 	@Override
 	public boolean verifyPassword(String password) {
 		try {
 			return findUser(getLoggedInUserID(), password) != null;
 		} catch (SQLException e) {
-			System.out.println("ERROR: RapidDB: verifyPassword: " + e);
+			System.out.println("ERROR: WrapdDB: verifyPassword: " + e);
 			return false;
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#attemptLogin(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public LoginStatus attemptLogin(String email, String password) {
 		try {
@@ -354,15 +321,12 @@ public class RapidDB extends WrapdDatabaseBase {
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("ERROR: RapidDB: attemptLogin: " + e);
+			System.out.println("ERROR: WrapdDB: attemptLogin: " + e);
 			setLoggedInUserID(null);
 		}
 		return new LoginStatus(false);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#attemptLoginWithPasswordChange(java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean attemptLoginWithPasswordChange(String email, String oldPassword, String newPassword) {
 		try {
@@ -385,15 +349,12 @@ public class RapidDB extends WrapdDatabaseBase {
 				return true;
 			}
 		} catch (SQLException e) {
-			System.out.println("ERROR: RapidDB: attemptLoginWithPasswordChange: " + e);
+			System.out.println("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
 			setLoggedInUserID(null);
 		}
 		return false;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getUserIDsForEmail(java.lang.String)
-	 */
 	@Override
 	public Long[] getUserIDsForEmail(String email) {
 		try {
@@ -411,9 +372,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#enablePasswordChange(java.lang.Long, java.lang.String)
-	 */
 	@Override
 	public boolean enablePasswordChange(Long userID, String authToken) {
 		try {
@@ -425,9 +383,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}		
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#checkPasswordChangeTokenValidity(java.lang.String, int)
-	 */
 	@Override
 	public TokenCheckStatus checkPasswordChangeTokenValidity(String token, int tokenExpiryHours) {
 		try {
@@ -442,9 +397,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#changePassword(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean changePassword(String password, String token) {
 		try {
@@ -463,9 +415,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#changePassword(java.lang.String)
-	 */
 	@Override
 	public boolean changePassword(String newPassword) {
 		Integer user = getLoggedInUserID();
@@ -487,9 +436,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#enableEmailChangeForCurrentUser(java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean enableEmailChangeForCurrentUser(String newEmail, String authToken) {
 		Integer userID = getLoggedInUserID();
@@ -504,9 +450,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#changeEmail(java.lang.String, int)
-	 */
 	@Override
 	public TokenCheckStatus changeEmail(String token, int tokenExpiryHours) {
 		try {
@@ -524,9 +467,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#updateUserName(java.lang.String)
-	 */
 	@Override
 	public boolean updateUserName(String userName) {
 		try {
@@ -538,9 +478,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#checkEmailInUse(java.lang.String)
-	 */
 	@Override
 	public RegisterStatus checkEmailInUse(String email) {
 		try {
@@ -557,9 +494,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#addUnregisteredUser(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
 	@Override
 	public boolean addUnregisteredUser(String userName, String email, String password, String activationToken) {
 		try {
@@ -576,9 +510,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getAllEmailAddressesInGroup(java.lang.String)
-	 */
 	@Override
 	public String[] getAllEmailAddressesInGroup(String group) {
 		try {
@@ -596,9 +527,6 @@ public class RapidDB extends WrapdDatabaseBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#completeUserRegistration(java.lang.String, int)
-	 */
 	@Override
 	public ActivationStatus completeUserRegistration(String token, int registrationExpiryHours) {
 		try {

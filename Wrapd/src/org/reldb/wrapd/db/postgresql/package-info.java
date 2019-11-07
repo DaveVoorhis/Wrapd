@@ -1,5 +1,5 @@
 /**
- * PostgreSQL implementation of RapidDB
+ * PostgreSQL implementation of WrapdDB
  */
 /**
  * @author dave

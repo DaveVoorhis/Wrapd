@@ -94,19 +94,19 @@ public interface WrapdDatabase {
 	/** Get the database version. */
 	DBVersion getDBVersion() throws SQLException;
 	
-	/** Put the framework database version. Normally invoked only by RapidDB. */
+	/** Put the framework database version. Normally invoked only by WrapdDB. */
 	void putFrameworkDBVersion(int version) throws SQLException;
 	
-	/** Put the user's database version. Normally invoked only by RapidDB. */
+	/** Put the user's database version. Normally invoked only by WrapdDB. */
 	void putUserDBVersion(int version) throws SQLException;
 	
-	/** Check the database status. Normally invoked only by RapidBD. */
+	/** Check the database status. Normally invoked only by WrapdDB. */
 	CheckDatabaseStatus checkDatabase() throws IOException;
 
-	/** Attempt to initialise the database. Normally invoked only by RapidDB. */
+	/** Attempt to initialise the database. Normally invoked only by WrapdDB. */
 	void initialise(ProgressIndicator progress) throws SQLException;
 
-	/** Attempt to upgrade the database. Normally invoked only by RapidDB. */
+	/** Attempt to upgrade the database. Normally invoked only by WrapdDB. */
 	void upgrade(ProgressIndicator progress) throws SQLException;
 
 	/** Add a new user group. */

@@ -57,7 +57,7 @@ public class Configuration {
 		addItem(doc, parent, DATABASE_TABLENAME_PREFIX, VersionProxy.getVersion().getInternalProductName().toLowerCase() + "_", "optional");
 		addItem(doc, parent, DATABASE_SERVER, "localhost");
 		addItem(doc, parent, DATABASE_NONSTANDARD_PORT, " ", "optional");
-		addItem(doc, parent, DATABASE_DEFINITION, "org.reldb.rapid.db.postgresql.RapidDB");
+		addItem(doc, parent, DATABASE_DEFINITION, org.reldb.wrapd.db.postgresql.WrapdDB.class.getPackageName());
 		addItem(doc, parent, SMTP_SERVER, "localhost");
 		addItem(doc, parent, SMTP_SERVER_PORT, " ", "optional - defaults to 25");
 		addItem(doc, parent, SMTP_SERVER_AUTHNAME, " ", "optional - account ID for SMTP authorisation");

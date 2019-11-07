@@ -8,7 +8,7 @@ import org.reldb.wrapd.db.WrapdDatabase;
 import org.reldb.wrapd.utilities.ProgressIndicator;
 
 /*
- * Base or generic database definitions specific to the RAPid framework: user management, etc., and wrapper around the Database database abstraction. 
+ * Base or generic database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
  */
 public abstract class WrapdDatabaseBase implements WrapdDatabase {
 	
@@ -21,9 +21,6 @@ public abstract class WrapdDatabaseBase implements WrapdDatabase {
 		return database;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#checkDatabase()
-	 */
 	@Override
 	public CheckDatabaseStatus checkDatabase() throws IOException {		
 		if (databaseChecked)
@@ -35,16 +32,13 @@ public abstract class WrapdDatabaseBase implements WrapdDatabase {
 			if (version.getFrameworkDBVersion() < getFrameworkDatabaseUpdates().length || version.getUserDBVersion() < getUserDatabaseUpdates().length)
 				return CheckDatabaseStatus.UPGRADE_DATABASE_NEEDED;
 		} catch (SQLException e) {
-			System.out.println("RapidDBBase: Error: " + e);
+			System.out.println("WrapdDatabaseBase: Error: " + e);
 			return CheckDatabaseStatus.CREATE_DATABASE_NEEDED;
 		}
 		databaseChecked = true;
 		return CheckDatabaseStatus.OK;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#upgrade(org.reldb.rapid.ui.ProgressIndicator)
-	 */
 	@Override
 	public void upgrade(ProgressIndicator progress) throws SQLException {
 		DBVersion version = getDBVersion();
@@ -82,17 +76,11 @@ public abstract class WrapdDatabaseBase implements WrapdDatabase {
 		loggedInUserID = id;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#getLoggedInUserID()
-	 */
 	@Override
 	public Integer getLoggedInUserID() {
 		return loggedInUserID;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.reldb.rapid.db.postgresql.RapidDBInterface#logout()
-	 */
 	@Override
 	public void logout() {
 		setLoggedInUserID(null);
