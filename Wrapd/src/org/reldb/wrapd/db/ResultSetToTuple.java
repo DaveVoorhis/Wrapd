@@ -11,7 +11,7 @@ public class ResultSetToTuple {
 	static public CompilationResults resultSetToTuple(String codeDir, String tupleName, ResultSet results) throws SQLException, ClassNotFoundException {
 		var generator = new TupleTypeGenerator(codeDir, tupleName);
 		var metadata = results.getMetaData();
-		for (int column = 0; column < metadata.getColumnCount(); column++) {
+		for (int column = 1; column <= metadata.getColumnCount(); column++) {
 			var name = metadata.getColumnName(column);
 			var columnClassName = metadata.getColumnClassName(column);
 			var type = Class.forName(columnClassName);
