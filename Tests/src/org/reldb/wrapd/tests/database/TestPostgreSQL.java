@@ -8,6 +8,7 @@ import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.utilities.Directory;
 import org.reldb.wrapd.version.VersionProxy;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -15,7 +16,7 @@ import org.junit.Test;
 
 public class TestPostgreSQL {
 	
-	private static String codeDir = "./testcode";
+	private static String codeDir = "./test/code";
 
 	private static Database database;
 	private static boolean setupCompleted;
@@ -55,7 +56,7 @@ public class TestPostgreSQL {
 			database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix);
 		} catch (IOException e) {
 			System.out.println("Database connection failed. Check the configuration.");
-			e.printStackTrace();
+			return;
 		}
 		
 		setupCompleted = true;
@@ -67,7 +68,7 @@ public class TestPostgreSQL {
 	}
 	
 	@Test
-	public void test01() throws SQLException {
+	public void testCreateAndInsert() throws SQLException {
 		checkSetupCompleted();
 		database.new Transaction(connection -> {
 			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
@@ -78,8 +79,9 @@ public class TestPostgreSQL {
 	}
 	
 	@Test
-	public void test02() throws SQLException {
+	public void testCreateTupleType() throws SQLException {
 		checkSetupCompleted();
+		Directory.rmAll(codeDir);
 		database.new Transaction(connection -> {
 			database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
 			for (int i = 0; i < 20; i++) {
@@ -91,6 +93,7 @@ public class TestPostgreSQL {
 					makeTupleResult = ResultSetToTuple.resultSetToTuple(codeDir, "testSelect", result);
 				} catch (Exception e) {
 					System.out.println("Query failed: " + e);
+					e.printStackTrace();
 				}
 				if (!makeTupleResult.compiled)
 					System.out.println("ERROR: " + makeTupleResult.compilerMessages);
@@ -111,7 +114,7 @@ public class TestPostgreSQL {
 				if (test1Done)
 					database.updateAll(connection, "DROP TABLE $$Version;");
 				if (test2Done)
-					database.updateAll(connection, "DROP TABLE $$Test;");
+					database.updateAll(connection, "DROP TABLE $$tester;");
 				return true;
 			});
 		} catch (SQLException e) {
