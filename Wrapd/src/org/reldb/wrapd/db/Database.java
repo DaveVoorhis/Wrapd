@@ -21,6 +21,8 @@ import com.mchange.v2.c3p0.DataSources;
 /** Database access layer. */
 public class Database {
 	
+	private boolean debugging = false;
+	
 	private DataSource pool = null;	
 	private String dbTablenamePrefix = "";
 
@@ -54,10 +56,24 @@ public class Database {
 		public T go(ResultSet r) throws SQLException;
 	}
 	
+	public void setDebugging(boolean debugging) {
+		this.debugging = debugging;
+	}
+	
+	public boolean isDebugging() {
+		return debugging;
+	}
+	
+	private void showSQL(String location, String query) {
+		if (!debugging)
+			return;
+		System.out.println(location + ": " + query);
+	}
+	
 	public <T> Object queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(query);
-			System.out.println("Database 0: " + sqlized);
+			showSQL("Database 0: ", sqlized);
 			try (ResultSet rs = statement.executeQuery(sqlized)) {
 				return receiver.go(rs);
 			}
@@ -67,7 +83,7 @@ public class Database {
 	public void updateAll(Connection connection, String sqlStatement) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(sqlStatement);
-			System.out.println("Database 1:" + sqlized);
+			showSQL("Database 1: ", sqlized);
 			statement.execute(sqlized);
 		}
 	}
@@ -135,7 +151,7 @@ public class Database {
 	
 	public <T> Object query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
-		System.out.println("Database 2: " + sqlized);
+		showSQL("Database 2: ", sqlized);
 		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
 			setupParms(statement, parms);
 			try (ResultSet rs = statement.executeQuery()) {
@@ -146,7 +162,7 @@ public class Database {
 
 	public void update(Connection connection, String query, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
-		System.out.println("Database 3: " + sqlized);
+		showSQL("Database 3: ", sqlized);
 		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
 			setupParms(statement, parms);
 			statement.execute();
