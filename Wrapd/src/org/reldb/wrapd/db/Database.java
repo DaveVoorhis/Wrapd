@@ -56,7 +56,9 @@ public class Database {
 	
 	public <T> Object queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
-			try (ResultSet rs = statement.executeQuery(replaceTableNames(query))) {
+			var sqlized = replaceTableNames(query);
+			System.out.println("Database 0: " + sqlized);
+			try (ResultSet rs = statement.executeQuery(sqlized)) {
 				return receiver.go(rs);
 			}
 		}
@@ -64,7 +66,9 @@ public class Database {
 	
 	public void updateAll(Connection connection, String sqlStatement) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
-			statement.execute(replaceTableNames(sqlStatement));
+			var sqlized = replaceTableNames(sqlStatement);
+			System.out.println("Database 1:" + sqlized);
+			statement.execute(sqlized);
 		}
 	}
 	
@@ -130,7 +134,9 @@ public class Database {
 	}
 	
 	public <T> Object query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(replaceTableNames(query))) {
+		var sqlized = replaceTableNames(query);
+		System.out.println("Database 2: " + sqlized);
+		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
 			setupParms(statement, parms);
 			try (ResultSet rs = statement.executeQuery()) {
 				return receiver.go(rs);
@@ -139,7 +145,9 @@ public class Database {
 	}
 
 	public void update(Connection connection, String query, Object ... parms) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(replaceTableNames(query))) {
+		var sqlized = replaceTableNames(query);
+		System.out.println("Database 3: " + sqlized);
+		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
 			setupParms(statement, parms);
 			statement.execute();
 		}

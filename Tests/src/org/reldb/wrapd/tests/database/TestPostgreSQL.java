@@ -81,11 +81,11 @@ public class TestPostgreSQL {
 	public void test02() throws SQLException {
 		checkSetupCompleted();
 		database.new Transaction(connection -> {
-			database.updateAll(connection, "CREATE TABLE $$Test (x INTEGER, y INTEGER);");
+			database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
 			for (int i = 0; i < 20; i++) {
-				database.update(connection, "INSERT INTO $$Test VALUES ($1, $2);", i, i * 10);
+				database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
 			}
-			database.queryAll("SELECT * FROM $$Test", result -> {
+			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
 				CompilationResults makeTupleResult = null;
 				try {
 					makeTupleResult = ResultSetToTuple.resultSetToTuple(codeDir, "testSelect", result);
