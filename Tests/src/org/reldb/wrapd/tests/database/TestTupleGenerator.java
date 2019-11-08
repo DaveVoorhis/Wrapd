@@ -17,7 +17,7 @@ public class TestTupleGenerator {
 	
 	@Test 
 	public void testTupleGenerator01() throws ClassNotFoundException, FileNotFoundException, IOException {
-		var codeDir = "./testcode";
+		var codeDir = "./test/code";
 		var tupleName = "TestTuple";
 		var newTupleName = "TestTupleRenamed";
 		var copyTupleName = "TestTupleCopied";
