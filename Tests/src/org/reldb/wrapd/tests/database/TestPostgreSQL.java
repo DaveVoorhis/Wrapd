@@ -1,5 +1,7 @@
 package org.reldb.wrapd.tests.database;
 
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -7,9 +9,9 @@ import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
 import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.utilities.Directory;
 import org.reldb.wrapd.version.VersionProxy;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -61,15 +63,10 @@ public class TestPostgreSQL {
 		
 		setupCompleted = true;
 	}
-
-	private void checkSetupCompleted() {
-		if (!setupCompleted)
-			throw new ExceptionFatal("Database test setup failed.");		
-	}
 	
 	@Test
 	public void testCreateAndInsert() throws SQLException {
-		checkSetupCompleted();
+		assertTrue(setupCompleted);
 		database.new Transaction(connection -> {
 			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
 			database.updateAll(connection, "INSERT INTO $$Version VALUES (0, 0);");
@@ -80,7 +77,7 @@ public class TestPostgreSQL {
 	
 	@Test
 	public void testCreateTupleType() throws SQLException {
-		checkSetupCompleted();
+		assertTrue(setupCompleted);
 		Directory.rmAll(codeDir);
 		database.new Transaction(connection -> {
 			database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
@@ -94,9 +91,12 @@ public class TestPostgreSQL {
 				} catch (Exception e) {
 					System.out.println("Query failed: " + e);
 					e.printStackTrace();
+					assertTrue(false);
 				}
-				if (!makeTupleResult.compiled)
+				if (!makeTupleResult.compiled) {
 					System.out.println("ERROR: " + makeTupleResult.compilerMessages);
+					assertTrue(false);
+				}
 				return makeTupleResult;
 			});
 			return true;
@@ -108,7 +108,6 @@ public class TestPostgreSQL {
 	public static void teardown() {
 		if (!setupCompleted)
 			return;
-		
 		try {
 			database.new Transaction(connection -> {
 				if (test1Done)
