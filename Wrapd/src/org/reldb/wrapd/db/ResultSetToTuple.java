@@ -32,9 +32,16 @@ public class ResultSetToTuple {
 		}
 		return generator.compile();
 	}
+	
+	/**
+	 * Convert a ResultSet to a Stream of TupleS.
+	 * 
+	 * @param resultSet - source ResultSet
+	 * @param tupleType - subclass of Tuple. Each row will be converted to a new instance of this class.
+	 * @return Stream of specified Tuple subclass instances.
+	 */
+	public static Stream<? extends Tuple> toStream(ResultSet resultSet, Class<? extends Tuple> tupleType) {
 		
-	public static Stream<? extends Tuple> toStream(ResultSet results, Class<? extends Tuple> tupleType) {
-		return null;
 	}
 	
 }
