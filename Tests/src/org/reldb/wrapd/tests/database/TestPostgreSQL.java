@@ -87,7 +87,7 @@ public class TestPostgreSQL {
 			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
 				CompilationResults makeTupleResult = null;
 				try {
-					makeTupleResult = ResultSetToTuple.resultSetToTuple(codeDir, "testSelect", result);
+					makeTupleResult = ResultSetToTuple.createTuple(codeDir, "testSelect", result);
 				} catch (Exception e) {
 					System.out.println("Query failed: " + e);
 					e.printStackTrace();
