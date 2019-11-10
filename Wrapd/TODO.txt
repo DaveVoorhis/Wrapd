@@ -1,2 +1,4 @@
 - Consider making transactional and non-transactional query method names different,
   so it's less likely to mix transactional and non-transactional code by accident.
+- Consider incorporating ResultSet to Tuple code in each Tuple class, if it's
+  more optimal that way.
