@@ -1,0 +1,1 @@
+Run this first to perform database setup, including Tuple class generation.

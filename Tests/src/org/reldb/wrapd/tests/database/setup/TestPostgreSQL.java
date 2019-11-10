@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.database;
+package org.reldb.wrapd.tests.database.setup;
 
 import static org.junit.Assert.assertTrue;
 
@@ -12,7 +12,6 @@ import org.reldb.wrapd.db.ResultSetToTuple;
 import org.reldb.wrapd.utilities.Directory;
 import org.reldb.wrapd.version.VersionProxy;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,14 +22,9 @@ public class TestPostgreSQL {
 	private static Database database;
 	private static boolean setupCompleted;
 	
-	private static boolean test1Done;
-	private static boolean test2Done;
-	
 	@BeforeClass
 	public static void setup() {
 		setupCompleted = false;
-		test1Done = false;
-		test2Done = false;
 
 		System.out.println("Executing TestPostgreSQL setup.");
 		System.out.println("If you see 'New configuration file WrapdConfiguration.xml written', the tests will fail and");
@@ -72,7 +66,6 @@ public class TestPostgreSQL {
 			database.updateAll(connection, "INSERT INTO $$Version VALUES (0, 0);");
 			return true;
 		});
-		test1Done = true;
 	}
 	
 	@Test
@@ -87,7 +80,7 @@ public class TestPostgreSQL {
 			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
 				CompilationResults makeTupleResult = null;
 				try {
-					makeTupleResult = ResultSetToTuple.createTuple(codeDir, "testSelect", result);
+					makeTupleResult = ResultSetToTuple.createTuple(codeDir, "TestSelect", result);
 				} catch (Exception e) {
 					System.out.println("Query failed: " + e);
 					e.printStackTrace();
@@ -101,24 +94,6 @@ public class TestPostgreSQL {
 			});
 			return true;
 		});
-		test2Done = true;
 	}
-	
-	@AfterClass
-	public static void teardown() {
-		if (!setupCompleted)
-			return;
-		try {
-			database.new Transaction(connection -> {
-				if (test1Done)
-					database.updateAll(connection, "DROP TABLE $$Version;");
-				if (test2Done)
-					database.updateAll(connection, "DROP TABLE $$tester;");
-				return true;
-			});
-		} catch (SQLException e) {
-			System.out.println("Database teardown failed.");
-			e.printStackTrace();
-		}
-	}
+
 }
