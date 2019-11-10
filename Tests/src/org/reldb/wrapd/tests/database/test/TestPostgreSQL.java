@@ -1,19 +1,17 @@
 package org.reldb.wrapd.tests.database.test;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import org.junit.Test;
 import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;
-import org.reldb.wrapd.db.Database.Transaction;
 import org.reldb.wrapd.version.VersionProxy;
 
 public class TestPostgreSQL {
-	
+
 	private static String codeDir = "./test/code";
 	
 	@Test
@@ -46,8 +44,14 @@ public class TestPostgreSQL {
 		
 		database.new Transaction(connection -> {
 			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
-				TestSelect t;
-				var testSelectStream = ResultSetToTuple.toStream(result, TestSelect.class);
+				try {
+					var testSelectStream = ResultSetToTuple.toStream(result, TestSelect.class);
+					testSelectStream.forEach(tuple -> System.out.println(tuple.toString()));
+				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
+						| IllegalArgumentException | InvocationTargetException | NoSuchFieldException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return null;
 			});
 			return true;

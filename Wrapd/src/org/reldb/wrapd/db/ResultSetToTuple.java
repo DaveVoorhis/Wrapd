@@ -58,7 +58,7 @@ public class ResultSetToTuple {
 	public static Stream<? extends Tuple> toStream(ResultSet resultSet, Class<? extends Tuple> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
 		var tupleConstructor = tupleType.getConstructor((Class<?>[])null);
 		var metadata = resultSet.getMetaData();
-		List<? extends Tuple> rows = new LinkedList<>();
+		List<Tuple> rows = new LinkedList<>();
 		// TODO - make faster by using metadata to store 'field' references in an array indexed by column
 		while (resultSet.next()) {
 			var tuple = tupleConstructor.newInstance((Object[])null);
@@ -68,6 +68,7 @@ public class ResultSetToTuple {
 				var field = tuple.getClass().getField(name);
 				field.set(tuple, value);
 			}
+			rows.add(tuple);
 		}
 		return rows.stream();
 	}
