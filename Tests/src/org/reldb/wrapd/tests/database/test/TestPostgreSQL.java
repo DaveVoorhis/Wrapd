@@ -8,11 +8,10 @@ import org.junit.Test;
 import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;
+import org.reldb.wrapd.tuples.generated.TestSelect;
 import org.reldb.wrapd.version.VersionProxy;
 
 public class TestPostgreSQL {
-
-	private static String codeDir = "./test/code";
 	
 	@Test
 	public void testQueryToStream01() throws SQLException {

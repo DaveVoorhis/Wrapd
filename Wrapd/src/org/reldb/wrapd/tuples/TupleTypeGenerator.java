@@ -33,6 +33,8 @@ public class TupleTypeGenerator {
 	private LinkedList<Attribute> attributes = new LinkedList<>();
 	private TupleTypeGenerator copyFrom = null;
 
+	public final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";
+	
 	/**
 	 * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
 	 * 
@@ -219,6 +221,7 @@ public class TupleTypeGenerator {
 			oldTupleName = null;
 		}
 		var tupleDef = 
+			"package " + tupleTypePackage + ";\n\n" +
 			"import org.reldb.wrapd.tuples.Tuple;\n\n" +
 			"/** " + tupleName + " tuple class version " + serialValue + " */\n" +
 			"public class " + tupleName + " implements Tuple {\n" +
@@ -233,7 +236,7 @@ public class TupleTypeGenerator {
 			"}";
 		var compiler = new ForeignCompilerJava(dir);
 		loader.unload(tupleName);
-		return compiler.compileForeignCode(tupleName, tupleDef);
+		return compiler.compileForeignCode(tupleName, tupleTypePackage, tupleDef);
 	}
 	
 }

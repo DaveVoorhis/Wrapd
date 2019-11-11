@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.strings.Str;
 
@@ -43,7 +44,7 @@ public class ForeignCompilerJava {
     }
     
     /** Compile foreign code using Eclipse JDT compiler. */
-    public CompilationResults compileForeignCode(String className, String src) {
+    public CompilationResults compileForeignCode(String className, String packageSpec, String src) {
     	ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
     	ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
     	String warningSetting = new String("allDeprecation,"
@@ -70,8 +71,13 @@ public class ForeignCompilerJava {
             resourceDir.mkdirs();
     	File sourcef;
     	try {
+    		// Convert package to directories
+    		var packageDir = userSourcePath + "/" + packageSpec.replace('.', '/');
+    		var packageDirFile = new File(packageDir);
+    		if (!packageDirFile.exists())
+    			packageDirFile.mkdirs();
     		// Write source to a Java source file
-    		sourcef = new File(userSourcePath + java.io.File.separator + getStrippedClassname(className) + ".java");
+    		sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
     		PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
     		sourcePS.print(src);
     		sourcePS.close();
@@ -88,7 +94,7 @@ public class ForeignCompilerJava {
    		String commandLine = "-1.9 -source 1.9 -warn:" + 
     			warningSetting + " " + 
     			"-cp " + classpath + " \"" + sourcef + "\"";
-    	boolean compiled = org.eclipse.jdt.core.compiler.batch.BatchCompiler.compile(
+    	boolean compiled = BatchCompiler.compile(
     			commandLine,
     			new PrintWriter(messageStream), 
     			new PrintWriter(warningStream), 
@@ -149,7 +155,7 @@ public class ForeignCompilerJava {
         return outstr;
     }
     
-	/** Return classpath to the Relang core. */
+	/** Return classpath to the core. */
     private String getLocalClasspath() {
         String classPath = System.getProperty("user.dir") + 
         	   java.io.File.pathSeparatorChar + userSourcePath;

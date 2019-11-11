@@ -46,8 +46,16 @@ public class TestPostgreSQL {
 		
 		try {
 			database.new Transaction(connection -> {
-				database.updateAll(connection, "DROP TABLE $$Version;");
-				database.updateAll(connection, "DROP TABLE $$tester;");
+				try {
+					database.updateAll(connection, "DROP TABLE $$Version;");
+				} catch (SQLException se) {
+					System.out.println("ERROR: " + se);
+				}
+				try {
+					database.updateAll(connection, "DROP TABLE $$tester;");
+				} catch (SQLException se) {
+					System.out.println("ERROR: " + se);
+				}
 				return true;
 			});
 		} catch (SQLException e) {
