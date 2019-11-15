@@ -23,9 +23,9 @@ public class TestDataBDBJE {
 	
 	private static BDBJEBase base;
 	
-	private final static String storageName1 = "TestData";
-	private final static String storageName2 = "AnotherTestData";
-	private final static String storageNameRenamed = "TestDataRenamed";
+	private final static String storageName1 = "org.reldb.wrapd.tuples.generated.TestData";
+	private final static String storageName2 = "org.reldb.wrapd.tuples.generated.AnotherTestData";
+	private final static String storageNameRenamed = "org.reldb.wrapd.tuples.generated.TestDataRenamed";
 	
 	@BeforeClass
 	public static void setup() {

@@ -9,7 +9,6 @@ import java.lang.reflect.Field;
 import org.junit.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
-import org.reldb.wrapd.utilities.Directory;
 
 public class TestTupleGenerator {
 	
@@ -18,11 +17,9 @@ public class TestTupleGenerator {
 	@Test 
 	public void testTupleGenerator01() throws ClassNotFoundException, FileNotFoundException, IOException {
 		var codeDir = "./test/code";
-		var tupleName = "TestTuple";
-		var newTupleName = "TestTupleRenamed";
-		var copyTupleName = "TestTupleCopied";
-		
-		Directory.rmAll(codeDir);
+		var tupleName = "org.reldb.wrapd.tuples.generated.TestTuple";
+		var newTupleName = "org.reldb.wrapd.tuples.generated.TestTupleRenamed";
+		var copyTupleName = "org.reldb.wrapd.tuples.generated.TestTupleCopied";
 		
 		var generator = new TupleTypeGenerator(codeDir, tupleName);
 		generator.addAttribute("Col1", String.class);
