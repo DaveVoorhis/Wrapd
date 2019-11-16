@@ -16,7 +16,7 @@ public class TestTupleGenerator {
 	
 	@Test 
 	public void testTupleGenerator01() throws ClassNotFoundException, FileNotFoundException, IOException {
-		var codeDir = "../TestData/code";
+		var codeDir = "../_TestData/code";
 		var tupleName = "org.reldb.wrapd.tuples.generated.TestTuple";
 		var newTupleName = "org.reldb.wrapd.tuples.generated.TestTupleRenamed";
 		var copyTupleName = "org.reldb.wrapd.tuples.generated.TestTupleCopied";
