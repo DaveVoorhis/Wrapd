@@ -72,5 +72,15 @@ public class ResultSetToTuple {
 		}
 		return rows.stream();
 	}
+
+	/**
+	 * Eliminate the tuple with a given name. 
+	 * 
+	 * @param codeDir - Directory where source code will be stored.
+	 * @param tupleName - Name of tuple class.
+	 */
+	public static void destroyTuple(String codeDir, String tupleName) {
+		new TupleTypeGenerator(codeDir, tupleName).destroy();
+	}
 	
 }

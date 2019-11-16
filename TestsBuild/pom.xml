@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.reldb.wrapd</groupId>
+	<artifactId>TestsBuild</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Wrapd Tests Build</name>
+	<description>Wrapd tests that generate code for subsequent tests.</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.reldb.wrapd</groupId>
+			<artifactId>wrapd</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>src</directory>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<release>12</release>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
