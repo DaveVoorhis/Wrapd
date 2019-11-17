@@ -12,9 +12,14 @@ import org.reldb.wrapd.tuples.generated.TestSelect;
 import org.reldb.wrapd.version.VersionProxy;
 
 public class TestPostgreSQL {
-	
+
+	private static String baseDir = "../_TestData";
+		
 	@Test
 	public void testQueryToStream01() throws SQLException {
+		
+		Configuration.setLocation(baseDir);
+		
 		String dbServer = Database.nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
 		String dbDatabase = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
 		String dbUser = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_USER));

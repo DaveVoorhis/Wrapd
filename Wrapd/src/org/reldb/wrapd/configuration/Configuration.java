@@ -26,6 +26,8 @@ import org.xml.sax.SAXException;
 
 public class Configuration {
 
+	private static String baseDir = "./";
+	
 	private static final String RootNodeName = "configuration";
 
 	public static final String INSTALLER_ADMIN_NAME = "installer_admin_name";
@@ -84,7 +86,7 @@ public class Configuration {
 	
 	private static void writeDefaultConfiguration() throws ParserConfigurationException, TransformerException, IOException {
 		// Create empty .dtd file
-		String dtdFileName = RootNodeName + ".dtd";
+		String dtdFileName = getLocation() + RootNodeName + ".dtd";
 		File dtdFile = new File(dtdFileName);
 		dtdFile.createNewFile();
 		
@@ -156,9 +158,18 @@ public class Configuration {
 		cachedConfiguration = readConfiguration();
 		return cachedConfiguration;
 	}
-		
+
+	public static void setLocation(String baseDir) {
+		Configuration.baseDir = (baseDir == null) ? "./" : baseDir;
+		cachedConfiguration = null;
+	}
+	
+	public static String getLocation() {
+		return (Configuration.baseDir.endsWith("/")) ? Configuration.baseDir : Configuration.baseDir + "/";
+	}
+	
 	public static String getConfigurationFileName() {
-		return VersionProxy.getVersion().getInternalProductName() + "Configuration.xml";
+		return getLocation() + VersionProxy.getVersion().getInternalProductName() + "Configuration.xml";
 	}
 	
 	public static void checkConfiguration() throws IOException {

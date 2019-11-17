@@ -11,8 +11,12 @@ import org.junit.Test;
 
 public class TestPostgreSQL {
 	
+	private static String baseDir = "../_TestData";
+	
 	@Test
-	public void teardown() {
+	public void teardown() {		
+		Configuration.setLocation(baseDir);
+		
 		String dbServer = Database.nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
 		String dbDatabase = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
 		String dbUser = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_USER));

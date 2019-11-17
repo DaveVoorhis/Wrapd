@@ -7,6 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/Wrapd"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/_TestData"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-12">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -19,6 +20,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/code"/>
+	<classpathentry kind="lib" path="/_TestData/code"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

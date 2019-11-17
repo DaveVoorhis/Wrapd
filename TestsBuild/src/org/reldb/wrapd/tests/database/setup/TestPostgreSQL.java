@@ -16,7 +16,8 @@ import org.junit.Test;
 
 public class TestPostgreSQL {
 	
-	private static String codeDir = "../_TestData/code";
+	private static String baseDir = "../_TestData";
+	private static String codeDir = baseDir + "/code";
 
 	private static Database database;
 	private static boolean setupCompleted;
@@ -26,9 +27,11 @@ public class TestPostgreSQL {
 		setupCompleted = false;
 
 		System.out.println("Executing TestPostgreSQL setup.");
-		System.out.println("If you see 'New configuration file WrapdConfiguration.xml written', the tests will fail and");
-		System.out.println("you'll have to configure database access in WrapdConfiguration.xml, then re-run the tests.");
+		System.out.println("If you see 'New configuration file ../TestData/WrapdConfiguration.xml written', the tests will fail and");
+		System.out.println("you'll have to configure database access in _TestData/WrapdConfiguration.xml, then re-run the tests.");
 		System.out.println();
+		
+		Configuration.setLocation(baseDir);
 		
 		String dbServer = Database.nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
 		String dbDatabase = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
