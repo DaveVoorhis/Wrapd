@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
-import org.reldb.wrapd.data.bdbje.BDBJEEnvironment;
 import org.reldb.wrapd.data.CatalogEntry;
 
 public class TestDataBDBJE {
@@ -29,7 +28,6 @@ public class TestDataBDBJE {
 	
 	@BeforeClass
 	public static void setup() {
-		BDBJEEnvironment.purge(testDir);
 		base = new BDBJEBase(testDir, true);
 	}
 	
