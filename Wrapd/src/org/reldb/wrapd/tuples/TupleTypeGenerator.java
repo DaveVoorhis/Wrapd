@@ -33,7 +33,7 @@ public class TupleTypeGenerator {
 	private LinkedList<Attribute> attributes = new LinkedList<>();
 	private TupleTypeGenerator copyFrom = null;
 
-	public final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";
+	public static final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";
 	
 	/**
 	 * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
@@ -53,7 +53,7 @@ public class TupleTypeGenerator {
 			throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
 		loader = new DirClassLoader(dir);
 		try {
-			var tupleClass = loader.forName(tupleName);
+			var tupleClass = loader.forName(tupleTypePackage + "." + tupleName);
 			getDataFields(tupleClass).forEach(field -> attributes.add(new Attribute(field.getName(), field.getType())));
 			try {
 				var serialVersionUIDField = tupleClass.getDeclaredField("serialVersionUID");
@@ -196,10 +196,15 @@ public class TupleTypeGenerator {
 			"\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixIfPresent(getContentString(), ", ") + ");\n\t}\n";
 	}
 	
-	private void destroy(String className) {
-		var pathName = dir + File.separator + className;
+	/** Delete this tuple type, given its name, before loading it. */
+	public static void destroy(String dir, String className) {
+		var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
 		(new File(pathName + ".java")).delete();
 		(new File(pathName + ".class")).delete();		
+	}
+	
+	private void destroy(String className) {
+		destroy(dir, className);
 	}
 	
 	/** Delete the Java files underpinning this tuple type. */
@@ -222,6 +227,7 @@ public class TupleTypeGenerator {
 		}
 		var tupleDef = 
 			"package " + tupleTypePackage + ";\n\n" +
+			"/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
 			"import org.reldb.wrapd.tuples.Tuple;\n\n" +
 			"/** " + tupleName + " tuple class version " + serialValue + " */\n" +
 			"public class " + tupleName + " implements Tuple {\n" +
@@ -237,6 +243,15 @@ public class TupleTypeGenerator {
 		var compiler = new ForeignCompilerJava(dir);
 		loader.unload(tupleName);
 		return compiler.compileForeignCode(tupleName, tupleTypePackage, tupleDef);
+	}
+
+	/**
+	 * Return the class name of the tuple.
+	 * 
+	 * @return - class name
+	 */
+	public String getTupleClassName() {
+		return tupleTypePackage + "." + tupleName;
 	}
 	
 }

@@ -1,5 +1,7 @@
 package org.reldb.wrapd.tuples.generated;
 
+/* WARNING: Auto-generated code. DO NOT EDIT!!! */
+
 import org.reldb.wrapd.tuples.Tuple;
 
 /** TestSelect tuple class version 0 */

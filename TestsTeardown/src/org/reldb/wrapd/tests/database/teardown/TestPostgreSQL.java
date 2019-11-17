@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.reldb.wrapd.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
+import org.reldb.wrapd.utilities.Directory;
 import org.reldb.wrapd.version.VersionProxy;
 
 import org.junit.Test;
@@ -12,6 +13,7 @@ import org.junit.Test;
 public class TestPostgreSQL {
 	
 	private static String baseDir = "../_TestData";
+	private static String codeDir = baseDir + "/code";
 	
 	@Test
 	public void teardown() {		
@@ -61,5 +63,7 @@ public class TestPostgreSQL {
 			System.out.println("Database teardown failed.");
 			e.printStackTrace();
 		}
+		
+		Directory.rmAll(codeDir);
 	}
 }

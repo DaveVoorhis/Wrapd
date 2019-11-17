@@ -46,6 +46,11 @@ public class TestDataBDBJE {
 	@SuppressWarnings("unchecked")
 	@Test 
 	public void testData01() throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, InstantiationException, InvocationTargetException {
+		if (base.exists(storageName1)) {
+			System.out.println("Removing old " + storageName1);
+			base.remove(storageName1);
+		}
+		System.out.println("Creating " + storageName1);
 		var data = base.create(storageName1);
 		data.extend("col1", String.class);
 		data.extend("col2", Integer.class);
@@ -127,6 +132,11 @@ public class TestDataBDBJE {
 	
 	@Test
 	public void testData02() {
+		if (base.exists(storageName2)) {
+			System.out.println("Removing old " + storageName2);
+			base.remove(storageName2);
+		}
+		System.out.println("Creating " + storageName2);		
 		base.create(storageName2);
 	}
 	

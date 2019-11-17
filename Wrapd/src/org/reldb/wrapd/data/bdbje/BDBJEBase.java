@@ -191,7 +191,7 @@ public class BDBJEBase implements Closeable {
 			throw new ExceptionFatal(Str.ing(ErrUnableToGenerateTupleType2, name, compileResult));
 		Class<?> tupleType;
 		try {
-			tupleType = environment.getClassLoader().forName(name);
+			tupleType = environment.getClassLoader().forName(tupleTypeGenerator.getTupleClassName());
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionFatal(Str.ing(ErrUnableToGenerateTupleType, name));
 		}
