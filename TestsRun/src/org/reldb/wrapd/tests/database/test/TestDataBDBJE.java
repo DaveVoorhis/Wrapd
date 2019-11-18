@@ -50,6 +50,11 @@ public class TestDataBDBJE {
 			System.out.println("Removing old " + storageName1);
 			base.remove(storageName1);
 		}
+		if (base.exists(storageNameRenamed)) {
+			System.out.println("Removing old " + storageNameRenamed);
+			base.remove(storageNameRenamed);
+		}
+		
 		System.out.println("Creating " + storageName1);
 		var data = base.create(storageName1);
 		

@@ -305,8 +305,7 @@ public class BDBJEBase implements Closeable {
 			System.out.println(Str.ing(ErrDatabaseNotFound, dnfe.getMessage()));
 		}
 		var codeDir = environment.getCodeDir();
-		var tupleTypeGenerator = new TupleTypeGenerator(codeDir, name);
-		tupleTypeGenerator.destroy();
+		TupleTypeGenerator.destroy(codeDir, name);
 		var dataSource = dataSources.get(name);
 		if (dataSource != null)
 			dataSources.remove(name);

@@ -202,18 +202,12 @@ public class TupleTypeGenerator {
 	/** Delete this tuple type, given its name, before loading it. */
 	public static void destroy(String dir, String className) {
 		var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
-		(new File(pathName + ".java")).delete();
-		(new File(pathName + ".class")).delete();		
-	}
-	
-	private void destroy(String className) {
-		System.out.println("TupleTypeGenerator: destroy disabled.");
-//		destroy(dir, className);
-	}
-	
-	/** Delete the Java files underpinning this tuple type. */
-	public void destroy() {
-		destroy(tupleName);
+		var fJava = new File(pathName + ".java");
+		fJava.delete();
+		System.out.println("TupleTypeGenerator delete file: " + fJava);
+		var fClass = new File(pathName + ".class");
+		System.out.println("TupleTypeGenerator delete file: " + fClass);
+		fClass.delete();
 	}
 
 	public long getSerial() {
@@ -225,11 +219,9 @@ public class TupleTypeGenerator {
 	 * @return - an instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
 	 */
 	public ForeignCompilerJava.CompilationResults compile() {
-		if (oldTupleName != null) {
-//			System.out.println("TupleTypeGenerator: destroy " + oldTupleName);
-//			destroy(oldTupleName);
+		loader.unload(getTupleClassName());
+		if (oldTupleName != null)
 			oldTupleName = null;
-		}
 		var tupleDef = 
 			"package " + tupleTypePackage + ";\n\n" +
 			"/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
@@ -246,10 +238,6 @@ public class TupleTypeGenerator {
 				getToStringCode() +
 			"}";
 		var compiler = new ForeignCompilerJava(dir);
-		loader.unload(getTupleClassName());
-		System.out.println("TupleTypeGenerator: compile " + tupleName + " in " + tupleTypePackage + ":");
-		System.out.println(tupleDef);
-		System.out.println();
 		return compiler.compileForeignCode(tupleName, tupleTypePackage, tupleDef);
 	}
 

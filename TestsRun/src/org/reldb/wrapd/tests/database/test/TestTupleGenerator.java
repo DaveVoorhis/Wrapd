@@ -22,6 +22,8 @@ public class TestTupleGenerator {
 		var copyTupleName = "TestTupleCopied";
 
 		TupleTypeGenerator.destroy(codeDir, tupleName);
+		TupleTypeGenerator.destroy(codeDir, newTupleName);
+		TupleTypeGenerator.destroy(codeDir, copyTupleName);
 		
 		var generator = new TupleTypeGenerator(codeDir, tupleName);
 		
@@ -104,9 +106,6 @@ public class TestTupleGenerator {
 				System.out.println("Has field: " + field.getType().toString() + " " + field.getName());
 		
 		assertEquals(5, testclass.getFields().length);
-		
-		generator.destroy();
-		newGenerator.destroy();
 	}
 
 }

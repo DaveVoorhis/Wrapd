@@ -80,7 +80,7 @@ public class ResultSetToTuple {
 	 * @param tupleName - Name of tuple class.
 	 */
 	public static void destroyTuple(String codeDir, String tupleName) {
-		new TupleTypeGenerator(codeDir, tupleName).destroy();
+		TupleTypeGenerator.destroy(codeDir, tupleName);
 	}
 	
 }

@@ -98,7 +98,6 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 			throw new ExceptionFatal(Str.ing(ErrUnableToExtendTupleType, newName, compileResult));
 		var newTupleType = copyOldToNew(oldTupleClass, newName);
 		base.updateCatalog(name, newTupleType);
-		oldTupleTypeGenerator.destroy();		
 	}
 
 	private void changeSchema(Renamer renamer) {
