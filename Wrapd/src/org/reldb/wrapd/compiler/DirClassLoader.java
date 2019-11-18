@@ -31,25 +31,31 @@ public class DirClassLoader extends ClassLoader {
 	}
 
 	public Class<?> findClass(String name) {
+		System.out.print("DirClassLoader: findClass " + name);
 		Class<?> clazz = (Class<?>) classCache.get(name);
 		if (clazz == null) {
 			byte[] bytes;
 			try {
+				System.out.print(" load data from " + name);
 				bytes = loadClassData(name);
 			} catch (IOException e) {
 				try {
+					System.out.println(" via system class loader ");
 					return Class.forName(name);
 				} catch (ClassNotFoundException e1) {
+					System.out.println(" ...but not found.");
 					return null;
 				}
 			}
 			clazz = defineClass(name, bytes, 0, bytes.length);
 			classCache.put(name, clazz);
 		}
+		System.out.println();
 		return clazz;
 	}
 
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
+		System.out.println("DirClassLoader: loadClass " + name);
 		Class<?> clazz = findClass(name);
 		if (clazz == null)
 			throw new ClassNotFoundException();
@@ -83,9 +89,11 @@ public class DirClassLoader extends ClassLoader {
 	
 	/** Get Class for given name.  Will check the system loader first, then the specified directory. */
 	public Class<?> forName(final String name) throws ClassNotFoundException {
+		System.out.println("DirClassLoader: forName " + name);
 		// Creation of new ClassLoader allows same class name to be reloaded, as when user
 		// drops and then re-creates a given user-defined Java-based type.
-		return new DirClassLoader(dir).loadClass(name);
+	//	return new DirClassLoader(dir).loadClass(name);
+		return loadClass(name);
 	}
 
 }
