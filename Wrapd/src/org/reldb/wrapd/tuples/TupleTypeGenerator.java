@@ -47,13 +47,16 @@ public class TupleTypeGenerator {
 	}
 	
 	public TupleTypeGenerator(String dir, String tupleName) {
+		if (tupleName.startsWith(tupleTypePackage))
+			tupleName = tupleName.substring(tupleTypePackage.length() + 1);
 		this.dir = dir;
 		this.tupleName = tupleName;
 		if (!Directory.chkmkdir(dir))
 			throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
 		loader = new DirClassLoader(dir);
 		try {
-			var tupleClass = loader.forName(tupleTypePackage + "." + tupleName);
+			var className = tupleTypePackage + "." + tupleName;
+			var tupleClass = loader.forName(className);
 			getDataFields(tupleClass).forEach(field -> attributes.add(new Attribute(field.getName(), field.getType())));
 			try {
 				var serialVersionUIDField = tupleClass.getDeclaredField("serialVersionUID");
@@ -204,7 +207,8 @@ public class TupleTypeGenerator {
 	}
 	
 	private void destroy(String className) {
-		destroy(dir, className);
+		System.out.println("TupleTypeGenerator: destroy disabled.");
+//		destroy(dir, className);
 	}
 	
 	/** Delete the Java files underpinning this tuple type. */
@@ -222,7 +226,8 @@ public class TupleTypeGenerator {
 	 */
 	public ForeignCompilerJava.CompilationResults compile() {
 		if (oldTupleName != null) {
-			destroy(oldTupleName);
+//			System.out.println("TupleTypeGenerator: destroy " + oldTupleName);
+//			destroy(oldTupleName);
 			oldTupleName = null;
 		}
 		var tupleDef = 
@@ -241,7 +246,10 @@ public class TupleTypeGenerator {
 				getToStringCode() +
 			"}";
 		var compiler = new ForeignCompilerJava(dir);
-		loader.unload(tupleName);
+		loader.unload(getTupleClassName());
+		System.out.println("TupleTypeGenerator: compile " + tupleName + " in " + tupleTypePackage + ":");
+		System.out.println(tupleDef);
+		System.out.println();
 		return compiler.compileForeignCode(tupleName, tupleTypePackage, tupleDef);
 	}
 
@@ -251,7 +259,11 @@ public class TupleTypeGenerator {
 	 * @return - class name
 	 */
 	public String getTupleClassName() {
-		return tupleTypePackage + "." + tupleName;
+		return getTupleClassName(tupleName);
+	}
+
+	public static String getTupleClassName(String newName) {
+		return tupleTypePackage + "." + newName;
 	}
 	
 }

@@ -6,12 +6,8 @@
 
 package org.reldb.wrapd.compiler;
 
-import static org.reldb.wrapd.strings.Strings.*;
-
 import java.io.*;
 import java.util.*;
-
-import org.reldb.wrapd.strings.Str;
 
 /**
  * A class loader to load named classes from a specified directory.  With
@@ -35,22 +31,22 @@ public class DirClassLoader extends ClassLoader {
 	}
 
 	public Class<?> findClass(String name) {
-		try {
-			return Class.forName(name);
-		} catch (ClassNotFoundException cnfe) {
-			Class<?> clazz = (Class<?>) classCache.get(name);
-			if (clazz == null) {
-				byte[] bytes;
+		Class<?> clazz = (Class<?>) classCache.get(name);
+		if (clazz == null) {
+			byte[] bytes;
+			try {
+				bytes = loadClassData(name);
+			} catch (IOException e) {
 				try {
-					bytes = loadClassData(name);
-				} catch (ClassNotFoundException e) {
+					return Class.forName(name);
+				} catch (ClassNotFoundException e1) {
 					return null;
 				}
-				clazz = defineClass(name, bytes, 0, bytes.length);
-				classCache.put(name, clazz);
 			}
-			return clazz;
+			clazz = defineClass(name, bytes, 0, bytes.length);
+			classCache.put(name, clazz);
 		}
+		return clazz;
 	}
 
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -70,24 +66,18 @@ public class DirClassLoader extends ClassLoader {
 			return new File(dir + File.separator + name + ".class");
 	}
 	
-	private byte[] loadClassData(String name) throws ClassNotFoundException {
+	private byte[] loadClassData(String name) throws IOException {
 		File f = getClassFileName(name);
 		BytestreamOutputArray byteStream = new BytestreamOutputArray();
-		try {
-			FileInputStream reader = new FileInputStream(f);
-			byte[] bytes = new byte[65535];
-			while (true) {
-				int read = reader.read(bytes);
-				if (read < 0)
-					break;
-				byteStream.put(bytes, 0, read);
-			}
-			reader.close();
-		} catch (FileNotFoundException fnfe) {
-			throw new ClassNotFoundException(Str.ing(ErrFileNotFound1, f.toString(), name));
-		} catch (IOException ioe) {
-			throw new ClassNotFoundException(Str.ing(ErrReading, f.toString(), ioe.toString()));
+		FileInputStream reader = new FileInputStream(f);
+		byte[] bytes = new byte[65535];
+		while (true) {
+			int read = reader.read(bytes);
+			if (read < 0)
+				break;
+			byteStream.put(bytes, 0, read);
 		}
+		reader.close();
 		return byteStream.getBytes();
 	}
 	

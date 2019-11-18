@@ -98,7 +98,7 @@ public class BDBJEBase implements Closeable {
 	
 	@SuppressWarnings("unchecked")
 	void updateCatalog(String name, Class<?> tupleType) {
-		query(catalog, catalog -> catalog.put(name, new CatalogEntry(name, tupleType.getName(), null)));
+		query(catalog, catalog -> catalog.put(name, new CatalogEntry(name, tupleType.getCanonicalName(), null)));
 	}
 
 	void removeCatalogEntry(String name) {

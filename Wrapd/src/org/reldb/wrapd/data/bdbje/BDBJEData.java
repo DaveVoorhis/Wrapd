@@ -35,7 +35,7 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 	private Class<? extends Tuple> copyOldToNew(Class<? extends Tuple> oldTupleClass, String newName) {
 		Class<? extends Tuple> newTupleClass;
 		try {
-			newTupleClass = base.loadClass(newName);
+			newTupleClass = base.loadClass(TupleTypeGenerator.getTupleClassName(newName));
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionFatal(Str.ing(ErrUnableToLoadTupleTypeClass, newName));			
 		}

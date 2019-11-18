@@ -52,8 +52,11 @@ public class TestDataBDBJE {
 		}
 		System.out.println("Creating " + storageName1);
 		var data = base.create(storageName1);
+		
 		data.extend("col1", String.class);
+		System.out.println("------------> Before Failing Extend <-------------");
 		data.extend("col2", Integer.class);
+		System.out.println("-------------> After Failing Extend <-------------");
 
 		/*
 		 * The complexity below is needed because the new tuple type has been dynamically created in-line here. 
