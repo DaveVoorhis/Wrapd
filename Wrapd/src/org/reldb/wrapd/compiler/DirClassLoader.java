@@ -20,9 +20,11 @@ public class DirClassLoader extends ClassLoader {
 	private static HashMap<String, Class<?>> classCache = new HashMap<String, Class<?>>();
 
 	private String dir;
+	private String packageName;
 
-	public DirClassLoader(String dir) {
+	public DirClassLoader(String dir, String packageName) {
 		this.dir = dir;
+		this.packageName = packageName;
 	}
 	
 	/** Unload a given Class. */
@@ -32,6 +34,17 @@ public class DirClassLoader extends ClassLoader {
 
 	public Class<?> findClass(String name) {
 		System.out.print("DirClassLoader: findClass " + name);
+		if (!name.startsWith(packageName)) {
+			System.out.print(" with system class loader.");
+			try {
+				System.out.println();
+				return Class.forName(name);
+			} catch (ClassNotFoundException e1) {
+				System.out.println(" ...but not found.");
+				return null;
+			}
+		}
+		// TODO - optimise by checking that package is within dir. If not, use system classloader
 //		Class<?> clazz = (Class<?>) classCache.get(name);
 //		if (clazz == null) {
 			byte[] bytes;
@@ -39,17 +52,16 @@ public class DirClassLoader extends ClassLoader {
 				System.out.print(" load data from " + name);
 				bytes = loadClassData(name);
 			} catch (IOException e) {
-				try {
-					System.out.println(" via system class loader ");
-					return Class.forName(name);
-				} catch (ClassNotFoundException e1) {
-					System.out.println(" ...but not found.");
-					return null;
-				}
+				System.out.println(" ...but load failed.");
+				return null;
 			}
-			var clazz = defineClass(name, bytes, 0, bytes.length);
-			System.out.println();
-			return clazz;
+			try {
+				System.out.println(".");
+				return defineClass(name, bytes, 0, bytes.length);
+			} catch (LinkageError le) {
+				System.out.println(" ...and reloaded via new DirClassLoader.");
+				return new DirClassLoader(dir, packageName).defineClass(name,  bytes, 0, bytes.length);
+			}
 //			classCache.put(name, clazz);
 //		}
 //		System.out.println();
@@ -57,7 +69,6 @@ public class DirClassLoader extends ClassLoader {
 	}
 
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-		System.out.println("DirClassLoader: loadClass " + name);
 		Class<?> clazz = findClass(name);
 		if (clazz == null)
 			throw new ClassNotFoundException();
@@ -91,7 +102,6 @@ public class DirClassLoader extends ClassLoader {
 	
 	/** Get Class for given name.  Will check the system loader first, then the specified directory. */
 	public Class<?> forName(final String name) throws ClassNotFoundException {
-		System.out.println("DirClassLoader: forName " + name);
 		// Creation of new ClassLoader allows same class name to be reloaded, as when user
 		// drops and then re-creates a given user-defined Java-based type.
 	//	return new DirClassLoader(dir).loadClass(name);

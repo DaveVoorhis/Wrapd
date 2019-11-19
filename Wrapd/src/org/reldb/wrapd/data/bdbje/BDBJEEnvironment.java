@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.strings.Str;
+import org.reldb.wrapd.tuples.TupleTypeGenerator;
 import org.reldb.wrapd.utilities.Directory;
 
 import com.sleepycat.bind.serial.ClassCatalog;
@@ -133,7 +134,7 @@ public class BDBJEEnvironment implements Closeable {
 		if (create)
 			writeClicker();
 
-		classLoader = new DirClassLoader(codeDir);
+		classLoader = new DirClassLoader(codeDir, TupleTypeGenerator.getTuplePackage());
 		
 		var dataEnvConfig = new EnvironmentConfig();
 		dataEnvConfig.setTransactional(true);

@@ -53,7 +53,7 @@ public class TupleTypeGenerator {
 		this.tupleName = tupleName;
 		if (!Directory.chkmkdir(dir))
 			throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-		loader = new DirClassLoader(dir);
+		loader = new DirClassLoader(dir, tupleTypePackage);
 		try {
 			var className = tupleTypePackage + "." + tupleName;
 			var tupleClass = loader.forName(className);
@@ -252,6 +252,10 @@ public class TupleTypeGenerator {
 
 	public static String getTupleClassName(String newName) {
 		return tupleTypePackage + "." + newName;
+	}
+
+	public static String getTuplePackage() {
+		return tupleTypePackage;
 	}
 	
 }
