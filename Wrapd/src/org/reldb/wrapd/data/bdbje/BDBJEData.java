@@ -36,12 +36,6 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 		Class<? extends Tuple> newTupleClass;
 		try {
 			newTupleClass = base.loadClass(TupleTypeGenerator.getTupleClassName(newName));
-			
-			for (var m: newTupleClass.getMethods())
-				System.out.println("newTupleClass -> " + m);
-			for (var f: newTupleClass.getFields())
-				System.out.println("newTupleClass  . " + f);
-			
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionFatal(Str.ing(ErrUnableToLoadTupleTypeClass, newName));			
 		}
