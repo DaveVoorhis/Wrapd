@@ -204,9 +204,7 @@ public class TupleTypeGenerator {
 		var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
 		var fJava = new File(pathName + ".java");
 		fJava.delete();
-		System.out.println("TupleTypeGenerator delete file: " + fJava);
 		var fClass = new File(pathName + ".class");
-		System.out.println("TupleTypeGenerator delete file: " + fClass);
 		fClass.delete();
 	}
 

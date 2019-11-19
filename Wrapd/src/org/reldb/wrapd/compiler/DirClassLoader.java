@@ -33,39 +33,29 @@ public class DirClassLoader extends ClassLoader {
 	}
 
 	public Class<?> findClass(String name) {
-		System.out.print("DirClassLoader: findClass " + name);
-		if (!name.startsWith(packageName)) {
-			System.out.print(" with system class loader.");
+		if (!name.startsWith(packageName))
 			try {
-				System.out.println();
 				return Class.forName(name);
 			} catch (ClassNotFoundException e1) {
-				System.out.println(" ...but not found.");
 				return null;
 			}
-		}
-		// TODO - optimise by checking that package is within dir. If not, use system classloader
-//		Class<?> clazz = (Class<?>) classCache.get(name);
-//		if (clazz == null) {
+		Class<?> clazz = (Class<?>) classCache.get(name);
+		if (clazz == null) {
 			byte[] bytes;
 			try {
-				System.out.print(" load data from " + name);
 				bytes = loadClassData(name);
 			} catch (IOException e) {
-				System.out.println(" ...but load failed.");
 				return null;
 			}
 			try {
-				System.out.println(".");
-				return defineClass(name, bytes, 0, bytes.length);
+				clazz = defineClass(name, bytes, 0, bytes.length);
 			} catch (LinkageError le) {
-				System.out.println(" ...and reloaded via new DirClassLoader.");
-				return new DirClassLoader(dir, packageName).defineClass(name,  bytes, 0, bytes.length);
+				var loader = new DirClassLoader(dir, packageName);
+				clazz = loader.defineClass(name,  bytes, 0, bytes.length);
 			}
-//			classCache.put(name, clazz);
-//		}
-//		System.out.println();
-//		return clazz;
+			classCache.put(name, clazz);
+		}
+		return clazz;
 	}
 
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
@@ -102,9 +92,6 @@ public class DirClassLoader extends ClassLoader {
 	
 	/** Get Class for given name.  Will check the system loader first, then the specified directory. */
 	public Class<?> forName(final String name) throws ClassNotFoundException {
-		// Creation of new ClassLoader allows same class name to be reloaded, as when user
-		// drops and then re-creates a given user-defined Java-based type.
-	//	return new DirClassLoader(dir).loadClass(name);
 		return loadClass(name);
 	}
 

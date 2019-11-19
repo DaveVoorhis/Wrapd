@@ -36,15 +36,24 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 		Class<? extends Tuple> newTupleClass;
 		try {
 			newTupleClass = base.loadClass(TupleTypeGenerator.getTupleClassName(newName));
+			
+			for (var m: newTupleClass.getMethods())
+				System.out.println("newTupleClass -> " + m);
+			for (var f: newTupleClass.getFields())
+				System.out.println("newTupleClass  . " + f);
+			
 		} catch (ClassNotFoundException e) {
 			throw new ExceptionFatal(Str.ing(ErrUnableToLoadTupleTypeClass, newName));			
 		}
-		Method copyFrom;
-		try {
-			copyFrom = newTupleClass.getMethod("copyFrom", oldTupleClass);
-		} catch (NoSuchMethodException | SecurityException e) {
+		Method copyFromFound = null;
+		for (var method: newTupleClass.getDeclaredMethods())
+			if (method.getName().contentEquals("copyFrom")) {
+				copyFromFound = method;
+				break;
+			}
+		if (copyFromFound == null)
 			throw new ExceptionFatal(Str.ing(ErrUnableToLocateCopyFromMethod, newName));
-		}
+		final var copyFrom = copyFromFound;
 		try {
 			var newTemporaryName = newName;
 			var newStorage = base.create(newTemporaryName);
@@ -89,7 +98,8 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 		}
 		var codeDir = base.getCodeDir();
 		var oldTupleTypeGenerator = new TupleTypeGenerator(codeDir, oldTupleClassName);
-		var newName = tupleTypeRenamer.newName(oldTupleTypeGenerator);
+		// TODO - find out why appending "_" makes this work; leaving it out breaks!!!
+		var newName = tupleTypeRenamer.newName(oldTupleTypeGenerator) + "_";
 		var tupleTypeGenerator = oldTupleTypeGenerator.copyTo(newName);
 		if (tupleTypeAction != null)
 			tupleTypeAction.change(tupleTypeGenerator);
