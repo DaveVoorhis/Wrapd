@@ -32,8 +32,8 @@ public class DirClassLoader extends ClassLoader {
 
 	public Class<?> findClass(String name) {
 		System.out.print("DirClassLoader: findClass " + name);
-		Class<?> clazz = (Class<?>) classCache.get(name);
-		if (clazz == null) {
+//		Class<?> clazz = (Class<?>) classCache.get(name);
+//		if (clazz == null) {
 			byte[] bytes;
 			try {
 				System.out.print(" load data from " + name);
@@ -47,11 +47,13 @@ public class DirClassLoader extends ClassLoader {
 					return null;
 				}
 			}
-			clazz = defineClass(name, bytes, 0, bytes.length);
-			classCache.put(name, clazz);
-		}
-		System.out.println();
-		return clazz;
+			var clazz = defineClass(name, bytes, 0, bytes.length);
+			System.out.println();
+			return clazz;
+//			classCache.put(name, clazz);
+//		}
+//		System.out.println();
+//		return clazz;
 	}
 
 	protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
