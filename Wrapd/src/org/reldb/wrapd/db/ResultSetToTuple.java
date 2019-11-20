@@ -1,5 +1,6 @@
 package org.reldb.wrapd.db;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -59,14 +60,26 @@ public class ResultSetToTuple {
 		var tupleConstructor = tupleType.getConstructor((Class<?>[])null);
 		var metadata = resultSet.getMetaData();
 		List<Tuple> rows = new LinkedList<>();
-		// TODO - make faster by using metadata to store 'field' references in an array indexed by column
+		boolean optimised = false;
+		Field[] fields = null;
 		while (resultSet.next()) {
 			var tuple = tupleConstructor.newInstance((Object[])null);
-			for (int column = 1; column <= metadata.getColumnCount(); column++) {
-				var name = metadata.getColumnName(column);
-				var value = resultSet.getObject(column);
-				var field = tuple.getClass().getField(name);
-				field.set(tuple, value);
+			if (optimised) {
+				for (int column = 1; column <= metadata.getColumnCount(); column++) {
+					var value = resultSet.getObject(column);
+					fields[column].set(tuple, value);
+				}
+			} else {
+				int columnCount = metadata.getColumnCount();
+				fields = new Field[columnCount + 1];
+				for (int column = 1; column <= columnCount; column++) {
+					var name = metadata.getColumnName(column);
+					var value = resultSet.getObject(column);
+					var field = tuple.getClass().getField(name);
+					field.set(tuple, value);
+					fields[column] = field;
+				}
+				optimised = true;
 			}
 			rows.add(tuple);
 		}
