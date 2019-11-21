@@ -1,6 +1,6 @@
 package org.reldb.wrapd.tests.database.setup;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -12,8 +12,8 @@ import org.reldb.wrapd.db.ResultSetToTuple;
 import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.version.VersionProxy;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestPostgreSQL {
 	
@@ -23,7 +23,7 @@ public class TestPostgreSQL {
 	private static Database database;
 	private static boolean setupCompleted;
 	
-	@BeforeClass
+	@BeforeAll
 	public static void setup() {
 		setupCompleted = false;
 

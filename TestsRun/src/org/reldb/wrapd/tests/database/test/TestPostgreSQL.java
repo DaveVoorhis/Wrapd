@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;

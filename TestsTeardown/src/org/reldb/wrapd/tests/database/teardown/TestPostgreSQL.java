@@ -9,7 +9,7 @@ import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.version.VersionProxy;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TestPostgreSQL {
 	

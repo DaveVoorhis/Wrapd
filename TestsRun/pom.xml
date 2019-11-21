@@ -8,6 +8,14 @@
 	<name>Wrapd Tests</name>
 	<description>Wrapd tests in general and on built code.</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
@@ -18,13 +26,11 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>5.5.2</version>
-			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
 			<version>5.5.2</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

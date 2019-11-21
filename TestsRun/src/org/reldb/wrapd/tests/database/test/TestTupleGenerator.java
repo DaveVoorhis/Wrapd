@@ -1,12 +1,12 @@
 package org.reldb.wrapd.tests.database.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 

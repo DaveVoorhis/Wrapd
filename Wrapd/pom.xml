@@ -8,6 +8,14 @@
 	<name>Wrapd Data Abstraction Layer</name>
 	<description>A lightweight, pure Java, XML-and-annotation-free data abstraction layer.</description>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.reldb.toolbox</groupId>

@@ -1,14 +1,14 @@
 package org.reldb.wrapd.tests.database.test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
@@ -26,7 +26,7 @@ public class TestDataBDBJE {
 	private final static String storageName2 = "AnotherTestData";
 	private final static String storageNameRenamed = "TestDataRenamed";
 	
-	@BeforeClass
+	@BeforeAll
 	public static void setup() {
 		base = new BDBJEBase(testDir, true);
 	}
@@ -147,7 +147,7 @@ public class TestDataBDBJE {
 	}
 	
 	@SuppressWarnings("unchecked")
-	@AfterClass
+	@AfterAll
 	public static void teardown() {
 		var catalog = (BDBJEData<String, CatalogEntry>)base.open(BDBJEBase.catalogName);
 		catalog.access(container -> {
