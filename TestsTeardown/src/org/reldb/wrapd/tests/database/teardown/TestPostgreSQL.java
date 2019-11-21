@@ -3,9 +3,10 @@ package org.reldb.wrapd.tests.database.teardown;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.reldb.wrapd.configuration.Configuration;
+import org.reldb.toolbox.configuration.Configuration;
+import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.db.Database;
-import org.reldb.wrapd.utilities.Directory;
+import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.version.VersionProxy;
 
 import org.junit.Test;
@@ -19,12 +20,12 @@ public class TestPostgreSQL {
 	public void teardown() {		
 		Configuration.setLocation(baseDir);
 		
-		String dbServer = Database.nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
-		String dbDatabase = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
-		String dbUser = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_USER));
-		String dbPasswd = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_PASSWORD));
-		String dbPort = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(Configuration.DATABASE_TABLENAME_PREFIX), 
+		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
+		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));
+		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
+		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
+		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), 
 				VersionProxy.getVersion().getInternalProductName() + "_");
 		
 		if (dbDatabase == null) {

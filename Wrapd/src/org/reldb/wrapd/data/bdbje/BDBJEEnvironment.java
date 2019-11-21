@@ -1,16 +1,17 @@
 package org.reldb.wrapd.data.bdbje;
 
-import static org.reldb.wrapd.strings.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.reldb.toolbox.utilities.Directory;
+
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.strings.Str;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
-import org.reldb.wrapd.utilities.Directory;
 
 import com.sleepycat.bind.serial.ClassCatalog;
 import com.sleepycat.bind.serial.StoredClassCatalog;

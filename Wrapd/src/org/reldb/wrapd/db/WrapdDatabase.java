@@ -3,7 +3,7 @@ package org.reldb.wrapd.db;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.reldb.wrapd.utilities.ProgressIndicator;
+import org.reldb.toolbox.utilities.ProgressIndicator;
 
 public interface WrapdDatabase {
 

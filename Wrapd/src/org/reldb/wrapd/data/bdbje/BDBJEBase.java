@@ -9,7 +9,7 @@ import com.sleepycat.collections.TransactionWorker;
 import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.DatabaseNotFoundException;
 
-import static org.reldb.wrapd.strings.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 import java.io.Closeable;
 import java.util.HashMap;

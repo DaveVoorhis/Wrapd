@@ -1,6 +1,6 @@
 package org.reldb.wrapd.data.bdbje;
 
-import static org.reldb.wrapd.strings.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;

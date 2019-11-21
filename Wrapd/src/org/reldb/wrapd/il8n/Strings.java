@@ -1,10 +1,11 @@
-package org.reldb.wrapd.strings;
+package org.reldb.wrapd.il8n;
 
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
 import org.reldb.wrapd.data.bdbje.BDBJEEnvironment;
+import org.reldb.wrapd.strings.Str;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 /**

@@ -1,6 +1,6 @@
 package org.reldb.wrapd.tuples;
 
-import static org.reldb.wrapd.strings.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -10,11 +10,12 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.reldb.toolbox.utilities.Directory;
+
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.strings.Str;
-import org.reldb.wrapd.utilities.Directory;
 
 /**
  * Generates Java code to represent a tuple, which is a class that implements Tuple.
@@ -99,6 +100,7 @@ public class TupleTypeGenerator {
 	
 	/** Return true if this tuple definition already exists.
 	 * 
+import org.reldb.wrapd.il8n.Strings;
 	 * @return - true if this tuple definition already exists, false if it is new.
 	 */
 	public boolean isExisting() {

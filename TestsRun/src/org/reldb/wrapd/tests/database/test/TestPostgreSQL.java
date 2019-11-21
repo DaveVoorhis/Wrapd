@@ -5,9 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
 import org.junit.Test;
-import org.reldb.wrapd.configuration.Configuration;
+import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.ResultSetToTuple;
+import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.tuples.generated.TestSelect;
 import org.reldb.wrapd.version.VersionProxy;
 
@@ -20,12 +21,12 @@ public class TestPostgreSQL {
 		
 		Configuration.setLocation(baseDir);
 		
-		String dbServer = Database.nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
-		String dbDatabase = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
-		String dbUser = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_USER));
-		String dbPasswd = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_PASSWORD));
-		String dbPort = Database.emptyToNull(Configuration.getValue(Configuration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(Configuration.DATABASE_TABLENAME_PREFIX), 
+		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
+		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));
+		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
+		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
+		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), 
 				VersionProxy.getVersion().getInternalProductName() + "_");
 		
 		if (dbDatabase == null) {

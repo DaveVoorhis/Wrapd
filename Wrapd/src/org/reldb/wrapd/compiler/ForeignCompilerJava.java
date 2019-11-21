@@ -1,6 +1,6 @@
 package org.reldb.wrapd.compiler;
 
-import static org.reldb.wrapd.strings.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

@@ -5,12 +5,12 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 
-import org.reldb.wrapd.configuration.Configuration;
+import org.reldb.toolbox.configuration.Configuration;
+import org.reldb.toolbox.security.PasswordAuthentication;
+import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.WrapdDatabase;
 import org.reldb.wrapd.db.WrapdDatabaseBase;
-import org.reldb.wrapd.security.PasswordAuthentication;
-import org.reldb.wrapd.utilities.ProgressIndicator;
 import org.reldb.wrapd.version.VersionProxy;
 
 /*
@@ -22,12 +22,12 @@ public class WrapdDB extends WrapdDatabaseBase {
 		if (database != null)
 			return;
 		
-		String dbServer = nullTo(Configuration.getValue(Configuration.DATABASE_SERVER), "localhost");
-		String dbDatabase = emptyToNull(Configuration.getValue(Configuration.DATABASE_NAME));
-		String dbUser = emptyToNull(Configuration.getValue(Configuration.DATABASE_USER));
-		String dbPasswd = emptyToNull(Configuration.getValue(Configuration.DATABASE_PASSWORD));
-		String dbPort = emptyToNull(Configuration.getValue(Configuration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = nullTo(Configuration.getValue(Configuration.DATABASE_TABLENAME_PREFIX), VersionProxy.getVersion().getInternalProductName() + "_");
+		String dbServer = nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
+		String dbDatabase = emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));
+		String dbUser = emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
+		String dbPasswd = emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
+		String dbPort = emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
+		String dbTablenamePrefix = nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), VersionProxy.getVersion().getInternalProductName() + "_");
 		
 		if (dbDatabase == null)
 			throw new IOException("Database connection failed. Please specify a database name.");
@@ -99,8 +99,8 @@ public class WrapdDB extends WrapdDatabaseBase {
 					+ "CONSTRAINT $$UserGroups_pkey PRIMARY KEY(userGroup, userID));");
 			progress.move(8,  "Creating Installation Administrator account in Admininstrator group.");
 			addUser(connection, "Installation Administrator", 
-					Configuration.getTechnicalContactEmail(), 
-					Configuration.getValue(Configuration.INSTALLER_ADMIN_PASSWORD), 
+					Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.SUPPORT_CONTACT), 
+					Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.INSTALLER_ADMIN_PASSWORD), 
 					"Administrator");
 			progress.move(9, "Done.");
 			return true;

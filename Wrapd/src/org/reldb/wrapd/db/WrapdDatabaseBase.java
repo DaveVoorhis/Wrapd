@@ -5,7 +5,8 @@ import java.sql.SQLException;
 
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.WrapdDatabase;
-import org.reldb.wrapd.utilities.ProgressIndicator;
+
+import org.reldb.toolbox.utilities.ProgressIndicator;
 
 /*
  * Base or generic database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
