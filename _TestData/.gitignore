@@ -2,3 +2,4 @@ data
 classes
 *.rl
 WrapdConfiguration.xml
+/target/

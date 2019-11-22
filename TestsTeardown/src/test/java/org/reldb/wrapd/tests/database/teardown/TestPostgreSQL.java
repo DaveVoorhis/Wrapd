@@ -30,7 +30,7 @@ public class TestPostgreSQL {
 		
 		if (dbDatabase == null) {
 			System.out.println("Please specify a database name in the configuration.");
-			return;
+			fail("Need to specify a database name in the configuration.");
 		}
 		
 		if (dbPort != null)
@@ -43,7 +43,7 @@ public class TestPostgreSQL {
 			database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix);
 		} catch (IOException e) {
 			System.out.println("Database connection failed. Check the configuration.");
-			return;
+			fail("Database connection failed. Check the configuration.");
 		}
 		
 		try {
