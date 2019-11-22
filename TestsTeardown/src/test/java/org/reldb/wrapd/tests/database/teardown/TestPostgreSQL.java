@@ -1,5 +1,7 @@
 package org.reldb.wrapd.tests.database.teardown;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -31,6 +33,7 @@ public class TestPostgreSQL {
 		if (dbDatabase == null) {
 			System.out.println("Please specify a database name in the configuration.");
 			fail("Need to specify a database name in the configuration.");
+			return;
 		}
 		
 		if (dbPort != null)
@@ -44,6 +47,7 @@ public class TestPostgreSQL {
 		} catch (IOException e) {
 			System.out.println("Database connection failed. Check the configuration.");
 			fail("Database connection failed. Check the configuration.");
+			return;
 		}
 		
 		try {
