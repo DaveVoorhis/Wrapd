@@ -12,13 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
+import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.data.CatalogEntry;
 
 public class TestDataBDBJE {
 	
 	private final static boolean verbose = true;
 	
-	private final static String testDir = "../_TestData";
+	private final static String testDir = DatabaseConfigurationAndSetup.getBaseDirectory();
 	
 	private static BDBJEBase base;
 	

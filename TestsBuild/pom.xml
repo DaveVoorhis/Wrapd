@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>org.reldb.wrapd</groupId>
-	<artifactId>TestsTeardown</artifactId>
+	<artifactId>TestsBuild</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Wrapd Tests Teardown</name>
-	<description>Wrapd Tests Teardown</description>
+	<name>Wrapd Tests Build</name>
+	<description>Wrapd Tests Build</description>
 	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

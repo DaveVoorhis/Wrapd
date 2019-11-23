@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
+import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 public class TestTupleGenerator {
@@ -16,7 +17,7 @@ public class TestTupleGenerator {
 	
 	@Test 
 	public void testTupleGenerator01() throws ClassNotFoundException, FileNotFoundException, IOException {
-		var codeDir = "../_TestData/code";
+		var codeDir = DatabaseConfigurationAndSetup.getCodeDirectory();
 		var tupleName = "TestTuple";
 		var newTupleName = "TestTupleRenamed";
 		var copyTupleName = "TestTupleCopied";

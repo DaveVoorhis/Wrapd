@@ -21,6 +21,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
+			<artifactId>TestsBuild</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.reldb.wrapd</groupId>
 			<artifactId>wrapd</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
