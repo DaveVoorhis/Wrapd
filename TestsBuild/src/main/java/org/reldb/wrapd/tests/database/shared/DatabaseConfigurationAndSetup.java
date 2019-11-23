@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
+import org.reldb.toolbox.configuration.ConfigurationSettings;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.version.VersionProxy;
@@ -19,6 +20,8 @@ public class DatabaseConfigurationAndSetup {
 		System.out.println();
 		
 		Configuration.setLocation(baseDir);
+		
+		ConfigurationSettings.register(WrapDBConfiguration.class);
 		
 		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
 		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));

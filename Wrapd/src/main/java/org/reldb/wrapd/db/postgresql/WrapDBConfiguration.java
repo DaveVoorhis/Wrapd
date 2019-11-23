@@ -29,7 +29,7 @@ public class WrapDBConfiguration extends ConfigurationSettings {
     public static final String thisConfigSet = WrapDBConfiguration.class.getName();
     
 	/** Define configuration settings here. */
-	static {
+	public String registration() {
 		add(INSTALLER_ADMIN_NAME, "admin", "needed for initial installation and updates");
 		add(INSTALLER_ADMIN_PASSWORD, (new RandomString(10).nextString()), "needed for initial installation and updates");
 		add(DATABASE_NAME, "mydatabase");
@@ -43,8 +43,7 @@ public class WrapDBConfiguration extends ConfigurationSettings {
 		add(AUTH_ALLOW_USER_REGISTRATION, "yes", "no = users cannot register accounts; yes = (default) users can register & self-activate; admin = users can register, admins activate accounts.");
 		add(AUTH_ACTIVATE_ACCOUNT_GROUP, "Administrator", "optional - group that can authorise account requests");
 		add(URL_BASE, " ", "optional - base URL for this application. We'll try to determine it if we can, but it might not be correct.");
-		
-		save(thisConfigSet);
+		return thisConfigSet;
 	}
 	
 }
