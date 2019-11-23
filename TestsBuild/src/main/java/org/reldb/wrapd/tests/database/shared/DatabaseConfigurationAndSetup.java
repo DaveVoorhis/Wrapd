@@ -15,8 +15,8 @@ public class DatabaseConfigurationAndSetup {
 
 	public static Database getPostgreSQLDatabase() throws SQLException {
 		
-		System.out.println("If you see 'New configuration file ../TestData/WrapdConfiguration.xml written', the tests will fail and");
-		System.out.println("you'll have to configure database access in _TestData/WrapdConfiguration.xml, then re-run the tests.");
+		System.out.println("If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
+		System.out.println("you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
 		System.out.println();
 		
 		Configuration.setLocation(baseDir);
