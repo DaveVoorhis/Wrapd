@@ -1,5 +1,6 @@
 data
 classes
 *.rl
-WrapdConfiguration.xml
+Configuration.xml
+configuration.dtd
 /target/
