@@ -2,6 +2,7 @@ package org.reldb.wrapd.tests.database.setup;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
@@ -18,7 +19,7 @@ public class TestPostgreSQL {
 	private static boolean setupCompleted;
 	
 	@BeforeAll
-	public static void setup() throws SQLException {
+	public static void setup() throws SQLException, IOException {
 		setupCompleted = false;
 		System.out.println("Executing TestPostgreSQL setup.");
 		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();

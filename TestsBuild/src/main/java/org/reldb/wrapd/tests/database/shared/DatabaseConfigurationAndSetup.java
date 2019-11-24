@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
-import org.reldb.toolbox.configuration.ConfigurationSettings;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
 import org.reldb.wrapd.version.VersionProxy;
@@ -13,7 +12,7 @@ public class DatabaseConfigurationAndSetup {
 
 	private static String baseDir = "../_TestData";
 
-	public static Database getPostgreSQLDatabase() throws SQLException {
+	public static Database getPostgreSQLDatabase() throws SQLException, IOException {
 		
 		System.out.println("If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
 		System.out.println("you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
@@ -21,7 +20,7 @@ public class DatabaseConfigurationAndSetup {
 		
 		Configuration.setLocation(baseDir);
 		
-		ConfigurationSettings.register(WrapDBConfiguration.class);
+		Configuration.register(WrapDBConfiguration.class);
 		
 		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
 		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));

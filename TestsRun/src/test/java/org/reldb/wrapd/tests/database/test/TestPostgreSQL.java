@@ -1,5 +1,6 @@
 package org.reldb.wrapd.tests.database.test;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 
@@ -11,7 +12,7 @@ import org.reldb.wrapd.tuples.generated.TestSelect;
 public class TestPostgreSQL {
 		
 	@Test
-	public void testQueryToStream01() throws SQLException {
+	public void testQueryToStream01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();
 		database.new Transaction(connection -> {
 			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
