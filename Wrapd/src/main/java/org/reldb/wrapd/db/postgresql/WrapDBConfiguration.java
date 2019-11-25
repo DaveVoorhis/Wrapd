@@ -28,16 +28,16 @@ public class WrapDBConfiguration extends ConfigurationSettings {
     
 	/** Define configuration settings here. */
 	public void registration() {
-		add(INSTALLER_ADMIN_NAME, "admin", "needed for initial installation and updates");
-		add(INSTALLER_ADMIN_PASSWORD, (new RandomString(10).nextString()), "needed for initial installation and updates");
-		add(DATABASE_NAME, "mydatabase");
-		add(DATABASE_USER, "dbuser");
-		add(DATABASE_PASSWORD, "dbpass");
-		add(DATABASE_TABLENAME_PREFIX, VersionProxy.getVersion().getInternalProductName().toLowerCase() + "_", "optional");
-		add(DATABASE_SERVER, "localhost");
-		add(DATABASE_NONSTANDARD_PORT, " ", "optional");
-		add(DATABASE_DEFINITION, org.reldb.wrapd.db.postgresql.WrapdDB.class.getPackageName());
-		add(SUPPORT_CONTACT, "dave@armchair.mb.ca");
+		add(INSTALLER_ADMIN_NAME, "admin", "admin account for initial installation and updates");
+		add(INSTALLER_ADMIN_PASSWORD, (new RandomString(10).nextString()), "admin password for initial installation and updates");
+		add(DATABASE_NAME, "mydatabase", "PostgreSQL database");
+		add(DATABASE_USER, "dbuser", "PostgreSQL database user");
+		add(DATABASE_PASSWORD, "dbpass", "PostgreSQL database password");
+		add(DATABASE_TABLENAME_PREFIX, VersionProxy.getVersion().getInternalProductName().toLowerCase() + "_", "optional - table name prefix");
+		add(DATABASE_SERVER, "localhost", "PostgreSQL DBMS host");
+		add(DATABASE_NONSTANDARD_PORT, " ", "optional - PostgreSQL DBMS port");
+		add(DATABASE_DEFINITION, org.reldb.wrapd.db.postgresql.WrapdDB.class.getPackageName(), "database definition class");
+		add(SUPPORT_CONTACT, "dave@armchair.mb.ca", "support contact address");
 		add(AUTH_ALLOW_USER_REGISTRATION, "yes", "no = users cannot register accounts; yes = (default) users can register & self-activate; admin = users can register, admins activate accounts.");
 		add(AUTH_ACTIVATE_ACCOUNT_GROUP, "Administrator", "optional - group that can authorise account requests");
 		add(URL_BASE, " ", "optional - base URL for this application. We'll try to determine it if we can, but it might not be correct.");
