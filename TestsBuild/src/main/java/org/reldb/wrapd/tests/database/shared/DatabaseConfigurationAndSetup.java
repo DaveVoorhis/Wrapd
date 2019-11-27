@@ -42,7 +42,7 @@ public class DatabaseConfigurationAndSetup {
 		try {
 			database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix);
 		} catch (IOException e) {
-			throw new SQLException("Database connection failed. Check the configuration.");
+			throw new SQLException("Database connection failed. Check the configuration. Error is: " + e);
 		}
 		
 		return database;
