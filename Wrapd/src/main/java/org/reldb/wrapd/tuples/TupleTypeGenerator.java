@@ -10,12 +10,12 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
 
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.strings.Str;
 
 /**
  * Generates Java code to represent a tuple, which is a class that implements Tuple.

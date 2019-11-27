@@ -15,11 +15,11 @@ import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.data.CatalogEntry;
 import org.reldb.wrapd.data.Data;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.strings.Str;
 import org.reldb.wrapd.tuples.Tuple;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 

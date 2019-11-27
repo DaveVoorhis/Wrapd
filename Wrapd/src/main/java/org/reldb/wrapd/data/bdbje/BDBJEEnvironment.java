@@ -6,11 +6,11 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
 
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.strings.Str;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 import com.sleepycat.bind.serial.ClassCatalog;

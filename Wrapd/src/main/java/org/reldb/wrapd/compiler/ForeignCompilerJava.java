@@ -13,8 +13,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
+import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.strings.Str;
 
 /**
  * Machinery for compiling Java code.

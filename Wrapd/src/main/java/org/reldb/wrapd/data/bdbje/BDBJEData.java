@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.data.Data;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.strings.Str;
 import org.reldb.wrapd.tuples.Tuple;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
