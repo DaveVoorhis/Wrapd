@@ -12,22 +12,13 @@
 	<artifactId>TestData</artifactId>
 	<name>Wrapd Test Database and Data</name>
 	<description>Wrapd test database and data.</description>
+	<packaging>pom</packaging>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
 			<artifactId>wrapd</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-api</artifactId>
-			<version>5.5.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.5.2</version>
 		</dependency>
 	</dependencies>
 
