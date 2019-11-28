@@ -17,13 +17,13 @@
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
 			<artifactId>TestsBuild</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
 			<artifactId>wrapd</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -73,6 +73,26 @@
 						--illegal-access=permit
 					</argLine>
 				</configuration>
+			</plugin>
+			<plugin>
+			  <!-- do not generate jar -->
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-jar-plugin</artifactId>
+			  <version>3.1.0</version>
+			  <executions>
+			    <execution>
+			      <id>default-jar</id>
+			      <phase>none</phase>
+			    </execution>
+			  </executions>
+			</plugin>
+			<plugin>
+			  <!-- prevent attempt to install non-existent jar -->
+			  <artifactId>maven-install-plugin</artifactId>
+			  <version>3.0.0-M1</version>
+			  <configuration>
+			    <skip>true</skip>
+			  </configuration>
 			</plugin>
 		</plugins>
 	</build>

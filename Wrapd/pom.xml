@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.reldb.toolbox</groupId>
 			<artifactId>reldb.Toolbox</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.mchange/c3p0 -->
 		<dependency>
