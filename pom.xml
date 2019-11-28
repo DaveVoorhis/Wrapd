@@ -1,21 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.reldb.wrapd</groupId>
-  <artifactId>WrapdMain</artifactId>
-  <packaging>pom</packaging>
-  <version>0.0.1</version>
-  <name>WrapD Main Project</name>
+	<groupId>org.reldb.wrapd</groupId>
+	<artifactId>WrapdMain</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>WrapD Main Project</name>
+	<packaging>pom</packaging>
 
-  <modules>
-    <module>WrapdNonMavenLibs</module>
-    <module>Wrapd</module>
-    <module>TestsBuild</module>
-    <module>TestsRun</module>
-    <module>TestsTeardown</module>
-  </modules>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+		<junit.version>5.5.2</junit.version>
+		<maven-compiler.version>3.8.1</maven-compiler.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
 
+	<modules>
+		<module>WrapdNonMavenLibs</module>
+		<module>Wrapd</module>
+		<module>TestsBuild</module>
+		<module>TestsRun</module>
+		<module>TestsTeardown</module>
+	</modules>
+	
+	<dependencies>
+		<!--  JUnit5 -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+	</dependencies>
+	
 </project>
