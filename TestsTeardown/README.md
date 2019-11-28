@@ -1,4 +1,4 @@
-Run this last to perform any clean-up after running tests requiring a separate setup phase.
+Run this project's test phase to remove generated code and database tables.
 
-The teardown phase could be included in the test phase, but it's often helpful to see
-temporary results, generated code, logs, etc. that are part of the testing process. Teardown should remove them.
+This teardown phase could be included in the main TestsRun project, but it's kept separate to make it easy to examine
+temporary results, generated code, logs, etc. from the main TestsRun process.

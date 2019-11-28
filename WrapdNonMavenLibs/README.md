@@ -1,6 +1,6 @@
 Non-Maven Libs
 ==============
 
-Maven project to host non-Maven jars and copy them to useful places.
+This project hosts non-Maven jars and copy them to useful places.
 
-Use _mvn clean_ to do it.
+Use _mvn clean_ to copy the JARs to your Maven repository.
