@@ -2,25 +2,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.reldb.wrapd</groupId>
-	<artifactId>TestsRun</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Wrapd Tests</name>
-	<description>Wrapd tests in general and on built code.</description>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>11</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-	</properties>
+	
+	<parent>
+		<groupId>org.reldb.wrapd</groupId>
+		<artifactId>WrapdMain</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>TestData</artifactId>
+	<name>Wrapd Test Database and Data</name>
+	<description>Wrapd test database and data.</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.reldb.wrapd</groupId>
 			<artifactId>wrapd</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -39,7 +36,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>${maven-compiler.version}</version>
 				<configuration>
 					<release>${java.version}</release>
 				</configuration>
