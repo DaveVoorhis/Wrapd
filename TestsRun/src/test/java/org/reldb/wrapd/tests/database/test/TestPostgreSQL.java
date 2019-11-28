@@ -9,6 +9,17 @@ import org.reldb.wrapd.db.ResultSetToTuple;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.tuples.generated.TestSelect;
 
+/**
+ * This project references generated code!
+ * 
+ * If it doesn't compile, it's because the TestsBuild tests need to be run.
+ * 
+ * I.e., go to TestsBuild and do a <i>mvn test</i>
+ * 
+ * @author dave
+ *
+ */
+
 public class TestPostgreSQL {
 		
 	@Test
