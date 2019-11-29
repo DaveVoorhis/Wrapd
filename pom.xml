@@ -15,6 +15,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<junit.version>5.5.2</junit.version>
+		<reldb_toolbox.version>0.0.1-SNAPSHOT</reldb_toolbox.version>
 		<maven-compiler.version>3.8.1</maven-compiler.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
