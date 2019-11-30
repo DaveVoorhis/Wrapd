@@ -7,7 +7,7 @@
   <groupId>org.reldb.wrapd</groupId>
   <artifactId>WrapdMain</artifactId>
   <version>0.0.2-SNAPSHOT</version>
-  <name>WrapD</name>
+  <name>Wrapd</name>
   <description>A lightweight, XML-and-annotation-free data
   abstraction layer. It's pronounced "rapid" and/or
   "wrapped".</description>
@@ -22,7 +22,7 @@
   </licenses>
   
   <scm>
-    <url>https://github.com/DaveVoorhis/Toolbox</url>
+    <url>https://github.com/DaveVoorhis/Wrapd</url>
   </scm>
   
   <organization>
