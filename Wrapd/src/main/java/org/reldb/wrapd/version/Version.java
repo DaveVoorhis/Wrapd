@@ -2,8 +2,6 @@ package org.reldb.wrapd.version;
 
 public interface Version {
 	public String getVersionString();
-	
-	public int getVersionNumber();
 
 	/** Product name for display. */
 	public String getProductName();

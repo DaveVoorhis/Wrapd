@@ -1,13 +1,23 @@
 package org.reldb.wrapd.version;
 
+import java.io.FileReader;
+import java.io.IOException;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
 public class VersionDefault implements Version {
 	
 	public String getVersionString() {
-		return "" + getVersionNumber();
-	}
-	
-	public int getVersionNumber() {
-		return 1;
+        var reader = new MavenXpp3Reader();
+        Model model;
+		try {
+			model = reader.read(new FileReader("pom.xml"));
+			return model.getVersion();
+		} catch (IOException | XmlPullParserException e) {
+			return "Dev";
+		}
 	}
 
 	/** Product name for display. */
