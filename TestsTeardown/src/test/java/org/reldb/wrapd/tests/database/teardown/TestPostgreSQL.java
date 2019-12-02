@@ -18,17 +18,17 @@ public class TestPostgreSQL {
 				try {
 					database.updateAll(connection, "DROP TABLE $$Version;");
 				} catch (SQLException se) {
-					System.out.println("ERROR: " + se);
+					System.out.println("[TEARDOWN] ERROR: " + se);
 				}
 				try {
 					database.updateAll(connection, "DROP TABLE $$tester;");
 				} catch (SQLException se) {
-					System.out.println("ERROR: " + se);
+					System.out.println("[TEARDOWN] ERROR: " + se);
 				}
 				return true;
 			});
 		} catch (SQLException e) {
-			System.out.println("Database teardown failed.");
+			System.out.println("[TEARDOWN] Database teardown failed.");
 			e.printStackTrace();
 		}
 		

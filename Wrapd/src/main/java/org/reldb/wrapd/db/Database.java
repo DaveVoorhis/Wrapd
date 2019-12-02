@@ -16,10 +16,15 @@ import java.util.Vector;
 
 import javax.sql.DataSource;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.mchange.v2.c3p0.DataSources;
 
 /** Database access layer. */
 public class Database {
+	
+	private static Logger log = LogManager.getLogger(Database.class.toString());
 	
 	private boolean debugging = false;
 	
@@ -37,7 +42,6 @@ public class Database {
 		
 		if (pool == null)
 			try {
-				System.out.println("Database: create connection pool for " + dbURL);
 				DriverManager.getConnection(dbURL, props).close();
 				DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
 				pool = DataSources.pooledDataSource(unpooledSource);
@@ -67,7 +71,7 @@ public class Database {
 	private void showSQL(String location, String query) {
 		if (!debugging)
 			return;
-		System.out.println(location + ": " + query);
+		log.debug(location + ": " + query);
 	}
 	
 	public <T> Object queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {

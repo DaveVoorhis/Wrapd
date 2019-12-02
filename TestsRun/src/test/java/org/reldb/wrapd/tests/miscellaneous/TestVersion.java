@@ -7,7 +7,7 @@ public class TestVersion {
 	
 	@Test 
 	public void testGetVersion() {
-		System.out.println("=== Version: " + Version.getVersionString());
+		System.out.println("[TEST] === Version: " + Version.getVersionString());
 	}
 
 }

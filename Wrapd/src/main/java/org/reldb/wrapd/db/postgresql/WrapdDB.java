@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
@@ -16,6 +17,8 @@ import org.reldb.wrapd.db.WrapdDatabaseBase;
  * PostgreSQL database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
  */
 public class WrapdDB extends WrapdDatabaseBase {
+	
+	private static Logger log = Logger.getLogger(WrapdDB.class.toString());
 	
 	public WrapdDB() throws IOException {
 		if (database != null)
@@ -41,7 +44,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	public DBVersion getDBVersion() throws SQLException {
 		return (DBVersion) database.queryAll("SELECT * FROM $$Version", version -> {
 			if (!version.next()) {
-				System.out.println("WrapdDB: Error: Version table appears to be empty!");
+				log.severe("WrapdDB: Error: Version table appears to be empty!");
 				return null;
 			}
 			return new DBVersion(version.getInt("framework_db_version"), version.getInt("user_db_version"));			
@@ -108,7 +111,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 
 	private void version1() throws SQLException {
 		database.new Transaction(connection -> {	
-			System.out.println("Wrapd framework database update version 1");
+			log.info("Wrapd framework database update version 1");
 			getDatabase().update("ALTER TABLE $$Users ADD COLUMN lastLogin TIMESTAMP");
 			return true;
 		});
@@ -117,8 +120,8 @@ public class WrapdDB extends WrapdDatabaseBase {
 	/** When framework updates are needed, replace this with an array of DatabaseUpdate instances. 
 	 * 
 	 * 	return new DatabaseUpdate[] {
-	 *			database -> {System.out.println("framework database update 0");},
-	 *			database -> {System.out.println("framework database update 1");}
+	 *			database -> {log.info("framework database update 0");},
+	 *			database -> {log.info("framework database update 1");}
 	 *	};
 	 *
 	 *  *** DO NOT EDIT OR OVERRIDE THIS METHOD!!! ***
@@ -297,7 +300,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 		try {
 			return findUser(getLoggedInUserID(), password) != null;
 		} catch (SQLException e) {
-			System.out.println("ERROR: WrapdDB: verifyPassword: " + e);
+			log.severe("ERROR: WrapdDB: verifyPassword: " + e);
 			return false;
 		}
 	}
@@ -320,7 +323,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 				}
 			}
 		} catch (SQLException e) {
-			System.out.println("ERROR: WrapdDB: attemptLogin: " + e);
+			log.severe("ERROR: WrapdDB: attemptLogin: " + e);
 			setLoggedInUserID(null);
 		}
 		return new LoginStatus(false);
@@ -348,7 +351,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 				return true;
 			}
 		} catch (SQLException e) {
-			System.out.println("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
+			log.severe("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
 			setLoggedInUserID(null);
 		}
 		return false;
@@ -555,8 +558,8 @@ public class WrapdDB extends WrapdDatabaseBase {
 	/** When user database updates are needed, replace this with an array of DatabaseUpdate instances. 
 	 * 
 	 * 	return new DatabaseUpdate[] {
-	 *			database -> {System.out.println("user database update 0");},
-	 *			database -> {System.out.println("user database update 1");}
+	 *			database -> {log.info("user database update 0");},
+	 *			database -> {log.info("user database update 1");}
 	 *	};
 	 *
 	 * The 0th "update" is normally the initial database definition.

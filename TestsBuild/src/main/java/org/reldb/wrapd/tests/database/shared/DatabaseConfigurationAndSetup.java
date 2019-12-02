@@ -13,8 +13,8 @@ public class DatabaseConfigurationAndSetup {
 
 	public static Database getPostgreSQLDatabase() throws SQLException, IOException {
 		
-		System.out.println("If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
-		System.out.println("you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
+		System.out.println("[SETUP] If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
+		System.out.println("[SETUP] you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
 		System.out.println();
 		
 		Configuration.setLocation(baseDir);
@@ -29,7 +29,7 @@ public class DatabaseConfigurationAndSetup {
 		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 		
 		if (dbDatabase == null)
-			throw new SQLException("Please specify a database name in the configuration.");
+			throw new SQLException("[SETUP] Please specify a database name in the configuration.");
 		
 		if (dbPort != null)
 			dbServer += ":" + dbPort;
@@ -40,7 +40,7 @@ public class DatabaseConfigurationAndSetup {
 		try {
 			database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix);
 		} catch (IOException e) {
-			throw new SQLException("Database connection failed. Check the configuration. Error is: " + e);
+			throw new SQLException("[SETUP] Database connection failed. Check the configuration. Error is: " + e);
 		}
 		
 		return database;

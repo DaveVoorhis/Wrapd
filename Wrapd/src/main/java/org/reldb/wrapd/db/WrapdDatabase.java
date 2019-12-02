@@ -71,8 +71,8 @@ public interface WrapdDatabase {
 	/** When framework updates are needed, replace this with an array of DatabaseUpdate instances. 
 	 * 
 	 * 	return new DatabaseUpdate[] {
-	 *			database -> {System.out.println("framework database update 0");},
-	 *			database -> {System.out.println("framework database update 1");}
+	 *			database -> {log.info("framework database update 0");},
+	 *			database -> {log.info("framework database update 1");}
 	 *	};
 	 *
 	 *  *** DO NOT EDIT OR OVERRIDE THIS METHOD!!! ***
@@ -82,8 +82,8 @@ public interface WrapdDatabase {
 	/** When user database updates are needed, replace this with an array of DatabaseUpdate instances. 
 	 * 
 	 * 	return new DatabaseUpdate[] {
-	 *			database -> {System.out.println("user database update 0");},
-	 *			database -> {System.out.println("user database update 1");}
+	 *			database -> {log.info("user database update 0");},
+	 *			database -> {log.info("user database update 1");}
 	 *	};
 	 *
 	 * The 0th "update" is normally the initial database definition.

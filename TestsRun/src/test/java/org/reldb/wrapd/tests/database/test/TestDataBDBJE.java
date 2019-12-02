@@ -38,25 +38,25 @@ public class TestDataBDBJE {
 		container.forEach((key, value) -> {
 			var str = key + ": " + value.toString();
 			if (verbose)
-				System.out.println(str);
+				System.out.println("[TEST] " + str);
 		});
 		if (verbose)
-			System.out.println();
+			System.out.println("[TEST]");
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Test 
 	public void testData01() throws ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, InstantiationException, InvocationTargetException {
 		if (base.exists(storageName1)) {
-			System.out.println("Removing old " + storageName1);
+			System.out.println("[TEST] Removing old " + storageName1);
 			base.remove(storageName1);
 		}
 		if (base.exists(storageNameRenamed)) {
-			System.out.println("Removing old " + storageNameRenamed);
+			System.out.println("[TEST] Removing old " + storageNameRenamed);
 			base.remove(storageNameRenamed);
 		}
 		
-		System.out.println("Creating " + storageName1);
+		System.out.println("[TEST] Creating " + storageName1);
 		var data = base.create(storageName1);
 		
 		data.extend("col1", String.class);
@@ -98,7 +98,7 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(2), tuple));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n=== Container Contents Before Schema Change (should have col1 and col2) ===", container));
+		data.access(container -> showContainer("\n[TEST] === Container Contents Before Schema Change (should have col1 and col2) ===", container));
 		
 		// change schema
 		data.extend("col3", Double.class);
@@ -117,13 +117,13 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(3), tuple2));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n=== Container Contents After Schema Change (should have col1 and col3) ===", container));
+		data.access(container -> showContainer("\n[TEST] === Container Contents After Schema Change (should have col1 and col3) ===", container));
 		
 		// Rename container
 		data.renameAllTo(storageNameRenamed);
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n=== Container Contents After Schema Change (container renamed) ===", container));
+		data.access(container -> showContainer("\n[TEST] === Container Contents After Schema Change (container renamed) ===", container));
 		
 		// get tuple type class and instance
 		final var tupleType3 = base.getTupleTypeOf(storageNameRenamed);
@@ -134,16 +134,16 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(4), tuple3));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n=== Container Contents After Adding a Tuple ===", container));
+		data.access(container -> showContainer("\n[TEST] === Container Contents After Adding a Tuple ===", container));
 	}
 	
 	@Test
 	public void testData02() {
 		if (base.exists(storageName2)) {
-			System.out.println("Removing old " + storageName2);
+			System.out.println("[TEST] Removing old " + storageName2);
 			base.remove(storageName2);
 		}
-		System.out.println("Creating " + storageName2);		
+		System.out.println("[TEST] Creating " + storageName2);		
 		base.create(storageName2);
 	}
 	
@@ -155,7 +155,7 @@ public class TestDataBDBJE {
 			assertEquals(true, container.containsKey(storageNameRenamed));
 			assertEquals(true, container.containsKey(storageName2));
 			assertEquals(true, container.containsKey(BDBJEBase.catalogName));
-			showContainer("\n=== Catalog ===", container);
+			showContainer("\n[TEST] === Catalog ===", container);
 		});
 	}
 

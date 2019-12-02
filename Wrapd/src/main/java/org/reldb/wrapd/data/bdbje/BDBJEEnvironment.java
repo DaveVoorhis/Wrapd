@@ -5,6 +5,7 @@ import static org.reldb.wrapd.il8n.Strings.*;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.logging.Logger;
 
 import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
@@ -33,6 +34,8 @@ public class BDBJEEnvironment implements Closeable {
 	private Environment classesEnv;
 	private ClassCatalog classes;
 	private DirClassLoader classLoader;
+	
+	private static final Logger log = Logger.getLogger(BDBJEEnvironment.class.toString());
 
 	private static String getDataDir(String homedir) {
 		 return homedir + File.separator + "data";
@@ -99,7 +102,7 @@ public class BDBJEEnvironment implements Closeable {
 			if (writer != null)
 				writer.close();
 		} catch (Exception e) {
-			System.out.println("WARNING: Unable to create " + getClickerFileName());
+			log.warning("WARNING: Unable to create " + getClickerFileName());
 		}
 	}
 	
@@ -112,7 +115,7 @@ public class BDBJEEnvironment implements Closeable {
 	public BDBJEEnvironment(String dir, boolean create) {
 		homeDir = dir;
 		
-		System.out.println(Str.ing(NoteOpening, homeDir));
+		log.info(Str.ing(NoteOpening, homeDir));
 		
 		if (!create && !Directory.exists(homeDir))
 			throw new ExceptionFatal(Str.ing(ErrNotExists, homeDir));
@@ -153,7 +156,7 @@ public class BDBJEEnvironment implements Closeable {
 		var classesDb = classesEnv.openDatabase(null, "classes", classEnvConfig);
 		classes = new StoredClassCatalog(classesDb);
 		
-		System.out.println(Str.ing(NoteOpened, homeDir));
+		log.info(Str.ing(NoteOpened, homeDir));
 	}
 	
 	/** 
@@ -251,11 +254,11 @@ public class BDBJEEnvironment implements Closeable {
 	/** Closes the database. */
 	public void close() {
 		if (classes != null) {
-			System.out.println(Str.ing(NoteClosing, homeDir));
+			log.info(Str.ing(NoteClosing, homeDir));
 			try {
 				classes.close();
 			} catch (Throwable t) {
-				System.out.println(Str.ing(WarnClosingClassRepo, homeDir, t.toString()));
+				log.warning(Str.ing(WarnClosingClassRepo, homeDir, t.toString()));
 			} finally {
 				classes = null;
 			}
@@ -264,7 +267,7 @@ public class BDBJEEnvironment implements Closeable {
 			try {
 				classesEnv.close();
 			} catch (Throwable t) {
-				System.out.println(Str.ing(WarnClosingClassRepoEnv, homeDir, t.toString()));
+				log.warning(Str.ing(WarnClosingClassRepoEnv, homeDir, t.toString()));
 			} finally {
 				classesEnv = null;
 			}
@@ -273,11 +276,11 @@ public class BDBJEEnvironment implements Closeable {
 			try {
 				dataEnv.close();
 			} catch (Throwable t) {
-				System.out.println(Str.ing(WarnClosingDataEnv, homeDir, t.toString()));
+				log.warning(Str.ing(WarnClosingDataEnv, homeDir, t.toString()));
 			} finally {
 				dataEnv = null;
 			}
-			System.out.println(Str.ing(NoteClosed, homeDir));
+			log.info(Str.ing(NoteClosed, homeDir));
 		}
 	}
 

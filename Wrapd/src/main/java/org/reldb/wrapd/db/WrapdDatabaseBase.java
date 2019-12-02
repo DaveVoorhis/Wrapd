@@ -5,7 +5,8 @@ import java.sql.SQLException;
 
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.WrapdDatabase;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 
 /*
@@ -14,6 +15,8 @@ import org.reldb.toolbox.utilities.ProgressIndicator;
 public abstract class WrapdDatabaseBase implements WrapdDatabase {
 	
 	protected static Database database;
+	
+	private static final Logger log = LogManager.getLogger(WrapdDatabaseBase.class.toString());
 	
 	private boolean databaseChecked = false;
 	private Integer loggedInUserID = null;
@@ -33,7 +36,7 @@ public abstract class WrapdDatabaseBase implements WrapdDatabase {
 			if (version.getFrameworkDBVersion() < getFrameworkDatabaseUpdates().length || version.getUserDBVersion() < getUserDatabaseUpdates().length)
 				return CheckDatabaseStatus.UPGRADE_DATABASE_NEEDED;
 		} catch (SQLException e) {
-			System.out.println("WrapdDatabaseBase: Error: " + e);
+			log.warn("WrapdDatabaseBase: Error: " + e);
 			return CheckDatabaseStatus.CREATE_DATABASE_NEEDED;
 		}
 		databaseChecked = true;

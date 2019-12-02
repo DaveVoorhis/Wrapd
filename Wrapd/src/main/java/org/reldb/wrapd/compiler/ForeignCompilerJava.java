@@ -12,6 +12,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
@@ -24,6 +26,8 @@ import org.reldb.wrapd.exceptions.ExceptionFatal;
  */
 public class ForeignCompilerJava {
 	private final static boolean verbose = false;
+	
+	private final static Logger log = LogManager.getLogger(ForeignCompilerJava.class.toString());
 	
 	private String userSourcePath;
 	
@@ -86,8 +90,8 @@ public class ForeignCompilerJava {
     	}
  
     	if (verbose) {
-    		System.out.println(src);
-    		System.out.println("\nCompile:\n" + sourcef);
+    		log.info(src);
+    		log.info("\nCompile:\n" + sourcef);
     	}
     	
     	// Start compilation using JDT
@@ -129,7 +133,7 @@ public class ForeignCompilerJava {
     		compilerMessages += str + '\n';
     	}
     	if (verbose)
-    		System.out.println(compilerMessages);
+    		log.info(compilerMessages);
     	return new CompilationResults(compiled, compilerMessages);
     }
 	

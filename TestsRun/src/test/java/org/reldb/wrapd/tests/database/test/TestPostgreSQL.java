@@ -29,7 +29,7 @@ public class TestPostgreSQL {
 			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
 				try {
 					var testSelectStream = ResultSetToTuple.toStream(result, TestSelect.class);
-					testSelectStream.forEach(tuple -> System.out.println(tuple.toString()));
+					testSelectStream.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
 				} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException
 						| IllegalArgumentException | InvocationTargetException | NoSuchFieldException e) {
 					e.printStackTrace();

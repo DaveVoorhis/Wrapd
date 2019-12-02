@@ -50,7 +50,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<junit.version>5.5.2</junit.version>
-		<reldb_toolbox.version>0.0.1-SNAPSHOT</reldb_toolbox.version>
+		<reldb_toolbox.version>0.0.2-SNAPSHOT</reldb_toolbox.version>
 		<maven-compiler.version>3.8.1</maven-compiler.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
@@ -77,13 +77,12 @@
 			<version>${junit.version}</version>
 		</dependency>
 		<!-- Log4J -->
-		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.12.1</version>
 		</dependency>
-
 	</dependencies>
 
 </project>
