@@ -34,7 +34,7 @@ public class TestDataBDBJE {
 	
 	private static void showContainer(String prompt, Map<? extends Serializable, ? extends Serializable> container) {
 		if (verbose)
-			System.out.println(prompt);
+			System.out.println("[TEST] " + prompt);
 		container.forEach((key, value) -> {
 			var str = key + ": " + value.toString();
 			if (verbose)
@@ -98,7 +98,7 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(2), tuple));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n[TEST] === Container Contents Before Schema Change (should have col1 and col2) ===", container));
+		data.access(container -> showContainer("=== Container Contents Before Schema Change (should have col1 and col2) ===", container));
 		
 		// change schema
 		data.extend("col3", Double.class);
@@ -117,13 +117,13 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(3), tuple2));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n[TEST] === Container Contents After Schema Change (should have col1 and col3) ===", container));
+		data.access(container -> showContainer("=== Container Contents After Schema Change (should have col1 and col3) ===", container));
 		
 		// Rename container
 		data.renameAllTo(storageNameRenamed);
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n[TEST] === Container Contents After Schema Change (container renamed) ===", container));
+		data.access(container -> showContainer("=== Container Contents After Schema Change (container renamed) ===", container));
 		
 		// get tuple type class and instance
 		final var tupleType3 = base.getTupleTypeOf(storageNameRenamed);
@@ -134,7 +134,7 @@ public class TestDataBDBJE {
 		data.query(container -> container.put(Long.valueOf(4), tuple3));
 		
 		// Iterate and display container contents
-		data.access(container -> showContainer("\n[TEST] === Container Contents After Adding a Tuple ===", container));
+		data.access(container -> showContainer("=== Container Contents After Adding a Tuple ===", container));
 	}
 	
 	@Test
@@ -155,7 +155,7 @@ public class TestDataBDBJE {
 			assertEquals(true, container.containsKey(storageNameRenamed));
 			assertEquals(true, container.containsKey(storageName2));
 			assertEquals(true, container.containsKey(BDBJEBase.catalogName));
-			showContainer("\n[TEST] === Catalog ===", container);
+			showContainer("=== Catalog ===", container);
 		});
 	}
 

@@ -15,7 +15,7 @@ public class DatabaseConfigurationAndSetup {
 		
 		System.out.println("[SETUP] If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
 		System.out.println("[SETUP] you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
-		System.out.println();
+		System.out.println("[SETUP]");
 		
 		Configuration.setLocation(baseDir);
 		
