@@ -9,15 +9,21 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 public class VersionDefault implements Version {
 	
+	private String cachedVersion = null;
+	
 	public String getVersionString() {
-        var reader = new MavenXpp3Reader();
-        Model model;
-		try {
-			model = reader.read(new FileReader("pom.xml"));
-			return model.getVersion();
-		} catch (IOException | XmlPullParserException e) {
-			return "Dev";
+		if (cachedVersion == null) {
+	        var reader = new MavenXpp3Reader();
+	        Model model;
+			try {
+				model = reader.read(new FileReader("pom.xml"));
+				var parent = model.getParent();
+				cachedVersion = parent.getVersion();
+			} catch (IOException | XmlPullParserException e) {
+				cachedVersion = "Dev";
+			}
 		}
+		return cachedVersion;
 	}
 
 	/** Product name for display. */
