@@ -1,20 +1,32 @@
 package org.reldb.wrapd.version;
 
-public interface Version {
-	public String getVersionString();
+import java.io.FileReader;
+import java.io.IOException;
 
-	/** Product name for display. */
-	public String getProductName();
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+
+public class Version {
 	
-	/** Product name for constructing identifiers. Must NOT contain spaces! */
-	public String getInternalProductName();
-
-	public String getProductShortDescription();
-
-	public String getPageTitle();
-
-	public String getEntryPoint();
-
-	public String getDeveloperEmail();
+	// No instances
+	private Version() {}
+	
+	private static String cachedVersion = null;
+	
+	public static String getVersionString() {
+		if (cachedVersion == null) {
+	        var reader = new MavenXpp3Reader();
+	        Model model;
+			try {
+				model = reader.read(new FileReader("pom.xml"));
+				var parent = model.getParent();
+				cachedVersion = parent.getVersion();
+			} catch (IOException | XmlPullParserException e) {
+				cachedVersion = "Dev";
+			}
+		}
+		return cachedVersion;
+	}
 
 }

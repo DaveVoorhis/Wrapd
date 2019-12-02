@@ -11,7 +11,6 @@ import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.WrapdDatabase;
 import org.reldb.wrapd.db.WrapdDatabaseBase;
-import org.reldb.wrapd.version.VersionProxy;
 
 /*
  * PostgreSQL database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
@@ -27,7 +26,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
 		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
 		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), VersionProxy.getVersion().getInternalProductName() + "_");
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 		
 		if (dbDatabase == null)
 			throw new IOException("Database connection failed. Please specify a database name.");

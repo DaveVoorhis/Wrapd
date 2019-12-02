@@ -3,8 +3,6 @@ package org.reldb.wrapd.db.postgresql;
 import org.reldb.toolbox.configuration.ConfigurationSettings;
 import org.reldb.toolbox.configuration.RandomString;
 
-import org.reldb.wrapd.version.VersionProxy;
-
 public class WrapDBConfiguration extends ConfigurationSettings {
 
 	public static final String INSTALLER_ADMIN_NAME = "installer_admin_name";
@@ -25,7 +23,7 @@ public class WrapDBConfiguration extends ConfigurationSettings {
 		add(DATABASE_NAME, "mydatabase", "PostgreSQL database");
 		add(DATABASE_USER, "dbuser", "PostgreSQL database user");
 		add(DATABASE_PASSWORD, "dbpass", "PostgreSQL database password");
-		add(DATABASE_TABLENAME_PREFIX, VersionProxy.getVersion().getInternalProductName().toLowerCase() + "_", "optional - table name prefix");
+		add(DATABASE_TABLENAME_PREFIX, "Wrapd_", "optional - table name prefix");
 		add(DATABASE_SERVER, "localhost", "PostgreSQL DBMS host");
 		add(DATABASE_NONSTANDARD_PORT, " ", "optional - PostgreSQL DBMS port");
 		add(DATABASE_DEFINITION, org.reldb.wrapd.db.postgresql.WrapdDB.class.getPackageName(), "database definition class");

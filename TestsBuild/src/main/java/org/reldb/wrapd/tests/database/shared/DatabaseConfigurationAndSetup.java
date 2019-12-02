@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.wrapd.db.Database;
 import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
-import org.reldb.wrapd.version.VersionProxy;
 
 public class DatabaseConfigurationAndSetup {
 
@@ -27,8 +26,7 @@ public class DatabaseConfigurationAndSetup {
 		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
 		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
 		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), 
-				VersionProxy.getVersion().getInternalProductName() + "_");
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 		
 		if (dbDatabase == null)
 			throw new SQLException("Please specify a database name in the configuration.");

@@ -1,14 +1,13 @@
 package org.reldb.wrapd.tests.miscellaneous;
 
 import org.junit.jupiter.api.Test;
-import org.reldb.wrapd.version.VersionDefault;
+import org.reldb.wrapd.version.Version;
 
 public class TestVersion {
 	
 	@Test 
 	public void testGetVersion() {
-		var version = new VersionDefault();
-		System.out.println("=== Version: " + version.getVersionString());
+		System.out.println("=== Version: " + Version.getVersionString());
 	}
 
 }
