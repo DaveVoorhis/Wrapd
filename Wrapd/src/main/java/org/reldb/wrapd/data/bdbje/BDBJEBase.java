@@ -14,7 +14,9 @@ import static org.reldb.wrapd.il8n.Strings.*;
 import java.io.Closeable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.compiler.DirClassLoader;
@@ -26,7 +28,7 @@ import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 public class BDBJEBase implements Closeable {
 
-	private static Logger log = Logger.getLogger(BDBJEBase.class.toString());
+	private static Logger log = LogManager.getLogger(BDBJEBase.class.toString());
 	
 	public static final String catalogName = "sys_Catalog";
 	
@@ -106,7 +108,7 @@ public class BDBJEBase implements Closeable {
 
 	void removeCatalogEntry(String name) {
 		if (query(catalog, catalog -> catalog.remove(name)) == null)
-			log.severe(Str.ing(ErrUnableToRemoveCatalogEntry, name));
+			log.error(Str.ing(ErrUnableToRemoveCatalogEntry, name));
 	}
 	
 	/**
@@ -305,7 +307,7 @@ public class BDBJEBase implements Closeable {
 		try {
 			environment.remove(name);
 		} catch (DatabaseNotFoundException dnfe) {
-			log.warning(Str.ing(ErrDatabaseNotFound, dnfe.getMessage()));
+			log.warn(Str.ing(ErrDatabaseNotFound, dnfe.getMessage()));
 		}
 		var codeDir = environment.getCodeDir();
 		TupleTypeGenerator.destroy(codeDir, name);
@@ -326,7 +328,7 @@ public class BDBJEBase implements Closeable {
 		try {
 			environment.close();
 		} catch (Throwable t) {
-			log.severe(Str.ing(ErrProblemClosingEnvironment, t.getMessage()));
+			log.error(Str.ing(ErrProblemClosingEnvironment, t.getMessage()));
 		}
 	}
 

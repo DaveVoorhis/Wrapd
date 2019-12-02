@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
@@ -18,7 +20,7 @@ import org.reldb.wrapd.db.WrapdDatabaseBase;
  */
 public class WrapdDB extends WrapdDatabaseBase {
 	
-	private static Logger log = Logger.getLogger(WrapdDB.class.toString());
+	private static Logger log = LogManager.getLogger(WrapdDB.class.toString());
 	
 	public WrapdDB() throws IOException {
 		if (database != null)
@@ -44,7 +46,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	public DBVersion getDBVersion() throws SQLException {
 		return (DBVersion) database.queryAll("SELECT * FROM $$Version", version -> {
 			if (!version.next()) {
-				log.severe("WrapdDB: Error: Version table appears to be empty!");
+				log.error("WrapdDB: Error: Version table appears to be empty!");
 				return null;
 			}
 			return new DBVersion(version.getInt("framework_db_version"), version.getInt("user_db_version"));			
@@ -300,7 +302,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 		try {
 			return findUser(getLoggedInUserID(), password) != null;
 		} catch (SQLException e) {
-			log.severe("ERROR: WrapdDB: verifyPassword: " + e);
+			log.error("ERROR: WrapdDB: verifyPassword: " + e);
 			return false;
 		}
 	}
@@ -323,7 +325,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 				}
 			}
 		} catch (SQLException e) {
-			log.severe("ERROR: WrapdDB: attemptLogin: " + e);
+			log.error("ERROR: WrapdDB: attemptLogin: " + e);
 			setLoggedInUserID(null);
 		}
 		return new LoginStatus(false);
@@ -351,7 +353,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 				return true;
 			}
 		} catch (SQLException e) {
-			log.severe("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
+			log.error("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
 			setLoggedInUserID(null);
 		}
 		return false;

@@ -5,7 +5,9 @@ import static org.reldb.wrapd.il8n.Strings.*;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
@@ -35,7 +37,7 @@ public class BDBJEEnvironment implements Closeable {
 	private ClassCatalog classes;
 	private DirClassLoader classLoader;
 	
-	private static final Logger log = Logger.getLogger(BDBJEEnvironment.class.toString());
+	private static final Logger log = LogManager.getLogger(BDBJEEnvironment.class.toString());
 
 	private static String getDataDir(String homedir) {
 		 return homedir + File.separator + "data";
@@ -102,7 +104,7 @@ public class BDBJEEnvironment implements Closeable {
 			if (writer != null)
 				writer.close();
 		} catch (Exception e) {
-			log.warning("WARNING: Unable to create " + getClickerFileName());
+			log.warn("WARNING: Unable to create " + getClickerFileName());
 		}
 	}
 	
@@ -258,7 +260,7 @@ public class BDBJEEnvironment implements Closeable {
 			try {
 				classes.close();
 			} catch (Throwable t) {
-				log.warning(Str.ing(WarnClosingClassRepo, homeDir, t.toString()));
+				log.warn(Str.ing(WarnClosingClassRepo, homeDir, t.toString()));
 			} finally {
 				classes = null;
 			}
@@ -267,7 +269,7 @@ public class BDBJEEnvironment implements Closeable {
 			try {
 				classesEnv.close();
 			} catch (Throwable t) {
-				log.warning(Str.ing(WarnClosingClassRepoEnv, homeDir, t.toString()));
+				log.warn(Str.ing(WarnClosingClassRepoEnv, homeDir, t.toString()));
 			} finally {
 				classesEnv = null;
 			}
@@ -276,7 +278,7 @@ public class BDBJEEnvironment implements Closeable {
 			try {
 				dataEnv.close();
 			} catch (Throwable t) {
-				log.warning(Str.ing(WarnClosingDataEnv, homeDir, t.toString()));
+				log.warn(Str.ing(WarnClosingDataEnv, homeDir, t.toString()));
 			} finally {
 				dataEnv = null;
 			}
