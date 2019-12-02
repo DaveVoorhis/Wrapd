@@ -2,80 +2,88 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.reldb.wrapd</groupId>
-  <artifactId>WrapdMain</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
-  <name>Wrapd</name>
-  <description>A lightweight, XML-and-annotation-free data
+	<groupId>org.reldb.wrapd</groupId>
+	<artifactId>WrapdMain</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
+	<name>Wrapd</name>
+	<description>A lightweight, XML-and-annotation-free data
   abstraction layer. It's pronounced "rapid" and/or
   "wrapped".</description>
-  <packaging>pom</packaging>
-  
-  <licenses>
-    <license>
-      <name>Apache License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
-  <scm>
-    <url>https://github.com/DaveVoorhis/Wrapd</url>
-  </scm>
-  
-  <organization>
-    <name>RelDB</name>
-    <url>https://reldb.org</url>
-  </organization>
-  
-  <developers>
-    <developer>
-      <id>DaveVoorhis</id>
-      <name>Dave Voorhis</name>
-      <email>dave@armchair.mb.ca</email>
-      <url>https://github.com/DaveVoorhis</url>
-      <organization>RelDB</organization>
-      <organizationUrl>https://reldb.org</organizationUrl>
-      <roles>
-        <role>developer</role>
-      </roles>
-      <timezone>Europe/London</timezone>
-    </developer>
-  </developers>
-	
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>11</java.version>
-    <junit.version>5.5.2</junit.version>
-    <reldb_toolbox.version>0.0.1-SNAPSHOT</reldb_toolbox.version>
-    <maven-compiler.version>3.8.1</maven-compiler.version>
-    <maven.compiler.source>${java.version}</maven.compiler.source>
-    <maven.compiler.target>${java.version}</maven.compiler.target>
-  </properties>
-  
-  <modules>
-    <module>WrapdNonMavenLibs</module>
-    <module>Wrapd</module>
-    <module>TestsBuild</module>
-    <module>TestsRun</module>
-    <module>TestsTeardown</module>
-  </modules>
-  
-  <dependencies>
-    <!--  JUnit5 -->
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
-    </dependency>
-  </dependencies>
+	<packaging>pom</packaging>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/DaveVoorhis/Wrapd</url>
+	</scm>
+
+	<organization>
+		<name>RelDB</name>
+		<url>https://reldb.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>DaveVoorhis</id>
+			<name>Dave Voorhis</name>
+			<email>dave@armchair.mb.ca</email>
+			<url>https://github.com/DaveVoorhis</url>
+			<organization>RelDB</organization>
+			<organizationUrl>https://reldb.org</organizationUrl>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>Europe/London</timezone>
+		</developer>
+	</developers>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>11</java.version>
+		<junit.version>5.5.2</junit.version>
+		<reldb_toolbox.version>0.0.1-SNAPSHOT</reldb_toolbox.version>
+		<maven-compiler.version>3.8.1</maven-compiler.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+	</properties>
+
+	<modules>
+		<module>WrapdNonMavenLibs</module>
+		<module>Wrapd</module>
+		<module>TestsBuild</module>
+		<module>TestsRun</module>
+		<module>TestsTeardown</module>
+	</modules>
+
+	<dependencies>
+		<!-- JUnit5 -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+		</dependency>
+		<!-- Log4J -->
+		<!-- https://mvnrepository.com/artifact/log4j/log4j -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+
+	</dependencies>
 
 </project>
