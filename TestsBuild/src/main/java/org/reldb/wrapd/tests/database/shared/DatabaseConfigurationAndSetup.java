@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
-import org.reldb.wrapd.db.Database;
-import org.reldb.wrapd.db.postgresql.WrapDBConfiguration;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.postgresql.WrapDBConfiguration;
 
 public class DatabaseConfigurationAndSetup {
 

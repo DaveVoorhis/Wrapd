@@ -6,8 +6,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
-import org.reldb.wrapd.db.Database;
-import org.reldb.wrapd.db.ResultSetToTuple;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.ResultSetToTuple;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
 import org.junit.jupiter.api.BeforeAll;

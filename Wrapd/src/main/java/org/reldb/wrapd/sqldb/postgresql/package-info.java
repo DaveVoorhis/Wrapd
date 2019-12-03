@@ -5,4 +5,4 @@
  * @author dave
  *
  */
-package org.reldb.wrapd.db.postgresql;
+package org.reldb.wrapd.sqldb.postgresql;

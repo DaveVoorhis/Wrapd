@@ -1,5 +1,5 @@
 /**
- * Version numbers.
+ * Version information.
  */
 /**
  * @author dave

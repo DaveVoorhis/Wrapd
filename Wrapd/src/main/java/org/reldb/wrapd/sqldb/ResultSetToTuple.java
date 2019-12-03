@@ -1,4 +1,4 @@
-package org.reldb.wrapd.db;
+package org.reldb.wrapd.sqldb;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

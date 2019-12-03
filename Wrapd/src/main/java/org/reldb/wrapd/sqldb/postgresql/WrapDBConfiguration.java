@@ -1,4 +1,4 @@
-package org.reldb.wrapd.db.postgresql;
+package org.reldb.wrapd.sqldb.postgresql;
 
 import org.reldb.toolbox.configuration.ConfigurationSettings;
 import org.reldb.toolbox.configuration.RandomString;
@@ -26,7 +26,7 @@ public class WrapDBConfiguration extends ConfigurationSettings {
 		add(DATABASE_TABLENAME_PREFIX, "Wrapd_", "optional - table name prefix");
 		add(DATABASE_SERVER, "localhost", "PostgreSQL DBMS host");
 		add(DATABASE_NONSTANDARD_PORT, " ", "optional - PostgreSQL DBMS port");
-		add(DATABASE_DEFINITION, org.reldb.wrapd.db.postgresql.WrapdDB.class.getPackageName(), "database definition class");
+		add(DATABASE_DEFINITION, org.reldb.wrapd.sqldb.postgresql.WrapdDB.class.getPackageName(), "database definition class");
 		add(SUPPORT_CONTACT, "dave@armchair.mb.ca", "support contact address");
 	}
 	

@@ -1,4 +1,4 @@
-package org.reldb.wrapd.db;
+package org.reldb.wrapd.sqldb;
 
 import org.reldb.wrapd.tuples.Tuple;
 
