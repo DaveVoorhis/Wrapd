@@ -377,7 +377,7 @@ public class Database {
 	}
 	
 	/**
-	 * Encapsulates a transaction.
+	 * Encapsulates a transaction that does not return a value.
 	 */
 	public class Transaction {
 		
@@ -419,6 +419,49 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Encapsulates a transaction that returns a value.
+	 * 
+	 * The value is set via setValue() inside the transaction, and obtained via getValue() outside the transaction.
+	 * 
+	 * @author dave
+	 *
+	 * @param <T> - the Value type
+	 */
+	public class TransactionReturner<T> extends Transaction {
+
+		private T returns;
+		
+		/**
+		 * Launch a transaction that will presumably invoke setReturnValue() during execution.
+		 * 
+		 * @param transactionRunner - TransactionRunner specifying the transaction to run.
+		 * 
+		 * @throws SQLException
+		 */
+		public TransactionReturner(TransactionRunner transactionRunner) throws SQLException {
+			super(transactionRunner);
+		}
+		
+		/**
+		 * Set the return value.
+		 * 
+		 * @param returns - the value to return.
+		 */
+		protected void setReturnValue(T returns) {
+			this.returns = returns;
+		}
+		
+		/**
+		 * Obtain the return value.
+		 * 
+		 * @return - return value of type T.
+		 */
+		public T getReturnValue() {
+			return returns;
+		}
+	}
+	
 	/**
 	 * If the String argument is null or an empty string, return null.
 	 * 
