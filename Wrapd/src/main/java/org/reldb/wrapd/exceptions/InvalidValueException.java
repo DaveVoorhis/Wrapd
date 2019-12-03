@@ -1,4 +1,4 @@
-package org.reldb.wrapd.data;
+package org.reldb.wrapd.exceptions;
 
 public class InvalidValueException extends RuntimeException {
 
