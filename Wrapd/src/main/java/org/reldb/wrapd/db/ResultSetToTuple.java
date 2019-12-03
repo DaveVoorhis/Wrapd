@@ -32,8 +32,15 @@ public class ResultSetToTuple {
 	 * 
 	 * @throws SQLException - thrown if there is a problem retrieving ResultSet metadata.
 	 * @throws ClassNotFoundException - thrown if a column class specified in the ResultSet metadata can't be loaded.
+	 * @throws IllegalArgumentException - thrown if an argument is null
 	 */
 	public static CompilationResults createTuple(String codeDir, String tupleName, ResultSet results) throws SQLException, ClassNotFoundException {
+		if (codeDir == null)
+			throw new IllegalArgumentException("codeDir may not be null");
+		if (tupleName == null)
+			throw new IllegalArgumentException("tupleName may not be null");
+		if (results == null)
+			throw new IllegalArgumentException("results may not be null");
 		var generator = new TupleTypeGenerator(codeDir, tupleName);
 		var metadata = results.getMetaData();
 		for (int column = 1; column <= metadata.getColumnCount(); column++) {
@@ -55,13 +62,19 @@ public class ResultSetToTuple {
 	 * @throws SecurityException - thrown if tuple constructor is not accessible
 	 * @throws NoSuchMethodException - thrown if tuple constructor doesn't exist
 	 * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values
+	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or a null argument
 	 * @throws IllegalAccessException  - thrown if unable to instantiate tuple class
 	 * @throws InstantiationException - thrown if unable to instantiate tuple class
 	 * @throws SQLException - thrown if accessing ResultSet fails
 	 * @throws NoSuchFieldException - thrown if a given ResultSet field name cannot be found in the Tuple
 	 */
 	public static void process(ResultSet resultSet, Class<? extends Tuple> tupleType, TupleProcessor tupleProcessor) throws NoSuchMethodException, SecurityException, SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+		if (resultSet == null)
+			throw new IllegalArgumentException("resultSet may not be null");
+		if (tupleType == null)
+			throw new IllegalArgumentException("tupleType may not be null");
+		if (tupleProcessor == null)
+			throw new IllegalArgumentException("tupleProcessor may not be null");
 		var tupleConstructor = tupleType.getConstructor((Class<?>[])null);
 		var metadata = resultSet.getMetaData();
 		boolean optimised = false;
@@ -99,7 +112,7 @@ public class ResultSetToTuple {
 	 * @throws SecurityException - thrown if tuple constructor is not accessible
 	 * @throws NoSuchMethodException - thrown if tuple constructor doesn't exist
 	 * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values
+	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
 	 * @throws IllegalAccessException  - thrown if unable to instantiate tuple class
 	 * @throws InstantiationException - thrown if unable to instantiate tuple class
 	 * @throws SQLException - thrown if accessing ResultSet fails
@@ -121,7 +134,7 @@ public class ResultSetToTuple {
 	 * @throws SecurityException - thrown if tuple constructor is not accessible
 	 * @throws NoSuchMethodException - thrown if tuple constructor doesn't exist
 	 * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values
+	 * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
 	 * @throws IllegalAccessException  - thrown if unable to instantiate tuple class
 	 * @throws InstantiationException - thrown if unable to instantiate tuple class
 	 * @throws SQLException - thrown if accessing ResultSet fails
@@ -138,6 +151,10 @@ public class ResultSetToTuple {
 	 * @param tupleName - Name of tuple class.
 	 */
 	public static void destroyTuple(String codeDir, String tupleName) {
+		if (codeDir == null)
+			throw new IllegalArgumentException("codeDir may not be null");
+		if (tupleName == null)
+			throw new IllegalArgumentException("tupleName may not be null");
 		TupleTypeGenerator.destroy(codeDir, tupleName);
 	}
 	
