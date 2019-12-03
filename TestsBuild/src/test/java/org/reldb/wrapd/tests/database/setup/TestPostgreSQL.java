@@ -22,7 +22,7 @@ public class TestPostgreSQL {
 	public static void setup() throws SQLException, IOException {
 		setupCompleted = false;
 		System.out.println("[TSET] Executing TestPostgreSQL setup.");
-		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();
+		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TSET]");
 		setupCompleted = true;
 	}
 	

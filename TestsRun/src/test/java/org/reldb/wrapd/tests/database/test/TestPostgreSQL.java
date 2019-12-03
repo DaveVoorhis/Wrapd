@@ -28,7 +28,7 @@ public class TestPostgreSQL {
 		
 	@Test
 	public void testQueryToStream01() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
 		database.new Transaction(connection -> {		
 			Query.queryAll(database, connection, "SELECT * FROM $$tester", TestSelect.class)
 				.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));

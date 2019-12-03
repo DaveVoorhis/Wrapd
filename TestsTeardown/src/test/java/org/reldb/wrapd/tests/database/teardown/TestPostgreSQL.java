@@ -12,23 +12,23 @@ public class TestPostgreSQL {
 		
 	@Test
 	public void teardown() throws SQLException, IOException {		
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TRDN]");
 		try {
 			database.new Transaction(connection -> {
 				try {
 					database.updateAll(connection, "DROP TABLE $$Version;");
 				} catch (SQLException se) {
-					System.out.println("[TEARDOWN] ERROR: " + se);
+					System.out.println("[TRDN] ERROR: " + se);
 				}
 				try {
 					database.updateAll(connection, "DROP TABLE $$tester;");
 				} catch (SQLException se) {
-					System.out.println("[TEARDOWN] ERROR: " + se);
+					System.out.println("[TRDN] ERROR: " + se);
 				}
 				return true;
 			});
 		} catch (SQLException e) {
-			System.out.println("[TEARDOWN] Database teardown failed.");
+			System.out.println("[TRDN] Database teardown failed.");
 			e.printStackTrace();
 		}
 		
