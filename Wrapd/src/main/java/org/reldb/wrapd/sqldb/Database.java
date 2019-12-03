@@ -26,8 +26,6 @@ public class Database {
 	
 	private static Logger log = LogManager.getLogger(Database.class.toString());
 	
-	private boolean debugging = false;
-	
 	private DataSource pool = null;	
 	private String dbTablenamePrefix = "";
 
@@ -60,17 +58,7 @@ public class Database {
 		public T go(ResultSet r) throws SQLException;
 	}
 	
-	public void setDebugging(boolean debugging) {
-		this.debugging = debugging;
-	}
-	
-	public boolean isDebugging() {
-		return debugging;
-	}
-	
 	private void showSQL(String location, String query) {
-		if (!debugging)
-			return;
 		log.debug(location + ": " + query);
 	}
 	
