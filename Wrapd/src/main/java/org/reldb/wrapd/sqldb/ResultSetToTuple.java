@@ -51,6 +51,14 @@ public class ResultSetToTuple {
 		}
 		return generator.compile();
 	}
+
+	/**
+	 * FunctionalInterface to define lambdas for processing each Tuple in a ResultSet.
+	 */
+	@FunctionalInterface
+	public interface TupleProcessor {
+		public void process(Tuple tupleType);
+	}
 	
 	/**
 	 * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
