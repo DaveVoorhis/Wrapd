@@ -21,7 +21,7 @@ public class TestPostgreSQL {
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		setupCompleted = false;
-		System.out.println("[SETUP] Executing TestPostgreSQL setup.");
+		System.out.println("[TSET] Executing TestPostgreSQL setup.");
 		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase();
 		setupCompleted = true;
 	}
@@ -50,12 +50,12 @@ public class TestPostgreSQL {
 				try {
 					makeTupleResult = ResultSetToTuple.createTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", result);
 				} catch (Exception e) {
-					System.out.println("[SETUP] Query failed: " + e);
+					System.out.println("[TSET] Query failed: " + e);
 					e.printStackTrace();
 					assertTrue(false);
 				}
 				if (!makeTupleResult.compiled) {
-					System.out.println("[SETUP] ERROR: " + makeTupleResult.compilerMessages);
+					System.out.println("[TSET] ERROR: " + makeTupleResult.compilerMessages);
 					assertTrue(false);
 				}
 				return makeTupleResult;
