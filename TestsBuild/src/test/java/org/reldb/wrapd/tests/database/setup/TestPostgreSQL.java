@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Query;
 import org.reldb.wrapd.sqldb.ResultSetToTuple;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
@@ -45,21 +45,7 @@ public class TestPostgreSQL {
 			for (int i = 0; i < 20; i++) {
 				database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
 			}
-			database.queryAll(connection, "SELECT * FROM $$tester", result -> {
-				CompilationResults makeTupleResult = null;
-				try {
-					makeTupleResult = ResultSetToTuple.createTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", result);
-				} catch (Exception e) {
-					System.out.println("[TSET] Query failed: " + e);
-					e.printStackTrace();
-					assertTrue(false);
-				}
-				if (!makeTupleResult.compiled) {
-					System.out.println("[TSET] ERROR: " + makeTupleResult.compilerMessages);
-					assertTrue(false);
-				}
-				return makeTupleResult;
-			});
+			Query.createTupleFromQueryAll(database, connection, DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", "SELECT * FROM $$tester");
 			return true;
 		});
 	}

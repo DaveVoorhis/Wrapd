@@ -29,8 +29,21 @@ public class Database {
 	private DataSource pool = null;	
 	private String dbTablenamePrefix = "";
 
+	/**
+	 * Open a database, given a database URL, user name, password, and table name prefix.
+	 * 
+	 * @param dbURL - database URL
+	 * @param dbUser - database user
+	 * @param dbPassword - database password
+	 * @param dbTablenamePrefix - table name prefix
+	 * 
+	 * @throws IOException
+	 */
 	public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix) throws IOException {
-		this.dbTablenamePrefix = dbTablenamePrefix;
+		if (dbURL == null)
+			throw new IllegalArgumentException("dbURL must not be null");
+		
+		this.dbTablenamePrefix = nullToEmptyString(dbTablenamePrefix);
 		
 		Properties props = new Properties();
 		if (dbUser != null)
@@ -53,15 +66,31 @@ public class Database {
 		return query.replaceAll("\\$\\$", dbTablenamePrefix);
 	}
 	
+	private void showSQL(String location, String query) {
+		log.debug(location + ": " + query);
+	}
+	
+	/**
+	 * Used to define lambda expressions that receive a ResultSet for processing. T specifies a return value from processing the ResultSet.
+	 *
+	 * @param <T>
+	 */
 	@FunctionalInterface
 	public interface ResultSetReceiver<T> {
 		public T go(ResultSet r) throws SQLException;
 	}
 	
-	private void showSQL(String location, String query) {
-		log.debug(location + ": " + query);
-	}
-	
+	/**
+	 * Issue a SELECT query, process it, and return the result
+	 * 
+	 * @param <T> return type
+	 * @param connection - java.sql.Connection
+	 * @param query - query
+	 * @param receiver - result set receiver lambda
+	 * @return return value
+	 * 
+	 * @throws SQLException
+	 */
 	public <T> Object queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(query);
@@ -72,6 +101,14 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Issue an update query.
+	 * 
+	 * @param connection - java.sql.Connection
+	 * @param sqlStatement - String SQL query
+	 * 
+	 * @throws SQLException
+	 */
 	public void updateAll(Connection connection, String sqlStatement) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(sqlStatement);
@@ -80,6 +117,16 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Issue a SELECT query and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+	 * 
+	 * @param connection - java.sql.Connection
+	 * @param query - SELECT query
+	 * @param columnName - column name from which to retrieve first row's value
+	 * @return - value of first row in columnName
+	 * 
+	 * @throws SQLException
+	 */
 	public Object valueOfAll(Connection connection, String query, String columnName) throws SQLException {
 		return queryAll(connection, query, rs -> {
 			if (rs.next())
@@ -88,24 +135,53 @@ public class Database {
 		});
 	}
 	
+	/**
+	 * Issue a SELECT query, process it, and return the result
+	 * 
+	 * @param <T> return type
+	 * @param query - query
+	 * @param receiver - result set receiver lambda
+	 * @return return value
+	 * 
+	 * @throws SQLException
+	 */
 	public <T> Object queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return queryAll(conn, query, receiver);
 		}
 	}
 	
+	/**
+	 * Issue an update query.
+	 * 
+	 * @param sqlStatement - String SQL query
+	 * 
+	 * @throws SQLException
+	 */
 	public void updateAll(String sqlStatement) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			updateAll(conn, sqlStatement);
 		}
 	}
 	
+	/**
+	 * Issue a SELECT query and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+	 * 
+	 * @param query - SELECT query
+	 * @param columnName - column name from which to retrieve first row's value
+	 * @return - value of first row in columnName
+	 * 
+	 * @throws SQLException
+	 */
 	public Object valueOfAll(String query, String columnName) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return valueOfAll(conn, query, columnName);
 		}
 	}
 	
+	/**
+	 * Represents a SQL NULL on behalf of a specified SQL type from the Types enum.
+	 */
 	public static class Null {
 		private int type;
 		public Null(int type) {
@@ -114,6 +190,7 @@ public class Database {
 		int getType() {return type;}
 	}
 	
+	// Canonical setup of prepared statement parameters from Java types.
 	private static void setupParms(PreparedStatement statement, Object ...parms) throws SQLException {
 		int parmNumber = 1;
 		for (Object parm: parms) {
@@ -141,6 +218,19 @@ public class Database {
 		}		
 	}
 	
+	/**
+	 * Issue a parametric SELECT query with '?' substitutions, process it, and return the result
+	 * 
+	 * @param <T> return type
+	 * @param connection - java.sql.Connection
+	 * @param query - query
+	 * @param receiver - result set receiver lambda
+	 * @param parms - parameters
+	 * 
+	 * @return return value
+	 * 
+	 * @throws SQLException
+	 */
 	public <T> Object query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
 		showSQL("Database 2: ", sqlized);
@@ -152,6 +242,15 @@ public class Database {
 		}
 	}
 
+	/**
+	 * Issue a parametric update query with '?' substitutions.
+	 * 
+	 * @param connection - java.sql.Connection
+	 * @param query - String SQL query
+	 * @param parms - parameters
+	 * 
+	 * @throws SQLException
+	 */
 	public void update(Connection connection, String query, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
 		showSQL("Database 3: ", sqlized);
@@ -161,6 +260,18 @@ public class Database {
 		}
 	}
 	
+	/**
+	 * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+	 * 
+	 * @param connection - java.sql.Connection
+	 * @param query - SELECT query
+	 * @param columnName - column name from which to retrieve first row's value
+	 * @param parms - parameters
+	 * 
+	 * @return - value of first row in columnName
+	 * 
+	 * @throws SQLException
+	 */	
 	public Object valueOf(Connection connection, String query, String columnName, Object ... parms) throws SQLException {
 		return query(connection, query, rs -> {
 			if (rs.next())
@@ -168,26 +279,62 @@ public class Database {
 			return null;
 		}, parms);
 	}
-	
+
+	/**
+	 * Issue a parametric SELECT query with '?' substitutions, process it, and return the result
+	 * 
+	 * @param <T> return type
+	 * @param query - query
+	 * @param receiver - result set receiver lambda
+	 * @param parms - parameters
+	 * 
+	 * @return return value
+	 * 
+	 * @throws SQLException
+	 */
 	public <T> Object query(String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return query(conn, query, receiver, parms);
 		}
 	}
-
+	
+	/**
+	 * Issue a parametric update query with '?' substitutions.
+	 * 
+	 * @param query - String SQL query
+	 * @param parms - parameters
+	 * 
+	 * @throws SQLException
+	 */
 	public void update(String query, Object ... parms) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			update(conn, query, parms);
 		}
 	}
 	
+	/**
+	 * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+	 * 
+	 * @param query - SELECT query
+	 * @param columnName - column name from which to retrieve first row's value
+	 * @param parms - parameters
+	 * 
+	 * @return - value of first row in columnName
+	 * 
+	 * @throws SQLException
+	 */	
 	public Object valueOf(String query, String columnName, Object ... parms) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return valueOf(conn, query, columnName, parms);
 		}
 	}
 
-	/** Given multiple argument arrays, combine them into one unified argument list for passing to a parametrised query's "Object ... parms", above. */
+	/**
+	 * Given multiple argument arrays, combine them into one unified argument list for passing to a parametrised query's "Object ... parms", above.
+	 * 
+	 * @param parms
+	 * @return
+	 */
 	public static Object[] allArguments(Object ... parms) {
 		Vector<Object> newArgs = new Vector<Object>();
 		for (Object parm: parms)
@@ -198,40 +345,110 @@ public class Database {
 		return newArgs.toArray();
 	}
 	
+	/**
+	 * FunctionalInterface to define lambdas for transactional processing.
+	 */
 	@FunctionalInterface
 	public static interface TransactionRunner {
 		public boolean run(Connection connection) throws SQLException;
 	}
 	
+	/**
+	 * Result of executing a transaction in Transaction.
+	 */
+	public static class TransactionResult {
+
+		/** True if transaction committed. False if transaction rolled back. */
+		public final boolean success;
+		
+		/** Null if transaction committed. Non-null, and contains Throwable if transaction rolled back due to exception. */ 
+		public final Throwable thrown;
+		
+		protected TransactionResult(boolean success) {
+			this.success = success;
+			this.thrown = null;
+		}
+		
+		protected TransactionResult(Throwable thrown) {
+			this.success = false;
+			this.thrown = thrown;
+		}
+		
+	}
+	
+	/**
+	 * Encapsulates a transaction.
+	 */
 	public class Transaction {
+		
+		private TransactionResult result = null;
+		
+		/**
+		 * Encapsulate a transaction.
+		 * 
+		 * @param transactionRunner - lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
+		 * 
+		 * @throws SQLException
+		 */
 		public Transaction(TransactionRunner transactionRunner) throws SQLException {
 			try (Connection connection = pool.getConnection()) {
 				connection.setAutoCommit(false);
 				boolean success = false;
 				try {
 					success = transactionRunner.run(connection);
-				} catch (SQLException | Error se) {
+				} catch (Throwable t) {
 					connection.rollback();
-					throw se;
+					result = new TransactionResult(t);
+					return;
 				}
 				if (success)
 					connection.commit();
 				else
 					connection.rollback();
+				result = new TransactionResult(success);
 			}
+		}
+		
+		/**
+		 * Obtain transaction execution result.
+		 * 
+		 * @return TransactionResult
+		 */
+		public TransactionResult getResult() {
+			return result;
 		}
 	}
 
+	/**
+	 * If the String argument is null or an empty string, return null.
+	 * 
+	 * @param str - String
+	 * 
+	 * @return String or null
+	 */
 	public static String emptyToNull(String str) {
-		if (str == null || str.trim().length() == 0)
-			return null;
-		return str;
+		return (str == null || str.trim().length() == 0) ? null : str;
 	}
 	
+	/**
+	 * If the String argument is null or an empty string, return a specified replacement string.
+	 * 
+	 * @param str - String
+	 * @param replacement - String replacement
+	 * 
+	 * @return - String
+	 */
 	public static String nullTo(String str, String replacement) {
 		return (emptyToNull(str) == null) ? replacement : str;
 	}
 	
+	/**
+	 * If the String argument is null or an empty string, return an empty string.
+	 * 
+	 * @param str - String
+	 * 
+	 * @return - String
+	 */
 	public static String nullToEmptyString(String str) {
 		return nullTo(str, "");
 	}
