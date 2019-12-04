@@ -3,7 +3,6 @@ package org.reldb.wrapd.tests.database.teardown;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
 import org.junit.jupiter.api.Test;
@@ -11,27 +10,7 @@ import org.junit.jupiter.api.Test;
 public class TestPostgreSQL {
 		
 	@Test
-	public void teardown() throws SQLException, IOException {		
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TRDN]");
-		try {
-			database.new Transaction(connection -> {
-				try {
-					database.updateAll(connection, "DROP TABLE $$Version;");
-				} catch (SQLException se) {
-					System.out.println("[TRDN] ERROR: " + se);
-				}
-				try {
-					database.updateAll(connection, "DROP TABLE $$tester;");
-				} catch (SQLException se) {
-					System.out.println("[TRDN] ERROR: " + se);
-				}
-				return true;
-			});
-		} catch (SQLException e) {
-			System.out.println("[TRDN] Database teardown failed.");
-			e.printStackTrace();
-		}
-		
-		Directory.rmAll(DatabaseConfigurationAndSetup.getCodeDirectory());
+	public void teardown() throws SQLException, IOException {
+		DatabaseConfigurationAndSetup.databaseTeardown("[TRDN]");
 	}
 }

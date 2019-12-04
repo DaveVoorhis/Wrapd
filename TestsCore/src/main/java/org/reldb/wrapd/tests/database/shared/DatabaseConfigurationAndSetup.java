@@ -1,15 +1,45 @@
 package org.reldb.wrapd.tests.database.shared;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
+import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.postgresql.WrapDBConfiguration;
 
 public class DatabaseConfigurationAndSetup {
 
 	private static String baseDir = "../_TestData";
+	
+	public static void databaseTeardown(String prompt) throws SQLException, IOException {
+		var database = getPostgreSQLDatabase(prompt);
+		databaseTeardown(prompt, database);
+		Directory.rmAll(DatabaseConfigurationAndSetup.getCodeDirectory());
+	}
+
+	public static void databaseTeardown(String prompt, Database database) {
+		try {
+			database.updateAll("DROP TABLE $$version;");
+		} catch (SQLException se) {
+			System.out.println(prompt + " ERROR: " + se);
+		}
+		try {
+			database.updateAll("DROP TABLE $$tester;");
+		} catch (SQLException se) {
+			System.out.println(prompt + " ERROR: " + se);
+		}		
+	}
+
+	public static void databaseCreate(String string, Database database, Connection connection) throws SQLException {
+		database.updateAll(connection, "CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
+		database.updateAll(connection, "INSERT INTO $$version VALUES (0, 0);");
+		database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
+		for (int i = 0; i < 20; i++) {
+			database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
+		}
+	}
 
 	public static Database getPostgreSQLDatabase(String prompt) throws SQLException, IOException {
 		

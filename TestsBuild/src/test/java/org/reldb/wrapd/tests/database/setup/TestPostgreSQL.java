@@ -29,9 +29,9 @@ public class TestPostgreSQL {
 	@Test
 	public void testCreateAndInsert() throws SQLException {
 		assertTrue(setupCompleted);
+		DatabaseConfigurationAndSetup.databaseTeardown("[TSET]", database);
 		database.new Transaction(connection -> {
-			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
-			database.updateAll(connection, "INSERT INTO $$Version VALUES (0, 0);");
+			DatabaseConfigurationAndSetup.databaseCreate("[TSET]", database, connection);
 			return true;
 		});
 	}
@@ -41,11 +41,6 @@ public class TestPostgreSQL {
 		assertTrue(setupCompleted);
 		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect");
 		database.new Transaction(connection -> {
-			database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
-			for (int i = 0; i < 20; i++) {
-				database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
-			}
-			System.out.println("************ in testCreateTupleType");
 			Query.createTupleFromQueryAll(database, connection, DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", "SELECT * FROM $$tester");
 			return true;
 		});
