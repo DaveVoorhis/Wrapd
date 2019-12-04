@@ -81,8 +81,8 @@ public class Query {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends Tuple> Stream<T> queryAll2(Database database, Connection connection, String query, Class<T> tupleClass) throws SQLException {
-		return (Stream<T>)database.queryAll(connection, query, result -> {
+	public static <T extends Tuple> Stream<T> queryAll(Database database, String query, Class<T> tupleClass) throws SQLException {
+		return (Stream<T>)database.queryAll(query, result -> {
 			try {
 				return ResultSetToTuple.toStream(result, tupleClass);
 			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | 
