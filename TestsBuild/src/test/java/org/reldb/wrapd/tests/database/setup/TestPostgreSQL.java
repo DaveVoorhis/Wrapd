@@ -45,6 +45,7 @@ public class TestPostgreSQL {
 			for (int i = 0; i < 20; i++) {
 				database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
 			}
+			System.out.println("************ in testCreateTupleType");
 			Query.createTupleFromQueryAll(database, connection, DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", "SELECT * FROM $$tester");
 			return true;
 		});
