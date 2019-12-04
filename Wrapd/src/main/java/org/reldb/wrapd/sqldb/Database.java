@@ -71,7 +71,7 @@ public class Database {
 	}
 	
 	/**
-	 * Used to define lambda expressions that receive a ResultSet for processing. T specifies a return value from processing the ResultSet.
+	 * Used to define lambda expressions that receive a ResultSet for processing. T specifies the type of the return value from processing the ResultSet.
 	 *
 	 * @param <T>
 	 */
@@ -87,11 +87,12 @@ public class Database {
 	 * @param connection - java.sql.Connection
 	 * @param query - query
 	 * @param receiver - result set receiver lambda
+	 * @return 
 	 * @return return value
 	 * 
 	 * @throws SQLException
 	 */
-	public <T> Object queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
+	public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(query);
 			showSQL("Database 0: ", sqlized);
@@ -145,7 +146,7 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public <T> Object queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
+	public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return queryAll(conn, query, receiver);
 		}
@@ -231,7 +232,7 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public <T> Object query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
+	public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
 		showSQL("Database 2: ", sqlized);
 		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
@@ -292,7 +293,7 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public <T> Object query(String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
+	public <T> T query(String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			return query(conn, query, receiver, parms);
 		}

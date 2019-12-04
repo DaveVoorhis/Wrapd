@@ -59,6 +59,7 @@
 	<modules>
 		<module>WrapdNonMavenLibs</module>
 		<module>Wrapd</module>
+		<module>TestsCore</module>
 		<module>TestsBuild</module>
 		<module>TestsRun</module>
 		<module>TestsTeardown</module>

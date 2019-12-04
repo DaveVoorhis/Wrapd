@@ -68,8 +68,8 @@ public class Query {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Stream<? extends Tuple> queryAll(Database database, Connection connection, String query, Class<? extends Tuple> tupleClass) throws SQLException {
-		return (Stream<? extends Tuple>)database.queryAll(connection, query, result -> {
+	public static <T extends Tuple> Stream<T> queryAll(Database database, Connection connection, String query, Class<T> tupleClass) throws SQLException {
+		return (Stream<T>)database.queryAll(connection, query, result -> {
 			try {
 				return ResultSetToTuple.toStream(result, tupleClass);
 			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | 
@@ -80,6 +80,19 @@ public class Query {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <T extends Tuple> Stream<T> queryAll2(Database database, Connection connection, String query, Class<T> tupleClass) throws SQLException {
+		return (Stream<T>)database.queryAll(connection, query, result -> {
+			try {
+				return ResultSetToTuple.toStream(result, tupleClass);
+			} catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | 
+					IllegalArgumentException | InvocationTargetException | NoSuchFieldException e) {
+				log.error("ERROR: queryAll failed due to: ", e);
+			}
+			return null;
+		});
+	}
+	
 	/*
 	@SuppressWarnings("unchecked")
 	public static Stream<? extends Tuple> queryAll(Database database, String query, Class<? extends Tuple> tupleClass) throws SQLException {
