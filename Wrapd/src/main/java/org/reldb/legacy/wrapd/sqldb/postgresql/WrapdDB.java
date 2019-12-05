@@ -1,4 +1,4 @@
-package org.reldb.wrapdb.legacy.postgresql;
+package org.reldb.legacy.wrapd.sqldb.postgresql;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -7,14 +7,13 @@ import java.util.Vector;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
+import org.reldb.legacy.wrapd.sqldb.WrapdDatabase;
+import org.reldb.legacy.wrapd.sqldb.WrapdDatabaseBase;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
-import org.reldb.wrapdb.legacy.WrapdDatabase;
-import org.reldb.wrapdb.legacy.WrapdDatabaseBase;
 
 /*
  * PostgreSQL database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 

@@ -5,4 +5,4 @@
  * @author dave
  *
  */
-package org.reldb.wrapdb.legacy;
+package org.reldb.legacy.wrapd.sqldb;

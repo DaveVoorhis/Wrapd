@@ -1,4 +1,4 @@
-package org.reldb.wrapdb.legacy;
+package org.reldb.legacy.wrapd.sqldb;
 
 import java.io.IOException;
 import java.sql.SQLException;
