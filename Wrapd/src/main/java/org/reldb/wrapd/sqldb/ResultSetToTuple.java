@@ -56,8 +56,8 @@ public class ResultSetToTuple {
 	 * FunctionalInterface to define lambdas for processing each Tuple in a ResultSet.
 	 */
 	@FunctionalInterface
-	public interface TupleProcessor {
-		public void process(Tuple tupleType);
+	public interface TupleProcessor<T extends Tuple> {
+		public void process(T tupleType);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ public class ResultSetToTuple {
 	 * @throws SQLException - thrown if accessing ResultSet fails
 	 * @throws NoSuchFieldException - thrown if a given ResultSet field name cannot be found in the Tuple
 	 */
-	public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor tupleProcessor) throws NoSuchMethodException, SecurityException, SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+	public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws NoSuchMethodException, SecurityException, SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
 		if (resultSet == null)
 			throw new IllegalArgumentException("resultSet may not be null");
 		if (tupleType == null)
@@ -126,9 +126,9 @@ public class ResultSetToTuple {
 	 * @throws SQLException - thrown if accessing ResultSet fails
 	 * @throws NoSuchFieldException - thrown if a given ResultSet field name cannot be found in the Tuple
 	 */
-	public static <T extends Tuple> List<? extends Tuple> toList(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+	public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
 		var rows = new LinkedList<T>();
-		process(resultSet, tupleType, tuple -> rows.add((T)tuple));
+		process(resultSet, tupleType, tuple -> rows.add(tuple));
 		return rows;
 	}
 	
@@ -148,7 +148,7 @@ public class ResultSetToTuple {
 	 * @throws SQLException - thrown if accessing ResultSet fails
 	 * @throws NoSuchFieldException - thrown if a given ResultSet field name cannot be found in the Tuple
 	 */
-	public static <T extends Tuple> Stream<? extends Tuple> toStream(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+	public static <T extends Tuple> Stream<T> toStream(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
 		return toList(resultSet, tupleType).stream();
 	}
 

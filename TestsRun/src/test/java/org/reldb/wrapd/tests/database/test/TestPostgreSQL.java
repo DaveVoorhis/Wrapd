@@ -8,6 +8,7 @@ import org.reldb.wrapd.sqldb.Query;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.tuples.generated.TestSelect;
 
+
 /**
  * This project references generated code!
  * 
@@ -24,8 +25,22 @@ public class TestPostgreSQL {
 	@Test
 	public void testQueryToStream01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-			Query.queryAll(database, "SELECT * FROM $$tester", TestSelect.class)
-				.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
+		Query.queryAll(database, "SELECT * FROM $$tester", TestSelect.class)
+			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
+	}
+	
+	@Test
+	public void testQueryToStream02() throws SQLException, IOException {
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		Query.query(database, "SELECT * FROM $$tester", TestSelect.class)
+			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
+	}
+	
+	@Test
+	public void testQueryToStream03() throws SQLException, IOException {
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		Query.query(database, "SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelect.class, 3, 7)
+			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 }

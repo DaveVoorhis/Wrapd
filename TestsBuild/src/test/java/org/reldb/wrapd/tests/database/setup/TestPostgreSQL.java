@@ -39,11 +39,9 @@ public class TestPostgreSQL {
 	@Test
 	public void testCreateTupleType() throws SQLException {
 		assertTrue(setupCompleted);
-		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect");
-		database.new Transaction(connection -> {
-			Query.createTupleFromQueryAll(database, connection, DatabaseConfigurationAndSetup.getCodeDirectory(), "TestSelect", "SELECT * FROM $$tester");
-			return true;
-		});
+		final var tupleClassName = "TestSelect";
+		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName);
+		Query.createTupleFromQueryAll(database, DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
 }
