@@ -15,7 +15,7 @@ import org.reldb.wrapd.tuples.generated.*;
  * 
  * If it doesn't compile, it's because the TestsBuild tests need to be run.
  * 
- * I.e., go to TestsBuild and do a <i>mvn test</i>
+ * I.e., go to TestsBuild and do a <i>mvn test</i> or <i>mvn install</i>.
  * 
  * @author dave
  *
