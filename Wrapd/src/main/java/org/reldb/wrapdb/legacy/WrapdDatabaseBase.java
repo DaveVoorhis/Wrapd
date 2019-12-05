@@ -1,4 +1,4 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapdb.legacy;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.WrapdDatabase;
+import org.reldb.wrapdb.legacy.WrapdDatabase;
 
 /*
  * Base or generic database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 

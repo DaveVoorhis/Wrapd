@@ -1,4 +1,4 @@
-package org.reldb.wrapd.sqldb.postgresql;
+package org.reldb.wrapdb.legacy.postgresql;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,8 +12,9 @@ import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.WrapdDatabase;
-import org.reldb.wrapd.sqldb.WrapdDatabaseBase;
+import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
+import org.reldb.wrapdb.legacy.WrapdDatabase;
+import org.reldb.wrapdb.legacy.WrapdDatabaseBase;
 
 /*
  * PostgreSQL database definitions specific to the Wrapd framework: user management, etc., and wrapper around the Database database abstraction. 
@@ -26,12 +27,12 @@ public class WrapdDB extends WrapdDatabaseBase {
 		if (database != null)
 			return;
 		
-		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
-		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));
-		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
-		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
-		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
+		String dbServer = Database.nullTo(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_SERVER), "localhost");
+		String dbDatabase = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_NAME));
+		String dbUser = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_USER));
+		String dbPasswd = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_PASSWORD));
+		String dbPort = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_NONSTANDARD_PORT));
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 		
 		if (dbDatabase == null)
 			throw new IOException("Database connection failed. Please specify a database name.");
@@ -103,8 +104,8 @@ public class WrapdDB extends WrapdDatabaseBase {
 					+ "CONSTRAINT $$UserGroups_pkey PRIMARY KEY(userGroup, userID));");
 			progress.move(8,  "Creating Installation Administrator account in Admininstrator group.");
 			addUser(connection, "Installation Administrator", 
-					Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.SUPPORT_CONTACT), 
-					Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.INSTALLER_ADMIN_PASSWORD), 
+					Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.SUPPORT_CONTACT), 
+					Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.INSTALLER_ADMIN_PASSWORD), 
 					"Administrator");
 			progress.move(9, "Done.");
 			return true;

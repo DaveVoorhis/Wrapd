@@ -1,9 +1,8 @@
 package org.reldb.wrapd.sqldb.postgresql;
 
 import org.reldb.toolbox.configuration.ConfigurationSettings;
-import org.reldb.toolbox.configuration.RandomString;
 
-public class WrapDBConfiguration extends ConfigurationSettings {
+public class PostgreSQLConfiguration extends ConfigurationSettings {
 
 	public static final String INSTALLER_ADMIN_NAME = "installer_admin_name";
 	public static final String INSTALLER_ADMIN_PASSWORD = "installer_admin_password";
@@ -18,16 +17,12 @@ public class WrapDBConfiguration extends ConfigurationSettings {
     
 	/** Define configuration settings here. */
 	public void registration() {
-		add(INSTALLER_ADMIN_NAME, "admin", "admin account for initial installation and updates");
-		add(INSTALLER_ADMIN_PASSWORD, (new RandomString(10).nextString()), "admin password for initial installation and updates");
 		add(DATABASE_NAME, "mydatabase", "PostgreSQL database");
 		add(DATABASE_USER, "dbuser", "PostgreSQL database user");
 		add(DATABASE_PASSWORD, "dbpass", "PostgreSQL database password");
 		add(DATABASE_TABLENAME_PREFIX, "Wrapd_", "optional - table name prefix");
 		add(DATABASE_SERVER, "localhost", "PostgreSQL DBMS host");
 		add(DATABASE_NONSTANDARD_PORT, " ", "optional - PostgreSQL DBMS port");
-		add(DATABASE_DEFINITION, org.reldb.wrapd.sqldb.postgresql.WrapdDB.class.getPackageName(), "database definition class");
-		add(SUPPORT_CONTACT, "dave@armchair.mb.ca", "support contact address");
 	}
 	
 }

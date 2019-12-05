@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.postgresql.WrapDBConfiguration;
+import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
 
 public class DatabaseConfigurationAndSetup {
 
@@ -50,14 +50,14 @@ public class DatabaseConfigurationAndSetup {
 		
 		Configuration.setLocation(baseDir);
 		
-		Configuration.register(WrapDBConfiguration.class);
+		Configuration.register(PostgreSQLConfiguration.class);
 		
-		String dbServer = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_SERVER), "localhost");
-		String dbDatabase = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NAME));
-		String dbUser = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_USER));
-		String dbPasswd = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_PASSWORD));
-		String dbPort = Database.emptyToNull(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_NONSTANDARD_PORT));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(WrapDBConfiguration.class.getName(), WrapDBConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
+		String dbServer = Database.nullTo(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_SERVER), "localhost");
+		String dbDatabase = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_NAME));
+		String dbUser = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_USER));
+		String dbPasswd = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_PASSWORD));
+		String dbPort = Database.emptyToNull(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_NONSTANDARD_PORT));
+		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 		
 		if (dbDatabase == null)
 			throw new SQLException("[TSET] Please specify a database name in the configuration.");

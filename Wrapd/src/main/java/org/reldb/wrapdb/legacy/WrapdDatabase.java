@@ -1,9 +1,10 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapdb.legacy;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.utilities.ProgressIndicator;
+import org.reldb.wrapd.sqldb.Database;
 
 public interface WrapdDatabase {
 
