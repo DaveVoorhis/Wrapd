@@ -69,6 +69,52 @@ public class Database {
 	private void showSQL(String location, String query) {
 		log.debug(location + ": " + query);
 	}
+
+	/**
+	 * Return type from connection use.
+	 */
+	public class ConnectionUseResult<T> {
+		public final T returnValue;
+		public final Throwable exception;
+		
+		public ConnectionUseResult(T t) {
+			returnValue = t;
+			exception = null;
+		}
+		
+		public ConnectionUseResult(Throwable t) {
+			returnValue = null;
+			exception = t;
+		}
+	}
+	
+	/**
+	 * Used to define lambda expressions that make use of a Connection and return a value of type T.
+	 *
+	 * @param <T>
+	 */
+	@FunctionalInterface
+	public interface ConnectionUser<T> {
+		public ConnectionUseResult<T> go(Connection c);
+	}
+	
+	/**
+	 * Use a connection.
+	 * 
+	 * @param <T>. Type of return value from use of connection.
+	 * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
+	 * @return A value of type T as a result of using a Connection.
+	 * @throws SQLException 
+	 */
+	public <T> ConnectionUseResult<T> useConnection(ConnectionUser<T> connectionUser) throws SQLException {
+		try (Connection conn = pool.getConnection()) {
+			try {
+				return new ConnectionUseResult(connectionUser.go(conn));
+			} catch (Throwable t) {
+				return new ConnectionUseResult(t);
+			}
+		}
+	}
 	
 	/**
 	 * Used to define lambda expressions that receive a ResultSet for processing. T specifies the type of the return value from processing the ResultSet.
@@ -147,9 +193,8 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			return queryAll(conn, query, receiver);
-		}
+		ConnectionUseResult<T> result = (ConnectionUseResult<T>) useConnection(conn -> queryAll(conn, query, receiver));
+		if (result == )
 	}
 	
 	/**
