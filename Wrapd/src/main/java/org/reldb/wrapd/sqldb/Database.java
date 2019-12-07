@@ -1,6 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,7 +16,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -319,6 +323,10 @@ public class Database {
 	public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object ... parms) throws SQLException {
 		var sqlized = replaceTableNames(query);
 		showSQL("processPreparedStatement: ", sqlized);
+		int argCount = parms.length;
+		int parmCount = (int)sqlized.chars().filter(ch -> ch == '?').count();
+		if (argCount != parmCount)
+			throw new IllegalArgumentException("ERROR: processPreparedStatement: Number of parameters (" + parmCount + ") doesn't match number of arguments (" + argCount + ") in " + sqlized);
 		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
 			setupParms(statement, parms);
 			try {
@@ -453,14 +461,16 @@ public class Database {
 	 * @throws SQLException on failure
 	 */
 	public boolean insert(Connection connection, String tableName, Tuple tuple) throws SQLException {
-		var fields = tuple.getClass().getFields();
-		var columnNames = Arrays.stream(fields)
-			.map(field -> field.getName())
-			.collect(Collectors.joining(", "));
-			
-		String sql = "INSERT INTO " + tableName + "(" + columnNames + ") VALUES (" + String.join(", ", "?".repeat(fields.length)) + ")";
-
-		var columnValues = Arrays.stream(fields)
+		Supplier<Stream<Field>> fields = () -> Arrays.stream(tuple.getClass().getFields());
+		Supplier<Stream<Field>> dataFields = () -> fields.get().filter(field -> !Modifier.isStatic(field.getModifiers()));
+		Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
+		var columnNames = columns.get().collect(Collectors.joining(", "));
+		var parms = "?"
+				.repeat((int)columns.get().count())
+				.replaceAll(".(?!$)", "$0, ");
+		var sql = "INSERT INTO " + tableName + "(" + columnNames + ") VALUES (" + parms + ")";
+		var columnValues = dataFields
+			.get()
 			.map(field -> {
 				try {
 					return field.get(tuple);
@@ -470,7 +480,6 @@ public class Database {
 				}
 			})
 			.toArray(Object[]::new);
-
 		return update(connection, sql, columnValues);
 	}
 
