@@ -51,7 +51,7 @@ public class TestPostgreSQL {
 			var tuple = new TestSelect();
 			tuple.x = x;
 			tuple.y = x * 2;
-			Update.insert(database, "$$tester", tuple);
+			database.insert("$$tester", tuple);
 		}
 		Query.query(database, "SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 100)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));

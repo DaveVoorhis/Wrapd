@@ -10,14 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.reldb.wrapd.tuples.Tuple;
 
 import com.mchange.v2.c3p0.DataSources;
 
@@ -75,14 +78,14 @@ public class Database {
 	 */
 	public class ConnectionUseResult<T> {
 		public final T returnValue;
-		public final Throwable exception;
+		public final SQLException exception;
 		
 		public ConnectionUseResult(T t) {
 			returnValue = t;
 			exception = null;
 		}
 		
-		public ConnectionUseResult(Throwable t) {
+		public ConnectionUseResult(SQLException t) {
 			returnValue = null;
 			exception = t;
 		}
@@ -95,25 +98,40 @@ public class Database {
 	 */
 	@FunctionalInterface
 	public interface ConnectionUser<T> {
-		public ConnectionUseResult<T> go(Connection c);
+		public T go(Connection c) throws SQLException;
 	}
 	
 	/**
 	 * Use a connection.
 	 * 
-	 * @param <T>. Type of return value from use of connection.
+	 * @param <T> type of return value from use of connection.
 	 * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
-	 * @return A value of type T as a result of using a Connection.
+	 * @return A ConnectionUseResult<T> containing either a T (indicating success) or a SQLException.
 	 * @throws SQLException 
 	 */
-	public <T> ConnectionUseResult<T> useConnection(ConnectionUser<T> connectionUser) throws SQLException {
+	public <T> ConnectionUseResult<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
 		try (Connection conn = pool.getConnection()) {
 			try {
-				return new ConnectionUseResult(connectionUser.go(conn));
-			} catch (Throwable t) {
-				return new ConnectionUseResult(t);
+				return new ConnectionUseResult<T>(connectionUser.go(conn));
+			} catch (SQLException t) {
+				return new ConnectionUseResult<T>(t);
 			}
 		}
+	}
+	
+	/**
+	 * Use a connection.
+	 * 
+	 * @param <T> type of return value from user of connection.
+	 * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
+	 * @return A value of type T as a result of using a Connection.
+	 * @throws SQLException
+	 */
+	public <T> T useConnection(ConnectionUser<T> connectionUser) throws SQLException {
+		var result = processConnection(connectionUser);
+		if (result.exception != null)
+			throw result.exception;
+		return result.returnValue;
 	}
 	
 	/**
@@ -141,7 +159,7 @@ public class Database {
 	public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(query);
-			showSQL("Database 0: ", sqlized);
+			showSQL("queryAll: ", sqlized);
 			try (ResultSet rs = statement.executeQuery(sqlized)) {
 				return receiver.go(rs);
 			}
@@ -153,14 +171,15 @@ public class Database {
 	 * 
 	 * @param connection - java.sql.Connection
 	 * @param sqlStatement - String SQL query
+	 * @return true if a ResultSet is returned, false otherwise
 	 * 
 	 * @throws SQLException
 	 */
-	public void updateAll(Connection connection, String sqlStatement) throws SQLException {
+	public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {
 		try (Statement statement = connection.createStatement()) {
 			var sqlized = replaceTableNames(sqlStatement);
-			showSQL("Database 1: ", sqlized);
-			statement.execute(sqlized);
+			showSQL("updateAll: ", sqlized);
+			return statement.execute(sqlized);
 		}
 	}
 	
@@ -193,21 +212,19 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
-		ConnectionUseResult<T> result = (ConnectionUseResult<T>) useConnection(conn -> queryAll(conn, query, receiver));
-		if (result == )
+		return useConnection(conn -> queryAll(conn, query, receiver));
 	}
 	
 	/**
 	 * Issue an update query.
 	 * 
 	 * @param sqlStatement - String SQL query
+	 * @return true if a ResultSet is returned, false otherwise
 	 * 
 	 * @throws SQLException
 	 */
-	public void updateAll(String sqlStatement) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			updateAll(conn, sqlStatement);
-		}
+	public boolean updateAll(String sqlStatement) throws SQLException {
+		return useConnection(conn -> updateAll(conn, sqlStatement));
 	}
 	
 	/**
@@ -220,9 +237,7 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public Object valueOfAll(String query, String columnName) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			return valueOfAll(conn, query, columnName);
-		}
+		return useConnection(conn -> valueOfAll(conn, query, columnName));
 	}
 	
 	/**
@@ -264,6 +279,71 @@ public class Database {
 		}		
 	}
 	
+	
+	/**
+	 * Return type from parametric query (prepared statement) use.
+	 */
+	public class PreparedStatementUseResult<T> {
+		public final T returnValue;
+		public final SQLException exception;
+		
+		public PreparedStatementUseResult(T t) {
+			returnValue = t;
+			exception = null;
+		}
+		
+		public PreparedStatementUseResult(SQLException t) {
+			returnValue = null;
+			exception = t;
+		}
+	}
+	
+	/**
+	 * Used to define lambda expressions that make use of a PreparedStatement and return a value of type T.
+	 *
+	 * @param <T>
+	 */
+	@FunctionalInterface
+	public interface PreparedStatementUser<T> {
+		public T go(PreparedStatement ps) throws SQLException;
+	}
+	
+	/**
+	 * Use a prepared statement.
+	 * 
+	 * @param <T> type of return value from use of connection.
+	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
+	 * @return A PreparedStatementUseResult<T> containing either a T (indicating success) or a SQLException.
+	 * @throws SQLException 
+	 */
+	public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object ... parms) throws SQLException {
+		var sqlized = replaceTableNames(query);
+		showSQL("processPreparedStatement: ", sqlized);
+		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
+			setupParms(statement, parms);
+			try {
+				return new PreparedStatementUseResult<T>(preparedStatementUser.go(statement));
+			} catch (SQLException t) {
+				return new PreparedStatementUseResult<T>(t);
+			}
+		}
+	}
+	
+	/**
+	 * Use a prepared statement.
+	 * 
+	 * @param <T> type of return value from user of connection.
+	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
+	 * @return A value of type T as a result of using a PreparedStatement.
+	 * @throws SQLException
+	 */
+	public <T> T usePreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object ... parms) throws SQLException {
+		var result = processPreparedStatement(preparedStatementUser, connection, query, parms);
+		if (result.exception != null)
+			throw result.exception;
+		return result.returnValue;
+	}
+	
 	/**
 	 * Issue a parametric SELECT query with '?' substitutions, process it, and return the result
 	 * 
@@ -278,14 +358,11 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
-		var sqlized = replaceTableNames(query);
-		showSQL("Database 2: ", sqlized);
-		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
-			setupParms(statement, parms);
+		return usePreparedStatement(statement -> {
 			try (ResultSet rs = statement.executeQuery()) {
 				return receiver.go(rs);
 			}
-		}
+		}, connection, query, parms);
 	}
 
 	/**
@@ -294,16 +371,12 @@ public class Database {
 	 * @param connection - java.sql.Connection
 	 * @param query - String SQL query
 	 * @param parms - parameters
+	 * @return true if a ResultSet is returned, false otherwise
 	 * 
 	 * @throws SQLException
 	 */
-	public void update(Connection connection, String query, Object ... parms) throws SQLException {
-		var sqlized = replaceTableNames(query);
-		showSQL("Database 3: ", sqlized);
-		try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
-			setupParms(statement, parms);
-			statement.execute();
-		}
+	public boolean update(Connection connection, String query, Object ... parms) throws SQLException {
+		return usePreparedStatement(statement -> statement.execute(), connection, query, parms);
 	}
 	
 	/**
@@ -339,9 +412,7 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public <T> T query(String query, ResultSetReceiver<T> receiver, Object ... parms) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			return query(conn, query, receiver, parms);
-		}
+		return useConnection(conn -> query(conn, query, receiver, parms));
 	}
 	
 	/**
@@ -349,13 +420,12 @@ public class Database {
 	 * 
 	 * @param query - String SQL query
 	 * @param parms - parameters
+	 * @return true if a ResultSet is returned, false otherwise
 	 * 
 	 * @throws SQLException
 	 */
-	public void update(String query, Object ... parms) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			update(conn, query, parms);
-		}
+	public boolean update(String query, Object ... parms) throws SQLException {
+		return useConnection(conn -> update(conn, query, parms));
 	}
 	
 	/**
@@ -370,9 +440,50 @@ public class Database {
 	 * @throws SQLException
 	 */	
 	public Object valueOf(String query, String columnName, Object ... parms) throws SQLException {
-		try (Connection conn = pool.getConnection()) {
-			return valueOf(conn, query, columnName, parms);
-		}
+		return useConnection(conn -> valueOf(conn, query, columnName, parms));
+	}
+	
+	/**
+	 * Insert a given Tuple.
+	 * 
+	 * @param connection - java.sql.Connection
+	 * @param tableName - table name
+	 * @param tuple - Tuple derivative.
+	 * @return - should return false
+	 * @throws SQLException on failure
+	 */
+	public boolean insert(Connection connection, String tableName, Tuple tuple) throws SQLException {
+		var fields = tuple.getClass().getFields();
+		var columnNames = Arrays.stream(fields)
+			.map(field -> field.getName())
+			.collect(Collectors.joining(", "));
+			
+		String sql = "INSERT INTO " + tableName + "(" + columnNames + ") VALUES (" + String.join(", ", "?".repeat(fields.length)) + ")";
+
+		var columnValues = Arrays.stream(fields)
+			.map(field -> {
+				try {
+					return field.get(tuple);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					log.error("ERROR: insert failed on field " + field.getName() + ": " + e);
+					return null;
+				}
+			})
+			.toArray(Object[]::new);
+
+		return update(connection, sql, columnValues);
+	}
+
+	/**
+	 * Insert a given Tuple.
+	 * 
+	 * @param tableName - table name
+	 * @param tuple - Tuple derivative.
+	 * @return - should return false
+	 * @throws SQLException on failure
+	 */
+	public boolean insert(String tableName, Tuple tuple) throws SQLException {
+		return useConnection(conn -> insert(conn, tableName, tuple));
 	}
 
 	/**
@@ -419,7 +530,6 @@ public class Database {
 			this.success = false;
 			this.thrown = thrown;
 		}
-		
 	}
 	
 	/**
