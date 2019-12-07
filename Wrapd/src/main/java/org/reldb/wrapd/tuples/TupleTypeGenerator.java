@@ -169,7 +169,7 @@ import org.reldb.wrapd.il8n.Strings;
 		if (copyFrom == null)
 			return "";
 		return
-			"\t/** Method to copy from specified tuple to this tuple.\n\t@param source - tuple to copy from */\n" +
+			"\n\t/** Method to copy from specified tuple to this tuple.\n\t@param source - tuple to copy from */\n" +
 			"\tpublic void copyFrom(" + copyFrom.tupleName + " source) {\n" +
 				attributes.stream().filter(entry -> copyFrom.typeOf(entry.name) != null)
 					.map(entry -> "\t\tthis." + entry.name + " = source." + entry.name + ";\n").collect(Collectors.joining()) +
@@ -197,7 +197,7 @@ import org.reldb.wrapd.il8n.Strings;
 	
 	private String getToStringCode() {
 		return
-			"\t/** Create string representation of this tuple. */\n" +
+			"\n\t/** Create string representation of this tuple. */\n" +
 			"\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixIfPresent(getContentString(), ", ") + ");\n\t}\n";
 	}
 	
@@ -228,11 +228,25 @@ import org.reldb.wrapd.il8n.Strings;
 			"import org.reldb.wrapd.tuples.Tuple;\n\n" +
 			"/** " + tupleName + " tuple class version " + serialValue + " */\n" +
 			"public class " + tupleName + " implements Tuple {\n" +
-				"\t/** Version number */\n" +
+				"\n\t/** Version number */\n" +
 				"\tpublic static final long serialVersionUID = " + serialValue + ";\n" +
+				"\n\t/** Backup for updating purposes. */\n" +
+				"\tprivate " + tupleName + " __backup = null;\n" +
+				"\n\t/** Generate backup for updating purposes.\n" +
+				"\t* @throws CloneNotSupportedException\n" +
+				"\t*/\n" +
+				"\tpublic void makeBackup() throws CloneNotSupportedException {\n" +
+				"\t\tthis.__backup = (" + tupleName + ")super.clone();\n" +
+				"\t}\n" +
+				"\n\t/** Obtain backup for updating purposes.\n" +
+				"\t* @return backup of this Tuple \n" +
+				"\t*/\n" +
+				"\tpublic " + tupleName + " getBackup() {\n" +
+				"\t\treturn this.__backup;\n" +
+				"\t}\n" +
 				attributes
 					.stream()
-					.map(entry -> "\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
+					.map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
 					.collect(Collectors.joining()) +
 				getCopyFromCode() +
 				getToStringCode() +
