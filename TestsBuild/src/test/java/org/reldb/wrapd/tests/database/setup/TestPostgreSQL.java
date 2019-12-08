@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.Query;
 import org.reldb.wrapd.sqldb.ResultSetToTuple;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
@@ -41,7 +40,7 @@ public class TestPostgreSQL {
 		assertTrue(setupCompleted);
 		final var tupleClassName = "TestSelect";
 		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName);
-		Query.createTupleFromQueryAll(database, DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
 }

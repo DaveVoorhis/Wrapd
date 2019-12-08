@@ -47,6 +47,12 @@ public class TupleTypeGenerator {
 				.filter(field -> !Modifier.isStatic(field.getModifiers()) && Modifier.isPublic(field.getModifiers()));
 	}
 	
+	/**
+	 * Create a generator of compiled Tuple-derived classes, which can be used to conveniently receive SELECT query results and generate INSERT and UPDATE queries.
+	 *  
+	 * @param dir Directory into which generated class(es) will be put.
+	 * @param tupleName Name of generated tuple class.
+	 */
 	public TupleTypeGenerator(String dir, String tupleName) {
 		if (tupleName.startsWith(tupleTypePackage))
 			tupleName = tupleName.substring(tupleTypePackage.length() + 1);
@@ -100,7 +106,6 @@ public class TupleTypeGenerator {
 	
 	/** Return true if this tuple definition already exists.
 	 * 
-import org.reldb.wrapd.il8n.Strings;
 	 * @return - true if this tuple definition already exists, false if it is new.
 	 */
 	public boolean isExisting() {
@@ -229,15 +234,17 @@ import org.reldb.wrapd.il8n.Strings;
 			"public class " + tupleName + " implements Tuple {\n" +
 				"\n\t/** Version number */\n" +
 				"\tpublic static final long serialVersionUID = " + serialValue + ";\n" +
-				"\n\t/** Backup for updating purposes. */\n" +
+				"\n\t// Backup for updating purposes.\n" +
 				"\tprivate " + tupleName + " __backup = null;\n" +
-				"\n\t/** Generate backup for updating purposes.\n" +
+				"\n\t/**\n" +
+				"\t* Generate backup for updating purposes.\n" +
 				"\t* @throws CloneNotSupportedException\n" +
 				"\t*/\n" +
 				"\tpublic void makeBackup() throws CloneNotSupportedException {\n" +
 				"\t\tthis.__backup = (" + tupleName + ")super.clone();\n" +
 				"\t}\n" +
-				"\n\t/** Obtain backup for updating purposes.\n" +
+				"\n\t/**\n" +
+				"\t* Obtain backup for updating purposes.\n" +
 				"\t* @return backup of this Tuple \n" +
 				"\t*/\n" +
 				"\tpublic " + tupleName + " getBackup() {\n" +

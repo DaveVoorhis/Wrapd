@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
-import org.reldb.wrapd.sqldb.Query;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
 import org.reldb.wrapd.tuples.generated.*;
@@ -25,26 +24,26 @@ public class TestPostgreSQL {
 	@Test
 	public void testQueryToStream01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-		Query.queryAll(database, "SELECT * FROM $$tester", TestSelect.class)
+		database.queryAll("SELECT * FROM $$tester", TestSelect.class)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
 	public void testQueryToStream02() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-		Query.query(database, "SELECT * FROM $$tester", TestSelect.class)
+		database.query("SELECT * FROM $$tester", TestSelect.class)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
 	public void testQueryToStream03() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-		Query.query(database, "SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelect.class, 3, 7)
+		database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelect.class, 3, 7)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
-	public void testUpdate01() throws SQLException, IOException {
+	public void testInsert01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
 		for (int x = 100; x < 200; x++) {
 			var tuple = new TestSelect();
@@ -52,8 +51,23 @@ public class TestPostgreSQL {
 			tuple.y = x * 2;
 			database.insert("$$tester", tuple);
 		}
-		Query.query(database, "SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 100)
+		database.query("SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 100)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
 	}
+	
+	/*
+	@Test
+	public void testUpdate01() throws SQLException, IOException {
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		Query.queryForUpdate(database, "SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 100)
+			.forEach(tuple -> {
+				if (tuple.x >= 120 && tuple.x <= 130) {
+					tuple.x *= 100;
+					tuple.y *= 100;
+					// Update something here...
+				}
+			});
+	}
+	*/
 	
 }
