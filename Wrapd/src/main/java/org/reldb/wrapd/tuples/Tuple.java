@@ -16,7 +16,7 @@ import org.reldb.wrapd.sqldb.Database;
  * @author dave
  *
  */
-public abstract class Tuple implements Serializable {
+public abstract class Tuple implements Serializable, Cloneable {
 	
 	private static final long serialVersionUID = 1L;
 	
