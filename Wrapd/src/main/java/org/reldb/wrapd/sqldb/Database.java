@@ -1,7 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
@@ -14,8 +13,6 @@ import java.sql.Types;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.Vector;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.sql.DataSource;
@@ -24,14 +21,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
 import org.reldb.wrapd.tuples.Tuple;
-import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 import com.mchange.v2.c3p0.DataSources;
 
 /** Database access layer. */
 public class Database {
 	
-	private static Logger log = LogManager.getLogger(Database.class.toString());
+	public static final Logger log = LogManager.getLogger(Database.class.toString());
 	
 	private DataSource pool = null;	
 	private String dbTablenamePrefix = "";
@@ -69,7 +65,7 @@ public class Database {
 	}
 	
 	// Wherever $$ appears, replace it with dbTableNamePrefix 
-	private String replaceTableNames(String query) {
+	public String replaceTableNames(String query) {
 		return query.replaceAll("\\$\\$", dbTablenamePrefix);
 	}
 	
@@ -169,7 +165,7 @@ public class Database {
 			}
 		}
 	}
-	
+		
 	/**
 	 * Issue an update query.
 	 * 
@@ -449,50 +445,7 @@ public class Database {
 	 */	
 	public Object valueOf(String query, String columnName, Object ... parms) throws SQLException {
 		return useConnection(conn -> valueOf(conn, query, columnName, parms));
-	}
-	
-	/**
-	 * Insert a given Tuple.
-	 * 
-	 * @param connection - java.sql.Connection
-	 * @param tableName - table name
-	 * @param tuple - Tuple derivative.
-	 * @return - should return false
-	 * @throws SQLException on failure
-	 */
-	public boolean insert(Connection connection, String tableName, Tuple tuple) throws SQLException {
-		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(tuple.getClass());
-		Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
-		var columnNames = columns.get().collect(Collectors.joining(", "));
-		var parms = "?"
-				.repeat((int)columns.get().count())
-				.replaceAll(".(?!$)", "$0, ");
-		var sql = "INSERT INTO " + tableName + "(" + columnNames + ") VALUES (" + parms + ")";
-		var columnValues = dataFields
-			.get()
-			.map(field -> {
-				try {
-					return field.get(tuple);
-				} catch (IllegalArgumentException | IllegalAccessException e) {
-					log.error("ERROR: insert failed on field " + field.getName() + ": " + e);
-					return null;
-				}
-			})
-			.toArray(Object[]::new);
-		return update(connection, sql, columnValues);
-	}
-
-	/**
-	 * Insert a given Tuple.
-	 * 
-	 * @param tableName - table name
-	 * @param tuple - Tuple derivative.
-	 * @return - should return false
-	 * @throws SQLException on failure
-	 */
-	public boolean insert(String tableName, Tuple tuple) throws SQLException {
-		return useConnection(conn -> insert(conn, tableName, tuple));
-	}
+	}	
 	
 	/**
 	 * Obtain a lambda to generate a new Tuple-derived class from a ResultSet.
@@ -601,6 +554,24 @@ public class Database {
 			}
 		};
 	}
+
+	/**
+	 * Obtain a lambda that converts a ResultSet to a Stream<T> where T extends Tuple, and each Tuple is configured for a future update.
+	 * 
+	 * @param <T> - T extends Tuple
+	 * @param tupleClass - the stream will be of instances of tupleClass
+	 * @return Stream<T> - with backup() invoked for each T instance
+	 */
+	public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
+		return result -> {
+			try {
+				return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
+			} catch (Throwable e) {
+				log.error("ERROR: ResultSet to Stream conversion failed due to: ", e);
+				return null;
+			}
+		};
+	}
 	
 	/** 
 	 * Obtain a stream of Tuple derivatives from a query evaluation.
@@ -617,6 +588,20 @@ public class Database {
 	}
 	
 	/** 
+	 * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+	 * 
+	 * @param <T> - T extends Tuple.
+	 * @param connection - a java.sql.Connection, typically obtained via a Transaction
+	 * @param query - query string
+	 * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+	 * @return Stream<T>
+	 * @throws SQLException
+	 */
+	public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
+		return queryAll(connection, query, newResultSetToStreamForUpdate(tupleClass));
+	}
+	
+	/** 
 	 * Obtain a stream of Tuple derivatives from a query evaluation.
 	 * 
 	 * @param <T> - T extends Tuple.
@@ -627,6 +612,19 @@ public class Database {
 	 */
 	public <T extends Tuple> Stream<T> queryAll(String query, Class<T> tupleClass) throws SQLException {
 		return queryAll(query, newResultSetToStream(tupleClass));
+	}
+	
+	/** 
+	 * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+	 * 
+	 * @param <T> - T extends Tuple.
+	 * @param query - query string
+	 * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+	 * @return Stream<T>
+	 * @throws SQLException
+	 */
+	public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
+		return queryAll(query, newResultSetToStreamForUpdate(tupleClass));
 	}
 	
 	/** 
@@ -642,6 +640,20 @@ public class Database {
 	public <T extends Tuple> Stream<T> query(Connection connection, String query, Class<T> tupleClass, Object ... parms) throws SQLException {
 		return query(connection, query, newResultSetToStream(tupleClass), parms);
 	}
+
+	/** 
+	 * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+	 * 
+	 * @param <T> - T extends Tuple.
+	 * @param connection - a java.sql.Connection, typically obtained via a Transaction
+	 * @param query - query string
+	 * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+	 * @return Stream<T>
+	 * @throws SQLException
+	 */
+	public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, String query, Class<T> tupleClass, Object ... parms) throws SQLException {
+		return query(connection, query, newResultSetToStreamForUpdate(tupleClass), parms);
+	}
 	
 	/** 
 	 * Obtain a stream of Tuple derivatives from a query evaluation.
@@ -654,6 +666,19 @@ public class Database {
 	 */
 	public <T extends Tuple> Stream<T> query(String query, Class<T> tupleClass, Object ... parms) throws SQLException {
 		return query(query, newResultSetToStream(tupleClass), parms);
+	}
+
+	/** 
+	 * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+	 * 
+	 * @param <T> - T extends Tuple.
+	 * @param query - query string
+	 * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+	 * @return Stream<T>
+	 * @throws SQLException
+	 */
+	public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object ... parms) throws SQLException {
+		return query(query, newResultSetToStreamForUpdate(tupleClass), parms);
 	}
 
 	/**
@@ -743,6 +768,33 @@ public class Database {
 		public TransactionResult getResult() {
 			return result;
 		}
+	}
+	
+	/**
+	 * Get primary key for a given table. 
+	 * 
+	 * @param tableName - table name
+	 * @param connection - java.sql.Connection
+	 * @return - array of column names comprising the primary key
+	 * 
+	 * @throws SQLException
+	 */
+	public String[] getKeyColumnNamesFor(Connection connection, String tableName) throws SQLException {
+		var metadata = connection.getMetaData();
+		var tabledata = metadata.getTables(null, null, "TableName" , new String[]{"TABLE"});
+		return null;
+	}
+	
+	/**
+	 * Get primary key for a given table. 
+	 * 
+	 * @param tableName - table name
+	 * @return - array of column names comprising the primary key
+	 * 
+	 * @throws SQLException
+	 */
+	public String[] getKeyColumnNamesFor(String tableName) throws SQLException {
+		return useConnection(connection -> getKeyColumnNamesFor(connection, tableName));
 	}
 	
 	/**

@@ -2,7 +2,7 @@ package org.reldb.wrapd.data;
 
 import org.reldb.wrapd.tuples.Tuple;
 
-public class CatalogEntry implements Tuple {
+public class CatalogEntry extends Tuple {
 
 	private static final long serialVersionUID = 1L;
 	

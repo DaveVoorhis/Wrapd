@@ -231,25 +231,9 @@ public class TupleTypeGenerator {
 			"/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
 			"import org.reldb.wrapd.tuples.Tuple;\n\n" +
 			"/** " + tupleName + " tuple class version " + serialValue + " */\n" +
-			"public class " + tupleName + " implements Tuple {\n" +
+			"public class " + tupleName + " extends Tuple {\n" +
 				"\n\t/** Version number */\n" +
 				"\tpublic static final long serialVersionUID = " + serialValue + ";\n" +
-				"\n\t// Backup for updating purposes.\n" +
-				"\tprivate " + tupleName + " __backup = null;\n" +
-				"\n\t/**\n" +
-				"\t* Generate backup for updating purposes.\n" +
-				"\t* @throws CloneNotSupportedException\n" +
-				"\t*/\n" +
-				"\tpublic void makeBackup() throws CloneNotSupportedException {\n" +
-				"\t\tthis.__backup = (" + tupleName + ")super.clone();\n" +
-				"\t}\n" +
-				"\n\t/**\n" +
-				"\t* Obtain backup for updating purposes.\n" +
-				"\t* @return backup of this Tuple \n" +
-				"\t*/\n" +
-				"\tpublic " + tupleName + " getBackup() {\n" +
-				"\t\treturn this.__backup;\n" +
-				"\t}\n" +
 				attributes
 					.stream()
 					.map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
