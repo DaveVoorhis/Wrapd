@@ -2,7 +2,6 @@ package org.reldb.wrapd.sqldb;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.Date;
@@ -12,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.Vector;
@@ -25,6 +23,7 @@ import javax.sql.DataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.tuples.Tuple;
+import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 import com.mchange.v2.c3p0.DataSources;
 
@@ -461,8 +460,7 @@ public class Database {
 	 * @throws SQLException on failure
 	 */
 	public boolean insert(Connection connection, String tableName, Tuple tuple) throws SQLException {
-		Supplier<Stream<Field>> fields = () -> Arrays.stream(tuple.getClass().getFields());
-		Supplier<Stream<Field>> dataFields = () -> fields.get().filter(field -> !Modifier.isStatic(field.getModifiers()));
+		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(tuple.getClass());
 		Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
 		var columnNames = columns.get().collect(Collectors.joining(", "));
 		var parms = "?"
