@@ -226,18 +226,22 @@ public class TupleTypeGenerator {
 		loader.unload(getTupleClassName());
 		if (oldTupleName != null)
 			oldTupleName = null;
+		var version =
+			"\n\t/** Version number */\n" +
+			"\tpublic static final long serialVersionUID = " + serialValue + ";\n";	
+		var attributeDefs =
+			attributes
+				.stream()
+				.map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
+				.collect(Collectors.joining());
 		var tupleDef = 
 			"package " + tupleTypePackage + ";\n\n" +
 			"/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
 			"import org.reldb.wrapd.tuples.Tuple;\n\n" +
 			"/** " + tupleName + " tuple class version " + serialValue + " */\n" +
 			"public class " + tupleName + " extends Tuple {\n" +
-				"\n\t/** Version number */\n" +
-				"\tpublic static final long serialVersionUID = " + serialValue + ";\n" +
-				attributes
-					.stream()
-					.map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
-					.collect(Collectors.joining()) +
+				version +
+				attributeDefs +
 				getCopyFromCode() +
 				getToStringCode() +
 			"}";
