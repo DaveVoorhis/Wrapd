@@ -156,10 +156,9 @@ import org.reldb.wrapd.il8n.Strings;
 	 * @param newName - the new name, which must follow Java class name identifier rules.
 	 * @return - a new TupleTypeGenerator which is a copy of this one.
 	 */
-	@SuppressWarnings("unchecked")
 	public TupleTypeGenerator copyTo(String newName) {
 		var target = new TupleTypeGenerator(dir, newName);
-		target.attributes = (LinkedList<Attribute>)attributes.clone();
+		target.attributes.addAll(attributes);
 		target.serialValue = serialValue + 1;
 		target.copyFrom = this;
 		return target;
