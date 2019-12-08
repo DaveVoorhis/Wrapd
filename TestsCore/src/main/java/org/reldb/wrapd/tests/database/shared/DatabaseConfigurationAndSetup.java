@@ -35,7 +35,7 @@ public class DatabaseConfigurationAndSetup {
 	public static void databaseCreate(String string, Database database, Connection connection) throws SQLException {
 		database.updateAll(connection, "CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
 		database.updateAll(connection, "INSERT INTO $$version VALUES (0, 0);");
-		database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER);");
+		database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
 		for (int i = 0; i < 20; i++) {
 			database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
 		}

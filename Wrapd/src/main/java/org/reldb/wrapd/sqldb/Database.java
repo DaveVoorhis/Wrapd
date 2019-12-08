@@ -781,7 +781,10 @@ public class Database {
 	 */
 	public String[] getKeyColumnNamesFor(Connection connection, String tableName) throws SQLException {
 		var metadata = connection.getMetaData();
-		var tabledata = metadata.getTables(null, null, "TableName" , new String[]{"TABLE"});
+		var keys = metadata.getPrimaryKeys(null, null, replaceTableNames(tableName));
+		while (keys.next()) {
+			System.out.println("Primary Key :" + keys.getString(4));
+		}
 		return null;
 	}
 	

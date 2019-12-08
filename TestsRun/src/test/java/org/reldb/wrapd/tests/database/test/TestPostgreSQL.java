@@ -58,6 +58,7 @@ public class TestPostgreSQL {
 	@Test
 	public void testUpdate01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		System.out.println("********** primary key is " + database.getKeyColumnNamesFor("$$tester"));
 		database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelect.class)
 			.forEach(tuple -> {
 				tuple.x *= 100;
