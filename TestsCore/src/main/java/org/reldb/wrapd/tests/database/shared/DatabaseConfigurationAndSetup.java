@@ -1,7 +1,6 @@
 package org.reldb.wrapd.tests.database.shared;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
@@ -19,26 +18,26 @@ public class DatabaseConfigurationAndSetup {
 		Directory.rmAll(DatabaseConfigurationAndSetup.getCodeDirectory());
 	}
 
-	public static void databaseTeardown(String prompt, Database database) {
+	private static void dropTable(Database database, String prompt, String tableName) {
 		try {
-			database.updateAll("DROP TABLE $$version;");
-		} catch (SQLException se) {
-			System.out.println(prompt + " ERROR: " + se);
-		}
-		try {
-			database.updateAll("DROP TABLE $$tester;");
+			database.updateAll("DROP TABLE " + tableName);
 		} catch (SQLException se) {
 			System.out.println(prompt + " ERROR: " + se);
 		}		
 	}
+	
+	public static void databaseTeardown(String prompt, Database database) {
+		dropTable(database, prompt, "$$version");
+		dropTable(database, prompt, "$$tester");
+	}
 
-	public static void databaseCreate(String string, Database database, Connection connection) throws SQLException {
-		database.updateAll(connection, "CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
-		database.updateAll(connection, "INSERT INTO $$version VALUES (0, 0);");
-		database.updateAll(connection, "CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
-		for (int i = 0; i < 20; i++) {
-			database.update(connection, "INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
-		}
+	public static void databaseCreate(String string, Database database) throws SQLException {
+		database.transact(conn -> {
+			database.updateAll(conn, "CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
+			database.updateAll(conn, "INSERT INTO $$version VALUES (0, 0);");
+			database.updateAll(conn, "CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
+			return true;
+		});
 	}
 
 	public static Database getPostgreSQLDatabase(String prompt) throws SQLException, IOException {

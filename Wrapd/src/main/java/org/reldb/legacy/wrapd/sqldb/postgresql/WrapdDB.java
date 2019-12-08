@@ -66,7 +66,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	@Override
 	public void initialise(ProgressIndicator progress) throws SQLException {
 		progress.initialise(9);
-		database.new Transaction(connection -> {
+		database.transact(connection -> {
 			progress.move(1, "Creating Version table.");
 			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
 			progress.move(2, "Initialising Version.");
@@ -112,7 +112,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	}
 
 	private void version1() throws SQLException {
-		database.new Transaction(connection -> {	
+		database.transact(connection -> {	
 			log.info("Wrapd framework database update version 1");
 			getDatabase().update("ALTER TABLE $$Users ADD COLUMN lastLogin TIMESTAMP");
 			return true;
@@ -142,7 +142,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	
 	@Override
 	public void addGroup(String groupName, String groupDescription, String privilege) throws SQLException {
-		database.new Transaction(connection -> {
+		database.transact(connection -> {
 			addGroup(connection, groupName, groupDescription, privilege);
 			return true;
 		});
@@ -164,7 +164,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 	
 	@Override
 	public void addUser(String userName, String email, String password, String group) throws SQLException {		
-		database.new Transaction(connection -> {
+		database.transact(connection -> {
 			addUser(connection, userName, email, password, group);
 			return true;
 		});

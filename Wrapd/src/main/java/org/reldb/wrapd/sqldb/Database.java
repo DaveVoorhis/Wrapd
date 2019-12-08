@@ -714,14 +714,14 @@ public class Database {
 		public final boolean success;
 		
 		/** Null if transaction committed. Non-null, and contains Throwable if transaction rolled back due to exception. */ 
-		public final Throwable thrown;
+		public final SQLException thrown;
 		
 		protected TransactionResult(boolean success) {
 			this.success = success;
 			this.thrown = null;
 		}
 		
-		protected TransactionResult(Throwable thrown) {
+		protected TransactionResult(SQLException thrown) {
 			this.success = false;
 			this.thrown = thrown;
 		}
@@ -747,7 +747,7 @@ public class Database {
 				boolean success = false;
 				try {
 					success = transactionRunner.run(connection);
-				} catch (Throwable t) {
+				} catch (SQLException t) {
 					connection.rollback();
 					result = new TransactionResult(t);
 					return;
@@ -771,6 +771,34 @@ public class Database {
 	}
 	
 	/**
+	 * Execute some code in a transaction.
+	 * 
+	 * @param transactionRunner - lambda specifying code to be run
+	 * @return TransactionResult
+	 * 
+	 * @throws SQLException
+	 */
+	public TransactionResult process(TransactionRunner transactionRunner) throws SQLException {
+		var transaction = new Transaction(transactionRunner);
+		return transaction.getResult();
+	}
+	
+	/** 
+	 * Execute some code in a transaction.
+	 * 
+	 * @param transactionRunner - lambda specifying code to be run
+	 * @return - boolean true if transaction committed, false otherwise
+	 * 
+	 * @throws SQLException
+	 */
+	public boolean transact(TransactionRunner transactionRunner) throws SQLException {
+		var result = process(transactionRunner);
+		if (result.thrown != null)
+			throw result.thrown;
+		return result.success;
+	}
+
+	/**
 	 * Get primary key for a given table. 
 	 * 
 	 * @param tableName - table name
@@ -781,10 +809,12 @@ public class Database {
 	 */
 	public String[] getKeyColumnNamesFor(Connection connection, String tableName) throws SQLException {
 		var metadata = connection.getMetaData();
-		var keys = metadata.getPrimaryKeys(null, null, replaceTableNames(tableName));
+		var keys = metadata.getPrimaryKeys(null, "public", replaceTableNames(tableName));
+		System.out.println("========== getKeyColumnNamesFor start");
 		while (keys.next()) {
-			System.out.println("Primary Key :" + keys.getString(4));
+			System.out.println("Primary Key :" + keys.getString("COLUMN_NAME"));
 		}
+		System.out.println("========== getKeyColumnNamesFor end");
 		return null;
 	}
 	

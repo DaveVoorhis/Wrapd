@@ -17,22 +17,21 @@ public class TestPostgreSQL {
 	private static Database database;
 	private static boolean setupCompleted;
 	
+	private static final String prompt = "[TSET]";
+	
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		setupCompleted = false;
-		System.out.println("[TSET] Executing TestPostgreSQL setup.");
-		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TSET]");
+		System.out.println(prompt + " Executing TestPostgreSQL setup.");
+		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
 		setupCompleted = true;
 	}
 	
 	@Test
 	public void testCreateAndInsert() throws SQLException {
 		assertTrue(setupCompleted);
-		DatabaseConfigurationAndSetup.databaseTeardown("[TSET]", database);
-		database.new Transaction(connection -> {
-			DatabaseConfigurationAndSetup.databaseCreate("[TSET]", database, connection);
-			return true;
-		});
+		DatabaseConfigurationAndSetup.databaseTeardown(prompt, database);
+		DatabaseConfigurationAndSetup.databaseCreate(prompt, database);
 	}
 	
 	@Test
