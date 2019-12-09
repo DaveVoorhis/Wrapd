@@ -20,7 +20,7 @@ public class PostgreSQLConfiguration extends ConfigurationSettings {
 		add(DATABASE_NAME, "mydatabase", "PostgreSQL database");
 		add(DATABASE_USER, "dbuser", "PostgreSQL database user");
 		add(DATABASE_PASSWORD, "dbpass", "PostgreSQL database password");
-		add(DATABASE_TABLENAME_PREFIX, "Wrapd_", "optional - table name prefix");
+		add(DATABASE_TABLENAME_PREFIX, "wrapd_", "optional - table name prefix");
 		add(DATABASE_SERVER, "localhost", "PostgreSQL DBMS host");
 		add(DATABASE_NONSTANDARD_PORT, " ", "optional - PostgreSQL DBMS port");
 	}
