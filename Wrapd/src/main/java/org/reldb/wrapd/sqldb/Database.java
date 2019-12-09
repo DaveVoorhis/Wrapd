@@ -11,6 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.stream.Stream;
@@ -798,6 +801,9 @@ public class Database {
 		return result.success;
 	}
 
+	// Primary key cache.
+	private Map<String, String[]> keyCache = new HashMap<String, String[]>();
+	
 	/**
 	 * Get primary key for a given table. 
 	 * 
@@ -808,14 +814,18 @@ public class Database {
 	 * @throws SQLException
 	 */
 	public String[] getKeyColumnNamesFor(Connection connection, String tableName) throws SQLException {
-		var metadata = connection.getMetaData();
-		var keys = metadata.getPrimaryKeys(null, "public", replaceTableNames(tableName));
-		System.out.println("========== getKeyColumnNamesFor start");
-		while (keys.next()) {
-			System.out.println("Primary Key :" + keys.getString("COLUMN_NAME"));
+		var keyColumnNamesArray = keyCache.get(tableName);
+		if (keyColumnNamesArray == null) {
+			var metadata = connection.getMetaData();
+			var realTableName = replaceTableNames(tableName);
+			var keys = metadata.getPrimaryKeys(null, null, realTableName);
+			var keyColumnNames = new LinkedList<String>();
+			while (keys.next())
+				keyColumnNames.add(keys.getString("COLUMN_NAME"));
+			keyColumnNamesArray = keyColumnNames.toArray(new String[0]);
+			keyCache.put(tableName, keyColumnNamesArray);
 		}
-		System.out.println("========== getKeyColumnNamesFor end");
-		return null;
+		return keyColumnNamesArray;
 	}
 	
 	/**
