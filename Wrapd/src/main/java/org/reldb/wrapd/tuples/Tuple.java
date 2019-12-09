@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,12 +40,11 @@ public abstract class Tuple implements Serializable, Cloneable {
 	 * @param database - Database
 	 * @param connection - java.sql.Connection
 	 * @param tableName - table name
-	 * @param tuple - Tuple derivative.
 	 * @return - should return false
 	 * @throws SQLException on failure
 	 */
-	public boolean insert(Database database, Connection connection, String tableName, Tuple tuple) throws SQLException {
-		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(tuple.getClass());
+	public boolean insert(Database database, Connection connection, String tableName) throws SQLException {
+		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(this.getClass());
 		Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
 		var columnNames = columns.get().collect(Collectors.joining(", "));
 		var parms = "?"
@@ -55,7 +55,7 @@ public abstract class Tuple implements Serializable, Cloneable {
 			.get()
 			.map(field -> {
 				try {
-					return field.get(tuple);
+					return field.get(this);
 				} catch (IllegalArgumentException | IllegalAccessException e) {
 					Database.log.error("ERROR: insert failed on field " + field.getName() + ": " + e);
 					return null;
@@ -70,19 +70,20 @@ public abstract class Tuple implements Serializable, Cloneable {
 	 * 
 	 * @param database - Database
 	 * @param tableName - table name
-	 * @param tuple - Tuple derivative.
 	 * @return - should return false
 	 * @throws SQLException on failure
 	 */
-	public boolean insert(Database database, String tableName, Tuple tuple) throws SQLException {
-		return database.useConnection(conn -> insert(database, conn, tableName, tuple));
+	public boolean insert(Database database, String tableName) throws SQLException {
+		return database.useConnection(conn -> insert(database, conn, tableName));
 	}
 
-	public void update(Database database, Connection connection, String tableName, Tuple tuple) {
+	public void update(Database database, Connection connection, String tableName) throws SQLException {
 		// TODO Auto-generated method stub
 	}
 	
-	public void update(Database database, String tableName, Tuple tuple) {
+	public void update(Database database, String tableName) throws SQLException {
+		System.out.println("************* database is " + database);
+		System.out.println("********** primary key is " + Arrays.stream(database.getKeyColumnNamesFor("$$tester")).collect(Collectors.joining(", ")));
 		// TODO Auto-generated method stub
 	}
 }
