@@ -781,7 +781,7 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public TransactionResult process(TransactionRunner transactionRunner) throws SQLException {
+	public TransactionResult processTransaction(TransactionRunner transactionRunner) throws SQLException {
 		var transaction = new Transaction(transactionRunner);
 		return transaction.getResult();
 	}
@@ -794,13 +794,33 @@ public class Database {
 	 * 
 	 * @throws SQLException
 	 */
-	public boolean transact(TransactionRunner transactionRunner) throws SQLException {
-		var result = process(transactionRunner);
+	public boolean useTransaction(TransactionRunner transactionRunner) throws SQLException {
+		var result = processTransaction(transactionRunner);
 		if (result.thrown != null)
 			throw result.thrown;
 		return result.success;
 	}
+	
+	/**
+	 * Functional interface to define lambdas for more ergonomic transaction processing.
+	 */
+	@FunctionalInterface
+	public interface XactGo {
+		public boolean go(Xact tcw) throws SQLException;
+	}
 
+	/** 
+	 * Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.
+	 * 
+	 * @param transactionRunner - lambda defining one or more database operations
+	 * @return - boolean
+	 * 
+	 * @throws SQLException
+	 */
+	public boolean transact(XactGo transactionRunner) throws SQLException {
+		return useTransaction(conn -> transactionRunner.go(new Xact(Database.this, conn)));
+	}
+	
 	// Primary key cache.
 	private Map<String, String[]> keyCache = new HashMap<String, String[]>();
 	

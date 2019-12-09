@@ -32,10 +32,10 @@ public class DatabaseConfigurationAndSetup {
 	}
 
 	public static void databaseCreate(String string, Database database) throws SQLException {
-		database.transact(conn -> {
-			database.updateAll(conn, "CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
-			database.updateAll(conn, "INSERT INTO $$version VALUES (0, 0);");
-			database.updateAll(conn, "CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
+		database.transact(xact -> {
+			xact.updateAll("CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
+			xact.updateAll("INSERT INTO $$version VALUES (0, 0);");
+			xact.updateAll("CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
 			return true;
 		});
 	}

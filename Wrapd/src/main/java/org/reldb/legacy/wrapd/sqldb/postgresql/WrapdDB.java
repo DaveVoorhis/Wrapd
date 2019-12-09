@@ -1,7 +1,6 @@
 package org.reldb.legacy.wrapd.sqldb.postgresql;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Vector;
 
@@ -13,6 +12,7 @@ import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Xact;
 import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
 
 /*
@@ -66,22 +66,22 @@ public class WrapdDB extends WrapdDatabaseBase {
 	@Override
 	public void initialise(ProgressIndicator progress) throws SQLException {
 		progress.initialise(9);
-		database.transact(connection -> {
+		database.transact(transaction -> {
 			progress.move(1, "Creating Version table.");
-			database.updateAll(connection, "CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
+			transaction.updateAll("CREATE TABLE $$Version (user_db_version INTEGER, framework_db_version INTEGER);");
 			progress.move(2, "Initialising Version.");
-			database.updateAll(connection, "INSERT INTO $$Version VALUES (0, 0);");
+			transaction.updateAll("INSERT INTO $$Version VALUES (0, 0);");
 			progress.move(3, "Creating Groups table.");
-			database.updateAll(connection, "CREATE TABLE $$Groups " + 
+			transaction.updateAll("CREATE TABLE $$Groups " + 
 					"(userGroup TEXT NOT NULL PRIMARY KEY, "
 					+ "description TEXT NOT NULL, "
 					+ "privilege TEXT NOT NULL);");
 			progress.move(4, "Adding Administrator group.");
-			addGroup(connection, "Administrator", "Administrator", WrapdDatabase.AdministratorGroupPrivilege);
+			addGroup(transaction, "Administrator", "Administrator", WrapdDatabase.AdministratorGroupPrivilege);
 			progress.move(5, "Adding User group.");
-			addGroup(connection, "User", "User", WrapdDatabase.UserGroupPrivilege);
+			addGroup(transaction, "User", "User", WrapdDatabase.UserGroupPrivilege);
 			progress.move(6, "Creating Users table.");
-			database.updateAll(connection, "CREATE TABLE $$Users " + 
+			transaction.updateAll("CREATE TABLE $$Users " + 
 					"(userID SERIAL NOT NULL PRIMARY KEY, " 
 					+ "userName TEXT NOT NULL, " 
 					+ "userEmail TEXT NOT NULL UNIQUE, "
@@ -97,12 +97,12 @@ public class WrapdDB extends WrapdDatabaseBase {
 					+ "changePasswordOnLogin BOOLEAN NOT NULL DEFAULT false, "
 					+ "changePasswordOnLoginReason TEXT NULL);");
 			progress.move(7, "Creating UserGroups table.");
-			database.updateAll(connection, "CREATE TABLE $$UserGroups " + 
+			transaction.updateAll("CREATE TABLE $$UserGroups " + 
 					"(userGroup TEXT NOT NULL REFERENCES $$Groups ON DELETE CASCADE ON UPDATE CASCADE, "
 					+ "userID INTEGER NOT NULL REFERENCES $$Users ON DELETE CASCADE ON UPDATE CASCADE, "
 					+ "CONSTRAINT $$UserGroups_pkey PRIMARY KEY(userGroup, userID));");
 			progress.move(8,  "Creating Installation Administrator account in Admininstrator group.");
-			addUser(connection, "Installation Administrator", 
+			addUser(transaction, "Installation Administrator", 
 					Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.SUPPORT_CONTACT), 
 					Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.INSTALLER_ADMIN_PASSWORD), 
 					"Administrator");
@@ -136,21 +136,21 @@ public class WrapdDB extends WrapdDatabaseBase {
 		};
 	}
 		
-	private void addGroup(Connection connection, String groupName, String groupDescription, String privilege) throws SQLException {
-		database.update(connection, "INSERT INTO $$Groups VALUES (?, ?, ?);", groupName, groupDescription, privilege);		
+	private void addGroup(Xact transaction, String groupName, String groupDescription, String privilege) throws SQLException {
+		transaction.update("INSERT INTO $$Groups VALUES (?, ?, ?);", groupName, groupDescription, privilege);		
 	}
 	
 	@Override
 	public void addGroup(String groupName, String groupDescription, String privilege) throws SQLException {
-		database.transact(connection -> {
-			addGroup(connection, groupName, groupDescription, privilege);
+		database.transact(transaction -> {
+			addGroup(transaction, groupName, groupDescription, privilege);
 			return true;
 		});
 	}
 	
-	private void addUser(Connection connection, String userName, String email, String password, String group) throws SQLException {		
-		Long userID = (Long) database.valueOfAll(connection, "SELECT nextval('assign_users_userid_seq') AS nv", "nv");
-		database.update(connection, "INSERT INTO $$Users (userID, userName, userEmail, hashedPassword, activated, changePasswordOnLogin, changePasswordOnLoginReason) "
+	private void addUser(Xact transaction, String userName, String email, String password, String group) throws SQLException {		
+		Long userID = (Long) transaction.valueOfAll("SELECT nextval('assign_users_userid_seq') AS nv", "nv");
+		transaction.update("INSERT INTO $$Users (userID, userName, userEmail, hashedPassword, activated, changePasswordOnLogin, changePasswordOnLoginReason) "
 								+ "VALUES (?, ?, ?, ?, true, true, ?);",
 				userID,
 				userName,
@@ -159,7 +159,7 @@ public class WrapdDB extends WrapdDatabaseBase {
 				"Password change required on first login."
 		);
 		if (group != null)
-			database.update(connection, "INSERT INTO $$UserGroups (userID, userGroup) VALUES (?, ?)", userID, group);
+			transaction.update("INSERT INTO $$UserGroups (userID, userGroup) VALUES (?, ?)", userID, group);
 	}
 	
 	@Override
