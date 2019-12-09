@@ -314,9 +314,12 @@ public class Database {
 	/**
 	 * Use a prepared statement.
 	 * 
-	 * @param <T> type of return value from use of connection.
+	 * @param <T> type of return value from user of connection.
 	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
-	 * @return A PreparedStatementUseResult<T> containing either a T (indicating success) or a SQLException.
+	 * @param connection - java.sql.Connection
+	 * @param query - query
+	 * @param parms - Object[] of parameter arguments
+	 * @return A value of type T as a result of using a PreparedStatement.
 	 * @throws SQLException 
 	 */
 	public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object ... parms) throws SQLException {
@@ -341,6 +344,9 @@ public class Database {
 	 * 
 	 * @param <T> type of return value from user of connection.
 	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
+	 * @param connection - java.sql.Connection
+	 * @param query - query
+	 * @param parms - Object[] of parameter arguments
 	 * @return A value of type T as a result of using a PreparedStatement.
 	 * @throws SQLException
 	 */
