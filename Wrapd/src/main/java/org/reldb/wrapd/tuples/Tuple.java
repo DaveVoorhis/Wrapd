@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.reldb.wrapd.exceptions.InvalidValueException;
 import org.reldb.wrapd.sqldb.Database;
 
 /**
@@ -44,7 +44,7 @@ public abstract class Tuple implements Serializable, Cloneable {
 	 * @throws SQLException on failure
 	 */
 	public boolean insert(Database database, Connection connection, String tableName) throws SQLException {
-		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(this.getClass());
+		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
 		Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
 		var columnNames = columns.get().collect(Collectors.joining(", "));
 		var parms = "?"
@@ -77,13 +77,66 @@ public abstract class Tuple implements Serializable, Cloneable {
 		return database.useConnection(conn -> insert(database, conn, tableName));
 	}
 
-	public void update(Database database, Connection connection, String tableName) throws SQLException {
-		// TODO Auto-generated method stub
+	/**
+	 * Update this tuple.
+	 * 
+	 * @param database - Database
+	 * @param connection - java.sql.Connection
+	 * @param tableName - table name
+	 * @return - should return false
+	 * @throws SQLException on failure
+	 */
+	public boolean update(Database database, Connection connection, String tableName) throws SQLException {
+		var backup = getBackup();
+		if (backup == null)
+			throw new InvalidValueException("Tuple is not updatable. Tuples become updatable by invoking backup() after population and before mutation, usually by being obtained via Database::queryForUpdate or Database::queryAllForUpdate.");
+		Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
+		Supplier<Stream<Field>> changedFields = () -> dataFields.get().filter(field -> {
+			Object fieldNewValue;
+			Object fieldOldValue;
+			try {
+				fieldNewValue = field.get(this);
+				fieldOldValue = field.get(backup);
+				return !fieldNewValue.equals(fieldOldValue);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				Database.log.error("ERROR: unable to compare old and new field values: " + e);
+				return false;
+			}
+		});
+		var columnAssignments = changedFields.get().map(field -> field.getName() + " = ?").collect(Collectors.joining(", "));
+		var key = database.getKeyColumnNamesFor(tableName);
+		Supplier<Stream<Field>> rowPredicateSource = () -> (key == null) ? dataFields.get() : changedFields.get();
+		var rowPredicate = rowPredicateSource.get().map(field -> field.getName() + " = ?").collect(Collectors.joining(" AND "));
+		var sql = "UPDATE " + database.replaceTableNames(tableName) + " SET " + columnAssignments + " WHERE " + rowPredicate;
+		var columnAssignmentNewValues = changedFields.get().map(field -> {
+			try {
+				return field.get(this);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				Database.log.error("ERROR: unable to retrieve new field value: " + e);
+				return null;
+			}
+		}).toArray();
+		var rowPredicateValues = rowPredicateSource.get()
+			.map(field -> {
+				try {
+					return field.get(backup);
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					Database.log.error("ERROR: unable to retrieve predicate field value: " + e);
+					return null;
+				}
+			}).toArray();
+		return database.update(connection, sql, Database.allArguments(columnAssignmentNewValues, rowPredicateValues));
 	}
 	
-	public void update(Database database, String tableName) throws SQLException {
-		System.out.println("************* database is " + database);
-		System.out.println("********** primary key is " + Arrays.stream(database.getKeyColumnNamesFor("$$tester")).collect(Collectors.joining(", ")));
-		// TODO Auto-generated method stub
+	/**
+	 * Update this tuple.
+	 * 
+	 * @param database - Database
+	 * @param tableName - table name
+	 * @return - should return false
+	 * @throws SQLException on failure
+	 */
+	public boolean update(Database database, String tableName) throws SQLException {
+		return database.useConnection(conn -> update(database, conn, tableName));
 	}
 }
