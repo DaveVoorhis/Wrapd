@@ -59,7 +59,7 @@ public class TestPostgreSQL {
 			var tuple = new TestSelect();
 			tuple.x = x;
 			tuple.y = x * 2;
-			tuple.insert(database, "$$tester", tuple);
+			tuple.insert(database, "$$tester");
 		}
 		database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", TestSelect.class, 1000, 1010)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
@@ -68,12 +68,15 @@ public class TestPostgreSQL {
 	@Test
 	public void testUpdate01() throws SQLException, IOException {
 		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-		System.out.println("********** primary key is " + database.getKeyColumnNamesFor("$$tester"));
 		database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelect.class)
 			.forEach(tuple -> {
 				tuple.x *= 100;
 				tuple.y *= 100;
-				tuple.update(database, "$$tester", tuple);
+				try {
+					tuple.update(database, "$$tester");
+				} catch (SQLException e) {
+					System.out.println("Update failed.");
+				}
 			});
 		database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelect.class, 300, 700)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
@@ -87,7 +90,11 @@ public class TestPostgreSQL {
 				if (tuple.x >= 120 && tuple.x <= 130) {
 					tuple.x *= 100;
 					tuple.y *= 100;
-					tuple.update(database, "$$tester", tuple);
+					try {
+						tuple.update(database, "$$tester");
+					} catch (SQLException e) {
+						System.out.println("Update failed.");
+					}
 				}
 			});
 		database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelect.class, 1200, 1300)
