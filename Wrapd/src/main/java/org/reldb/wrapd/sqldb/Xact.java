@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.stream.Stream;
 
+import org.reldb.wrapd.sqldb.Database.PreparedStatementUseResult;
+import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
 import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
 import org.reldb.wrapd.tuples.Tuple;
 
@@ -179,6 +181,71 @@ public class Xact {
 	 */
 	public boolean update(Tuple tuple, String tableName) throws SQLException {
 		return tuple.update(database, connection, tableName);
+	}
+
+	/**
+	 * Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
+	 * 
+	 * @param codeDirectory - directory in which compiled Tuple-derived source and .class will be generated
+	 * @param tupleClassName - desired Tuple-derived class name
+	 * @param query - String - query to be evaluated
+	 * @param parms - parameters which positionally match to '?' in the query
+	 * @return - true if Tuple-derived class has been created and compiled; false otherwise
+	 * 
+	 * @throws SQLException
+	 */
+	public boolean createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object ... parms) throws SQLException {
+		return database.createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms);
+	}
+
+	/**
+	 * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
+	 * 
+	 * @param codeDirectory - directory in which compiled Tuple-derived source and .class will be generated
+	 * @param tupleClassName - desired Tuple-derived class name
+	 * @param query - String - query to be evaluated
+	 * @return - true if Tuple-derived class has been created and compiled; false otherwise
+	 * 
+	 * @throws SQLException
+	 */
+	public boolean createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
+		return database.createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query);
+	}
+
+	/**
+	 * Get primary key for a given table. 
+	 * 
+	 * @param tableName - table name
+	 * @return - array of column names comprising the primary key
+	 * 
+	 * @throws SQLException
+	 */
+	public String[] getKeyColumnNamesFor(String tableName) throws SQLException {
+		return database.getKeyColumnNamesFor(connection, tableName);
+	}
+
+	/**
+	 * Use a prepared statement.
+	 * 
+	 * @param <T> type of return value from use of connection.
+	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
+	 * @return A PreparedStatementUseResult<T> containing either a T (indicating success) or a SQLException.
+	 * @throws SQLException 
+	 */
+	public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, String query, Object ... parms) throws SQLException {
+		return database.processPreparedStatement(preparedStatementUser, connection, query, parms);
+	}
+
+	/**
+	 * Use a prepared statement.
+	 * 
+	 * @param <T> type of return value from user of connection.
+	 * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
+	 * @return A value of type T as a result of using a PreparedStatement.
+	 * @throws SQLException
+	 */
+	public <T> T usePreparedStatement(PreparedStatementUser<T> preparedStatementUser, String query, Object ... parms) throws SQLException {
+		return database.usePreparedStatement(preparedStatementUser, connection, query, parms);
 	}
 	
 }
