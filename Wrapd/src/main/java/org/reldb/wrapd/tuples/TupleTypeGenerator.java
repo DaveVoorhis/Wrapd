@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,7 +32,7 @@ public class TupleTypeGenerator {
 	private long serialValue = 0;
 	private DirClassLoader loader;
 	private String oldTupleName;	
-	private LinkedList<Attribute> attributes = new LinkedList<>();
+	private List<Attribute> attributes = new LinkedList<>();
 	private TupleTypeGenerator copyFrom = null;
 
 	public static final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";
