@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 
 import org.reldb.wrapd.tuples.generated.*;
@@ -22,39 +23,49 @@ import org.reldb.wrapd.tuples.generated.*;
 
 public class TestPostgreSQL {
 
-	@BeforeAll
-	public static void setup() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+	private static final String prompt = "[TEST]";
+
+	private static void resetDatabase(Database database) throws SQLException {
 		database.updateAll("DELETE FROM $$tester");
 		for (int i = 0; i < 20; i++) {
 			database.update("INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
 		}
 	}
 	
+	@BeforeAll
+	public static void setup() throws SQLException, IOException {
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		resetDatabase(database);
+	}
+	
 	@Test
 	public void testQueryToStream01() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testQueryToStream01");
 		database.queryAll("SELECT * FROM $$tester", TestSelect.class)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
 	public void testQueryToStream02() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testQueryToStream02");
 		database.query("SELECT * FROM $$tester", TestSelect.class)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
 	public void testQueryToStream03() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testQueryToStream03");
 		database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelect.class, 3, 7)
 			.forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
 	}
 	
 	@Test
 	public void testInsert01() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testInsert01");
 		for (int x = 1000; x < 1010; x++) {
 			var tuple = new TestSelect();
 			tuple.x = x;
@@ -67,7 +78,8 @@ public class TestPostgreSQL {
 
 	@Test
 	public void testUpdate01() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testUpdate01");
 		database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelect.class)
 			.forEach(tuple -> {
 				tuple.x *= 100;
@@ -84,10 +96,12 @@ public class TestPostgreSQL {
 	
 	@Test
 	public void testUpdate02() throws SQLException, IOException {
-		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase("[TEST]");
-		database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 100)
+		var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " testUpdate02");
+		resetDatabase(database);
+		database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 10)
 			.forEach(tuple -> {
-				if (tuple.x >= 120 && tuple.x <= 130) {
+				if (tuple.x >= 12 && tuple.x <= 13) {
 					tuple.x *= 100;
 					tuple.y *= 100;
 					try {
