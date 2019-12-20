@@ -4,3 +4,8 @@ classes
 Configuration.xml
 configuration.dtd
 /target/
+
+# Eclipse
+.settings/
+.project
+.classpath
