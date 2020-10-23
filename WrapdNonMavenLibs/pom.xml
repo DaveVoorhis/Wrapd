@@ -28,8 +28,8 @@
 							<repositoryLayout>default</repositoryLayout>
 							<groupId>org.eclipse.jdt</groupId>
 							<artifactId>org.eclipse.jdt.ecj</artifactId>
-							<version>4.13</version>
-							<file>srcLib/ecj-4.13.jar</file>
+							<version>4.17</version>
+							<file>srcLib/ecj-4.17.jar</file>
 							<packaging>jar</packaging>
 							<generatePom>true</generatePom>
 						</configuration>
