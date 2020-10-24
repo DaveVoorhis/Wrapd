@@ -99,7 +99,7 @@
       <artifactId>postgresql</artifactId>
       <version>42.2.8</version>
     </dependency>
-    <! -- Non-Maven dependencies put in local Maven repo via MavenTheNonMavens project 'clean' target. -->
+    <!-- Non-Maven dependencies put in local Maven repo via MavenTheNonMavens project 'clean' target. -->
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ecj</artifactId>
