@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.miscellaneous;
+package org.reldb.wrapd.miscellaneous;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.version.Version;

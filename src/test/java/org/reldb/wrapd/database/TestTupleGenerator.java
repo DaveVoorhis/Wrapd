@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.database.test;
+package org.reldb.wrapd.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 public class TestTupleGenerator {
@@ -16,7 +15,7 @@ public class TestTupleGenerator {
 	private final static boolean verbose = true;
 	
 	@Test 
-	public void testTupleGenerator01() throws ClassNotFoundException, FileNotFoundException, IOException {
+	public void testTupleGenerator01() throws Exception {
 		var codeDir = DatabaseConfigurationAndSetup.getCodeDirectory();
 		var tupleName = "TestTuple";
 		var newTupleName = "TestTupleRenamed";

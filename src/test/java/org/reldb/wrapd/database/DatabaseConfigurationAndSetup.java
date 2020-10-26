@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tests.database.shared;
+package org.reldb.wrapd.database;
 
 import java.io.IOException;
 import java.sql.SQLException;
