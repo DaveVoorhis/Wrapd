@@ -1,4 +1,4 @@
-package org.reldb.toolbox.tests.email;
+package org.reldb.toolbox.tests;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
