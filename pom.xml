@@ -51,13 +51,36 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>11</java.version>
     <junit.version>5.5.2</junit.version>
-    <reldb_toolbox.version>0.0.2-SNAPSHOT</reldb_toolbox.version>
     <maven-compiler.version>3.8.1</maven-compiler.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
   </properties>
 
   <dependencies>
+    <!-- https://mvnrepository.com/artifact/com.mchange/mchange-commons-java -->
+    <dependency>
+      <groupId>com.mchange</groupId>
+      <artifactId>mchange-commons-java</artifactId>
+      <version>0.2.19</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.activation/javax.activation-api -->
+    <dependency>
+      <groupId>javax.activation</groupId>
+      <artifactId>javax.activation-api</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.sun.mail/jakarta.mail -->
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>1.6.4</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/jakarta.activation/jakarta.activation-api -->
+    <dependency>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
+      <version>1.2.1</version>
+    </dependency>
     <!-- JUnit5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -75,11 +98,6 @@
       <groupId>org.apache.logging.log4j</groupId>
       <artifactId>log4j-core</artifactId>
       <version>2.12.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.reldb.toolbox</groupId>
-      <artifactId>reldb.Toolbox</artifactId>
-      <version>${reldb_toolbox.version}</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
     <dependency>

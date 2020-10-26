@@ -13,53 +13,53 @@ public interface Data<K extends Serializable, V extends Tuple> {
 	 * 
 	 * @return - Class<T>
 	 */
-	public Class<V> getType();
+	Class<V> getType();
 
 	/** 
 	 * Get the unique name of this Data source within whatever container (i.e., database) it resides.
 	 * 
 	 * @return - String - name.
 	 */
-	public String getName();
+	String getName();
 	
 	/**
 	 * Set the unique name of this Data source within whatever container (i.e., database) it resides.
 	 * 
 	 * @param name - String - new name.
 	 */
-	public void setName(String name);
+	void setName(String name);
 	
 	/** True if attributes can be added. */
-	public boolean isExtendable();
+	boolean isExtendable();
 	
 	/** Add an attribute with a given name and type.
 	 * 
 	 * @param name - String - attribute name
 	 * @param type - Class<? extends Serializable> - attribute type
 	 */
-	public void extend(String name, Class<? extends Serializable> type);
+	void extend(String name, Class<? extends Serializable> type);
 	
 	/** True if attributes can be removed. */
-	public boolean isRemovable();
+	boolean isRemovable();
 	
 	/** Remove an attribute with a given name. 
 	 * 
 	 * @param name - String - attribute name.
 	 */
-	public void remove(String name);
+	void remove(String name);
 	
 	/** True if attributes can be renamed. */
-	public boolean isRenameable();
+	boolean isRenameable();
 	
 	/** Rename an attribute with a given name. 
 	 * 
 	 * @param oldName - String - current (or old) name.
 	 * @param newName - String - new name.
 	 */
-	public void rename(String oldName, String newName);
+	void rename(String oldName, String newName);
 	
 	/** True if attributes can be assigned to a new type. */
-	public boolean isTypeChangeable();
+	boolean isTypeChangeable();
 	
 	/** Change the type of a given attribute.
 	 * 
@@ -68,14 +68,14 @@ public interface Data<K extends Serializable, V extends Tuple> {
 	 * @param name - String - attribute name.
 	 * @param type - Class<? extends Serializable> - new attribute type.
 	 */
-	public void changeType(String name, Class<? extends Serializable> type);
+	void changeType(String name, Class<? extends Serializable> type);
 	
 	/** True if this Data is read-only and will not accept data updates. */
-	public boolean isReadonly();
+	boolean isReadonly();
 
 	@FunctionalInterface
-	public interface Query<T> {
-		public abstract T go(@SuppressWarnings("rawtypes") Map map);
+	interface Query<T> {
+		T go(@SuppressWarnings("rawtypes") Map map);
 	}
 	
 	/**
@@ -83,17 +83,17 @@ public interface Data<K extends Serializable, V extends Tuple> {
 	 * 
 	 * @param query - Query - a lambda expression representing data retrieval or update that returns a value.
 	 */
-	public <T> T query(Query<T> query);
+	<T> T query(Query<T> query);
 
 	@FunctionalInterface
-	public interface Access {
-		public abstract void go(@SuppressWarnings("rawtypes") Map map);
+	interface Access {
+		void go(@SuppressWarnings("rawtypes") Map map);
 	}
 	
 	/**
 	 * Access the underlying data container to retrieve data or perform an update.
 	 * 
-	 * @param xaction - Access - a lambda expression representing data retrieval or update.
+	 * @param access - Access - a lambda expression representing data retrieval or update.
 	 */
-	public void access(Access access);
+	void access(Access access);
 }

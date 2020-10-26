@@ -5,7 +5,6 @@ import java.sql.SQLException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reldb.legacy.wrapd.sqldb.WrapdDatabase;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
 
@@ -26,7 +25,7 @@ public abstract class WrapdDatabaseBase implements WrapdDatabase {
 	}
 	
 	@Override
-	public CheckDatabaseStatus checkDatabase() throws IOException {		
+	public CheckDatabaseStatus checkDatabase() {
 		if (databaseChecked)
 			return CheckDatabaseStatus.OK;
 		try {
