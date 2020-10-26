@@ -1,6 +1,7 @@
 package org.reldb.wrapd.tests.database.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
+import org.reldb.wrapd.data.bdbje.BDBJEEnvironment;
 import org.reldb.wrapd.tests.database.shared.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.data.CatalogEntry;
 
@@ -29,6 +31,7 @@ public class TestDataBDBJE {
 	
 	@BeforeAll
 	public static void setup() {
+		BDBJEEnvironment.purge(testDir);
 		base = new BDBJEBase(testDir, true);
 	}
 	
@@ -85,17 +88,17 @@ public class TestDataBDBJE {
 		tupleType.getField("col1").set(tuple, "blah");
 		tupleType.getField("col2").set(tuple, 3);		
 		// insert instance into database
-		data.query(container -> container.put(Long.valueOf(1), tuple));			
+		data.query(container -> container.put(1L, tuple));
 		// initialise instance to something else
 		tupleType.getField("col1").set(tuple, "zot");
 		tupleType.getField("col2").set(tuple, 5);
 		// insert instance
-		data.query(container -> container.put(Long.valueOf(2), tuple));
+		data.query(container -> container.put(2L, tuple));
 		// initialise instance to something else
 		tupleType.getField("col1").set(tuple, "zaz");
 		tupleType.getField("col2").set(tuple, 66);
 		// update instance
-		data.query(container -> container.put(Long.valueOf(2), tuple));
+		data.query(container -> container.put(2L, tuple));
 		
 		// Iterate and display container contents
 		data.access(container -> showContainer("=== Container Contents Before Schema Change (should have col1 and col2) ===", container));
@@ -110,11 +113,11 @@ public class TestDataBDBJE {
 		// insert instance into database
 		tupleType2.getField("col1").set(tuple2, "blat");
 		tupleType2.getField("col3").set(tuple2, 2.7);
-		data.query(container -> container.put(Long.valueOf(3), tuple2));
+		data.query(container -> container.put(3L, tuple2));
 		// update instance in database
 		tupleType2.getField("col1").set(tuple2, "zap");
 		tupleType2.getField("col3").set(tuple2, -33.4);
-		data.query(container -> container.put(Long.valueOf(3), tuple2));
+		data.query(container -> container.put(3L, tuple2));
 		
 		// Iterate and display container contents
 		data.access(container -> showContainer("=== Container Contents After Schema Change (should have col1 and col3) ===", container));
@@ -131,7 +134,7 @@ public class TestDataBDBJE {
 		// insert instance into database
 		tupleType3.getField("col1").set(tuple3, "zip");
 		tupleType3.getField("col3").set(tuple3, 44.234);
-		data.query(container -> container.put(Long.valueOf(4), tuple3));
+		data.query(container -> container.put(4L, tuple3));
 		
 		// Iterate and display container contents
 		data.access(container -> showContainer("=== Container Contents After Adding a Tuple ===", container));
@@ -152,9 +155,9 @@ public class TestDataBDBJE {
 	public static void teardown() {
 		var catalog = (BDBJEData<String, CatalogEntry>)base.open(BDBJEBase.catalogName);
 		catalog.access(container -> {
-			assertEquals(true, container.containsKey(storageNameRenamed));
-			assertEquals(true, container.containsKey(storageName2));
-			assertEquals(true, container.containsKey(BDBJEBase.catalogName));
+			assertTrue(container.containsKey(storageNameRenamed));
+			assertTrue(container.containsKey(storageName2));
+			assertTrue(container.containsKey(BDBJEBase.catalogName));
 			showContainer("=== Catalog ===", container);
 		});
 	}
