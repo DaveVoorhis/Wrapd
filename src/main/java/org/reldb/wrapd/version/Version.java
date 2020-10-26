@@ -19,7 +19,7 @@ public class Version {
 	        var reader = new MavenXpp3Reader();
 	        Model model;
 			try {
-				model = reader.read(new FileReader("pom.xml"));
+				model = reader.read(new FileReader("../pom.xml"));
 				var parent = model.getParent();
 				cachedVersion = parent.getVersion();
 			} catch (IOException | XmlPullParserException e) {
