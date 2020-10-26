@@ -10,7 +10,7 @@ import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
 
 public class DatabaseConfigurationAndSetup {
 
-	private static String baseDir = "../_TestData";
+	private static String baseDir = "_TestData";
 	
 	public static void databaseTeardown(String prompt) throws SQLException, IOException {
 		var database = getPostgreSQLDatabase(prompt);
