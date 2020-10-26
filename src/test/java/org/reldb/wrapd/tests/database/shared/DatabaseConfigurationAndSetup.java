@@ -43,8 +43,8 @@ public class DatabaseConfigurationAndSetup {
 	public static Database getPostgreSQLDatabase(String prompt) throws SQLException, IOException {
 		
 		System.out.println(prompt);
-		System.out.println(prompt + " If you see 'New configuration file ../TestData/Configuration.xml written', the tests will fail and");
-		System.out.println(prompt + " you'll have to configure database access in _TestData/Configuration.xml, then re-run the tests.");
+		System.out.println(prompt + " If you see 'New configuration file " + baseDir + "/Configuration.xml written', the tests will fail and");
+		System.out.println(prompt + " you'll have to configure database access in " + baseDir + "/Configuration.xml, then re-run the tests.");
 		System.out.println(prompt);
 		
 		Configuration.setLocation(baseDir);
