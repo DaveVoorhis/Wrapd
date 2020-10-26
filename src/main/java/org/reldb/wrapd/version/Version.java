@@ -20,6 +20,7 @@ public class Version {
 	        Model model;
 			try {
 				model = reader.read(new FileReader("../pom.xml"));
+				// FIXME - What if there is no pom.xml? What then?
 				var parent = model.getParent();
 				cachedVersion = parent.getVersion();
 			} catch (IOException | XmlPullParserException e) {
