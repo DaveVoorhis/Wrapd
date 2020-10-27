@@ -128,13 +128,16 @@
       <version>42.2.8</version>
     </dependency>
 
-    <!-- Non-Maven dependencies put in local Maven repo via MavenTheNonMavens project 'clean' target. -->
+    <!-- Non-Maven dependencies put in local Maven repo via project 'clean' target. -->
+
+    <!-- Eclipse ECJ -->
     <dependency>
       <groupId>org.eclipse.jdt</groupId>
       <artifactId>org.eclipse.jdt.ecj</artifactId>
       <version>4.17</version>
     </dependency>
 
+    <!-- Berkeley DB Java Edition -->
     <dependency>
       <groupId>com.sleepycat</groupId>
       <artifactId>com.sleepycat.je</artifactId>
