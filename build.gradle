@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.apache.maven:maven-model:3.6.3'
     implementation 'com.mchange:c3p0:0.9.5.2'
     implementation 'org.postgresql:postgresql:42.2.8'
+    implementation 'org.xerial:sqlite-jdbc:3.32.3.2'
 //    implementation 'org.eclipse.jdt:org.eclipse.jdt.ecj:4.17'
 //    implementation 'com.sleepycat:com.sleepycat.je:7.5.11'
 }

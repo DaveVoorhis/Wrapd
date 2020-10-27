@@ -66,7 +66,19 @@ public class Database {
 				throw new IOException("Database connection to " + dbURL + " failed. Please check that the database exists and the credentials are correct: " + e.getMessage());
 			}
 	}
-	
+
+	/**
+	 * Open a database given a database URL and table name prefix.
+	 *
+	 * @param dbURL - database URL
+	 * @param dbTablenamePrefix - table name prefix
+	 *
+	 * @throws IOException
+	 */
+	public Database(String dbURL, String dbTablenamePrefix) throws IOException {
+		this(dbURL, null, null, dbTablenamePrefix);
+	}
+
 	// Wherever $$ appears, replace it with dbTableNamePrefix 
 	public String replaceTableNames(String query) {
 		return query.replaceAll("\\$\\$", dbTablenamePrefix);

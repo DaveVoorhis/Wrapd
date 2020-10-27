@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Temporarily mostly disabled.
  */
-public class TestPostgreSQL {
+public class TestSQLite {
 
 	private static Database database;
 	private static boolean setupCompleted;
@@ -40,8 +40,8 @@ public class TestPostgreSQL {
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		setupCompleted = false;
-		System.out.println(prompt + " Executing TestPostgreSQL setup.");
-		database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
+		System.out.println(prompt + " Executing TestSQLite setup.");
+		database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
 		setupCompleted = true;
 	}
 
