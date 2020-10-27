@@ -32,14 +32,12 @@ hs_err_pid*
 .idea/
 *.iml
 
-# Maven
-/target/
+# Gradle
+.gradle
+/build/
+/gradle/
+gradlew
+gradlew.bat
 
-# Generated test configuration files
-/_TestData/configuration.dtd
-/_TestData/Configuration.xml
-/_TestData/ClickToOpen.rl
-/_TestData/classes
-/_TestData/code
-/_TestData/data
-
+# Test database
+/_TestData/
