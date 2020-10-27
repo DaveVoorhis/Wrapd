@@ -11,11 +11,13 @@ package org.reldb.wrapd.compiler;
 /**
  * A class to support streaming ValueS into streams of bytes.
  *
- * @author  dave
+ * @author dave
  */
 public abstract class BytestreamOutput {
 
-    /** Output a byte. */
+    /**
+     * Output a byte.
+     */
     public abstract void put(int b);
 
     /**
@@ -24,20 +26,24 @@ public abstract class BytestreamOutput {
     private final void putUnsignedByte(int val) {
         put(val);
     }
-  
-    /** Output an array of bytes. */
+
+    /**
+     * Output an array of bytes.
+     */
     public void put(byte[] b) {
-        for (int i=0; i<b.length; i++)
+        for (int i = 0; i < b.length; i++)
             putUnsignedByte(b[i]);
     }
-    
-    /** Output a subsection of an array of bytes. */
+
+    /**
+     * Output a subsection of an array of bytes.
+     */
     public void put(byte[] b, int offset, int length) {
         int count = 0;
-        for (int i=offset; i<b.length && count++ < length; i++)
+        for (int i = offset; i < b.length && count++ < length; i++)
             putUnsignedByte(b[i]);
     }
-    
+
     /**
      * Writes an unsigned short.
      */
@@ -47,7 +53,7 @@ public abstract class BytestreamOutput {
     }
 
     /**
-     * Writes an unsigned int 
+     * Writes an unsigned int
      */
     private final void putUnsignedInt(int val) {
         putUnsignedByte((byte) (val >>> 24));
@@ -56,7 +62,9 @@ public abstract class BytestreamOutput {
         putUnsignedByte((byte) val);
     }
 
-    /** Output unsigned long */
+    /**
+     * Output unsigned long
+     */
     private final void putUnsignedLong(long val) {
         putUnsignedByte((byte) (val >>> 56));
         putUnsignedByte((byte) (val >>> 48));
@@ -65,15 +73,15 @@ public abstract class BytestreamOutput {
         putUnsignedByte((byte) (val >>> 24));
         putUnsignedByte((byte) (val >>> 16));
         putUnsignedByte((byte) (val >>> 8));
-        putUnsignedByte((byte) val);    
+        putUnsignedByte((byte) val);
     }
-        
+
     /**
      * Write a String.
      */
     public final void putString(String val) {
         put(val.getBytes());
-        putUnsignedByte((byte)0);
+        putUnsignedByte((byte) 0);
     }
 
     /**
@@ -83,7 +91,7 @@ public abstract class BytestreamOutput {
         putInt(b.length);
         put(b);
     }
-    
+
     /**
      * Write a char.
      */
@@ -98,12 +106,12 @@ public abstract class BytestreamOutput {
     public final void putChar(Character val) {
         putChar(val.charValue());
     }
-    
+
     /**
      * Write a boolean.
      */
     public final void putBoolean(boolean val) {
-        putUnsignedByte((byte)(val ? 1 : 0));
+        putUnsignedByte((byte) (val ? 1 : 0));
     }
 
     /**
@@ -112,7 +120,7 @@ public abstract class BytestreamOutput {
     public final void putBoolean(Boolean val) {
         putBoolean(val.booleanValue());
     }
-    
+
     /**
      * Writes a byte.
      */
@@ -130,7 +138,7 @@ public abstract class BytestreamOutput {
     public final void putByte(Byte b) {
         putByte(b.byteValue());
     }
-    
+
     /**
      * Writes a short.
      */
@@ -139,7 +147,7 @@ public abstract class BytestreamOutput {
             s &= (short) ~0x8000;
         else
             s |= (short) 0x8000;
-        putUnsignedShort((short)s);
+        putUnsignedShort((short) s);
     }
 
     /**
@@ -148,7 +156,7 @@ public abstract class BytestreamOutput {
     public final void putShort(Short s) {
         putShort(s.shortValue());
     }
-    
+
     /**
      * Writes an int.
      */
@@ -157,7 +165,7 @@ public abstract class BytestreamOutput {
             val &= ~0x80000000;
         else
             val |= 0x80000000;
-        putUnsignedInt((int)val);
+        putUnsignedInt((int) val);
     }
 
     /**
@@ -166,7 +174,7 @@ public abstract class BytestreamOutput {
     public final void putInteger(Integer i) {
         putInt(i.intValue());
     }
-    
+
     /**
      * Writes a long.
      */
@@ -184,7 +192,7 @@ public abstract class BytestreamOutput {
     public final void putLong(Long val) {
         putLong(val.longValue());
     }
-    
+
     /**
      * Writes a float.
      */
@@ -198,14 +206,14 @@ public abstract class BytestreamOutput {
     public final void putFloat(Float val) {
         putFloat(val.floatValue());
     }
-    
+
     /**
      * Writes a double.
      */
     public final void putDouble(double val) {
         putUnsignedLong(Double.doubleToLongBits(val));
     }
-    
+
     /**
      * Writes a Double.
      */

@@ -16,7 +16,7 @@ public class RandomString {
             tmp.append(ch);
         }
         symbols = tmp.toString().toCharArray();
-    }   
+    }
 
     private final Random random = new Random();
 
@@ -35,5 +35,5 @@ public class RandomString {
         }
         return new String(buf);
     }
-    
+
 }

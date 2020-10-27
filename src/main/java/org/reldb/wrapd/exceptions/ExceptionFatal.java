@@ -5,17 +5,17 @@ package org.reldb.wrapd.exceptions;
  */
 public class ExceptionFatal extends Error {
 
-	static final long serialVersionUID = 0;
-	
-	public ExceptionFatal(String message) {
-		super(message);
-	}
-	
-	public ExceptionFatal(String message, Throwable cause) {
-		super(message, cause);
-	}
-	
-	public ExceptionFatal(Throwable cause) {
-		super(cause);
-	}
+    static final long serialVersionUID = 0;
+
+    public ExceptionFatal(String message) {
+        super(message);
+    }
+
+    public ExceptionFatal(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public ExceptionFatal(Throwable cause) {
+        super(cause);
+    }
 }

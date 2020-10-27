@@ -2,9 +2,8 @@ package org.reldb.wrapd.data;
 
 /**
  * Interface representing any CatalogEntry metadata.
- * 
- * @author dave
  *
+ * @author dave
  */
 public interface CatalogMetadata {
 }

@@ -9,25 +9,27 @@ package org.reldb.wrapd.compiler;
 /**
  * A BytestreamOutput backed by an array of bytes.
  *
- * @author  dave
+ * @author dave
  */
 public class BytestreamOutputArray extends BytestreamOutput {
 
     private final static int minimumCapacity = 1024;
     private byte[] vb = new byte[minimumCapacity];
     private int index = 0;
-    
+
     public void reset() {
         index = 0;
     }
-    
-    /** Get the array of bytes that represents the stream. */
+
+    /**
+     * Get the array of bytes that represents the stream.
+     */
     public byte[] getBytes() {
         byte outArray[] = new byte[index];
         System.arraycopy(vb, 0, outArray, 0, index);
         return outArray;
     }
-   
+
     public void put(int b) {
         if (index + 1 > vb.length) {
             int newCapacity = (vb.length + 1) * 2;
@@ -40,7 +42,7 @@ public class BytestreamOutputArray extends BytestreamOutput {
             System.arraycopy(vb, 0, newValue, 0, index);
             vb = newValue;
         }
-        vb[index++] = (byte)b;
+        vb[index++] = (byte) b;
     }
-    
+
 }
