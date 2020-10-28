@@ -39,6 +39,7 @@ public class TestSQLite {
 
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
+		DatabaseConfigurationAndSetup.ensureTestDirectoryExists();
 		setupCompleted = false;
 		System.out.println(prompt + " Executing TestSQLite setup.");
 		database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
