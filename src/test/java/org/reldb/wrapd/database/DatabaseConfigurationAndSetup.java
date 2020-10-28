@@ -4,14 +4,18 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.toolbox.configuration.Configuration;
+import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
+import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.sqlite.SQLiteConfiguration;
+
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate1;
 
 public class DatabaseConfigurationAndSetup {
 
 	private static String baseDir = "./_TestData";
-	
+
 	public static void databaseTeardown(String prompt) throws SQLException, IOException {
 		var database = getSQLiteDatabase(prompt);
 		databaseTeardown(prompt, database);
@@ -70,5 +74,9 @@ public class DatabaseConfigurationAndSetup {
 	public static String getCodeDirectory() {
 		return getBaseDirectory() + "/code";
 	}
-	
+
+	public static void ensureTestDirectoryExists() {
+		if (!Directory.chkmkdir(baseDir))
+			throw new ExceptionFatal(Str.ing(ErrUnableToCreate1, baseDir));
+	}
 }
