@@ -1,8 +1,0 @@
-/bin/
-/lib/
-/target/
-
-# Eclipse
-.settings/
-.project
-.classpath

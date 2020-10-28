@@ -31,3 +31,13 @@ hs_err_pid*
 # Intellij IDEA
 .idea/
 *.iml
+
+# Gradle
+.gradle
+/build/
+/gradle/
+gradlew
+gradlew.bat
+
+# Test database
+/_TestData/
