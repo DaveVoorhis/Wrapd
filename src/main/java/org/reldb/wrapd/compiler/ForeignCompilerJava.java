@@ -16,8 +16,6 @@ import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
  * @author Dave
  */
 public class ForeignCompilerJava {
-    private final static boolean verbose = false;
-
     private final static Logger log = LogManager.getLogger(ForeignCompilerJava.class.toString());
 
     private String userSourcePath;
@@ -40,10 +38,7 @@ public class ForeignCompilerJava {
         }
     }
 
-    /**
-     * Compile foreign code using Eclipse JDT compiler.
-     */
-    public CompilationResults compileForeignCode(String className, String packageSpec, String src) {
+    public CompilationResults compileForeignCode(String classpath, String className, String packageSpec, String src) {
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
         ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
         String warningSetting = new String("allDeprecation,"
@@ -58,11 +53,6 @@ public class ForeignCompilerJava {
                 + "unnecessaryElse," + "uselessTypeCheck," + "unsafe,"
                 + "unusedArgument," + "unusedImport," + "unusedLocal,"
                 + "unusedPrivate," + "unusedThrown");
-
-        String classpath =
-                cleanClassPath(System.getProperty("java.class.path")) +
-                        java.io.File.pathSeparatorChar +
-                        cleanClassPath(getLocalClasspath());
 
         // If resource directory doesn't exist, create it.
         File resourceDir = new File(userSourcePath);
@@ -84,15 +74,14 @@ public class ForeignCompilerJava {
             throw new ExceptionFatal(Str.ing(ErrSavingJavaSource, ioe.toString()));
         }
 
-        if (verbose) {
-            log.info(src);
-            log.info("\nCompile:\n" + sourcef);
-        }
+        log.debug(src);
+        log.debug("\nCompile:\n" + sourcef);
 
         // Start compilation using JDT
-        String commandLine = "-1.9 -source 1.9 -warn:" +
+        String commandLine = "-14 -source 14 -warn:" +
                 warningSetting + " " +
                 "-cp " + classpath + " \"" + sourcef + "\"";
+        log.debug("Compile command: " + commandLine);
         boolean compiled = BatchCompiler.compile(
                 commandLine,
                 new PrintWriter(messageStream),
@@ -127,9 +116,22 @@ public class ForeignCompilerJava {
             }
             compilerMessages += str + '\n';
         }
-        if (verbose)
-            log.info(compilerMessages);
+        log.debug(compilerMessages);
         return new CompilationResults(compiled, compilerMessages);
+    }
+
+    public String getDefaultClassPath() {
+        return cleanClassPath(System.getProperty("java.class.path")) +
+                java.io.File.pathSeparatorChar +
+                cleanClassPath(getLocalClasspath());
+    }
+
+    /**
+     * Compile foreign code using Eclipse JDT compiler.
+     */
+    public CompilationResults compileForeignCode(String className, String packageSpec, String src) {
+        String classpath = getDefaultClassPath();
+        return compileForeignCode(classpath, className, packageSpec, src);
     }
 
     /**
