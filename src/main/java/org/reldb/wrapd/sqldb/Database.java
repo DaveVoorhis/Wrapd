@@ -22,6 +22,7 @@ public class Database {
 
     private DataSource pool = null;
     private String dbTablenamePrefix = "";
+    private Customisations customisations;
 
     /**
      * Open a database, given a database URL, user name, password, and table name prefix.
@@ -30,13 +31,15 @@ public class Database {
      * @param dbUser            - database user
      * @param dbPassword        - database password
      * @param dbTablenamePrefix - table name prefix
+     * @param customisations    - DBMS-specific customisations
      * @throws IOException
      */
-    public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix) throws IOException {
+    public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws IOException {
         if (dbURL == null)
             throw new IllegalArgumentException("dbURL must not be null");
 
         this.dbTablenamePrefix = nullToEmptyString(dbTablenamePrefix);
+        this.customisations = customisations;
 
         Properties props = new Properties();
         if (dbUser != null)
@@ -59,10 +62,11 @@ public class Database {
      *
      * @param dbURL             - database URL
      * @param dbTablenamePrefix - table name prefix
+     * @param customisations    - DBMS-specific customisations
      * @throws IOException
      */
-    public Database(String dbURL, String dbTablenamePrefix) throws IOException {
-        this(dbURL, null, null, dbTablenamePrefix);
+    public Database(String dbURL, String dbTablenamePrefix, Customisations customisations) throws IOException {
+        this(dbURL, null, null, dbTablenamePrefix, customisations);
     }
 
     // Wherever $$ appears, replace it with dbTableNamePrefix
@@ -448,11 +452,11 @@ public class Database {
      * @param tupleClassName - name for new tuple class
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Boolean> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName) {
+    public static ResultSetReceiver<Boolean> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             CompilationResults compilationResult = null;
             try {
-                compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet);
+                compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
             } catch (ClassNotFoundException e) {
                 log.error("ERROR: tuple generator failed in createTuple due to: " + e);
                 return false;
@@ -482,7 +486,7 @@ public class Database {
      * @throws SQLException
      */
     public boolean createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
-        return queryAll(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName));
+        return queryAll(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations));
     }
 
     /**
@@ -510,7 +514,7 @@ public class Database {
      * @throws SQLException
      */
     public boolean createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        return query(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName), parms);
+        return query(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations), parms);
     }
 
     /**

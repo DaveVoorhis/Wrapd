@@ -9,6 +9,7 @@ import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.sqlite.SQLiteConfiguration;
+import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
 
 import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate1;
 
@@ -59,7 +60,7 @@ public class DatabaseConfigurationAndSetup {
 		
 		String url = "jdbc:sqlite:" + Configuration.getLocation() + dbDatabase;
 		try {
-			database = new Database(url, dbTablenamePrefix);
+			database = new Database(url, dbTablenamePrefix, new SQLiteCustomisations());
 		} catch (IOException e) {
 			throw new SQLException("[TSET] Database connection failed. Check the configuration. Error is: " + e);
 		}

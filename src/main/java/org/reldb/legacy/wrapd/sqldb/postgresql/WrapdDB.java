@@ -40,7 +40,7 @@ public class WrapdDB extends WrapdDatabaseBase {
             dbServer += ":" + dbPort;
 
         String url = "jdbc:postgresql://" + dbServer + "/" + dbDatabase;
-        database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix);
+        database = new Database(url, dbUser, dbPasswd, dbTablenamePrefix, null);
     }
 
     public DBVersion getDBVersion() throws SQLException {

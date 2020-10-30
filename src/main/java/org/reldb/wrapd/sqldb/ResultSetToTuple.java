@@ -35,7 +35,7 @@ public class ResultSetToTuple {
      * @throws ClassNotFoundException   - thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException - thrown if an argument is null
      */
-    public static CompilationResults createTuple(String codeDir, String tupleName, ResultSet results) throws SQLException, ClassNotFoundException {
+    public static CompilationResults createTuple(String codeDir, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
@@ -46,7 +46,17 @@ public class ResultSetToTuple {
         var metadata = results.getMetaData();
         for (int column = 1; column <= metadata.getColumnCount(); column++) {
             var name = metadata.getColumnName(column);
+            var sqlType = metadata.getColumnType(column);
+            var sqlTypeName = metadata.getColumnTypeName(column);
             var columnClassName = metadata.getColumnClassName(column);
+            if (customisations != null) {
+                columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
+            }
+            System.out.println("ResultSetToTuple:"
+                    + " columnName = " + name
+                    + " columnClassName = " + columnClassName
+                    + " sqlType = " + sqlType
+                    + " sqlTypeName = " + sqlTypeName);
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
