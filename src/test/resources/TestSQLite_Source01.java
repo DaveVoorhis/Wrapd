@@ -1,4 +1,5 @@
-import org.reldb.wrapd.tuples.generated.*;
+package org.reldb.wrapd.tuples.generated;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
