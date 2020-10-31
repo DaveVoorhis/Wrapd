@@ -28,7 +28,6 @@ dependencies {
     implementation 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
     implementation 'org.junit.platform:junit-platform-launcher:1.7.0'
     implementation 'org.apache.logging.log4j:log4j-core:2.12.1'
-    implementation 'org.apache.maven:maven-model:3.6.3'
     implementation 'com.mchange:c3p0:0.9.5.2'
     implementation 'org.postgresql:postgresql:42.2.8'
     implementation 'org.xerial:sqlite-jdbc:3.32.3.2'
@@ -54,4 +53,18 @@ publishing {
 
 clean {
     delete '_TestData'
+}
+
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/version.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
 }
