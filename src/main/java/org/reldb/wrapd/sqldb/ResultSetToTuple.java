@@ -52,7 +52,7 @@ public class ResultSetToTuple {
             if (customisations != null) {
                 columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
             }
-            System.out.println("ResultSetToTuple:"
+            log.debug("ResultSetToTuple:"
                     + " columnName = " + name
                     + " columnClassName = " + columnClassName
                     + " sqlType = " + sqlType
