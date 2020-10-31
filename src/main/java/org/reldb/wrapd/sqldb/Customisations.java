@@ -15,9 +15,9 @@ public interface Customisations {
     String getSpecificColumnClass(String columnSQLType);
 
     /**
-     * As noted above, some JDBC drivers return a generic class. Given a retrieved value of some overly-generic
-     * class -- probably java.lang.Object -- convert it to a more useful specific class type per
-     * getSpecificColumnClass() above.
+     * As noted above, some JDBC drivers return a generic class for a column type.
+     * Given a retrieved value of some overly-generic class -- probably java.lang.Object --
+     * convert it to a more useful specific class type per getSpecificColumnClass() above.
      *
      * @param retrievedValue - value obtained via ResultSet::getObject(column)
      * @param columnSQLType - sql type name typically returned by ResultSet::getMetaData().getColumnTypeName(column)
