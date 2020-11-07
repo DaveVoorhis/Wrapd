@@ -7,8 +7,8 @@ abstraction layer.
 It's pronounced "wrapped", "rapid" and "rapt."
 
 Highly opinionated, Wrapd doesn't hide SQL from you. Instead, it's 
-a *SQL amplifier* to make SQL easier to use and better 
-Java-integrated, tested, migrated and managed than using 
+a *SQL amplifier* that makes SQL easier to use and better 
+Java- integrated, tested, migrated and managed than using 
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
