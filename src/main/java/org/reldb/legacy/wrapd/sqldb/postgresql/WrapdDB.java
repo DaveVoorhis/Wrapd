@@ -20,7 +20,7 @@ import java.util.Vector;
  */
 public class WrapdDB extends WrapdDatabaseBase {
 
-    private static Logger log = LogManager.getLogger(WrapdDB.class.toString());
+    private static final Logger log = LogManager.getLogger(WrapdDB.class.toString());
 
     public WrapdDB() throws IOException {
         if (database != null)
@@ -44,7 +44,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     }
 
     public DBVersion getDBVersion() throws SQLException {
-        return (DBVersion) database.queryAll("SELECT * FROM $$Version", version -> {
+        return database.queryAll("SELECT * FROM $$Version", version -> {
             if (!version.next()) {
                 log.error("WrapdDB: Error: Version table appears to be empty!");
                 return null;
@@ -172,9 +172,9 @@ public class WrapdDB extends WrapdDatabaseBase {
     }
 
     private static class User {
-        private Integer userID;
-        private Boolean changePasswordOnLogin;
-        private String changePasswordOnLoginReason;
+        private final Integer userID;
+        private final Boolean changePasswordOnLogin;
+        private final String changePasswordOnLoginReason;
 
         public User(Integer userID, Boolean changePasswordOnLogin, String changePasswordOnLoginReason) {
             this.userID = userID;
@@ -199,7 +199,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     private User findUser(Integer userID, String password) throws SQLException {
         PasswordAuthentication authenticator = new PasswordAuthentication();
         String passwordTrimmed = password.trim();
-        return (User) database.query("SELECT hashedPassword, changePasswordOnLogin, changePasswordOnLoginReason FROM $$Users WHERE userID = ?",
+        return database.query("SELECT hashedPassword, changePasswordOnLogin, changePasswordOnLoginReason FROM $$Users WHERE userID = ?",
                 result -> {
                     if (result.next()) {
                         String token = result.getString("hashedPassword");
@@ -220,7 +220,7 @@ public class WrapdDB extends WrapdDatabaseBase {
         PasswordAuthentication authenticator = new PasswordAuthentication();
         String emailTrimmed = email.trim();
         String passwordTrimmed = password.trim();
-        return (User) database.query("SELECT userID, hashedPassword, changePasswordOnLogin, changePasswordOnLoginReason FROM $$Users WHERE activated AND userEmail = ?",
+        return database.query("SELECT userID, hashedPassword, changePasswordOnLogin, changePasswordOnLoginReason FROM $$Users WHERE activated AND userEmail = ?",
                 result -> {
                     if (result.next()) {
                         String token = result.getString("hashedPassword");
@@ -261,7 +261,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     @Override
     public String[] getUserGroups(Integer userID) {
         try {
-            return (String[]) database.query("SELECT userGroup FROM $$Users, $$UserGroups WHERE $$Users.userID = $$UserGroups.userID AND $$Users.userID = ?",
+            return database.query("SELECT userGroup FROM $$Users, $$UserGroups WHERE $$Users.userID = $$UserGroups.userID AND $$Users.userID = ?",
                     result -> {
                         Vector<String> groups = new Vector<>();
                         while (result.next())
@@ -287,7 +287,7 @@ public class WrapdDB extends WrapdDatabaseBase {
         if (getLoggedInUserID() == null)
             return null;
         try {
-            return (String[]) database.query("SELECT privilege FROM $$Users, $$UserGroups, $$Groups WHERE "
+            return database.query("SELECT privilege FROM $$Users, $$UserGroups, $$Groups WHERE "
                             + "$$Users.userID = $$UserGroups.userID AND $$Groups.userGroup = $$UserGroups.userGroup AND $$Users.userID = ?",
                     results -> {
                         Vector<String> privileges = new Vector<>();
@@ -367,7 +367,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     @Override
     public Long[] getUserIDsForEmail(String email) {
         try {
-            return (Long[]) database.query("SELECT userID FROM $$Users WHERE activated AND userEmail = ?",
+            return database.query("SELECT userID FROM $$Users WHERE activated AND userEmail = ?",
                     result -> {
                         Vector<Long> emailAddresses = new Vector<>();
                         while (result.next())
@@ -522,7 +522,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     @Override
     public String[] getAllEmailAddressesInGroup(String group) {
         try {
-            return (String[]) database.query("SELECT userEmail FROM $$Users, $$UserGroups WHERE $$Users.userID = $$UserGroups.userID AND userGroup = ?",
+            return database.query("SELECT userEmail FROM $$Users, $$UserGroups WHERE $$Users.userID = $$UserGroups.userID AND userGroup = ?",
                     accountAuthAdmins -> {
                         Vector<String> admins = new Vector<>();
                         while (accountAuthAdmins.next())
@@ -542,7 +542,7 @@ public class WrapdDB extends WrapdDatabaseBase {
             // expire old registrations
             database.update("DELETE FROM $$Users WHERE NOT activated AND EXTRACT(EPOCH FROM NOW() - registrationTokenStamp)/3600 > ?;", registrationExpiryHours);
             // find user with given token
-            return (ActivationStatus) database.query("SELECT userEmail FROM $$Users WHERE NOT activated AND registrationToken = ?",
+            return database.query("SELECT userEmail FROM $$Users WHERE NOT activated AND registrationToken = ?",
                     users -> {
                         if (!users.next())
                             return ActivationStatus.INVALID;

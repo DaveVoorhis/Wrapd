@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  */
 public class ResultSetToTuple {
 
-    private static Logger log = LogManager.getLogger(ResultSetToTuple.class.toString());
+    private static final Logger log = LogManager.getLogger(ResultSetToTuple.class.toString());
 
     /**
      * Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
@@ -68,15 +68,15 @@ public class ResultSetToTuple {
      */
     @FunctionalInterface
     public interface TupleProcessor<T extends Tuple> {
-        public void process(T tupleType);
+        void process(T tupleType);
     }
 
     /**
      * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
      *
-     * @param resultSet
-     * @param tupleType
-     * @param tupleProcessor
+     * @param resultSet                  - ResultSet to iterate
+     * @param tupleType                  - tuple type
+     * @param tupleProcessor             - tuple processor
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class
@@ -123,9 +123,9 @@ public class ResultSetToTuple {
     /**
      * Convert a ResultSet to a List of TupleS.
      *
-     * @param resultSet
-     * @param tupleType
-     * @return List<? extends Tuple>
+     * @param resultSet                  - ResultSet to iterate
+     * @param tupleType                  - tuple type
+     * @return List<? extends Tuple>     - List of tuples returned
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class
@@ -137,16 +137,16 @@ public class ResultSetToTuple {
      */
     public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
         var rows = new LinkedList<T>();
-        process(resultSet, tupleType, tuple -> rows.add(tuple));
+        process(resultSet, tupleType, rows::add);
         return rows;
     }
 
     /**
      * Convert a ResultSet to a List of TupleS, each configured for a possible future update.
      *
-     * @param resultSet
-     * @param tupleType
-     * @return List<? extends Tuple>
+     * @param resultSet                  - ResultSet to iterate
+     * @param tupleType                  - tuple type
+     * @return List<? extends Tuple>     - List of tuples returned
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class

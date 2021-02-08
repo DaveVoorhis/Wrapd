@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import static org.reldb.wrapd.il8n.Strings.*;
 
 public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<K, V> {
-    private BDBJEBase base;
+    private final BDBJEBase base;
     private String name;
 
     BDBJEData(BDBJEBase bdbjeBase, String name) {
@@ -49,8 +49,7 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
             throw new ExceptionFatal(Str.ing(ErrUnableToLocateCopyFromMethod, newName));
         final var copyFrom = copyFromFound;
         try {
-            var newTemporaryName = newName;
-            var newStorage = base.create(newTemporaryName);
+            var newStorage = base.create(newName);
             var newInstance = newTupleClass.getConstructor().newInstance();
             base.transaction(() -> {
                 newStorage.access(newdata -> access(data -> data.forEach((key, value) -> {
@@ -59,7 +58,7 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
                     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                         throw new ExceptionFatal(Str.ing(ErrSchemaUpdateCopyFromFailure, e.getMessage()));
                     }
-                    newdata.put(key, (V) newInstance);
+                    newdata.put(key, newInstance);
                 })));
                 base.remove(name);
                 newStorage.renameDataTo(name);
@@ -71,13 +70,13 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
     }
 
     @FunctionalInterface
-    private static interface Action {
-        public abstract void change(TupleTypeGenerator tupleTypeGenerator);
+    private interface Action {
+        void change(TupleTypeGenerator tupleTypeGenerator);
     }
 
     @FunctionalInterface
-    private static interface Renamer {
-        public abstract String newName(TupleTypeGenerator tupleTypeGenerator);
+    private interface Renamer {
+        String newName(TupleTypeGenerator tupleTypeGenerator);
     }
 
     private void changeSchema(Action tupleTypeAction, Renamer tupleTypeRenamer) {
@@ -185,7 +184,7 @@ public class BDBJEData<K extends Serializable, V extends Tuple> implements Data<
 
     @Override
     public <T> T query(Query<T> query) {
-        return (T) base.query(this, query);
+        return base.query(this, query);
     }
 
     @Override

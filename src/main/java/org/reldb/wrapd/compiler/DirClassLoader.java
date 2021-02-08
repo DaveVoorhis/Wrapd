@@ -19,10 +19,10 @@ import java.util.HashMap;
  */
 public class DirClassLoader extends ClassLoader {
 
-    private static HashMap<String, Class<?>> classCache = new HashMap<String, Class<?>>();
+    private static final HashMap<String, Class<?>> classCache = new HashMap<>();
 
-    private String dir;
-    private String packageName;
+    private final String dir;
+    private final String packageName;
 
     public DirClassLoader(String dir, String packageName) {
         this.dir = dir;
@@ -43,7 +43,7 @@ public class DirClassLoader extends ClassLoader {
             } catch (ClassNotFoundException e1) {
                 return null;
             }
-        Class<?> clazz = (Class<?>) classCache.get(name);
+        Class<?> clazz = classCache.get(name);
         if (clazz == null) {
             byte[] bytes;
             try {

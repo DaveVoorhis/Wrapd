@@ -1,13 +1,11 @@
 package org.reldb.toolbox;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate1;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.mail.Email;
-import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
@@ -18,7 +16,7 @@ public class TestEmail {
 	@BeforeAll
 	public static void setup() {
 		if (!Directory.chkmkdir(baseDir))
-			throw new ExceptionFatal(Str.ing(ErrUnableToCreate1, baseDir));
+			throw new ExceptionFatal("TestEmail: Unable to create directory for test: " + baseDir);
 	}
 
 	@Test

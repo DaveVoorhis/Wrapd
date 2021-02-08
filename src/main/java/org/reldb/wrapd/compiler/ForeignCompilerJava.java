@@ -9,6 +9,8 @@ import org.reldb.wrapd.exceptions.ExceptionFatal;
 import java.io.*;
 
 import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate5;
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate6;
 
 /**
  * Machinery for compiling Java code.
@@ -18,7 +20,7 @@ import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
 public class ForeignCompilerJava {
     private final static Logger log = LogManager.getLogger(ForeignCompilerJava.class.toString());
 
-    private String userSourcePath;
+    private final String userSourcePath;
 
     public ForeignCompilerJava(String userSourcePath) {
         this.userSourcePath = userSourcePath;
@@ -41,7 +43,7 @@ public class ForeignCompilerJava {
     public CompilationResults compileForeignCode(String classpath, String className, String packageSpec, String src) {
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
         ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
-        String warningSetting = new String("allDeprecation,"
+        String warningSetting = "allDeprecation,"
                 + "allJavadoc," + "assertIdentifier," + "charConcat,"
                 + "conditionAssign," + "constructorName," + "deprecation,"
                 + "emptyBlock," + "fieldHiding," + "finalBound,"
@@ -52,19 +54,21 @@ public class ForeignCompilerJava {
                 + "syntheticAccess," + "unqualifiedField,"
                 + "unnecessaryElse," + "uselessTypeCheck," + "unsafe,"
                 + "unusedArgument," + "unusedImport," + "unusedLocal,"
-                + "unusedPrivate," + "unusedThrown");
+                + "unusedPrivate," + "unusedThrown";
 
         // If resource directory doesn't exist, create it.
         File resourceDir = new File(userSourcePath);
         if (!(resourceDir.exists()))
-            resourceDir.mkdirs();
+            if (!resourceDir.mkdirs())
+                throw new ExceptionFatal(Str.ing(ErrUnableToCreate5, resourceDir.toString()));
         File sourcef;
         try {
             // Convert package to directories
             var packageDir = userSourcePath + "/" + packageSpec.replace('.', '/');
             var packageDirFile = new File(packageDir);
             if (!packageDirFile.exists())
-                packageDirFile.mkdirs();
+                if (!packageDirFile.mkdirs())
+                    throw new ExceptionFatal(Str.ing(ErrUnableToCreate6, packageDirFile.toString()));
             // Write source to a Java source file
             sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
             PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
@@ -88,7 +92,7 @@ public class ForeignCompilerJava {
                 new PrintWriter(warningStream),
                 null);
 
-        String compilerMessages = "";
+        StringBuilder compilerMessages = new StringBuilder();
         // Parse the messages and the warnings.
         BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStream.toByteArray())));
         while (true) {
@@ -101,7 +105,7 @@ public class ForeignCompilerJava {
             if (str == null) {
                 break;
             }
-            compilerMessages += str + '\n';
+            compilerMessages.append(str).append('\n');
         }
         BufferedReader brWarnings = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(warningStream.toByteArray())));
         while (true) {
@@ -114,10 +118,10 @@ public class ForeignCompilerJava {
             if (str == null) {
                 break;
             }
-            compilerMessages += str + '\n';
+            compilerMessages.append(str).append('\n');
         }
-        log.debug(compilerMessages);
-        return new CompilationResults(compiled, compilerMessages);
+        log.debug(compilerMessages.toString());
+        return new CompilationResults(compiled, compilerMessages.toString());
     }
 
     public String getDefaultClassPath() {
@@ -138,12 +142,12 @@ public class ForeignCompilerJava {
      * Return a classpath cleaned of non-existent files and Web Start's deploy.jar.
      * Classpath elements with spaces are converted to quote-delimited strings.
      */
-    private final static String cleanClassPath(String s) {
+    private static String cleanClassPath(String s) {
         if (java.io.File.separatorChar == '/')
             s = s.replace('\\', '/');
         else
             s = s.replace('/', '\\');
-        String outstr = "";
+        StringBuilder outstr = new StringBuilder();
         java.util.StringTokenizer st = new java.util.StringTokenizer(s, java.io.File.pathSeparator);
         while (st.hasMoreElements()) {
             String element = (String) st.nextElement();
@@ -152,19 +156,17 @@ public class ForeignCompilerJava {
                 String fname = f.toString();
                 if (fname.indexOf(' ') >= 0)
                     fname = '"' + fname + '"';
-                outstr += ((outstr.length() > 0) ? java.io.File.pathSeparator : "") + fname;
+                outstr.append((outstr.length() > 0) ? File.pathSeparator : "").append(fname);
             }
         }
-        return outstr;
+        return outstr.toString();
     }
 
     /**
      * Return classpath to the core.
      */
     private String getLocalClasspath() {
-        String classPath = System.getProperty("user.dir") +
-                java.io.File.pathSeparatorChar + userSourcePath;
-        return classPath;
+        return System.getProperty("user.dir") + File.pathSeparatorChar + userSourcePath;
     }
 
     /**

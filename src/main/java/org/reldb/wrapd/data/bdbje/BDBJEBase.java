@@ -26,15 +26,15 @@ import static org.reldb.wrapd.il8n.Strings.*;
 
 public class BDBJEBase implements Closeable {
 
-    private static Logger log = LogManager.getLogger(BDBJEBase.class.toString());
+    private static final Logger log = LogManager.getLogger(BDBJEBase.class.toString());
 
     public static final String catalogName = "sys_Catalog";
 
-    private BDBJEEnvironment environment;
-    private BDBJEData<String, CatalogEntry> catalog;
+    private final BDBJEEnvironment environment;
+    private final BDBJEData<String, CatalogEntry> catalog;
 
     // There can only be one BDBJEData instance per Data source name.
-    private Map<String, BDBJEData<?, ?>> dataSources = new HashMap<>();
+    private final Map<String, BDBJEData<?, ?>> dataSources = new HashMap<>();
 
     /**
      * Open or create a database.
@@ -45,7 +45,7 @@ public class BDBJEBase implements Closeable {
     public BDBJEBase(String dir, boolean create) {
         environment = new BDBJEEnvironment(dir, create);
         environment.open(catalogName, true).close();
-        catalog = new BDBJEData<String, CatalogEntry>(this, catalogName) {
+        catalog = new BDBJEData<>(this, catalogName) {
             @Override
             public boolean isExtendable() {
                 return false;
@@ -87,8 +87,8 @@ public class BDBJEBase implements Closeable {
     /**
      * Obtain the CatalogEntry (metadata) associated with a given Data (storage) name.
      *
-     * @param name
-     * @return
+     * @param name - name to look up
+     * @return - CatalogEntry
      */
     public CatalogEntry getCatalogEntry(String name) {
         return (CatalogEntry) query(catalog, catalog -> catalog.get(name));
@@ -169,6 +169,15 @@ public class BDBJEBase implements Closeable {
         return loadClass(getTupleTypeNameOf(name));
     }
 
+    private boolean berkeleyDbExists(String name) {
+        try {
+            (environment.open(name, false)).close();
+            return true;
+        } catch (DatabaseException de) {
+            return false;
+        }
+    }
+
     /**
      * Create a Data source with a given name. If it exists already, throw ExceptionFatal.
      *
@@ -178,11 +187,11 @@ public class BDBJEBase implements Closeable {
     public BDBJEData<?, ?> create(String name) {
         if (exists(name))
             throw new ExceptionFatal(Str.ing(ErrSourceExists, name));
+        if (berkeleyDbExists(name))
         try {
-            // if Berkeley Database (somehow) already exists, delete it.
-            (environment.open(name, false)).close();
             environment.remove(name);
         } catch (DatabaseException de) {
+            throw new ExceptionFatal(Str.ing(ErrUnableToRemoveExistingDb, name));
         }
         // create storage (Berkeley Database)
         environment.open(name, true).close();
@@ -236,7 +245,7 @@ public class BDBJEBase implements Closeable {
      *
      * @param name   - name of Data source.
      * @param create - boolean - if true and Data source doesn't exist, create it.
-     * @return
+     * @return       - data source
      */
     public BDBJEData<?, ?> open(String name, boolean create) {
         return (create && !exists(name)) ? create(name) : open(name);
@@ -338,7 +347,7 @@ public class BDBJEBase implements Closeable {
         return environment.getClassLoader();
     }
 
-    public void transaction(TransactionWorker worker) throws DatabaseException, Exception {
+    public void transaction(TransactionWorker worker) throws Exception {
         environment.transaction(worker);
     }
 

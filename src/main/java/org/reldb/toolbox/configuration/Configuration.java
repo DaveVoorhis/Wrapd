@@ -46,7 +46,7 @@ public class Configuration {
 
     private static Map<String, Map<String, ConfigurationNode>> configuration = null;
 
-    private static HashSet<String> registrations = new HashSet<>();
+    private static final HashSet<String> registrations = new HashSet<>();
 
     private static void initialise() {
         if (configuration != null)
@@ -67,9 +67,9 @@ public class Configuration {
         configuration.put(groupName, group);
     }
 
-    static void add(String groupName, String elementName, String value, String comment, boolean fromFile) {
+    private static void add(String groupName, String elementName, String value, String comment) {
         initialise();
-        put(groupName, elementName, value, comment, fromFile);
+        put(groupName, elementName, value, comment, false);
     }
 
     private static ConfigurationNode getConfigurationNode(String groupName, String elementName) {
@@ -115,10 +115,10 @@ public class Configuration {
      */
     public static boolean getBooleanValue(String groupName, String elementName) {
         var value = getValue(groupName, elementName);
-        return value != null && value.toLowerCase().equals("true");
+        return value != null && value.equalsIgnoreCase("true");
     }
 
-    static void writeConfiguration() throws TransformerException, ParserConfigurationException {
+    private static void writeConfiguration() throws TransformerException, ParserConfigurationException {
         // write the content to an xml file
         var transformerFactory = TransformerFactory.newInstance();
         var transformer = transformerFactory.newTransformer();
@@ -255,7 +255,7 @@ public class Configuration {
             var getSettings = settingsClass.getMethod("getSettings", (Class<?>[]) null);
             @SuppressWarnings("unchecked")
             var settings = (Map<String, ConfigurationSettings.ConfigurationSetting>) getSettings.invoke(configurationSettings, (Object[]) null);
-            settings.values().forEach(setting -> add(settingsClass.getCanonicalName(), setting.element, setting.value, setting.comment, false));
+            settings.values().forEach(setting -> add(settingsClass.getCanonicalName(), setting.element, setting.value, setting.comment));
             writeConfiguration();
             registrations.add(settingsClass.getCanonicalName());
         } catch (Throwable t) {

@@ -9,28 +9,33 @@ public class Directory {
      *
      * @param dir - specified directory
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean chkmkdir(String dir) {
         File dirf = new File(dir);
-        if (!dirf.exists())
-            return dirf.mkdirs();
-        return true;
+        if (dirf.exists())
+            return true;
+        return dirf.mkdirs();
     }
 
     /**
      * Remove the specified file or directory. If it's a directory, remove all files in the specified directory and the directory itself.
      *
      * @param dir - Directory
+     * @return true if successful; false otherwise
      */
-    public static void rmAll(String dir) {
+    public static boolean rmAll(String dir) {
         File dirf = new File(dir);
         if (dirf.isDirectory()) {
             File[] files = dirf.listFiles();
+            boolean success = true;
             if (files != null) {
                 for (File file : files)
-                    rmAll(file.getAbsolutePath());
+                    if (!rmAll(file.getAbsolutePath()))
+                        success = false;
             }
-        } else
-            dirf.delete();
+            return success;
+        }
+        return dirf.delete();
     }
 
     public static boolean exists(String fspec) {

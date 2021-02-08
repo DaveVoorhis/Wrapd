@@ -51,7 +51,8 @@ public class PasswordStrength {
             }
 
             // Count symbols
-            if (!Character.isAlphabetic(ch) && !Character.isDigit(ch) && !(ch == ' ')) {
+            boolean isSymbol = !Character.isAlphabetic(ch) && !Character.isDigit(ch) && !(ch == ' ');
+            if (isSymbol) {
                 iSymbol++;
                 consecutiveMode = 0;
             }
@@ -67,7 +68,7 @@ public class PasswordStrength {
             }
 
             if (iUpperCase > 0 || iLowerCase > 0)
-                if (Character.isDigit(ch) || (!Character.isAlphabetic(ch) && !Character.isDigit(ch) && !(ch == ' ')))
+                if (Character.isDigit(ch) || isSymbol)
                     iMiddleEx++;
         }
 
@@ -178,9 +179,9 @@ public class PasswordStrength {
     }
 
     private static String strReverse(String str) {
-        String newString = "";
+        StringBuilder newString = new StringBuilder();
         for (int s = 0; s < str.length(); s++)
-            newString = str.charAt(s) + newString;
-        return newString;
+            newString.insert(0, str.charAt(s));
+        return newString.toString();
     }
 }

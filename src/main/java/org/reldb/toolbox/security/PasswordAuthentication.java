@@ -50,14 +50,18 @@ public final class PasswordAuthentication {
      * @param cost the exponential computational cost of hashing a password, 0 to 30
      */
     public PasswordAuthentication(int cost) {
-        iterations(cost); /* Validate cost */
+        validateCost(cost);
         this.cost = cost;
         this.random = new SecureRandom();
     }
 
-    private static int iterations(int cost) {
+    private static void validateCost(int cost) {
         if ((cost & ~0x1E) != 0)
             throw new IllegalArgumentException("cost: " + cost);
+    }
+
+    private static int iterations(int cost) {
+        validateCost(cost);
         return 1 << cost;
     }
 

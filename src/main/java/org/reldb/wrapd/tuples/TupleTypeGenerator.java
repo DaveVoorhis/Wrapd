@@ -24,16 +24,16 @@ import static org.reldb.wrapd.il8n.Strings.*;
  */
 public class TupleTypeGenerator {
 
-    private String dir;
+    private final String dir;
     private String tupleName;
     private boolean existing;
     private long serialValue = 0;
-    private DirClassLoader loader;
+    private final DirClassLoader loader;
     private String oldTupleName;
-    private List<Attribute> attributes = new LinkedList<>();
+    private final List<Attribute> attributes = new LinkedList<>();
     private TupleTypeGenerator copyFrom = null;
 
-    public static final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";
+    public static final String TupleTypePackage = "org.reldb.wrapd.tuples.generated";
 
     /**
      * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
@@ -53,15 +53,15 @@ public class TupleTypeGenerator {
      * @param tupleName Name of generated tuple class.
      */
     public TupleTypeGenerator(String dir, String tupleName) {
-        if (tupleName.startsWith(tupleTypePackage))
-            tupleName = tupleName.substring(tupleTypePackage.length() + 1);
+        if (tupleName.startsWith(TupleTypePackage))
+            tupleName = tupleName.substring(TupleTypePackage.length() + 1);
         this.dir = dir;
         this.tupleName = tupleName;
         if (!Directory.chkmkdir(dir))
             throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        loader = new DirClassLoader(dir, tupleTypePackage);
+        loader = new DirClassLoader(dir, TupleTypePackage);
         try {
-            var className = tupleTypePackage + "." + tupleName;
+            var className = TupleTypePackage + "." + tupleName;
             var tupleClass = loader.forName(className);
             getDataFields(tupleClass).forEach(field -> attributes.add(new Attribute(field.getName(), field.getType())));
             try {
@@ -197,27 +197,28 @@ public class TupleTypeGenerator {
                 attributes.stream().map(entry -> "this." + entry.name).collect(Collectors.joining(", "));
     }
 
-    private String prefixIfPresent(String s, String prefix) {
+    private String prefixWithCommaIfPresent(String s) {
         if (s != null && s.length() > 0)
-            return prefix + s;
+            return ", " + s;
         return "";
     }
 
     private String getToStringCode() {
         return
                 "\n\t/** Create string representation of this tuple. */\n" +
-                        "\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixIfPresent(getContentString(), ", ") + ");\n\t}\n";
+                        "\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixWithCommaIfPresent(getContentString()) + ");\n\t}\n";
     }
 
     /**
      * Delete this tuple type, given its name, before loading it.
      */
-    public static void destroy(String dir, String className) {
-        var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
+    public static boolean destroy(String dir, String className) {
+        var pathName = dir + File.separator + TupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
         var fJava = new File(pathName + ".java");
-        fJava.delete();
+        boolean fJavaDelete = fJava.delete();
         var fClass = new File(pathName + ".class");
-        fClass.delete();
+        boolean fClassDelete = fClass.delete();
+        return fJavaDelete && fClassDelete;
     }
 
     public long getSerial() {
@@ -242,7 +243,7 @@ public class TupleTypeGenerator {
                         .map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
                         .collect(Collectors.joining());
         var tupleDef =
-                "package " + tupleTypePackage + ";\n\n" +
+                "package " + TupleTypePackage + ";\n\n" +
                         "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                         "import org.reldb.wrapd.tuples.Tuple;\n\n" +
                         "/** " + tupleName + " tuple class version " + serialValue + " */\n" +
@@ -253,7 +254,7 @@ public class TupleTypeGenerator {
                         getToStringCode() +
                         "}";
         var compiler = new ForeignCompilerJava(dir);
-        return compiler.compileForeignCode(tupleName, tupleTypePackage, tupleDef);
+        return compiler.compileForeignCode(tupleName, TupleTypePackage, tupleDef);
     }
 
     /**
@@ -266,11 +267,7 @@ public class TupleTypeGenerator {
     }
 
     public static String getTupleClassName(String newName) {
-        return tupleTypePackage + "." + newName;
-    }
-
-    public static String getTuplePackage() {
-        return tupleTypePackage;
+        return TupleTypePackage + "." + newName;
     }
 
 }

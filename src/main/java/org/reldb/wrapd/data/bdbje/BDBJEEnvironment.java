@@ -21,11 +21,11 @@ import static org.reldb.wrapd.il8n.Strings.*;
 
 public class BDBJEEnvironment implements Closeable {
 
-    private String homeDir;
+    private final String homeDir;
     private Environment dataEnv;
     private Environment classesEnv;
     private ClassCatalog classes;
-    private DirClassLoader classLoader;
+    private final DirClassLoader classLoader;
 
     private static final Logger log = LogManager.getLogger(BDBJEEnvironment.class.toString());
 
@@ -88,11 +88,9 @@ public class BDBJEEnvironment implements Closeable {
     }
 
     private void writeClicker() {
-        FileWriter writer = null;
         try {
-            writer = new FileWriter(getClickerFileName(), false);
-            if (writer != null)
-                writer.close();
+            FileWriter writer = new FileWriter(getClickerFileName(), false);
+            writer.close();
         } catch (Exception e) {
             log.warn("WARNING: Unable to create " + getClickerFileName());
         }
@@ -113,24 +111,24 @@ public class BDBJEEnvironment implements Closeable {
             throw new ExceptionFatal(Str.ing(ErrNotExists, homeDir));
 
         if (!Directory.chkmkdir(homeDir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreate1, homeDir));
+            throw new ExceptionFatal(Str.ing(ErrUnableToCreateDir, homeDir));
 
         var dataDir = getDataDir();
         if (!Directory.chkmkdir(dataDir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreate2, dataDir));
+            throw new ExceptionFatal(Str.ing(ErrUnableToCreateDir, dataDir));
 
         var classDir = getClassDir();
         if (!Directory.chkmkdir(classDir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreate3, classDir));
+            throw new ExceptionFatal(Str.ing(ErrUnableToCreateDir, classDir));
 
         var codeDir = getCodeDir();
         if (!Directory.chkmkdir(codeDir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreate4, codeDir));
+            throw new ExceptionFatal(Str.ing(ErrUnableToCreateDir, codeDir));
 
         if (create)
             writeClicker();
 
-        classLoader = new DirClassLoader(codeDir, TupleTypeGenerator.getTuplePackage());
+        classLoader = new DirClassLoader(codeDir, TupleTypeGenerator.TupleTypePackage);
 
         var dataEnvConfig = new EnvironmentConfig();
         dataEnvConfig.setTransactional(true);
@@ -166,8 +164,8 @@ public class BDBJEEnvironment implements Closeable {
      * Run a TransactionWorker in a transaction.
      *
      * @param worker - TransactionWorker instance, which can be a lambda expression.
-     * @throws DatabaseException
-     * @throws Exception
+     * @throws DatabaseException - Error
+     * @throws Exception - Error
      */
     public void transaction(TransactionWorker worker) throws DatabaseException, Exception {
         var runner = new TransactionRunner(dataEnv);
