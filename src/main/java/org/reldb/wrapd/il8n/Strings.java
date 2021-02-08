@@ -35,8 +35,8 @@ public class Strings {
     public static final int ErrNameAlreadyInUse = Str.E("Name '%s' is already in use.", BDBJEBase.class.toString());
     public static final int ErrUnableToRemoveCatalogEntry = Str.E("Unable to remove catalog entry '%s'", BDBJEBase.class.toString());
 
-    public static final int ErrUnableToCreate5 = Str.E("Unable to create resource directory: %s.", ForeignCompilerJava.class.toString());
-    public static final int ErrUnableToCreate6 = Str.E("Unable to create packagee directory: %s.", ForeignCompilerJava.class.toString());
+    public static final int ErrUnableToCreateResourceDir = Str.E("Unable to create resource directory: %s.", ForeignCompilerJava.class.toString());
+    public static final int ErrUnableToCreatePackageDir = Str.E("Unable to create package directory: %s.", ForeignCompilerJava.class.toString());
     public static final int ErrSavingJavaSource = Str.E("Unable to save Java source: %s.", ForeignCompilerJava.class.toString());
 
     public static final int ErrUnableToCreateOrOpenCodeDirectory = Str.E("Unable to create or open code directory %s.", TupleTypeGenerator.class.toString());

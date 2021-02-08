@@ -9,8 +9,8 @@ import org.reldb.wrapd.exceptions.ExceptionFatal;
 import java.io.*;
 
 import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate5;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate6;
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateResourceDir;
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
 
 /**
  * Machinery for compiling Java code.
@@ -60,7 +60,7 @@ public class ForeignCompilerJava {
         File resourceDir = new File(userSourcePath);
         if (!(resourceDir.exists()))
             if (!resourceDir.mkdirs())
-                throw new ExceptionFatal(Str.ing(ErrUnableToCreate5, resourceDir.toString()));
+                throw new ExceptionFatal(Str.ing(ErrUnableToCreateResourceDir, resourceDir.toString()));
         File sourcef;
         try {
             // Convert package to directories
@@ -68,7 +68,7 @@ public class ForeignCompilerJava {
             var packageDirFile = new File(packageDir);
             if (!packageDirFile.exists())
                 if (!packageDirFile.mkdirs())
-                    throw new ExceptionFatal(Str.ing(ErrUnableToCreate6, packageDirFile.toString()));
+                    throw new ExceptionFatal(Str.ing(ErrUnableToCreatePackageDir, packageDirFile.toString()));
             // Write source to a Java source file
             sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
             PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));

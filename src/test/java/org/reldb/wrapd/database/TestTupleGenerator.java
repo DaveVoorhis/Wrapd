@@ -36,7 +36,7 @@ public class TestTupleGenerator {
 			System.out.println("[TEST] " + compilation.compilerMessages);
 		}
 		
-		var loader = new DirClassLoader(codeDir, TupleTypeGenerator.getTuplePackage());
+		var loader = new DirClassLoader(codeDir, TupleTypeGenerator.TupleTypePackage);
 		var testclass = loader.forName(generator.getTupleClassName());
 		
 		for (Field field: testclass.getFields())
