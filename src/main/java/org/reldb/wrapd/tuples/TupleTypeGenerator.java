@@ -24,13 +24,13 @@ import static org.reldb.wrapd.il8n.Strings.*;
  */
 public class TupleTypeGenerator {
 
-    private String dir;
+    private final String dir;
     private String tupleName;
     private boolean existing;
     private long serialValue = 0;
-    private DirClassLoader loader;
+    private final DirClassLoader loader;
     private String oldTupleName;
-    private List<Attribute> attributes = new LinkedList<>();
+    private final List<Attribute> attributes = new LinkedList<>();
     private TupleTypeGenerator copyFrom = null;
 
     public static final String tupleTypePackage = "org.reldb.wrapd.tuples.generated";

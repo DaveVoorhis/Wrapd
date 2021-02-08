@@ -25,14 +25,13 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 public class TestSQLite {
 
-	private static Database database;
-	private static final String prompt = "[TSET]";
+    private static final String prompt = "[TSET]";
 
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		DatabaseConfigurationAndSetup.ensureTestDirectoryExists();
 		System.out.println(prompt + " Executing TestSQLite setup.");
-		database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        Database database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
 		DatabaseConfigurationAndSetup.databaseTeardown(prompt, database);
 		DatabaseConfigurationAndSetup.databaseCreate(prompt, database);
 		final var tupleClassName = "TestSelect";

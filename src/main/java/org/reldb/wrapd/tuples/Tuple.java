@@ -48,7 +48,7 @@ public abstract class Tuple implements Serializable, Cloneable {
      */
     public boolean insert(Database database, Connection connection, String tableName) throws SQLException {
         Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
-        Supplier<Stream<String>> columns = () -> dataFields.get().map(field -> field.getName());
+        Supplier<Stream<String>> columns = () -> dataFields.get().map(Field::getName);
         var columnNames = columns.get().collect(Collectors.joining(", "));
         var parms = "?"
                 .repeat((int) columns.get().count())

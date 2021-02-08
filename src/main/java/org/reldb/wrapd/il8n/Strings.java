@@ -42,6 +42,8 @@ public class Strings {
     public static final int ErrFileNotFound1 = Str.E("File %s not found for %s.", DirClassLoader.class.toString());
     public static final int ErrReading = Str.E("Error reading %s: %s.", DirClassLoader.class.toString());
 
+    public static final int ErrUnableToCreate5 = Str.E("Unable to create resource directory: %s.", ForeignCompilerJava.class.toString());
+    public static final int ErrUnableToCreate6 = Str.E("Unable to create packagee directory: %s.", ForeignCompilerJava.class.toString());
     public static final int ErrSavingJavaSource = Str.E("Unable to save Java source: %s.", ForeignCompilerJava.class.toString());
 
     public static final int ErrUnableToCreateOrOpenCodeDirectory = Str.E("Unable to create or open code directory %s.", TupleTypeGenerator.class.toString());

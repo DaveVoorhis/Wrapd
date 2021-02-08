@@ -21,8 +21,9 @@ public class Database {
     public static final Logger log = LogManager.getLogger(Database.class.toString());
 
     private DataSource pool = null;
-    private String dbTablenamePrefix = "";
-    private Customisations customisations;
+
+    private final String dbTablenamePrefix;
+    private final Customisations customisations;
 
     /**
      * Open a database, given a database URL, user name, password, and table name prefix.
@@ -32,7 +33,7 @@ public class Database {
      * @param dbPassword        - database password
      * @param dbTablenamePrefix - table name prefix
      * @param customisations    - DBMS-specific customisations
-     * @throws IOException
+     * @throws IOException      - Error
      */
     public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws IOException {
         if (dbURL == null)
@@ -63,7 +64,7 @@ public class Database {
      * @param dbURL             - database URL
      * @param dbTablenamePrefix - table name prefix
      * @param customisations    - DBMS-specific customisations
-     * @throws IOException
+     * @throws IOException      - Error
      */
     public Database(String dbURL, String dbTablenamePrefix, Customisations customisations) throws IOException {
         this(dbURL, null, null, dbTablenamePrefix, customisations);
@@ -81,7 +82,7 @@ public class Database {
     /**
      * Return type from connection use.
      */
-    public class ConnectionUseResult<T> {
+    public static class ConnectionUseResult<T> {
         public final T returnValue;
         public final SQLException exception;
 
@@ -103,7 +104,7 @@ public class Database {
      */
     @FunctionalInterface
     public interface ConnectionUser<T> {
-        public T go(Connection c) throws SQLException;
+        T go(Connection c) throws SQLException;
     }
 
     /**
@@ -112,14 +113,14 @@ public class Database {
      * @param <T>            type of return value from use of connection.
      * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
      * @return A ConnectionUseResult<T> containing either a T (indicating success) or a SQLException.
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> ConnectionUseResult<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
         try (Connection conn = pool.getConnection()) {
             try {
-                return new ConnectionUseResult<T>(connectionUser.go(conn));
+                return new ConnectionUseResult<>(connectionUser.go(conn));
             } catch (SQLException t) {
-                return new ConnectionUseResult<T>(t);
+                return new ConnectionUseResult<>(t);
             }
         }
     }
@@ -130,7 +131,7 @@ public class Database {
      * @param <T>            type of return value from user of connection.
      * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
      * @return A value of type T as a result of using a Connection.
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> T useConnection(ConnectionUser<T> connectionUser) throws SQLException {
         var result = processConnection(connectionUser);
@@ -146,7 +147,7 @@ public class Database {
      */
     @FunctionalInterface
     public interface ResultSetReceiver<T> {
-        public T go(ResultSet r) throws SQLException;
+        T go(ResultSet r) throws SQLException;
     }
 
     /**
@@ -157,7 +158,7 @@ public class Database {
      * @param query      - query
      * @param receiver   - result set receiver lambda
      * @return return value
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
         try (Statement statement = connection.createStatement()) {
@@ -175,7 +176,7 @@ public class Database {
      * @param connection   - java.sql.Connection
      * @param sqlStatement - String SQL query
      * @return true if a ResultSet is returned, false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {
         try (Statement statement = connection.createStatement()) {
@@ -192,7 +193,7 @@ public class Database {
      * @param query      - SELECT query
      * @param columnName - column name from which to retrieve first row's value
      * @return - value of first row in columnName
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public Object valueOfAll(Connection connection, String query, String columnName) throws SQLException {
         return queryAll(connection, query, rs -> {
@@ -209,7 +210,7 @@ public class Database {
      * @param query    - query
      * @param receiver - result set receiver lambda
      * @return return value
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
         return useConnection(conn -> queryAll(conn, query, receiver));
@@ -220,7 +221,7 @@ public class Database {
      *
      * @param sqlStatement - String SQL query
      * @return true if a ResultSet is returned, false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean updateAll(String sqlStatement) throws SQLException {
         return useConnection(conn -> updateAll(conn, sqlStatement));
@@ -232,7 +233,7 @@ public class Database {
      * @param query      - SELECT query
      * @param columnName - column name from which to retrieve first row's value
      * @return - value of first row in columnName
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public Object valueOfAll(String query, String columnName) throws SQLException {
         return useConnection(conn -> valueOfAll(conn, query, columnName));
@@ -242,7 +243,7 @@ public class Database {
      * Represents a SQL NULL on behalf of a specified SQL type from the Types enum.
      */
     public static class Null {
-        private int type;
+        private final int type;
 
         public Null(int type) {
             this.type = type;
@@ -285,7 +286,7 @@ public class Database {
     /**
      * Return type from parametric query (prepared statement) use.
      */
-    public class PreparedStatementUseResult<T> {
+    public static class PreparedStatementUseResult<T> {
         public final T returnValue;
         public final SQLException exception;
 
@@ -307,7 +308,7 @@ public class Database {
      */
     @FunctionalInterface
     public interface PreparedStatementUser<T> {
-        public T go(PreparedStatement ps) throws SQLException;
+        T go(PreparedStatement ps) throws SQLException;
     }
 
     /**
@@ -319,7 +320,7 @@ public class Database {
      * @param query                 - query
      * @param parms                 - Object[] of parameter arguments
      * @return A value of type T as a result of using a PreparedStatement.
-     * @throws SQLException
+     * @throws SQLException         - Error
      */
     public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var sqlized = replaceTableNames(query);
@@ -331,9 +332,9 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
             setupParms(statement, parms);
             try {
-                return new PreparedStatementUseResult<T>(preparedStatementUser.go(statement));
+                return new PreparedStatementUseResult<>(preparedStatementUser.go(statement));
             } catch (SQLException t) {
-                return new PreparedStatementUseResult<T>(t);
+                return new PreparedStatementUseResult<>(t);
             }
         }
     }
@@ -347,7 +348,7 @@ public class Database {
      * @param query                 - query
      * @param parms                 - Object[] of parameter arguments
      * @return A value of type T as a result of using a PreparedStatement.
-     * @throws SQLException
+     * @throws SQLException         - Error
      */
     public <T> T usePreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var result = processPreparedStatement(preparedStatementUser, connection, query, parms);
@@ -365,7 +366,7 @@ public class Database {
      * @param receiver   - result set receiver lambda
      * @param parms      - parameters
      * @return return value
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return usePreparedStatement(statement -> {
@@ -382,10 +383,10 @@ public class Database {
      * @param query      - String SQL query
      * @param parms      - parameters
      * @return true if a ResultSet is returned, false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean update(Connection connection, String query, Object... parms) throws SQLException {
-        return usePreparedStatement(statement -> statement.execute(), connection, query, parms);
+        return usePreparedStatement(PreparedStatement::execute, connection, query, parms);
     }
 
     /**
@@ -396,7 +397,7 @@ public class Database {
      * @param columnName - column name from which to retrieve first row's value
      * @param parms      - parameters
      * @return - value of first row in columnName
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public Object valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
         return query(connection, query, rs -> {
@@ -414,7 +415,7 @@ public class Database {
      * @param receiver - result set receiver lambda
      * @param parms    - parameters
      * @return return value
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public <T> T query(String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return useConnection(conn -> query(conn, query, receiver, parms));
@@ -426,7 +427,7 @@ public class Database {
      * @param query - String SQL query
      * @param parms - parameters
      * @return true if a ResultSet is returned, false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean update(String query, Object... parms) throws SQLException {
         return useConnection(conn -> update(conn, query, parms));
@@ -439,7 +440,7 @@ public class Database {
      * @param columnName - column name from which to retrieve first row's value
      * @param parms      - parameters
      * @return - value of first row in columnName
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public Object valueOf(String query, String columnName, Object... parms) throws SQLException {
         return useConnection(conn -> valueOf(conn, query, columnName, parms));
@@ -454,7 +455,7 @@ public class Database {
      */
     public static ResultSetReceiver<Boolean> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
         return resultSet -> {
-            CompilationResults compilationResult = null;
+            CompilationResults compilationResult;
             try {
                 compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
             } catch (ClassNotFoundException e) {
@@ -483,7 +484,7 @@ public class Database {
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
      * @return - true if Tuple-derived class has been created and compiled; false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
         return queryAll(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations));
@@ -496,7 +497,7 @@ public class Database {
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
      * @return - true if Tuple-derived class has been created and compiled; false otherwise
-     * @throws SQLException
+     * @throws SQLException  - Error
      */
     public boolean createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
         return processGenerateTupleResultTransaction(new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query)));
@@ -511,7 +512,7 @@ public class Database {
      * @param query          - String - query to be evaluated
      * @param parms          - parameters which positionally match to '?' in the query
      * @return - true if Tuple-derived class has been created and compiled; false otherwise
-     * @throws SQLException
+     * @throws SQLException  - Error
      */
     public boolean createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
         return query(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations), parms);
@@ -525,7 +526,7 @@ public class Database {
      * @param query          - String - query to be evaluated
      * @param parms          - parameters which positionally match to '?' in the query
      * @return - true if Tuple-derived class has been created and compiled; false otherwise
-     * @throws SQLException
+     * @throws SQLException  - Error
      */
     public boolean createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
         return processGenerateTupleResultTransaction(new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms)));
@@ -536,7 +537,7 @@ public class Database {
      *
      * @param <T>        - T extends Tuple
      * @param tupleClass - the stream will be of instances of tupleClass
-     * @return Stream<T>
+     * @return Stream<T> - result stream
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
@@ -574,8 +575,8 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - Result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Connection connection, String query, Class<T> tupleClass) throws SQLException {
         return queryAll(connection, query, newResultSetToStream(tupleClass));
@@ -588,8 +589,8 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
         return queryAll(connection, query, newResultSetToStreamForUpdate(tupleClass));
@@ -601,8 +602,8 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(String query, Class<T> tupleClass) throws SQLException {
         return queryAll(query, newResultSetToStream(tupleClass));
@@ -614,8 +615,8 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
         return queryAll(query, newResultSetToStreamForUpdate(tupleClass));
@@ -628,8 +629,8 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(connection, query, newResultSetToStream(tupleClass), parms);
@@ -642,8 +643,8 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(connection, query, newResultSetToStreamForUpdate(tupleClass), parms);
@@ -655,8 +656,8 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(query, newResultSetToStream(tupleClass), parms);
@@ -668,8 +669,8 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T>
-     * @throws SQLException
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(query, newResultSetToStreamForUpdate(tupleClass), parms);
@@ -678,11 +679,11 @@ public class Database {
     /**
      * Given multiple argument arrays, combine them into one unified argument list for passing to a parametrised query's "Object ... parms", above.
      *
-     * @param parms
-     * @return
+     * @param parms - parameter arguments
+     * @return - object array of parameter arguments
      */
     public static Object[] allArguments(Object... parms) {
-        Vector<Object> newArgs = new Vector<Object>();
+        Vector<Object> newArgs = new Vector<>();
         for (Object parm : parms)
             if (parm instanceof Object[])
                 Collections.addAll(newArgs, (Object[]) parm);
@@ -695,8 +696,8 @@ public class Database {
      * FunctionalInterface to define lambdas for transactional processing.
      */
     @FunctionalInterface
-    public static interface TransactionRunner {
-        public boolean run(Connection connection) throws SQLException;
+    public interface TransactionRunner {
+        boolean run(Connection connection) throws SQLException;
     }
 
     /**
@@ -730,18 +731,18 @@ public class Database {
      */
     public class Transaction {
 
-        private TransactionResult result = null;
+        private final TransactionResult result;
 
         /**
          * Encapsulate a transaction.
          *
          * @param transactionRunner - lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
-         * @throws SQLException
+         * @throws SQLException - Error
          */
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
             try (Connection connection = pool.getConnection()) {
                 connection.setAutoCommit(false);
-                boolean success = false;
+                boolean success;
                 try {
                     success = transactionRunner.run(connection);
                 } catch (SQLException t) {
@@ -760,7 +761,7 @@ public class Database {
         /**
          * Obtain transaction execution result.
          *
-         * @return TransactionResult
+         * @return TransactionResult - transaction execution result
          */
         public TransactionResult getResult() {
             return result;
@@ -771,8 +772,8 @@ public class Database {
      * Execute some code in a transaction.
      *
      * @param transactionRunner - lambda specifying code to be run
-     * @return TransactionResult
-     * @throws SQLException
+     * @return TransactionResult - transaction execution result
+     * @throws SQLException - Error
      */
     public TransactionResult processTransaction(TransactionRunner transactionRunner) throws SQLException {
         var transaction = new Transaction(transactionRunner);
@@ -784,7 +785,7 @@ public class Database {
      *
      * @param transactionRunner - lambda specifying code to be run
      * @return - boolean true if transaction committed, false otherwise
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public boolean useTransaction(TransactionRunner transactionRunner) throws SQLException {
         var result = processTransaction(transactionRunner);
@@ -798,22 +799,22 @@ public class Database {
      */
     @FunctionalInterface
     public interface XactGo {
-        public boolean go(Xact tcw) throws SQLException;
+        boolean go(Xact tcw) throws SQLException;
     }
 
     /**
      * Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.
      *
      * @param transactionRunner - lambda defining one or more database operations
-     * @return - boolean
-     * @throws SQLException
+     * @return - boolean - true if transaction committed, false otherwise
+     * @throws SQLException - Error
      */
     public boolean transact(XactGo transactionRunner) throws SQLException {
         return useTransaction(conn -> transactionRunner.go(new Xact(Database.this, conn)));
     }
 
     // Primary key cache.
-    private Map<String, String[]> keyCache = new HashMap<String, String[]>();
+    private final Map<String, String[]> keyCache = new HashMap<>();
 
     /**
      * Get primary key for a given table.
@@ -821,7 +822,7 @@ public class Database {
      * @param tableName  - table name
      * @param connection - java.sql.Connection
      * @return - array of column names comprising the primary key
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public String[] getKeyColumnNamesFor(Connection connection, String tableName) throws SQLException {
         var keyColumnNamesArray = keyCache.get(tableName);
@@ -843,7 +844,7 @@ public class Database {
      *
      * @param tableName - table name
      * @return - array of column names comprising the primary key
-     * @throws SQLException
+     * @throws SQLException - Error
      */
     public String[] getKeyColumnNamesFor(String tableName) throws SQLException {
         return useConnection(connection -> getKeyColumnNamesFor(connection, tableName));

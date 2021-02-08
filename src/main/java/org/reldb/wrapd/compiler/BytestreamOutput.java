@@ -23,7 +23,7 @@ public abstract class BytestreamOutput {
     /**
      * Write an unsigned byte.
      */
-    private final void putUnsignedByte(int val) {
+    private void putUnsignedByte(int val) {
         put(val);
     }
 
@@ -31,8 +31,8 @@ public abstract class BytestreamOutput {
      * Output an array of bytes.
      */
     public void put(byte[] b) {
-        for (int i = 0; i < b.length; i++)
-            putUnsignedByte(b[i]);
+        for (byte value : b)
+            putUnsignedByte(value);
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class BytestreamOutput {
     /**
      * Writes an unsigned short.
      */
-    private final void putUnsignedShort(short val) {
+    private void putUnsignedShort(short val) {
         putUnsignedByte((byte) (val >>> 8));
         putUnsignedByte((byte) val);
     }
@@ -55,7 +55,7 @@ public abstract class BytestreamOutput {
     /**
      * Writes an unsigned int
      */
-    private final void putUnsignedInt(int val) {
+    private void putUnsignedInt(int val) {
         putUnsignedByte((byte) (val >>> 24));
         putUnsignedByte((byte) (val >>> 16));
         putUnsignedByte((byte) (val >>> 8));
@@ -65,7 +65,7 @@ public abstract class BytestreamOutput {
     /**
      * Output unsigned long
      */
-    private final void putUnsignedLong(long val) {
+    private void putUnsignedLong(long val) {
         putUnsignedByte((byte) (val >>> 56));
         putUnsignedByte((byte) (val >>> 48));
         putUnsignedByte((byte) (val >>> 40));
@@ -172,7 +172,7 @@ public abstract class BytestreamOutput {
      * Writes an Integer.
      */
     public final void putInteger(Integer i) {
-        putInt(i.intValue());
+        putInt(i);
     }
 
     /**

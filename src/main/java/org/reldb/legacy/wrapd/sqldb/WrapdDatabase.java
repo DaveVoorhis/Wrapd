@@ -3,33 +3,32 @@ package org.reldb.legacy.wrapd.sqldb;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.sqldb.Database;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 public interface WrapdDatabase {
 
-    public final String AdministratorGroupPrivilege = "999999999";
-    public final String UserGroupPrivilege = "100000000";
+    String AdministratorGroupPrivilege = "999999999";
+    String UserGroupPrivilege = "100000000";
 
-    public enum CheckDatabaseStatus {
+    enum CheckDatabaseStatus {
         ERROR, OK, CREATE_DATABASE_NEEDED, UPGRADE_DATABASE_NEEDED
     }
 
-    public enum TokenCheckStatus {
+    enum TokenCheckStatus {
         ERROR, VALID, INVALID
     }
 
-    public enum ActivationStatus {
+    enum ActivationStatus {
         ERROR, VALID, INVALID, DUPLICATE_EMAIL
     }
 
-    public enum RegisterStatus {
+    enum RegisterStatus {
         ERROR, OK, DUPLICATE_EMAIL
     }
 
-    public static class LoginStatus {
-        private boolean loggedIn;
-        private String requiresNewPasswordReason;
+    class LoginStatus {
+        private final boolean loggedIn;
+        private final String requiresNewPasswordReason;
 
         public LoginStatus(boolean loggedIn) {
             this.loggedIn = loggedIn;
@@ -54,9 +53,9 @@ public interface WrapdDatabase {
         }
     }
 
-    public static class DBVersion {
-        private int frameworkDBVersion;
-        private int userDBVersion;
+    class DBVersion {
+        private final int frameworkDBVersion;
+        private final int userDBVersion;
 
         public DBVersion(int frameworkDBVersion, int userDBVersion) {
             this.frameworkDBVersion = frameworkDBVersion;
@@ -73,8 +72,8 @@ public interface WrapdDatabase {
     }
 
     @FunctionalInterface
-    public interface DatabaseUpdate {
-        public void go(WrapdDatabase db) throws SQLException;
+    interface DatabaseUpdate {
+        void go(WrapdDatabase db) throws SQLException;
     }
 
     /**
@@ -119,7 +118,7 @@ public interface WrapdDatabase {
     /**
      * Check the database status. Normally invoked only by WrapdDB.
      */
-    CheckDatabaseStatus checkDatabase() throws IOException;
+    CheckDatabaseStatus checkDatabase();
 
     /**
      * Attempt to initialise the database. Normally invoked only by WrapdDB.

@@ -2,8 +2,6 @@ package org.reldb.wrapd.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;

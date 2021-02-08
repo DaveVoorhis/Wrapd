@@ -15,7 +15,7 @@ import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreate1;
 
 public class DatabaseConfigurationAndSetup {
 
-	private static String baseDir = "./_TestData";
+	private static final String baseDir = "./_TestData";
 
 	public static void databaseTeardown(String prompt) throws SQLException, IOException {
 		var database = getSQLiteDatabase(prompt);

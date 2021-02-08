@@ -10,13 +10,13 @@ import java.util.Vector;
  */
 public class Str {
 
-    private static Vector<String> strings = new Vector<>();
+    private static final Vector<String> strings = new Vector<>();
 
-    private static int errorText = register("ERROR");
-    private static int warningText = register("WARNING");
-    private static int noteText = register("NOTE");
-    private static int msgPreambleText = register("MSG");
-    private static int fromText = register("from");
+    private static final int errorText = register("ERROR");
+    private static final int warningText = register("WARNING");
+    private static final int noteText = register("NOTE");
+    private static final int msgPreambleText = register("MSG");
+    private static final int fromText = register("from");
 
     public static int register(String string) {
         strings.add(string);

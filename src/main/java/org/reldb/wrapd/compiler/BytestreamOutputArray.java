@@ -25,7 +25,7 @@ public class BytestreamOutputArray extends BytestreamOutput {
      * Get the array of bytes that represents the stream.
      */
     public byte[] getBytes() {
-        byte outArray[] = new byte[index];
+        byte[] outArray = new byte[index];
         System.arraycopy(vb, 0, outArray, 0, index);
         return outArray;
     }
@@ -38,7 +38,7 @@ public class BytestreamOutputArray extends BytestreamOutput {
             } else if (minimumCapacity > newCapacity) {
                 newCapacity = minimumCapacity;
             }
-            byte newValue[] = new byte[newCapacity];
+            byte[] newValue = new byte[newCapacity];
             System.arraycopy(vb, 0, newValue, 0, index);
             vb = newValue;
         }

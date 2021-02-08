@@ -17,7 +17,7 @@ public abstract class ConfigurationSettings {
         }
     }
 
-    private Map<String, ConfigurationSetting> settings = new HashMap<>();
+    private final Map<String, ConfigurationSetting> settings = new HashMap<>();
 
     protected void add(String element, String value, String comment) {
         settings.put(element, new ConfigurationSetting(element, value, comment));
