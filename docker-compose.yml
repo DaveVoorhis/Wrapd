@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  postgres-db:
+    image: postgres:13.1
+    restart: always
+    volumes:
+    - db-data-wrapd:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+    - "5432:5432"
+
+volumes:
+  db-data-wrapd:
+    driver: local
