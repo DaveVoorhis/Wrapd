@@ -31,10 +31,10 @@ public class TestSQLite {
 	public static void setup() throws SQLException, IOException {
 		DatabaseConfigurationAndSetup.ensureTestDirectoryExists();
 		System.out.println(prompt + " Executing TestSQLite setup.");
-        Database database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        Database database = DatabaseConfigurationAndSetup.getDatabase(prompt);
 		DatabaseConfigurationAndSetup.databaseTeardown(prompt, database);
 		DatabaseConfigurationAndSetup.databaseCreate(prompt, database);
-		final var tupleClassName = "TestSelect";
+		final var tupleClassName = "TestSelectSQLite";
 		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName);
 		database.createTupleFromQueryAll(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}

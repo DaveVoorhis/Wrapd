@@ -10,10 +10,10 @@ import org.reldb.wrapd.sqldb.Database;
 
 public class DatabaseConfigurationAndSetup {
 
-	private static final String baseDir = "./_TestData";
+	private static final String baseDir = "./_TestData/SQLite";
 
 	public static void databaseTeardown(String prompt) throws SQLException, IOException {
-		var database = getSQLiteDatabase(prompt);
+		var database = getDatabase(prompt);
 		databaseTeardown(prompt, database);
 		Directory.rmAll(DatabaseConfigurationAndSetup.getCodeDirectory());
 	}
@@ -31,7 +31,7 @@ public class DatabaseConfigurationAndSetup {
 		dropTable(database, prompt, "$$tester");
 	}
 
-	public static void databaseCreate(String string, Database database) throws SQLException {
+	public static void databaseCreate(String prompt, Database database) throws SQLException {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
 			xact.updateAll("INSERT INTO $$version VALUES (0, 0);");
@@ -40,7 +40,7 @@ public class DatabaseConfigurationAndSetup {
 		});
 	}
 
-	public static Database getSQLiteDatabase(String prompt) throws SQLException, IOException {
+	public static Database getDatabase(String prompt) throws SQLException, IOException {
 		Configuration.setLocation(baseDir);
 		
 		Configuration.register(SQLiteConfiguration.class);
@@ -49,7 +49,7 @@ public class DatabaseConfigurationAndSetup {
 		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(SQLiteConfiguration.class.getName(), SQLiteConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 
 		if (dbDatabase == null)
-			throw new SQLException("[TSET] Please specify a database name in the configuration.");
+			throw new SQLException(prompt + " Please specify a database name in the configuration.");
 
 		Database database;
 		
@@ -57,7 +57,7 @@ public class DatabaseConfigurationAndSetup {
 		try {
 			database = new Database(url, dbTablenamePrefix, new SQLiteCustomisations());
 		} catch (IOException e) {
-			throw new SQLException("[TSET] Database connection failed. Check the configuration. Error is: " + e);
+			throw new SQLException(prompt + " Database connection failed. Check the configuration. Error is: " + e);
 		}
 		
 		return database;

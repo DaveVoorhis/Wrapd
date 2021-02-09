@@ -8,11 +8,6 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.sqldb.Database;
-<<<<<<< HEAD
-import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
-=======
-import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
->>>>>>> origin/master
 import org.reldb.wrapd.sqldb.ResultSetToTuple;
 
 import java.io.File;
@@ -33,27 +28,18 @@ public class TestPostgreSQL {
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		DatabaseConfigurationAndSetup.ensureTestDirectoryExists();
-<<<<<<< HEAD
 		System.out.println(prompt + " Executing TestPostgreSQL setup.");
-        Database database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
-=======
-		System.out.println(prompt + " Executing TestSQLite setup.");
-        Database database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
->>>>>>> origin/master
+        Database database = DatabaseConfigurationAndSetup.getDatabase(prompt);
 		DatabaseConfigurationAndSetup.databaseTeardown(prompt, database);
 		DatabaseConfigurationAndSetup.databaseCreate(prompt, database);
-		final var tupleClassName = "TestSelect";
+		final var tupleClassName = "TestSelectPostgreSQL";
 		ResultSetToTuple.destroyTuple(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName);
 		database.createTupleFromQueryAll(DatabaseConfigurationAndSetup.getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException {
-<<<<<<< HEAD
 		var testClassName = "TestPostgreSQL_Source01";
-=======
-		var testClassName = "TestSQLite_Source01";
->>>>>>> origin/master
 		var testPackage = "org.reldb.wrapd.tuples.generated";
 		var testClassFullname = testPackage + "." + testClassName;
 
