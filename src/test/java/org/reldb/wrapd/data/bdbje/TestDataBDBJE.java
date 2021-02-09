@@ -1,4 +1,4 @@
-package org.reldb.wrapd.database;
+package org.reldb.wrapd.data.bdbje;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,10 +10,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import org.reldb.wrapd.data.bdbje.BDBJEBase;
-import org.reldb.wrapd.data.bdbje.BDBJEData;
-import org.reldb.wrapd.data.bdbje.BDBJEEnvironment;
 import org.reldb.wrapd.data.CatalogEntry;
+import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
 
 public class TestDataBDBJE {
 	

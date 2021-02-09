@@ -1,4 +1,4 @@
-package org.reldb.wrapd.database;
+package org.reldb.wrapd.tuples;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -6,9 +6,9 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.tuples.TupleTypeGenerator;
+import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
 
-public class TestTupleGenerator {
+public class TestTupleTypeGenerator {
 	
 	private final static boolean verbose = true;
 	

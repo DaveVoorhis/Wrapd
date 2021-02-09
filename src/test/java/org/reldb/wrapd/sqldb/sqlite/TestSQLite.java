@@ -1,4 +1,4 @@
-package org.reldb.wrapd.database;
+package org.reldb.wrapd.sqldb.sqlite;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.sqldb.ResultSetToTuple;
 
 import java.io.File;

@@ -1,12 +1,9 @@
 package org.reldb.wrapd.tuples.generated;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.ResultSetToTuple;
-import org.reldb.wrapd.database.DatabaseConfigurationAndSetup;
+import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
 import java.io.IOException;
 import java.sql.SQLException;
 

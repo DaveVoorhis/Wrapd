@@ -1,11 +1,10 @@
-package org.reldb.toolbox;
+package org.reldb.toolbox.mail;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.reldb.toolbox.configuration.Configuration;
-import org.reldb.toolbox.mail.Email;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 

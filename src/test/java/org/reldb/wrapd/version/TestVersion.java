@@ -1,7 +1,6 @@
-package org.reldb.wrapd.miscellaneous;
+package org.reldb.wrapd.version;
 
 import org.junit.jupiter.api.Test;
-import org.reldb.wrapd.version.Version;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
