@@ -7,7 +7,7 @@ import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class TestSQLite_Source01 {
+public class TestPostgreSQL_Source01 {
     private static final String prompt = "[TEST]";
 
     private static void resetDatabase(Database database) throws SQLException {
@@ -19,13 +19,13 @@ public class TestSQLite_Source01 {
 
     @BeforeAll
     public static void setup() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         resetDatabase(database);
     }
 
     @Test
     public void testQueryToStream01() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testQueryToStream01");
         database.queryAll("SELECT * FROM $$tester", TestSelect.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -33,7 +33,7 @@ public class TestSQLite_Source01 {
 
     @Test
     public void testQueryToStream02() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testQueryToStream02");
         database.query("SELECT * FROM $$tester", TestSelect.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -41,7 +41,7 @@ public class TestSQLite_Source01 {
 
     @Test
     public void testQueryToStream03() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testQueryToStream03");
         database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelect.class, 3, 7)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -49,7 +49,7 @@ public class TestSQLite_Source01 {
 
     @Test
     public void testInsert01() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testInsert01");
         for (int x = 1000; x < 1010; x++) {
             var tuple = new TestSelect();
@@ -63,7 +63,7 @@ public class TestSQLite_Source01 {
 
     @Test
     public void testUpdate01() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testUpdate01");
         database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelect.class)
                 .forEach(tuple -> {
@@ -81,7 +81,7 @@ public class TestSQLite_Source01 {
 
     @Test
     public void testUpdate02() throws SQLException, IOException {
-        var database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+        var database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
         System.out.println(prompt + " testUpdate02");
         resetDatabase(database);
         database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelect.class, 10)

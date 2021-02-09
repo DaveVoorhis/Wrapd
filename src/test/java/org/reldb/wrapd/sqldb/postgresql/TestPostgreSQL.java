@@ -1,4 +1,4 @@
-package org.reldb.wrapd.sqldb.sqlite;
+package org.reldb.wrapd.sqldb.postgresql;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 import org.reldb.wrapd.sqldb.ResultSetToTuple;
 
 import java.io.File;
@@ -18,20 +19,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-public class TestSQLite {
+public class TestPostgreSQL {
 
     private static final String prompt = "[TSET]";
 
 	@BeforeAll
 	public static void setup() throws SQLException, IOException {
 		DatabaseConfigurationAndSetup.ensureTestDirectoryExists();
-		System.out.println(prompt + " Executing TestSQLite setup.");
-        Database database = DatabaseConfigurationAndSetup.getSQLiteDatabase(prompt);
+		System.out.println(prompt + " Executing TestPostgreSQL setup.");
+        Database database = DatabaseConfigurationAndSetup.getPostgreSQLDatabase(prompt);
 		DatabaseConfigurationAndSetup.databaseTeardown(prompt, database);
 		DatabaseConfigurationAndSetup.databaseCreate(prompt, database);
 		final var tupleClassName = "TestSelect";
@@ -41,7 +40,7 @@ public class TestSQLite {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException {
-		var testClassName = "TestSQLite_Source01";
+		var testClassName = "TestPostgreSQL_Source01";
 		var testPackage = "org.reldb.wrapd.tuples.generated";
 		var testClassFullname = testPackage + "." + testClassName;
 

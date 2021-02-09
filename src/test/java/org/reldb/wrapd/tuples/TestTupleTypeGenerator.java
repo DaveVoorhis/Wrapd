@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
+import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 
 public class TestTupleTypeGenerator {
 	

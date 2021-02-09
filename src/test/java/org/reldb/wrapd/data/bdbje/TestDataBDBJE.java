@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.data.CatalogEntry;
-import org.reldb.wrapd.sqldb.DatabaseConfigurationAndSetup;
+import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 
 public class TestDataBDBJE {
 	

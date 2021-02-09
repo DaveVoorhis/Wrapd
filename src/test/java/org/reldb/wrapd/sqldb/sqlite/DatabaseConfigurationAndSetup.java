@@ -1,4 +1,4 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapd.sqldb.sqlite;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -6,8 +6,7 @@ import java.sql.SQLException;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
-import org.reldb.wrapd.sqldb.sqlite.SQLiteConfiguration;
-import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
+import org.reldb.wrapd.sqldb.Database;
 
 public class DatabaseConfigurationAndSetup {
 
