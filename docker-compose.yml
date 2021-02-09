@@ -7,6 +7,7 @@ services:
     volumes:
     - db-data-wrapd:/var/lib/postgresql/data
     environment:
+      POSTGRES_DB: wrapd_testdb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:

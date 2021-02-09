@@ -3,19 +3,18 @@ package org.reldb.wrapd.sqldb.postgresql;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.sqldb.Customisations;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.sqlite.SQLiteConfiguration;
-import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 public class DatabaseConfigurationAndSetup {
 
-	private static final String baseDir = "./_TestData";
+	private static final String baseDir = "./_TestData/PostgreSQL";
 
 	public static void databaseTeardown(String prompt) throws SQLException, IOException {
-		var database = getSQLiteDatabase(prompt);
+		var database = getDatabase(prompt);
 		databaseTeardown(prompt, database);
 		Directory.rmAll(DatabaseConfigurationAndSetup.getCodeDirectory());
 	}
@@ -33,7 +32,7 @@ public class DatabaseConfigurationAndSetup {
 		dropTable(database, prompt, "$$tester");
 	}
 
-	public static void databaseCreate(String string, Database database) throws SQLException {
+	public static void databaseCreate(String prompt, Database database) throws SQLException {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
 			xact.updateAll("INSERT INTO $$version VALUES (0, 0);");
@@ -42,24 +41,25 @@ public class DatabaseConfigurationAndSetup {
 		});
 	}
 
-	public static Database getSQLiteDatabase(String prompt) throws SQLException, IOException {
+	public static Database getDatabase(String prompt) throws SQLException, IOException {
 		Configuration.setLocation(baseDir);
-		
-		Configuration.register(SQLiteConfiguration.class);
-		
-		String dbDatabase = Database.emptyToNull(Configuration.getValue(SQLiteConfiguration.class.getName(), SQLiteConfiguration.DATABASE_NAME));
-		String dbTablenamePrefix = Database.nullTo(Configuration.getValue(SQLiteConfiguration.class.getName(), SQLiteConfiguration.DATABASE_TABLENAME_PREFIX), "Wrapd_");
 
-		if (dbDatabase == null)
-			throw new SQLException("[TSET] Please specify a database name in the configuration.");
+		Configuration.register(PostgreSQLConfiguration.class);
+
+		// settings should match PostgreSQL configuration in docker-compose.yml
+		String dbHost = "localhost";
+		String dbDatabase = "wrapd_testdb";
+		String dbUser = "user";
+		String dbPassword = "password";
+		String dbTablenamePrefix = "Wrapd_";
 
 		Database database;
 		
-		String url = "jdbc:sqlite:" + Configuration.getLocation() + dbDatabase;
+		String url = "jdbc:postgresql://" + dbHost + "/" + dbDatabase;
 		try {
-			database = new Database(url, dbTablenamePrefix, new SQLiteCustomisations());
+			database = new Database(url, dbUser, dbPassword, dbTablenamePrefix, null);
 		} catch (IOException e) {
-			throw new SQLException("[TSET] Database connection failed. Check the configuration. Error is: " + e);
+			throw new SQLException(prompt + " Database connection failed. Check the configuration. Error is: " + e);
 		}
 		
 		return database;
