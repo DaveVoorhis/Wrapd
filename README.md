@@ -24,5 +24,7 @@ effectively with Java Streams.
 
 ### To test Wrapd: ###
 
-1.   _gradle clean_
-2.   _gradle test_
+1.  _docker-compose up -d_
+2.  _gradle clean_
+3.  _gradle test_
+4.  _docker-compose down -v_
