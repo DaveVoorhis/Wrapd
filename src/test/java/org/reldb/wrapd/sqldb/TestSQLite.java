@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.TestDirectory;
-import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
 
 public class TestSQLite {
@@ -23,12 +22,9 @@ public class TestSQLite {
 	private static final String dbTablenamePrefix = "Wrapd_";
 
 	private static final String dbURLPrefix = "jdbc:sqlite";
-	private static final String dbURL = dbURLPrefix + ":" + Configuration.getLocation() + dbDatabase;
+	private static final String dbURL = dbURLPrefix + ":" + baseDir + "/" + dbDatabase;
 
-	private static Helper helper;
-
-	public static Database getDatabase(String prompt) throws SQLException, IOException {
-		Configuration.setLocation(baseDir);
+	public static Database getDatabase(String prompt) throws SQLException {
 		try {
 			return new Database(dbURL, dbTablenamePrefix, new SQLiteCustomisations());
 		} catch (IOException e) {
