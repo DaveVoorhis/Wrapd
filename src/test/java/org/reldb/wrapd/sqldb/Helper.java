@@ -3,6 +3,7 @@ package org.reldb.wrapd.sqldb;
 import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
@@ -62,30 +63,13 @@ public class Helper {
 		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
-	private void test(String testPackage, String testClassName) throws IOException, ClassNotFoundException {
+	private Class<?> obtainTestCodeClass(String testPackage, String testClassName) throws ClassNotFoundException {
+		var dirClassLoader = new DirClassLoader(getCodeDirectory(), testPackage);
 		var testClassFullname = testPackage + "." + testClassName;
+		return dirClassLoader.forName(testClassFullname);
+	}
 
-		// Compile test code
-		String source = Files.readString(Path.of("src/test/resources/" + testClassName + ".java"), StandardCharsets.UTF_8);
-		var compiler = new ForeignCompilerJava(getCodeDirectory());
-		var classpath = compiler.getDefaultClassPath();
-		var result = compiler.compileForeignCode(
-				classpath,
-				testClassName,
-				testPackage,
-				source);
-		if (!result.compiled) {
-			System.out.println(result.compilerMessages);
-		}
-
-		assertTrue(result.compiled);
-
-		// Verify that test code class can be loaded
-		var dcl = new DirClassLoader(getCodeDirectory(), testPackage);
-		var clazz = dcl.forName(testClassFullname);
-		assertNotNull(clazz);
-
-		// Run tests in test code class
+	private TestExecutionSummary runTestsInClass(Class<?> clazz) {
 		var listener = new SummaryGeneratingListener();
 		var request = LauncherDiscoveryRequestBuilder.request()
 				.selectors(selectClass(clazz))
@@ -93,21 +77,41 @@ public class Helper {
 		var launcher = LauncherFactory.create();
 		launcher.registerTestExecutionListeners(listener);
 		launcher.execute(request);
-		var summary = listener.getSummary();
-		summary.printTo(new PrintWriter(System.out));
-
-		assertEquals(summary.getTotalFailureCount(), 0);
+		return listener.getSummary();
 	}
 
-	public String getBaseDirectory() {
-		return baseDir;
+	private ForeignCompilerJava.CompilationResults compileTestCode(String testPackage, String testClassName) throws IOException {
+		String source = Files.readString(Path.of("src/test/resources/" + testClassName + ".java"), StandardCharsets.UTF_8);
+		var compiler = new ForeignCompilerJava(getCodeDirectory());
+		var classpath = compiler.getDefaultClassPath();
+		return compiler.compileForeignCode(classpath, testClassName, testPackage, source);
+	}
+
+	private void test(String testPackage, String testClassName) throws IOException, ClassNotFoundException {
+		var result = compileTestCode(testPackage, testClassName);
+		if (!result.compiled) {
+			System.out.println(result.compilerMessages);
+		}
+		assertTrue(result.compiled);
+
+		var clazz = obtainTestCodeClass(testPackage, testClassName);
+		assertNotNull(clazz);
+
+		var testExecutionSummary = runTestsInClass(clazz);
+		testExecutionSummary.printTo(new PrintWriter(System.out));
+		assertEquals(testExecutionSummary.getTotalFailureCount(), 0);
 	}
 
 	public String getCodeDirectory() {
-		return getBaseDirectory() + "/code";
+		return baseDir + "/code";
 	}
 
-    public void test(String prompt, String title, String tupleClassName, String testPackage, String testClassName, Database database) throws ClassNotFoundException, IOException, SQLException {
+	public void test(String prompt,
+					 String title,
+					 String tupleClassName,
+					 String testPackage,
+					 String testClassName,
+					 Database database) throws ClassNotFoundException, IOException, SQLException {
 		System.out.println(prompt + " Executing " + title + " setup.");
 		setup(prompt, tupleClassName, database);
 		System.out.println(prompt + " Executing " + title + " test.");
