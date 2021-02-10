@@ -10,15 +10,14 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import org.reldb.TestDirectory;
 import org.reldb.wrapd.data.CatalogEntry;
-import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 
 public class TestDataBDBJE {
-	
+	private static final String baseDir = TestDirectory.Is + "BDBJE";
+
 	private final static boolean verbose = true;
-	
-	private final static String testDir = DatabaseConfigurationAndSetup.getBaseDirectory();
-	
+
 	private static BDBJEBase base;
 	
 	private final static String storageName1 = "TestData";
@@ -27,8 +26,8 @@ public class TestDataBDBJE {
 	
 	@BeforeAll
 	public static void setup() {
-		BDBJEEnvironment.purge(testDir);
-		base = new BDBJEBase(testDir, true);
+		BDBJEEnvironment.purge(baseDir);
+		base = new BDBJEBase(baseDir, true);
 	}
 	
 	private static void showContainer(String prompt, Map<? extends Serializable, ? extends Serializable> container) {

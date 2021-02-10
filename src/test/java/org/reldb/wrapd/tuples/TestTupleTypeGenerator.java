@@ -5,16 +5,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
+import org.reldb.TestDirectory;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.sqldb.sqlite.DatabaseConfigurationAndSetup;
 
 public class TestTupleTypeGenerator {
-	
+
+	private static final String baseDir = TestDirectory.Is + "Tuples";
+
+	private static String getCodeDirectory() {
+		return baseDir + "/code";
+	}
+
 	private final static boolean verbose = true;
 	
 	@Test 
 	public void testTupleGenerator01() throws Exception {
-		var codeDir = DatabaseConfigurationAndSetup.getCodeDirectory();
+		var codeDir = getCodeDirectory();
 		var tupleName = "TestTuple";
 		var newTupleName = "TestTupleRenamed";
 		var copyTupleName = "TestTupleCopied";

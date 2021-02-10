@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.reldb.TestDirectory;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 public class TestEmail {
 
-	private static final String baseDir = "./_TestData";
+	private static final String baseDir = TestDirectory.Is + "Email";
 
 	@BeforeAll
 	public static void setup() {
