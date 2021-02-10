@@ -5,14 +5,30 @@ services:
     image: postgres:13.1
     restart: always
     volumes:
-    - db-data-wrapd:/var/lib/postgresql/data
+      - db-data-wrapd_postgresql:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: wrapd_testdb
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
-    - "5432:5432"
+      - "5432:5432"
+
+  mysql-db:
+    image: mysql:8.0.23
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - db-data-wrapd_mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wrapd_testdb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
 
 volumes:
-  db-data-wrapd:
+  db-data-wrapd_postgresql:
+    driver: local
+  db-data-wrapd_mysql:
     driver: local
