@@ -1,4 +1,4 @@
-package org.reldb.wrapd.junit;
+package org.reldb.junit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
