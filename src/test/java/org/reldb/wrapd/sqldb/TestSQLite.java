@@ -19,17 +19,18 @@ public class TestSQLite {
 	private static final String testClassName = "TestSQLite_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
+	private static final String dbDatabase = "sqlitedb.sqlite";
+	private static final String dbTablenamePrefix = "Wrapd_";
+
+	private static final String dbURLPrefix = "jdbc:sqlite";
+	private static final String dbURL = dbURLPrefix + ":" + Configuration.getLocation() + dbDatabase;
+
 	private static Helper helper;
 
 	public static Database getDatabase(String prompt) throws SQLException, IOException {
 		Configuration.setLocation(baseDir);
-
-		String dbDatabase = "sqlitedb.sqlite";
-		String dbTablenamePrefix = "Wrapd_";
-
-		String url = "jdbc:sqlite:" + Configuration.getLocation() + dbDatabase;
 		try {
-			return new Database(url, dbTablenamePrefix, new SQLiteCustomisations());
+			return new Database(dbURL, dbTablenamePrefix, new SQLiteCustomisations());
 		} catch (IOException e) {
 			throw new SQLException(prompt + " Database connection failed. Error is: " + e);
 		}

@@ -16,17 +16,27 @@ public class TestPostgreSQL {
 	private static final String testClassName = "TestPostgreSQL_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
-	public static Database getDatabase(String prompt) throws SQLException {
-		// settings should match PostgreSQL configuration in docker-compose.yml
-		String dbHost = "localhost";
-		String dbDatabase = "wrapd_testdb";
-		String dbUser = "user";
-		String dbPassword = "password";
-		String dbTablenamePrefix = "Wrapd_";
+	// This test assumes use of docker-compose.yml in project root.
+	//
+	//   Launch from root of project via:
+	//			docker-compose up -d
+	//   Shut down via:
+	//		    docker-compose down -v
+	//
+	// Settings below should match PostgreSQL configuration in docker-compose.yml
 
-		String url = "jdbc:postgresql://" + dbHost + "/" + dbDatabase;
+	private static final String dbHost = "localhost";
+	private static final String dbDatabase = "wrapd_testdb";
+	private static final String dbUser = "user";
+	private static final String dbPassword = "password";
+	private static final String dbTablenamePrefix = "Wrapd_";
+
+	private static final String dbURLPrefix = "jdbc:postgresql";
+	private static final String dbURL = dbURLPrefix + "://" + dbHost + "/" + dbDatabase;
+
+	public static Database getDatabase(String prompt) throws SQLException {
 		try {
-			return new Database(url, dbUser, dbPassword, dbTablenamePrefix, null);
+			return new Database(dbURL, dbUser, dbPassword, dbTablenamePrefix, null);
 		} catch (IOException e) {
 			throw new SQLException(prompt + " Database connection failed. Error is: " + e);
 		}
