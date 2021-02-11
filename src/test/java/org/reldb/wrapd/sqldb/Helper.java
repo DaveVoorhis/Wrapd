@@ -22,9 +22,24 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 public class Helper {
 
 	private final String baseDir;
+	private final String prompt;
+	private final String title;
+	private final String tupleClassName;
+	private final String testPackage;
+	private final String testClassName;
 
-	public Helper(String baseDir) {
+	public Helper(String baseDir,
+				  String prompt,
+				  String title,
+				  String tupleClassName,
+				  String testPackage,
+				  String testClassName) {
 		this.baseDir = baseDir;
+		this.prompt = prompt;
+		this.title = title;
+		this.tupleClassName = tupleClassName;
+		this.testPackage = testPackage;
+		this.testClassName = testClassName;
 		ensureTestDirectoryExists();
 	}
 
@@ -33,7 +48,7 @@ public class Helper {
 			throw new ExceptionFatal("Helper: Unable to create directory for test: " + baseDir);
 	}
 
-	private void dropTable(Database database, String prompt, String tableName) {
+	private void dropTable(Database database, String tableName) {
 		try {
 			database.updateAll("DROP TABLE " + tableName);
 		} catch (SQLException se) {
@@ -41,9 +56,9 @@ public class Helper {
 		}
 	}
 
-	private void destroyDatabase(String prompt, Database database) {
-		dropTable(database, prompt, "$$version");
-		dropTable(database, prompt, "$$tester");
+	private void destroyDatabase(Database database) {
+		dropTable(database,"$$version");
+		dropTable(database,"$$tester");
 		Directory.rmAll(getCodeDirectory());
 	}
 
@@ -56,22 +71,22 @@ public class Helper {
 		});
 	}
 
-	private void destroyTupleClass(String tupleClassName) {
+	private void destroyTupleClass() {
 		ResultSetToTuple.destroyTuple(getCodeDirectory(), tupleClassName);
 	}
 
-	private void createTupleClass(String tupleClassName, Database database) throws SQLException {
+	private void createTupleClass(Database database) throws SQLException {
 		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
-	private void setup(String prompt, String tupleClassName, Database database) throws SQLException {
-		destroyDatabase(prompt, database);
+	private void setup(Database database) throws SQLException {
+		destroyDatabase(database);
 		createDatabase(database);
-		destroyTupleClass(tupleClassName);
-		createTupleClass(tupleClassName, database);
+		destroyTupleClass();
+		createTupleClass(database);
 	}
 
-	private Class<?> obtainTestCodeClass(String testPackage, String testClassName) throws ClassNotFoundException {
+	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
 		var dirClassLoader = new DirClassLoader(getCodeDirectory(), testPackage);
 		var testClassFullname = testPackage + "." + testClassName;
 		return dirClassLoader.forName(testClassFullname);
@@ -88,21 +103,21 @@ public class Helper {
 		return listener.getSummary();
 	}
 
-	private ForeignCompilerJava.CompilationResults compileTestCode(String testPackage, String testClassName) throws IOException {
+	private ForeignCompilerJava.CompilationResults compileTestCode() throws IOException {
 		String source = Files.readString(Path.of("src/test/resources/" + testClassName + ".java"), StandardCharsets.UTF_8);
 		var compiler = new ForeignCompilerJava(getCodeDirectory());
 		var classpath = compiler.getDefaultClassPath();
 		return compiler.compileForeignCode(classpath, testClassName, testPackage, source);
 	}
 
-	private void test(String testPackage, String testClassName) throws IOException, ClassNotFoundException {
-		var result = compileTestCode(testPackage, testClassName);
+	private void run() throws IOException, ClassNotFoundException {
+		var result = compileTestCode();
 		if (!result.compiled) {
 			System.out.println(result.compilerMessages);
 		}
 		assertTrue(result.compiled);
 
-		var clazz = obtainTestCodeClass(testPackage, testClassName);
+		var clazz = obtainTestCodeClass();
 		assertNotNull(clazz);
 
 		var testExecutionSummary = runTestsInClass(clazz);
@@ -114,15 +129,8 @@ public class Helper {
 		return baseDir + "/code";
 	}
 
-	public void test(String prompt,
-					 String title,
-					 String tupleClassName,
-					 String testPackage,
-					 String testClassName,
-					 Database database) throws ClassNotFoundException, IOException, SQLException {
-		System.out.println(prompt + " Executing " + title + " setup.");
-		setup(prompt, tupleClassName, database);
-		System.out.println(prompt + " Executing " + title + " test.");
-		test(testPackage, testClassName);
+	public void test(Database database) throws ClassNotFoundException, IOException, SQLException {
+		setup(database);
+		run();
 	}
 }

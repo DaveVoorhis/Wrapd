@@ -44,8 +44,7 @@ public class TestMySQL {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
-		var helper = new Helper(baseDir);
-		helper.test(prompt, title, tupleClassName, testPackage, testClassName, getDatabase(prompt));
+		new Helper(baseDir, prompt, title, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
 	}
 
 }
