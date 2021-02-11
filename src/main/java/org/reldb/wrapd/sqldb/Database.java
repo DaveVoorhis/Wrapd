@@ -583,6 +583,19 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param connection - a java.sql.Connection, typically obtained via a Transaction
+     * @param query      - a Query
+     * @return Stream<T> - Result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryAll(Connection connection, Query<T> query) throws SQLException {
+        return queryAll(connection, query.getText(), query.getTupleClass());
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T>        - T extends Tuple.
@@ -594,6 +607,19 @@ public class Database {
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
         return queryAll(connection, query, newResultSetToStreamForUpdate(tupleClass));
+    }
+
+    /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param connection - a java.sql.Connection, typically obtained via a Transaction
+     * @param query      - a Query
+     * @return Stream<T> - Result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, Query<T> query) throws SQLException {
+        return queryAllForUpdate(connection, query.getText(), query.getTupleClass());
     }
 
     /**
@@ -610,6 +636,18 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param query      - a Query
+     * @return Stream<T> - Result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryAll(Query<T> query) throws SQLException {
+        return queryAll(query.getText(), query.getTupleClass());
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T>        - T extends Tuple.
@@ -623,12 +661,25 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param query      - a Query
+     * @return Stream<T> - Result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
+        return queryAllForUpdate(query.getText(), query.getTupleClass());
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation.
      *
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
@@ -637,12 +688,27 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param connection - a java.sql.Connection, typically obtained via a Transaction
+     * @param query      - query
+     * @param parms - parameter list
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> query(Connection connection, Query<T> query, Object... parms) throws SQLException {
+        return query(connection, query.getText(), query.getTupleClass(), parms);
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
@@ -651,11 +717,26 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param connection - a java.sql.Connection, typically obtained via a Transaction
+     * @param query      - query
+     * @param parms - parameter list
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query, Object... parms) throws SQLException {
+        return queryForUpdate(connection, query.getText(), query.getTupleClass(), parms);
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation.
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
@@ -664,16 +745,43 @@ public class Database {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param query      - query
+     * @param parms - parameter list
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> query(Query<T> query, Object... parms) throws SQLException {
+        return query(query.getText(), query.getTupleClass(), parms);
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
+     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(query, newResultSetToStreamForUpdate(tupleClass), parms);
+    }
+
+    /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T>        - T extends Tuple.
+     * @param query      - query
+     * @param parms - parameter list
+     * @return Stream<T> - result stream
+     * @throws SQLException - Error
+     */
+    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query, Object... parms) throws SQLException {
+        return queryForUpdate(query.getText(), query.getTupleClass(), parms);
     }
 
     /**
