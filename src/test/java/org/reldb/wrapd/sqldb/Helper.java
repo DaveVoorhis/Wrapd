@@ -41,13 +41,13 @@ public class Helper {
 		}
 	}
 
-	private void databaseTeardown(String prompt, Database database) {
+	private void destroyDatabase(String prompt, Database database) {
 		dropTable(database, prompt, "$$version");
 		dropTable(database, prompt, "$$tester");
 		Directory.rmAll(getCodeDirectory());
 	}
 
-	private void databaseCreate(Database database) throws SQLException {
+	private void createDatabase(Database database) throws SQLException {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
 			xact.updateAll("INSERT INTO $$version VALUES (0, 0);");
@@ -56,11 +56,19 @@ public class Helper {
 		});
 	}
 
-	private void setup(String prompt, String tupleClassName, Database database) throws SQLException {
-		databaseTeardown(prompt, database);
-		databaseCreate(database);
+	private void destroyTupleClass(String tupleClassName) {
 		ResultSetToTuple.destroyTuple(getCodeDirectory(), tupleClassName);
+	}
+
+	private void createTupleClass(String tupleClassName, Database database) throws SQLException {
 		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
+	}
+
+	private void setup(String prompt, String tupleClassName, Database database) throws SQLException {
+		destroyDatabase(prompt, database);
+		createDatabase(database);
+		destroyTupleClass(tupleClassName);
+		createTupleClass(tupleClassName, database);
 	}
 
 	private Class<?> obtainTestCodeClass(String testPackage, String testClassName) throws ClassNotFoundException {
