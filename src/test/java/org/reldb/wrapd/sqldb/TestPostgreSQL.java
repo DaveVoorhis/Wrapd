@@ -11,7 +11,6 @@ public class TestPostgreSQL {
 	private static final String baseDir = TestDirectory.Is + "PostgreSQL";
 
     private static final String prompt = "[TSET]";
-    private static final String title = "TestPostgreSQL";
     private static final String tupleClassName = "TestSelectPostgreSQL";
 	private static final String testClassName = "TestPostgreSQL_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
@@ -44,7 +43,7 @@ public class TestPostgreSQL {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
-		new Helper(baseDir, prompt, title, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
+		new Helper(baseDir, prompt, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
 	}
 
 }

@@ -13,7 +13,6 @@ public class TestSQLite {
 	private static final String baseDir = TestDirectory.Is + "SQLite";
 
 	private static final String prompt = "[TSET]";
-	private static final String title = "TestSQLite";
 	private static final String tupleClassName = "TestSelectSQLite";
 	private static final String testClassName = "TestSQLite_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
@@ -34,7 +33,7 @@ public class TestSQLite {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
-		new Helper(baseDir, prompt, title, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
+		new Helper(baseDir, prompt, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
 	}
 
 }

@@ -23,20 +23,17 @@ public class Helper {
 
 	private final String baseDir;
 	private final String prompt;
-	private final String title;
 	private final String tupleClassName;
 	private final String testPackage;
 	private final String testClassName;
 
 	public Helper(String baseDir,
 				  String prompt,
-				  String title,
 				  String tupleClassName,
 				  String testPackage,
 				  String testClassName) {
 		this.baseDir = baseDir;
 		this.prompt = prompt;
-		this.title = title;
 		this.tupleClassName = tupleClassName;
 		this.testPackage = testPackage;
 		this.testClassName = testClassName;

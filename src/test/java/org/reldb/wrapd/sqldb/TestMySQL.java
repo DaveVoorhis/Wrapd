@@ -11,7 +11,6 @@ public class TestMySQL {
 	private static final String baseDir = TestDirectory.Is + "MySQL";
 
     private static final String prompt = "[TSET]";
-    private static final String title = "TestMySQL";
     private static final String tupleClassName = "TestSelectMySQL";
 	private static final String testClassName = "TestMySQL_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
@@ -44,7 +43,7 @@ public class TestMySQL {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
-		new Helper(baseDir, prompt, title, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
+		new Helper(baseDir, prompt, tupleClassName, testPackage, testClassName).test(getDatabase(prompt));
 	}
 
 }
