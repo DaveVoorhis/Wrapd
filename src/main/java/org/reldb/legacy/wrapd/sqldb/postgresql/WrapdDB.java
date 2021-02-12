@@ -398,8 +398,10 @@ public class WrapdDB extends WrapdDatabaseBase {
             // expire old tokens
             database.update("UPDATE $$Users SET passwdChangeToken = NULL, passwdChangeTokenStamp = NULL WHERE EXTRACT(EPOCH FROM NOW() - passwdChangeTokenstamp)/3600 > ?;", tokenExpiryHours);
             // is there a user with given token?
-            Long userCount = (Long) database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE passwdChangeToken = ?", "N", token.trim());
-            return userCount > 0 ? TokenCheckStatus.VALID : TokenCheckStatus.INVALID;
+            var userCountOpt = database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE passwdChangeToken = ?", "N", token.trim());
+            if (userCountOpt.isEmpty())
+                return TokenCheckStatus.ERROR;
+            return (Long)userCountOpt.get() > 0 ? TokenCheckStatus.VALID : TokenCheckStatus.INVALID;
         } catch (SQLException e) {
             e.printStackTrace();
             return TokenCheckStatus.ERROR;
@@ -465,8 +467,10 @@ public class WrapdDB extends WrapdDatabaseBase {
             // expire old tokens
             database.update("UPDATE $$Users SET newEmail = NULL, emailChangeToken = NULL, emailChangeTokenStamp = NULL WHERE EXTRACT(EPOCH FROM NOW() - emailChangeTokenstamp)/3600 > ?;", tokenExpiryHours);
             // find user with given token
-            Long userCount = (Long) database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE emailChangeToken = ?", "N", token.trim());
-            if (userCount == 0)
+            var userCountOpt = database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE emailChangeToken = ?", "N", token.trim());
+            if (userCountOpt.isEmpty())
+                return TokenCheckStatus.ERROR;
+            if ((Long)userCountOpt.get() == 0)
                 return TokenCheckStatus.INVALID;
             database.update("UPDATE $$Users SET emailChangeToken = NULL, emailChangeTokenStamp = NULL, userEmail = newEmail, newEmail = NULL WHERE emailChangeToken = ?", token.trim());
             return TokenCheckStatus.VALID;
@@ -493,8 +497,10 @@ public class WrapdDB extends WrapdDatabaseBase {
             // delete any pending requests with this email address
             database.update("DELETE FROM $$Users WHERE NOT activated AND userEmail = ?", email.trim());
             // check if this email address is already active
-            Long userCount = (Long) database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE activated AND userEmail = ?", "N", email.trim());
-            if (userCount > 0)
+            var userCount = database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE activated AND userEmail = ?", "N", email.trim());
+            if (userCount.isEmpty())
+                return RegisterStatus.ERROR;
+            if ((Long)userCount.get() > 0)
                 return RegisterStatus.DUPLICATE_EMAIL;
             return RegisterStatus.OK;
         } catch (SQLException e) {
@@ -548,8 +554,10 @@ public class WrapdDB extends WrapdDatabaseBase {
                             return ActivationStatus.INVALID;
                         String email = users.getString("userEmail");
                         // has an account already been activated with this email?
-                        Long userCount = (Long) database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE activated AND userEmail = ?", "N", email.trim());
-                        if (userCount > 0)
+                        var userCount = database.valueOf("SELECT COUNT(userID) AS N FROM $$Users WHERE activated AND userEmail = ?", "N", email.trim());
+                        if (userCount.isEmpty())
+                            return ActivationStatus.ERROR;
+                        if ((Long)userCount.get() > 0)
                             return ActivationStatus.DUPLICATE_EMAIL;
                         // activate
                         database.update("UPDATE $$Users SET registrationToken = NULL, registrationTokenStamp = NULL, activated = true WHERE registrationToken = ?", token.trim());
