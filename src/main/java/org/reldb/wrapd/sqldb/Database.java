@@ -399,11 +399,11 @@ public class Database {
      * @return - value of first row in columnName
      * @throws SQLException - Error
      */
-    public Object valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
+    public Optional<?> valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
         return query(connection, query, rs -> {
             if (rs.next())
-                return rs.getObject(columnName);
-            return null;
+                return Optional.ofNullable(rs.getObject(columnName));
+            return Optional.empty();
         }, parms);
     }
 
@@ -442,7 +442,7 @@ public class Database {
      * @return - value of first row in columnName
      * @throws SQLException - Error
      */
-    public Object valueOf(String query, String columnName, Object... parms) throws SQLException {
+    public Optional<?> valueOf(String query, String columnName, Object... parms) throws SQLException {
         return useConnection(conn -> valueOf(conn, query, columnName, parms));
     }
 
