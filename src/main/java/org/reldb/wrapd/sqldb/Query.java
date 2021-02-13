@@ -1,7 +1,9 @@
 package org.reldb.wrapd.sqldb;
 
-// TODO complete
-public class Query<T> {
+import org.reldb.wrapd.tuples.Tuple;
+
+// TODO to complete
+public class Query<T extends Tuple> {
     public String getText() {
         return null;
     }
