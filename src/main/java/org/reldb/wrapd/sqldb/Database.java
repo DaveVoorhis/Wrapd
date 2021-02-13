@@ -195,11 +195,11 @@ public class Database {
      * @return - value of first row in columnName
      * @throws SQLException - Error
      */
-    public Object valueOfAll(Connection connection, String query, String columnName) throws SQLException {
+    public Optional<?> valueOfAll(Connection connection, String query, String columnName) throws SQLException {
         return queryAll(connection, query, rs -> {
             if (rs.next())
-                return rs.getObject(columnName);
-            return null;
+                return Optional.ofNullable(rs.getObject(columnName));
+            return Optional.empty();
         });
     }
 
@@ -235,7 +235,7 @@ public class Database {
      * @return - value of first row in columnName
      * @throws SQLException - Error
      */
-    public Object valueOfAll(String query, String columnName) throws SQLException {
+    public Optional<?> valueOfAll(String query, String columnName) throws SQLException {
         return useConnection(conn -> valueOfAll(conn, query, columnName));
     }
 
@@ -281,7 +281,6 @@ public class Database {
             parmNumber++;
         }
     }
-
 
     /**
      * Return type from parametric query (prepared statement) use.
