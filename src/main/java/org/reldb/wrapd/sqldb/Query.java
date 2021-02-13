@@ -2,13 +2,20 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.wrapd.tuples.Tuple;
 
-// TODO to complete
 public class Query<T extends Tuple> {
-    public String getText() {
-        return null;
+    private final String text;
+    private final Class<T> tupleClass;
+
+    public Query(String queryText, Class<T> tupleClass) {
+        this.text = queryText;
+        this.tupleClass = tupleClass;
+    }
+
+    public String getQueryText() {
+        return text;
     }
 
     public Class<T> getTupleClass() {
-        return null;
+        return tupleClass;
     }
 }

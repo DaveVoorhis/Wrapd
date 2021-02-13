@@ -591,7 +591,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Connection connection, Query<T> query) throws SQLException {
-        return queryAll(connection, query.getText(), query.getTupleClass());
+        return queryAll(connection, query.getQueryText(), query.getTupleClass());
     }
 
     /**
@@ -618,7 +618,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, Query<T> query) throws SQLException {
-        return queryAllForUpdate(connection, query.getText(), query.getTupleClass());
+        return queryAllForUpdate(connection, query.getQueryText(), query.getTupleClass());
     }
 
     /**
@@ -643,7 +643,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Query<T> query) throws SQLException {
-        return queryAll(query.getText(), query.getTupleClass());
+        return queryAll(query.getQueryText(), query.getTupleClass());
     }
 
     /**
@@ -668,7 +668,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
-        return queryAllForUpdate(query.getText(), query.getTupleClass());
+        return queryAllForUpdate(query.getQueryText(), query.getTupleClass());
     }
 
     /**
@@ -697,7 +697,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Connection connection, Query<T> query, Object... parms) throws SQLException {
-        return query(connection, query.getText(), query.getTupleClass(), parms);
+        return query(connection, query.getQueryText(), query.getTupleClass(), parms);
     }
 
     /**
@@ -726,7 +726,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query, Object... parms) throws SQLException {
-        return queryForUpdate(connection, query.getText(), query.getTupleClass(), parms);
+        return queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), parms);
     }
 
     /**
@@ -753,7 +753,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Query<T> query, Object... parms) throws SQLException {
-        return query(query.getText(), query.getTupleClass(), parms);
+        return query(query.getQueryText(), query.getTupleClass(), parms);
     }
 
     /**
@@ -780,7 +780,7 @@ public class Database {
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query, Object... parms) throws SQLException {
-        return queryForUpdate(query.getText(), query.getTupleClass(), parms);
+        return queryForUpdate(query.getQueryText(), query.getTupleClass(), parms);
     }
 
     /**

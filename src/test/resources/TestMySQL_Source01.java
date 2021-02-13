@@ -3,7 +3,10 @@ package org.reldb.wrapd.tuples.generated;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Query;
 import org.reldb.wrapd.sqldb.TestMySQL;
+import org.reldb.wrapd.sqldb.TestPostgreSQL;
+
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -98,6 +101,24 @@ public class TestMySQL_Source01 {
                 });
         database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelectMySQL.class, 1200, 1300)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
+    }
+
+    @Test
+    public void testQueryToStream04() throws SQLException, IOException {
+        var database = TestMySQL.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream04");
+        var query04 = new Query<TestSelectMySQL>("SELECT * FROM $$tester", TestSelectMySQL.class);
+        database.queryAll(query04)
+                .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
+    }
+
+    @Test
+    public void testQueryToStream05() throws SQLException, IOException {
+        var database = TestMySQL.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream05");
+        var query05 = new Query<TestSelectMySQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class);
+        database.query(query05, 3, 7)
+                .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
 }
