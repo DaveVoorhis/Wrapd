@@ -20,7 +20,7 @@ public class Database {
 
     public static final Logger log = LogManager.getLogger(Database.class.toString());
 
-    private DataSource pool = null;
+    private final DataSource pool;
 
     private final String dbTablenamePrefix;
     private final Customisations customisations;
@@ -48,14 +48,13 @@ public class Database {
         if (dbPassword != null)
             props.setProperty("password", dbPassword);
 
-        if (pool == null)
-            try {
-                DriverManager.getConnection(dbURL, props).close();
-                DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
-                pool = DataSources.pooledDataSource(unpooledSource);
-            } catch (SQLException e) {
-                throw new IOException("Database connection to " + dbURL + " failed. Please check that the database exists and the credentials are correct: " + e.getMessage());
-            }
+        try {
+            DriverManager.getConnection(dbURL, props).close();
+            DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
+            pool = DataSources.pooledDataSource(unpooledSource);
+        } catch (SQLException e) {
+            throw new IOException("Database connection to " + dbURL + " failed. Please check that the database exists and the credentials are correct: " + e.getMessage());
+        }
     }
 
     /**
@@ -692,12 +691,11 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query
-     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
-    public <T extends Tuple> Stream<T> query(Connection connection, Query<T> query, Object... parms) throws SQLException {
-        return query(connection, query.getQueryText(), query.getTupleClass(), parms);
+    public <T extends Tuple> Stream<T> query(Connection connection, Query<T> query) throws SQLException {
+        return query(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
@@ -721,12 +719,11 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query
-     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query, Object... parms) throws SQLException {
-        return queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), parms);
+    public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query) throws SQLException {
+        return queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
@@ -748,12 +745,11 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query
-     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
-    public <T extends Tuple> Stream<T> query(Query<T> query, Object... parms) throws SQLException {
-        return query(query.getQueryText(), query.getTupleClass(), parms);
+    public <T extends Tuple> Stream<T> query(Query<T> query) throws SQLException {
+        return query(query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
@@ -775,12 +771,11 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query
-     * @param parms - parameter list
      * @return Stream<T> - result stream
      * @throws SQLException - Error
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query, Object... parms) throws SQLException {
-        return queryForUpdate(query.getQueryText(), query.getTupleClass(), parms);
+    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
+        return queryForUpdate(query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
