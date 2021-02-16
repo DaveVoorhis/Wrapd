@@ -115,8 +115,8 @@ public class TestPostgreSQL_Source01 {
     public void testQueryToStream05() throws SQLException, IOException {
         var database = TestPostgreSQL.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
-        var query05 = new Query<TestSelectPostgreSQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectPostgreSQL.class);
-        database.query(query05, 3, 7)
+        var query05 = new Query<TestSelectPostgreSQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectPostgreSQL.class, 3, 7);
+        database.query(query05)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 

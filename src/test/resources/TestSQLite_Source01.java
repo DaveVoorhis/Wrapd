@@ -113,8 +113,8 @@ public class TestSQLite_Source01 {
     public void testQueryToStream05() throws SQLException, IOException {
         var database = TestSQLite.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
-        var query05 = new Query<TestSelectSQLite>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectSQLite.class);
-        database.query(query05, 3, 7)
+        var query05 = new Query<TestSelectSQLite>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectSQLite.class, 3, 7);
+        database.query(query05)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 

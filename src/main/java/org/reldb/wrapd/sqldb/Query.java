@@ -5,10 +5,18 @@ import org.reldb.wrapd.tuples.Tuple;
 public class Query<T extends Tuple> {
     private final String text;
     private final Class<T> tupleClass;
+    private final Object[] arguments;
 
-    public Query(String queryText, Class<T> tupleClass) {
+    // TODO probably should be protected, since eventually only subclasses of this should be exposed
+    public Query(String queryText, Class<T> tupleClass, Object... arguments) {
         this.text = queryText;
         this.tupleClass = tupleClass;
+        this.arguments = arguments;
+    }
+
+    // TODO probably should be protected, since eventually only subclasses of this should be exposed
+    public Query(String queryText, Class<T> tupleClass) {
+        this(queryText, tupleClass, new Object[] {});
     }
 
     public String getQueryText() {
@@ -17,5 +25,9 @@ public class Query<T extends Tuple> {
 
     public Class<T> getTupleClass() {
         return tupleClass;
+    }
+
+    protected Object[] getArguments() {
+        return arguments;
     }
 }
