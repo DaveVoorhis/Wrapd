@@ -1,7 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
 import java.lang.reflect.Method;
-import java.sql.SQLException;
 
 public class QueryDefiner {
     private final Database database;

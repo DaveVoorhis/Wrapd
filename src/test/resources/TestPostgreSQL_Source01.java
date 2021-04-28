@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.Query;
-import org.reldb.wrapd.sqldb.TestMySQL;
 import org.reldb.wrapd.sqldb.TestPostgreSQL;
 import java.io.IOException;
 import java.sql.SQLException;

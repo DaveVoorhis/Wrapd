@@ -4,8 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.Query;
-import org.reldb.wrapd.sqldb.TestMySQL;
-import org.reldb.wrapd.sqldb.TestPostgreSQL;
+import org.reldb.wrapd.sqldb.TestMySQL_Queries;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -22,13 +21,13 @@ public class TestMySQL_Source01 {
 
     @BeforeAll
     public static void setup() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         resetDatabase(database);
     }
 
     @Test
     public void testQueryToStream01() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream01");
         database.queryAll("SELECT * FROM $$tester", TestSelectMySQL.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -36,7 +35,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testQueryToStream02() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream02");
         database.query("SELECT * FROM $$tester", TestSelectMySQL.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -44,7 +43,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testQueryToStream03() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream03");
         database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class, 3, 7)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
@@ -52,7 +51,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testInsert01() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testInsert01");
         for (int x = 1000; x < 1010; x++) {
             var tuple = new TestSelectMySQL();
@@ -66,7 +65,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testUpdate01() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate01");
         database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelectMySQL.class)
                 .forEach(tuple -> {
@@ -84,7 +83,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testUpdate02() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate02");
         resetDatabase(database);
         database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelectMySQL.class, 10)
@@ -105,7 +104,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testQueryToStream04() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream04");
         var query04 = new Query<TestSelectMySQL>("SELECT * FROM $$tester", TestSelectMySQL.class);
         database.queryAll(query04)
@@ -114,7 +113,7 @@ public class TestMySQL_Source01 {
 
     @Test
     public void testQueryToStream05() throws SQLException, IOException {
-        var database = TestMySQL.getDatabase(prompt);
+        var database = TestMySQL_Queries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
         var query05 = new Query<TestSelectMySQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class, 3, 7);
         database.query(query05)
