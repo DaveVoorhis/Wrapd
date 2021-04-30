@@ -120,7 +120,7 @@ public class TupleTypeGenerator {
      */
     public void addAttribute(String name, Class<?> type) {
         if (typeOf(name) != null)
-            throw new ExceptionFatal(Str.ing(ErrAttemptToAddDuplicateAttributeName, name));
+            throw new ExceptionFatal(Str.ing(ErrAttemptToAddDuplicateAttributeName, name, type.getName(), getTupleClassName()));
         attributes.add(new Attribute(name, type));
     }
 
