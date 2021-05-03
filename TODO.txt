@@ -1,3 +1,8 @@
+- Finish code in QueryDefinition::generate to generate a subclass
+of Query, named per queryName. The subclasses of Query are later passed
+to Database instance for use in applications.
+- Create test/resources/Test*_Source02.java source files to test the above,
+similar to existing test/java/org.reldb.wrapd.sqldb.*.TestQueries.
 
 - Test ResultSetToTuple.toStream()
 
