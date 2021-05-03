@@ -6,21 +6,21 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class TestMySQL_QueryDefiner extends QueryDefiner {
+public class TestPostgreSQL_QueryDefiner extends QueryDefiner {
     private static final String prompt = "[TEST]";
     private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
-    public TestMySQL_QueryDefiner() throws SQLException {
-        super(getDatabase(prompt), MySQL_Configuration.codeDir);
+    public TestPostgreSQL_QueryDefiner() throws SQLException {
+        super(getDatabase(prompt), PostgreSQL_Configuration.codeDir);
     }
 
     public static Database getDatabase(String prompt) throws SQLException {
         try {
             return new Database(
-                    MySQL_Configuration.dbURL,
-                    MySQL_Configuration.dbUser,
-                    MySQL_Configuration.dbPassword,
-                    MySQL_Configuration.dbTablenamePrefix,
+                    PostgreSQL_Configuration.dbURL,
+                    PostgreSQL_Configuration.dbUser,
+                    PostgreSQL_Configuration.dbPassword,
+                    PostgreSQL_Configuration.dbTablenamePrefix,
                     null);
         } catch (IOException e) {
             throw new SQLException(prompt + " Database connection failed. Error is: " + e);

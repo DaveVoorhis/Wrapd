@@ -2,26 +2,22 @@ package org.reldb.wrapd.sqldb;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class TestMySQL_QueryDefiner extends QueryDefiner {
+public class TestSQLite_QueryDefiner extends QueryDefiner {
     private static final String prompt = "[TEST]";
     private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
-    public TestMySQL_QueryDefiner() throws SQLException {
-        super(getDatabase(prompt), MySQL_Configuration.codeDir);
+    public TestSQLite_QueryDefiner() throws SQLException {
+        super(getDatabase(prompt), SQLite_Configuration.codeDir);
     }
 
     public static Database getDatabase(String prompt) throws SQLException {
         try {
-            return new Database(
-                    MySQL_Configuration.dbURL,
-                    MySQL_Configuration.dbUser,
-                    MySQL_Configuration.dbPassword,
-                    MySQL_Configuration.dbTablenamePrefix,
-                    null);
+            return new Database(SQLite_Configuration.dbURL, SQLite_Configuration.dbTablenamePrefix, new SQLiteCustomisations());
         } catch (IOException e) {
             throw new SQLException(prompt + " Database connection failed. Error is: " + e);
         }

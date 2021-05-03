@@ -22,17 +22,20 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 public class Helper {
 
 	private final String baseDir;
+	private final String codeDir;
 	private final String prompt;
 	private final String tupleClassName;
 	private final String testPackage;
 	private final String testClassName;
 
 	public Helper(String baseDir,
+				  String codeDir,
 				  String prompt,
 				  String tupleClassName,
 				  String testPackage,
 				  String testClassName) {
 		this.baseDir = baseDir;
+		this.codeDir = codeDir;
 		this.prompt = prompt;
 		this.tupleClassName = tupleClassName;
 		this.testPackage = testPackage;
@@ -123,7 +126,7 @@ public class Helper {
 	}
 
 	public String getCodeDirectory() {
-		return baseDir + "/code";
+		return codeDir;
 	}
 
 	public void test(Database database) throws ClassNotFoundException, IOException, SQLException {

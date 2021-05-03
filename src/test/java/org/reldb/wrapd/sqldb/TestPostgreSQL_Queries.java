@@ -1,24 +1,24 @@
 package org.reldb.wrapd.sqldb;
 
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class TestMySQL_Queries {
+import org.junit.jupiter.api.Test;
 
-    private static final String prompt = "[TSET]";
-    private static final String tupleClassName = "TestSelectMySQL";
-	private static final String testClassName = "TestMySQL_Source01";
+public class TestPostgreSQL_Queries {
+
+	private static final String prompt = "[TSET]";
+	private static final String tupleClassName = "TestSelectPostgreSQL";
+	private static final String testClassName = "TestPostgreSQL_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
 	public static Database getDatabase(String prompt) throws SQLException {
 		try {
 			return new Database(
-					MySQL_Configuration.dbURL,
-					MySQL_Configuration.dbUser,
-					MySQL_Configuration.dbPassword,
-					MySQL_Configuration.dbTablenamePrefix,
+					PostgreSQL_Configuration.dbURL,
+					PostgreSQL_Configuration.dbUser,
+					PostgreSQL_Configuration.dbPassword,
+					PostgreSQL_Configuration.dbTablenamePrefix,
 					null
 			);
 		} catch (IOException e) {
@@ -29,8 +29,8 @@ public class TestMySQL_Queries {
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
 		new Helper(
-				MySQL_Configuration.baseDir,
-				MySQL_Configuration.codeDir,
+				PostgreSQL_Configuration.baseDir,
+				PostgreSQL_Configuration.codeDir,
 				prompt,
 				tupleClassName,
 				testPackage,
