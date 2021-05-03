@@ -1,11 +1,15 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapd.sqldb.mysql;
 
+import org.junit.jupiter.api.Test;
 import org.reldb.TestDirectory;
 
-public class PostgreSQL_Configuration {
+import java.io.IOException;
+import java.sql.SQLException;
 
-	public static final String baseDir = TestDirectory.Is + "PostgreSQL";
-	public static final String codeDir = baseDir + "/code";
+public class Configuration {
+
+	public static final String baseDir = TestDirectory.Is + "MySQL";
+	public static final String codeDir = baseDir + "./Code";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//
@@ -14,7 +18,7 @@ public class PostgreSQL_Configuration {
 	//   Shut down via:
 	//		    docker-compose down -v
 	//
-	// Settings below should match PostgreSQL configuration in docker-compose.yml
+	// Settings below should match MySQL configuration in docker-compose.yml
 
 	public static final String dbHost = "localhost";
 	public static final String dbDatabase = "wrapd_testdb";
@@ -22,7 +26,7 @@ public class PostgreSQL_Configuration {
 	public static final String dbPassword = "password";
 	public static final String dbTablenamePrefix = "Wrapd_";
 
-	public static final String dbURLPrefix = "jdbc:postgresql";
+	public static final String dbURLPrefix = "jdbc:mysql";
 	public static final String dbURL = dbURLPrefix + "://" + dbHost + "/" + dbDatabase;
 }
 

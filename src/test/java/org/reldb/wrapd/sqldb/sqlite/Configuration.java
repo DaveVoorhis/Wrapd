@@ -1,8 +1,8 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapd.sqldb.sqlite;
 
 import org.reldb.TestDirectory;
 
-public class SQLite_Configuration {
+public class Configuration {
 
 	public static final String baseDir = TestDirectory.Is + "SQLite";
 	public static final String codeDir = baseDir + "/code";

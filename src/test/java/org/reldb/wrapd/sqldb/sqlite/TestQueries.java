@@ -1,13 +1,14 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapd.sqldb.sqlite;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
 
-import org.reldb.wrapd.sqldb.sqlite.SQLiteCustomisations;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Helper;
 
-public class TestSQLite_Queries {
+public class TestQueries {
 
 	private static final String prompt = "[TSET]";
 	private static final String tupleClassName = "TestSelectSQLite";
@@ -16,7 +17,7 @@ public class TestSQLite_Queries {
 
 	public static Database getDatabase(String prompt) throws SQLException {
 		try {
-			return new Database(SQLite_Configuration.dbURL, SQLite_Configuration.dbTablenamePrefix, new SQLiteCustomisations());
+			return new Database(Configuration.dbURL, Configuration.dbTablenamePrefix, new SQLiteCustomisations());
 		} catch (IOException e) {
 			throw new SQLException(prompt + " Database connection failed. Error is: " + e);
 		}
@@ -25,8 +26,8 @@ public class TestSQLite_Queries {
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
 		new Helper(
-				SQLite_Configuration.baseDir,
-				SQLite_Configuration.codeDir,
+				Configuration.baseDir,
+				Configuration.codeDir,
 				prompt,
 				tupleClassName,
 				testPackage,

@@ -1,11 +1,13 @@
-package org.reldb.wrapd.sqldb;
+package org.reldb.wrapd.sqldb.postgresql;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.jupiter.api.Test;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Helper;
 
-public class TestPostgreSQL_Queries {
+public class TestQueries {
 
 	private static final String prompt = "[TSET]";
 	private static final String tupleClassName = "TestSelectPostgreSQL";
@@ -15,10 +17,10 @@ public class TestPostgreSQL_Queries {
 	public static Database getDatabase(String prompt) throws SQLException {
 		try {
 			return new Database(
-					PostgreSQL_Configuration.dbURL,
-					PostgreSQL_Configuration.dbUser,
-					PostgreSQL_Configuration.dbPassword,
-					PostgreSQL_Configuration.dbTablenamePrefix,
+					Configuration.dbURL,
+					Configuration.dbUser,
+					Configuration.dbPassword,
+					Configuration.dbTablenamePrefix,
 					null
 			);
 		} catch (IOException e) {
@@ -29,8 +31,8 @@ public class TestPostgreSQL_Queries {
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
 		new Helper(
-				PostgreSQL_Configuration.baseDir,
-				PostgreSQL_Configuration.codeDir,
+				Configuration.baseDir,
+				Configuration.codeDir,
 				prompt,
 				tupleClassName,
 				testPackage,
