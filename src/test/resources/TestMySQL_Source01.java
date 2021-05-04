@@ -106,8 +106,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream04() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream04");
-        var query04 = new Query<TestSelectMySQL>("SELECT * FROM $$tester", TestSelectMySQL.class);
-        database.queryAll(query04)
+        database.queryAll(Query02.get())
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -115,8 +114,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream05() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
-        var query05 = new Query<TestSelectMySQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class, 3, 7);
-        database.query(query05)
+        database.query(Query01.get(3, 7))
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 

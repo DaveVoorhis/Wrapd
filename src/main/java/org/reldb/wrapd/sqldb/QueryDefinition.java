@@ -1,5 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.wrapd.compiler.ForeignCompilerJava;
+import org.reldb.wrapd.exceptions.ExceptionFatal;
+
 import java.sql.SQLException;
 
 public class QueryDefinition {
@@ -13,15 +16,18 @@ public class QueryDefinition {
         this.args = args;
     }
 
-    // TODO User-defined subclass of QueryDefinition gets run against the database to
-    //  produce a Tuple subclass and generate a subclass of Query (named per queryName),
-    //  all as part of a test/generate phase. The subclasses of Query are later passed
-    //  to Database instance for use in applications.
-
     public boolean generate(Database database, String codeDirectory) throws SQLException {
-        return (args == null || args.length == 0)
-            ? database.createTupleFromQueryAll(codeDirectory, queryName, sqlText)
-            : database.createTupleFromQuery(codeDirectory, queryName, sqlText, args);
+        var tupleClassName = queryName + "Tuple";
+        var tupleClassCreated = (args == null || args.length == 0)
+            ? database.createTupleFromQueryAll(codeDirectory, tupleClassName, sqlText)
+            : database.createTupleFromQuery(codeDirectory, tupleClassName, sqlText, args);
+        if (tupleClassCreated) {
+            var queryGenerator = new QueryTypeGenerator(codeDirectory, queryName, sqlText, args);
+            var results = queryGenerator.compile();
+            if (!results.compiled)
+                throw new ExceptionFatal("Unable to generate Query derivative " + queryName + ": " + results.compilerMessages);
+        }
+        return true;
     }
 
 }

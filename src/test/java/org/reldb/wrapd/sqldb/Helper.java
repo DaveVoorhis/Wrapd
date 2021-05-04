@@ -79,11 +79,16 @@ public class Helper {
 		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
-	private void setup(Database database) throws SQLException {
+	private void createQueryDefinitions(Database database) throws QueryDefiner.QueryDefinerException {
+		(new QueryDefinitions(database, getCodeDirectory())).generate();
+	}
+
+	private void setup(Database database) throws SQLException, QueryDefiner.QueryDefinerException {
 		destroyDatabase(database);
 		createDatabase(database);
 		destroyTupleClass();
 		createTupleClass(database);
+		createQueryDefinitions(database);
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
@@ -129,7 +134,7 @@ public class Helper {
 		return codeDir;
 	}
 
-	public void test(Database database) throws ClassNotFoundException, IOException, SQLException {
+	public void test(Database database) throws ClassNotFoundException, IOException, SQLException, QueryDefiner.QueryDefinerException {
 		setup(database);
 		run();
 	}
