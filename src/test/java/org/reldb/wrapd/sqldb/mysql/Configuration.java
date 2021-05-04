@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class Configuration {
 
 	public static final String baseDir = TestDirectory.Is + "MySQL";
-	public static final String codeDir = baseDir + "./Code";
+	public static final String codeDir = baseDir + "/code";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//
