@@ -28,7 +28,7 @@ public class TestSQLite_Source01 {
     public void testQueryToStream01() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream01");
-        database.queryAll("SELECT * FROM $$tester", TestSelectSQLite.class)
+        database.queryAll("SELECT * FROM $$tester", TestSQLiteTuple.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -36,7 +36,7 @@ public class TestSQLite_Source01 {
     public void testQueryToStream02() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream02");
-        database.query("SELECT * FROM $$tester", TestSelectSQLite.class)
+        database.query("SELECT * FROM $$tester", TestSQLiteTuple.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -44,7 +44,7 @@ public class TestSQLite_Source01 {
     public void testQueryToStream03() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream03");
-        database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectSQLite.class, 3, 7)
+        database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSQLiteTuple.class, 3, 7)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -53,12 +53,12 @@ public class TestSQLite_Source01 {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testInsert01");
         for (int x = 1000; x < 1010; x++) {
-            var tuple = new TestSelectSQLite();
+            var tuple = new TestSQLiteTuple();
             tuple.x = x;
             tuple.y = x * 2;
             tuple.insert(database, "$$tester");
         }
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", TestSelectSQLite.class, 1000, 1010)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", TestSQLiteTuple.class, 1000, 1010)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -66,7 +66,7 @@ public class TestSQLite_Source01 {
     public void testUpdate01() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate01");
-        database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelectSQLite.class)
+        database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSQLiteTuple.class)
                 .forEach(tuple -> {
                     tuple.x *= 100;
                     tuple.y *= 100;
@@ -76,7 +76,7 @@ public class TestSQLite_Source01 {
                         System.out.println("Update failed.");
                     }
                 });
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelectSQLite.class, 300, 700)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSQLiteTuple.class, 300, 700)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -85,7 +85,7 @@ public class TestSQLite_Source01 {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate02");
         resetDatabase(database);
-        database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelectSQLite.class, 10)
+        database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSQLiteTuple.class, 10)
                 .forEach(tuple -> {
                     if (tuple.x >= 12 && tuple.x <= 13) {
                         tuple.x *= 100;
@@ -97,7 +97,7 @@ public class TestSQLite_Source01 {
                         }
                     }
                 });
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelectSQLite.class, 1200, 1300)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSQLiteTuple.class, 1200, 1300)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -105,7 +105,7 @@ public class TestSQLite_Source01 {
     public void testQueryToStream04() throws SQLException, IOException {
         var database = org.reldb.wrapd.sqldb.sqlite.TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream04");
-        database.queryAll(Query02.get())
+        database.queryAll(TestSQLiteQueryQuery02.get())
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -113,7 +113,7 @@ public class TestSQLite_Source01 {
     public void testQueryToStream05() throws SQLException, IOException {
         var database = org.reldb.wrapd.sqldb.sqlite.TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
-        database.query(Query01.get(3, 7))
+        database.query(TestSQLiteQueryQuery01.get(3, 7))
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 

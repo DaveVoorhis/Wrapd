@@ -12,8 +12,8 @@ import org.reldb.wrapd.sqldb.QueryDefiner;
 public class TestQueries {
 
 	private static final String prompt = "[TSET]";
-	private static final String tupleClassName = "TestSelectSQLite";
-	private static final String testClassName = "TestSQLite_Source01";
+	private static final String testName = "TestSQLite";
+	private static final String testSourceName = "TestSQLite_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
 	public static Database getDatabase(String prompt) throws SQLException {
@@ -28,11 +28,10 @@ public class TestQueries {
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
 		new Helper(
 				Configuration.baseDir,
-				Configuration.codeDir,
 				prompt,
-				tupleClassName,
+				testName,
 				testPackage,
-				testClassName
+				testSourceName
 		).test(getDatabase(prompt));
 	}
 

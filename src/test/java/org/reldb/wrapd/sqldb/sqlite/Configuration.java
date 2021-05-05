@@ -5,7 +5,6 @@ import org.reldb.TestDirectory;
 public class Configuration {
 
 	public static final String baseDir = TestDirectory.Is + "SQLite";
-	public static final String codeDir = baseDir + "/code";
 
 	public static final String dbDatabase = "sqlitedb.sqlite";
 	public static final String dbTablenamePrefix = "Wrapd_";
