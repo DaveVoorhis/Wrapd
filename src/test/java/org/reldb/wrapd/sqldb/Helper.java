@@ -25,21 +25,22 @@ public class Helper {
 	private final String codeDir;
 	private final String prompt;
 	private final String tupleClassName;
+	private final String queryClassName;
 	private final String testPackage;
-	private final String testClassName;
+	private final String testSourceName;
 
 	public Helper(String baseDir,
-				  String codeDir,
 				  String prompt,
-				  String tupleClassName,
+				  String testName,
 				  String testPackage,
-				  String testClassName) {
+				  String testSourceName) {
 		this.baseDir = baseDir;
-		this.codeDir = codeDir;
 		this.prompt = prompt;
-		this.tupleClassName = tupleClassName;
 		this.testPackage = testPackage;
-		this.testClassName = testClassName;
+		this.testSourceName = testSourceName;
+		tupleClassName = testName + "Tuple";
+		queryClassName = testName + "Query";
+		codeDir = baseDir + "/code";
 		ensureTestDirectoryExists();
 	}
 
@@ -79,16 +80,21 @@ public class Helper {
 		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
-	private void setup(Database database) throws SQLException {
+	private void createQueryDefinitions(Database database) throws QueryDefiner.QueryDefinerException {
+		(new QueryDefinitions(database, getCodeDirectory(), queryClassName)).generate();
+	}
+
+	private void setup(Database database) throws SQLException, QueryDefiner.QueryDefinerException {
 		destroyDatabase(database);
 		createDatabase(database);
 		destroyTupleClass();
 		createTupleClass(database);
+		createQueryDefinitions(database);
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
 		var dirClassLoader = new DirClassLoader(getCodeDirectory(), testPackage);
-		var testClassFullname = testPackage + "." + testClassName;
+		var testClassFullname = testPackage + "." + testSourceName;
 		return dirClassLoader.forName(testClassFullname);
 	}
 
@@ -104,10 +110,10 @@ public class Helper {
 	}
 
 	private ForeignCompilerJava.CompilationResults compileTestCode() throws IOException {
-		String source = Files.readString(Path.of("src/test/resources/" + testClassName + ".java"), StandardCharsets.UTF_8);
+		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
 		var compiler = new ForeignCompilerJava(getCodeDirectory());
 		var classpath = compiler.getDefaultClassPath();
-		return compiler.compileForeignCode(classpath, testClassName, testPackage, source);
+		return compiler.compileForeignCode(classpath, testSourceName, testPackage, source);
 	}
 
 	private void run() throws IOException, ClassNotFoundException {
@@ -129,7 +135,7 @@ public class Helper {
 		return codeDir;
 	}
 
-	public void test(Database database) throws ClassNotFoundException, IOException, SQLException {
+	public void test(Database database) throws ClassNotFoundException, IOException, SQLException, QueryDefiner.QueryDefinerException {
 		setup(database);
 		run();
 	}

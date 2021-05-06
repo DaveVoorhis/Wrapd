@@ -3,6 +3,7 @@ package org.reldb.wrapd.sqldb.mysql;
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.Helper;
+import org.reldb.wrapd.sqldb.QueryDefiner;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -10,8 +11,8 @@ import java.sql.SQLException;
 public class TestQueries {
 
     private static final String prompt = "[TSET]";
-    private static final String tupleClassName = "TestSelectMySQL";
-	private static final String testClassName = "TestMySQL_Source01";
+    private static final String tupleName = "TestMySQL";
+	private static final String testSourceName = "TestMySQL_Source01";
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
 	public static Database getDatabase(String prompt) throws SQLException {
@@ -29,14 +30,13 @@ public class TestQueries {
 	}
 
 	@Test
-	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException {
+	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
 		new Helper(
 				Configuration.baseDir,
-				Configuration.codeDir,
 				prompt,
-				tupleClassName,
+				tupleName,
 				testPackage,
-				testClassName
+				testSourceName
 		).test(getDatabase(prompt));
 	}
 

@@ -29,7 +29,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream01() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream01");
-        database.queryAll("SELECT * FROM $$tester", TestSelectMySQL.class)
+        database.queryAll("SELECT * FROM $$tester", TestMySQLTuple.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -37,7 +37,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream02() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream02");
-        database.query("SELECT * FROM $$tester", TestSelectMySQL.class)
+        database.query("SELECT * FROM $$tester", TestMySQLTuple.class)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -45,7 +45,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream03() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream03");
-        database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class, 3, 7)
+        database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestMySQLTuple.class, 3, 7)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -54,12 +54,12 @@ public class TestMySQL_Source01 {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testInsert01");
         for (int x = 1000; x < 1010; x++) {
-            var tuple = new TestSelectMySQL();
+            var tuple = new TestMySQLTuple();
             tuple.x = x;
             tuple.y = x * 2;
             tuple.insert(database, "$$tester");
         }
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", TestSelectMySQL.class, 1000, 1010)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", TestMySQLTuple.class, 1000, 1010)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -67,7 +67,7 @@ public class TestMySQL_Source01 {
     public void testUpdate01() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate01");
-        database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestSelectMySQL.class)
+        database.queryAllForUpdate("SELECT * FROM $$tester WHERE x > 3 AND x < 7", TestMySQLTuple.class)
                 .forEach(tuple -> {
                     tuple.x *= 100;
                     tuple.y *= 100;
@@ -77,7 +77,7 @@ public class TestMySQL_Source01 {
                         System.out.println("Update failed.");
                     }
                 });
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelectMySQL.class, 300, 700)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestMySQLTuple.class, 300, 700)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -86,7 +86,7 @@ public class TestMySQL_Source01 {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testUpdate02");
         resetDatabase(database);
-        database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestSelectMySQL.class, 10)
+        database.queryForUpdate("SELECT * FROM $$tester WHERE x >= ?", TestMySQLTuple.class, 10)
                 .forEach(tuple -> {
                     if (tuple.x >= 12 && tuple.x <= 13) {
                         tuple.x *= 100;
@@ -98,7 +98,7 @@ public class TestMySQL_Source01 {
                         }
                     }
                 });
-        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestSelectMySQL.class, 1200, 1300)
+        database.query("SELECT * FROM $$tester WHERE x >= ? AND x <= ?", TestMySQLTuple.class, 1200, 1300)
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.toString()));
     }
 
@@ -106,8 +106,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream04() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream04");
-        var query04 = new Query<TestSelectMySQL>("SELECT * FROM $$tester", TestSelectMySQL.class);
-        database.queryAll(query04)
+        database.queryAll(TestMySQLQueryQuery02.get())
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 
@@ -115,8 +114,7 @@ public class TestMySQL_Source01 {
     public void testQueryToStream05() throws SQLException, IOException {
         var database = TestQueries.getDatabase(prompt);
         System.out.println(prompt + " testQueryToStream05");
-        var query05 = new Query<TestSelectMySQL>("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestSelectMySQL.class, 3, 7);
-        database.query(query05)
+        database.query(TestMySQLQueryQuery01.get(3, 7))
                 .forEach(tuple -> System.out.println("[TEST] " + tuple.x + ", " + tuple.y));
     }
 

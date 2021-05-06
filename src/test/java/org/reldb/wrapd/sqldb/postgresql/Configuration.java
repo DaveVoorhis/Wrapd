@@ -5,7 +5,6 @@ import org.reldb.TestDirectory;
 public class Configuration {
 
 	public static final String baseDir = TestDirectory.Is + "PostgreSQL";
-	public static final String codeDir = baseDir + "/code";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//

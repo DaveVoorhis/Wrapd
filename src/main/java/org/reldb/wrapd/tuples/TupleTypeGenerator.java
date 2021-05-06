@@ -19,8 +19,6 @@ import static org.reldb.wrapd.il8n.Strings.*;
 
 /**
  * Generates Java code to represent a tuple, which is a class that implements Tuple.
- *
- * @author dave
  */
 public class TupleTypeGenerator {
 
