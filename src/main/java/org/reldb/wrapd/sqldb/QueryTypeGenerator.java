@@ -53,14 +53,11 @@ public class QueryTypeGenerator {
     }
 
     private String getParms() {
-        String out = "";
+        String out = "Database db";
         int pnum = 0;
         if (args != null && args.length > 0) {
-            for (Object arg: args) {
-                if (out.length() > 0)
-                    out += ", ";
-                out += arg.getClass().getCanonicalName() + " p" + pnum++;
-            }
+            for (Object arg: args)
+                out += ", " + arg.getClass().getCanonicalName() + " p" + pnum++;
         }
         return out;
     }
@@ -84,10 +81,13 @@ public class QueryTypeGenerator {
             "\t}\n";
     }
 
-    private String getGetMethod(String tupleTypeName) {
+    private String getQueryMethod(String tupleTypeName) {
+        String method = (args == null || args.length == 0)
+                ? "queryAll"
+                : "query";
         return
-            "\tpublic static Query<" + tupleTypeName + "> get(" + getParms() + ") {\n" +
-            "\t\treturn new " + queryName + "(\"" + sqlText + "\", " + tupleTypeName + ".class, " + getArgs() + ");\n" +
+            "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms() + ") throws SQLException {\n" +
+            "\t\treturn (Stream<" + tupleTypeName + ">)db." + method + "(new " + queryName + "(\"" + sqlText + "\", " + tupleTypeName + ".class, " + getArgs() + "));\n" +
             "\t}\n";
     }
 
@@ -101,12 +101,15 @@ public class QueryTypeGenerator {
         var queryDef =
                 "package " + QueryTypePackage + ";\n\n" +
                         "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
+                        "import java.sql.SQLException;\n" +
+                        "import java.util.stream.Stream;\n\n" +
                         "import org.reldb.wrapd.tuples.Tuple;\n" +
+                        "import org.reldb.wrapd.sqldb.Database;\n" +
                         "import org.reldb.wrapd.sqldb.Query;\n\n" +
                         "public class " + queryName + " extends Query {\n" +
                         getConstructor() +
                         "\n" +
-                        getGetMethod(tupleTypeName) +
+                        getQueryMethod(tupleTypeName) +
                         "}";
         var compiler = new ForeignCompilerJava(dir);
         return compiler.compileForeignCode(queryName, QueryTypePackage, queryDef);
