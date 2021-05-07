@@ -52,10 +52,14 @@ public class QueryTypeGenerator {
         return fJavaDelete && fClassDelete;
     }
 
+    private boolean hasArgs() {
+        return args != null && args.length > 0;
+    }
+
     private String getParms() {
         String out = "Database db";
         int pnum = 0;
-        if (args != null && args.length > 0) {
+        if (hasArgs()) {
             for (Object arg: args)
                 out += ", " + arg.getClass().getCanonicalName() + " p" + pnum++;
         }
@@ -63,7 +67,7 @@ public class QueryTypeGenerator {
     }
 
     private String getArgs() {
-        if (args == null || args.length == 0)
+        if (!hasArgs())
             return "null";
         String out = "";
         for (int pnum = 0; pnum < args.length; pnum++) {
@@ -82,12 +86,17 @@ public class QueryTypeGenerator {
     }
 
     private String getQueryMethod(String tupleTypeName) {
-        String method = (args == null || args.length == 0)
+        String methodName = (args == null || args.length == 0)
                 ? "queryAll"
                 : "query";
+        String args = hasArgs()
+                ? ", " + getArgs()
+                : "";
+        String newQuery = "new " + queryName + "(sqlText, " + tupleTypeName + ".class" + args + ")";
         return
             "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms() + ") throws SQLException {\n" +
-            "\t\treturn (Stream<" + tupleTypeName + ">)db." + method + "(new " + queryName + "(\"" + sqlText + "\", " + tupleTypeName + ".class, " + getArgs() + "));\n" +
+            "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
+            "\t\treturn db." + methodName + "(" + newQuery + ");\n" +
             "\t}\n";
     }
 
@@ -109,7 +118,7 @@ public class QueryTypeGenerator {
                         "public class " + queryName + " extends Query {\n" +
                         getConstructor() +
                         "\n" +
-                        getQueryMethod(tupleTypeName) +
+                        getQueryMethod(tupleTypeName) + " spleen" +
                         "}";
         var compiler = new ForeignCompilerJava(dir);
         return compiler.compileForeignCode(queryName, QueryTypePackage, queryDef);
