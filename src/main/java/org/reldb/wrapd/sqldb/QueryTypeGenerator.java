@@ -56,8 +56,11 @@ public class QueryTypeGenerator {
         return args != null && args.length > 0;
     }
 
-    private String getParms() {
-        String out = "Database db";
+    private String getParms(boolean withConnection) {
+        String parmConnection = withConnection
+                ? ", Connection connection"
+                : "";
+        String out = "Database db" + parmConnection;
         int pnum = 0;
         if (hasArgs()) {
             for (Object arg: args)
@@ -86,7 +89,17 @@ public class QueryTypeGenerator {
             "\t}\n";
     }
 
-    private String getQueryMethod(String tupleTypeName) {
+    private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection) {
+        String argConnection = withConnection
+                ? "connection, "
+                : "";
+        return "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms(withConnection) + ") throws SQLException {\n" +
+                "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
+                "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
+                "\t}\n";
+    }
+
+    private String getQueryMethods(String tupleTypeName) {
         String methodName = (args == null || args.length == 0)
                 ? "queryAll"
                 : "query";
@@ -95,10 +108,9 @@ public class QueryTypeGenerator {
                 : "";
         String newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
         return
-            "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms() + ") throws SQLException {\n" +
-            "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
-            "\t\treturn db." + methodName + "(" + newQuery + ");\n" +
-            "\t}\n";
+                buildQueryMethod(methodName, tupleTypeName, newQuery, false) +
+                "\n" +
+                buildQueryMethod(methodName, tupleTypeName, newQuery, true);
     }
 
     /**
@@ -112,6 +124,7 @@ public class QueryTypeGenerator {
                 "package " + QueryTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import java.sql.SQLException;\n" +
+                "import java.sql.Connection;\n" +
                 "import java.util.stream.Stream;\n\n" +
                 "import org.reldb.wrapd.tuples.Tuple;\n" +
                 "import org.reldb.wrapd.sqldb.Database;\n" +
@@ -119,7 +132,7 @@ public class QueryTypeGenerator {
                 "public class " + queryName + "<T extends Tuple> extends Query<T> {\n" +
                 getConstructor(tupleTypeName) +
                 "\n" +
-                getQueryMethod(tupleTypeName) +
+                getQueryMethods(tupleTypeName) +
                 "}";
         var compiler = new ForeignCompilerJava(dir);
         return compiler.compileForeignCode(queryName, QueryTypePackage, queryDef);
