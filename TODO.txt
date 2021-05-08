@@ -1,4 +1,3 @@
-- Improve parameter names in generated Query derivatives (get from Tuple derivates?)
 - Improve QueryDefiner to generate Query derivatives where get(...) has been replaced with run(Database db, ...) or
   (as approprite) query(Database db, ...), update(Database db, ...), insert(Database db, ...) etc. This may
   require predefined Query derivatives called Select, Insert, Update and Delete, from which the generated
