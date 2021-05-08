@@ -1,6 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 import java.sql.SQLException;

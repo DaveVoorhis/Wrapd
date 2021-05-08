@@ -44,7 +44,7 @@ public class ForeignCompilerJava {
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
         ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
         String warningSetting = "allDeprecation,"
-                + "allJavadoc," + "assertIdentifier," + "charConcat,"
+                + "assertIdentifier," + "charConcat,"
                 + "conditionAssign," + "constructorName," + "deprecation,"
                 + "emptyBlock," + "fieldHiding," + "finalBound,"
                 + "finally," + "indirectStatic," + "intfNonInherited,"
