@@ -49,8 +49,17 @@ public class QueryDefiner {
     }
 
     /**
-     * Scan this class for methods with name starting with 'query' (e.g., queryCustomers01) that
-     * return a QueryDefinition.
+     * Shorthand for invoking 'generate(new QueryDefinition(...)).
+     */
+    protected void define(String queryName, String sqlText, Object... args) throws Exception {
+         generate(new QueryDefinition(queryName, sqlText, args));
+    }
+
+    /**
+     * Scan this class for methods with signature:
+     * QueryDefinition query*() (e.g., queryCustomers01)
+     *   - or -
+     * void query*() (which is assumed to invoke define(...))
      *
      * For each, run the QueryDefinition against the specified Database (see @QueryDefiner's constructor)
      * to create Query subclass that can be passed to a Database for future evaluation.
@@ -59,13 +68,19 @@ public class QueryDefiner {
      */
     public void generate() throws QueryDefinerException {
         for (Method method: getClass().getMethods()) {
-            if (method.getName().toLowerCase().startsWith("query")
-                    && method.getParameterCount() == 0
-                    && method.getReturnType().equals(QueryDefinition.class)) {
-                try {
-                    generate((QueryDefinition)method.invoke(this));
-                } catch (Exception e) {
-                    throw new QueryDefinerException(this, method, e);
+            if (method.getName().toLowerCase().startsWith("query") && method.getParameterCount() == 0) {
+                if (method.getReturnType().equals(QueryDefinition.class)) {
+                    try {
+                        generate((QueryDefinition) method.invoke(this));
+                    } catch (Exception e) {
+                        throw new QueryDefinerException(this, method, e);
+                    }
+                } else if (method.getReturnType() == null) {
+                    try {
+                        method.invoke(this);
+                    } catch (Exception e) {
+                        throw new QueryDefinerException(this, method, e);
+                    }
                 }
             }
         }

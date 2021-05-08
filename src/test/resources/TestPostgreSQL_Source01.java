@@ -117,4 +117,20 @@ public class TestPostgreSQL_Source01 {
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
     }
 
+    @Test
+    public void testQueryToStream06() throws SQLException {
+        var database = TestQueries.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream06");
+        TestPostgreSQLQueryQuery03.query(database, 3)
+                .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
+    }
+
+    @Test
+    public void testQueryToStream07() throws SQLException {
+        var database = TestQueries.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream07");
+        TestPostgreSQLQueryQuery04.query(database)
+                .forEach(tuple -> System.out.println(prompt + " " + tuple.x));
+    }
+
 }

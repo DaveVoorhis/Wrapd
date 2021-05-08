@@ -117,4 +117,20 @@ public class TestSQLite_Source01 {
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
     }
 
+    @Test
+    public void testQueryToStream06() throws SQLException {
+        var database = TestQueries.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream06");
+        TestSQLiteQueryQuery03.query(database, 3)
+                .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
+    }
+
+    @Test
+    public void testQueryToStream07() throws SQLException {
+        var database = TestQueries.getDatabase(prompt);
+        System.out.println(prompt + " testQueryToStream07");
+        TestSQLiteQueryQuery04.query(database)
+                .forEach(tuple -> System.out.println(prompt + " " + tuple.x));
+    }
+
 }
