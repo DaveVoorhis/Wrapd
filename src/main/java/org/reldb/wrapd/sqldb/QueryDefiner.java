@@ -75,7 +75,7 @@ public class QueryDefiner {
                     } catch (Exception e) {
                         throw new QueryDefinerException(this, method, e);
                     }
-                } else if (method.getReturnType() == null) {
+                } else if (method.getReturnType().equals(Void.TYPE)) {
                     try {
                         method.invoke(this);
                     } catch (Exception e) {
