@@ -8,7 +8,8 @@ import java.sql.SQLException;
 
 public class Configuration {
 
-	public static final String baseDir = TestDirectory.Is + "MySQL";
+	public static final String dbName = "MySQL";
+	public static final String dbPackage = "mysql";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//

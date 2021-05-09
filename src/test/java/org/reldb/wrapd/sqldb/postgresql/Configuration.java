@@ -4,7 +4,8 @@ import org.reldb.TestDirectory;
 
 public class Configuration {
 
-	public static final String baseDir = TestDirectory.Is + "PostgreSQL";
+	public static final String dbName = "PostgreSQL";
+	public static final String dbPackage = "postgresql";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//

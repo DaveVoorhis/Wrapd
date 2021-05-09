@@ -4,6 +4,7 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.reldb.TestDirectory;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
@@ -21,26 +22,39 @@ import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass
 
 public class Helper {
 
+	private final static String testSourceName = "Test_Source01";
+
+	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
+
+	public static class Replacement {
+		public final String from;
+		public final String to;
+		public Replacement(String from, String to) {
+			this.from = from;
+			this.to = to;
+		}
+	}
+
 	private final String baseDir;
 	private final String codeDir;
 	private final String prompt;
 	private final String tupleClassName;
 	private final String queryClassName;
-	private final String testPackage;
-	private final String testSourceName;
+	private final String testTargetName;
+	private final Replacement[] replacements;
 
-	public Helper(String baseDir,
-				  String prompt,
-				  String testName,
-				  String testPackage,
-				  String testSourceName) {
-		this.baseDir = baseDir;
+	public Helper(String dbpackage, String dbname, String prompt) {
+		this.baseDir = TestDirectory.Is + dbname;
 		this.prompt = prompt;
-		this.testPackage = testPackage;
-		this.testSourceName = testSourceName;
+		this.replacements = new Helper.Replacement[] {
+				new Helper.Replacement("<dbpackage>", dbpackage),
+				new Helper.Replacement("<db>", dbname)
+		};
+		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
 		queryClassName = testName + "Query";
 		codeDir = baseDir + "/code";
+		testTargetName = "Test" + dbname + "_Source01";
 		ensureTestDirectoryExists();
 	}
 
@@ -94,7 +108,7 @@ public class Helper {
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
 		var dirClassLoader = new DirClassLoader(getCodeDirectory(), testPackage);
-		var testClassFullname = testPackage + "." + testSourceName;
+		var testClassFullname = testPackage + "." + testTargetName;
 		return dirClassLoader.forName(testClassFullname);
 	}
 
@@ -111,9 +125,11 @@ public class Helper {
 
 	private ForeignCompilerJava.CompilationResults compileTestCode() throws IOException {
 		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
+		for (Replacement replacement: replacements)
+			source = source.replace(replacement.from, replacement.to);
 		var compiler = new ForeignCompilerJava(getCodeDirectory());
 		var classpath = compiler.getDefaultClassPath();
-		return compiler.compileForeignCode(classpath, testSourceName, testPackage, source);
+		return compiler.compileForeignCode(classpath, testTargetName, testPackage, source);
 	}
 
 	private void run() throws IOException, ClassNotFoundException {
