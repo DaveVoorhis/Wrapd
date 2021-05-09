@@ -20,13 +20,13 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-public class Helper {
+public class TestHelper {
 
 	private final static String testSourceName = "Test_Source01";
 
 	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
-	public static class Replacement {
+	private static class Replacement {
 		public final String from;
 		public final String to;
 		public Replacement(String from, String to) {
@@ -37,18 +37,16 @@ public class Helper {
 
 	private final String baseDir;
 	private final String codeDir;
-	private final String prompt;
 	private final String tupleClassName;
 	private final String queryClassName;
 	private final String testTargetName;
 	private final Replacement[] replacements;
 
-	public Helper(String dbpackage, String dbname, String prompt) {
+	public TestHelper(String dbpackage, String dbname) {
 		this.baseDir = TestDirectory.Is + dbname;
-		this.prompt = prompt;
-		this.replacements = new Helper.Replacement[] {
-				new Helper.Replacement("<dbpackage>", dbpackage),
-				new Helper.Replacement("<db>", dbname)
+		this.replacements = new TestHelper.Replacement[] {
+				new TestHelper.Replacement("<dbpackage>", dbpackage),
+				new TestHelper.Replacement("<db>", dbname)
 		};
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
@@ -67,7 +65,7 @@ public class Helper {
 		try {
 			database.updateAll("DROP TABLE " + tableName);
 		} catch (SQLException se) {
-			System.out.println(prompt + " ERROR: " + se);
+			System.out.println(" ERROR: " + se);
 		}
 	}
 

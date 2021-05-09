@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.Helper;
+import org.reldb.wrapd.sqldb.TestHelper;
 import org.reldb.wrapd.sqldb.QueryDefiner;
 
 public class TestQueries {
@@ -29,11 +29,7 @@ public class TestQueries {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-		new Helper(
-				Configuration.dbPackage,
-				Configuration.dbName,
-				testStagePrompt
-		).test(getDatabase(testStagePrompt));
+		new TestHelper(Configuration.dbPackage, Configuration.dbName).test(getDatabase(testStagePrompt));
 	}
 
 }
