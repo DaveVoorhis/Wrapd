@@ -6,6 +6,8 @@ public class Configuration {
 
 	public static final String dbName = "PostgreSQL";
 	public static final String dbPackage = "postgresql";
+	public static final String dbTablenamePrefix = "Wrapd_";
+	public static final String dbHost = "localhost";
 
 	// This test assumes use of docker-compose.yml in project root.
 	//
@@ -16,11 +18,11 @@ public class Configuration {
 	//
 	// Settings below should match PostgreSQL configuration in docker-compose.yml
 
-	public static final String dbHost = "localhost";
 	public static final String dbDatabase = "wrapd_testdb";
 	public static final String dbUser = "user";
 	public static final String dbPassword = "password";
-	public static final String dbTablenamePrefix = "Wrapd_";
+
+	// End settings
 
 	public static final String dbURLPrefix = "jdbc:postgresql";
 	public static final String dbURL = dbURLPrefix + "://" + dbHost + "/" + dbDatabase;
