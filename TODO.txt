@@ -1,7 +1,7 @@
-- Improve QueryDefiner to generate Query derivatives where get(...) has been replaced with run(Database db, ...) or
-  (as approprite) query(Database db, ...), update(Database db, ...), insert(Database db, ...) etc. This may
-  require predefined Query derivatives called Select, Insert, Update and Delete, from which the generated
-  ones are derived.
+- Improve QueryDefiner to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
+  addition to existing query(Database db, ...), etc.
+  This may require predefined Query derivatives called Select, Insert, Update and Delete,
+  from which the generated ones are derived.
 - Consider making transactional and non-transactional query method names different,
   so it's less likely to mix transactional and non-transactional code by accident.
 - Consider incorporating ResultSet to Tuple code in each Tuple class, if it's
