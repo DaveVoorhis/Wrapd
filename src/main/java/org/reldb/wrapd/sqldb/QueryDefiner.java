@@ -49,7 +49,7 @@ public class QueryDefiner {
     }
 
     /**
-     * Shorthand for invoking 'generate(new QueryDefinition(...)).
+     * Shorthand for invoking generate(new QueryDefinition(...)).
      */
     protected void define(String queryName, String sqlText, Object... args) throws Exception {
          generate(new QueryDefinition(queryName, sqlText, args));
