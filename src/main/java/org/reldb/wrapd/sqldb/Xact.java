@@ -11,8 +11,6 @@ import java.util.stream.Stream;
 
 /**
  * Transaction wrapper that allows database query and update operations to be invoked transactionally in an ergonomic fashion.
- *
- * @author dave
  */
 public class Xact {
 

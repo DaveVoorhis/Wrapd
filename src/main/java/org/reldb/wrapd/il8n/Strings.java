@@ -9,8 +9,6 @@ import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 /**
  * Internationalisable messages.
- *
- * @author dave
  */
 public class Strings {
 

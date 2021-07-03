@@ -8,8 +8,6 @@ package org.reldb.wrapd.compiler;
 
 /**
  * A BytestreamOutput backed by an array of bytes.
- *
- * @author dave
  */
 public class BytestreamOutputArray extends BytestreamOutput {
 

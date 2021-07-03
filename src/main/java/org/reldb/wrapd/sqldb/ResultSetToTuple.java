@@ -16,8 +16,6 @@ import java.util.stream.Stream;
 
 /**
  * Tools for creating Tuple-derived classes from ResultSetS and for turning ResultSetS into Tuple-derived instances for processing directly or as a List or Stream.
- *
- * @author dave
  */
 public class ResultSetToTuple {
 

@@ -10,8 +10,6 @@ package org.reldb.wrapd.compiler;
 
 /**
  * A class to support streaming ValueS into streams of bytes.
- *
- * @author dave
  */
 public abstract class BytestreamOutput {
 

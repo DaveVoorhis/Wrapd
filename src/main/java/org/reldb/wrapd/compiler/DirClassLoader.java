@@ -14,8 +14,6 @@ import java.util.HashMap;
 /**
  * A class loader to load named classes from a specified directory.  With
  * class unload and class caching.
- *
- * @author dave
  */
 public class DirClassLoader extends ClassLoader {
 

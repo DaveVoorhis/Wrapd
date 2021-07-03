@@ -5,8 +5,6 @@ import java.util.Vector;
 
 /**
  * Message registry. Later, this will be used to facilitate localisation/internationalisation of error messages.
- *
- * @author dave
  */
 public class Str {
 

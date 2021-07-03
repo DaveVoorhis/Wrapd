@@ -14,8 +14,6 @@ import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
 
 /**
  * Machinery for compiling Java code.
- *
- * @author Dave
  */
 public class ForeignCompilerJava {
     private final static Logger log = LogManager.getLogger(ForeignCompilerJava.class.toString());
