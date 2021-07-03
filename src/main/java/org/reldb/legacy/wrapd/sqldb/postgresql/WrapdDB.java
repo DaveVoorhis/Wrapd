@@ -307,7 +307,7 @@ public class WrapdDB extends WrapdDatabaseBase {
         try {
             return findUser(getLoggedInUserID(), password) != null;
         } catch (SQLException e) {
-            log.error("ERROR: WrapdDB: verifyPassword: " + e);
+            log.error("ERROR: WrapdDB: verifyPassword", e);
             return false;
         }
     }
@@ -330,7 +330,7 @@ public class WrapdDB extends WrapdDatabaseBase {
                 }
             }
         } catch (SQLException e) {
-            log.error("ERROR: WrapdDB: attemptLogin: " + e);
+            log.error("ERROR: WrapdDB: attemptLogin", e);
             setLoggedInUserID(null);
         }
         return new LoginStatus(false);
@@ -358,7 +358,7 @@ public class WrapdDB extends WrapdDatabaseBase {
                 return true;
             }
         } catch (SQLException e) {
-            log.error("ERROR: WrapdDB: attemptLoginWithPasswordChange: " + e);
+            log.error("ERROR: WrapdDB: attemptLoginWithPasswordChange", e);
             setLoggedInUserID(null);
         }
         return false;

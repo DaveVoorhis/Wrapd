@@ -457,7 +457,7 @@ public class Database {
             try {
                 compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
             } catch (ClassNotFoundException e) {
-                log.error("ERROR: tuple generator failed in createTuple due to: " + e);
+                log.error("ERROR: tuple generator failed in createTuple", e);
                 return false;
             }
             if (!compilationResult.compiled)

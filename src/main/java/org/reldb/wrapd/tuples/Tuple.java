@@ -58,7 +58,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                     try {
                         return field.get(this);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        Database.log.error("ERROR: insert failed on field " + field.getName() + ": " + e);
+                        Database.log.error("ERROR: insert failed on field " + field.getName(), e);
                         return null;
                     }
                 })
@@ -100,7 +100,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                 fieldOldValue = field.get(backup);
                 return !fieldNewValue.equals(fieldOldValue);
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Database.log.error("ERROR: unable to compare old and new field values: " + e);
+                Database.log.error("ERROR: unable to compare old and new field values", e);
                 return false;
             }
         });
@@ -113,7 +113,7 @@ public abstract class Tuple implements Serializable, Cloneable {
             try {
                 return field.get(this);
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Database.log.error("ERROR: unable to retrieve new field value: " + e);
+                Database.log.error("ERROR: unable to retrieve new field value", e);
                 return null;
             }
         }).toArray();
@@ -122,7 +122,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                     try {
                         return field.get(backup);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        Database.log.error("ERROR: unable to retrieve predicate field value: " + e);
+                        Database.log.error("ERROR: unable to retrieve predicate field value", e);
                         return null;
                     }
                 }).toArray();

@@ -160,7 +160,7 @@ public class ResultSetToTuple {
             try {
                 tuple.backup();
             } catch (CloneNotSupportedException e) {
-                log.error("ERROR: toListForUpdate: Unable to clone tuple of type " + tupleType.getName() + ": " + e);
+                log.error("ERROR: toListForUpdate: Unable to clone tuple of type " + tupleType.getName(), e);
             }
             rows.add(tuple);
         });
