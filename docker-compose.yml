@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres-db:
-    image: postgres:13.1
+    image: postgres:13.3
     restart: always
     volumes:
       - db-data-wrapd_postgresql:/var/lib/postgresql/data
@@ -14,7 +14,7 @@ services:
       - "5432:5432"
 
   mysql-db:
-    image: mysql:8.0.23
+    image: mysql:8.0.25
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     volumes:
