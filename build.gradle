@@ -5,14 +5,12 @@ plugins {
 
 group = 'org.reldb'
 version = '0.0.3-SNAPSHOT'
-description = 'Wrapd'
+description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenLocal()
-    maven {
-        url = uri('https://repo.maven.apache.org/maven2/')
-    }
+    mavenCentral()
 }
 
 dependencies {
@@ -33,20 +31,8 @@ dependencies {
     testImplementation 'mysql:mysql-connector-java:8.0.25'
 }
 
-tasks.named('test') {
-    // Use junit platform for unit tests.
+test {
     useJUnitPlatform()
-}
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            from(components.java)
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
 }
 
 clean {
@@ -65,4 +51,15 @@ task createProperties(dependsOn: processResources) {
 
 classes {
     dependsOn createProperties
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
 }
