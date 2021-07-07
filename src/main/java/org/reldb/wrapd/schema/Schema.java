@@ -1,15 +1,27 @@
 package org.reldb.wrapd.schema;
 
-import java.util.HashMap;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.QueryDefinition;
 
-public class Schema {
-    public static void main() {
-        var data = new HashMap<String, String>();
-        data.put("aaa", "Dave");
-        data.put("aab", "Bob");
-        data.put("aac", "Jane");
+public abstract class Schema {
+    private Database database;
+    private String codeDirectory;
+    private String versionTableName;
 
-        var found = data.get("aab");
-        System.out.println("Found: " + found);
+    public Schema(Database database, String codeDirectory) {
+        this.database = database;
+        this.codeDirectory = codeDirectory;
+    }
+
+    public void setVersionTableName(String versionTableName) {
+        this.versionTableName = versionTableName;
+    }
+
+    public String getVersionTableName() {
+        return versionTableName;
+    }
+
+    public QueryDefinition getVersionQuery() {
+        return new QueryDefinition("__VersionQuery", "select version from " + getVersionTableName());
     }
 }
