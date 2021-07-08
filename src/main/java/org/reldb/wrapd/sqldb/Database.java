@@ -203,6 +203,24 @@ public class Database {
     }
 
     /**
+     * Determine if a table exists.
+     *
+     * @param connection - java.sql.Connection
+     * @param tableName - table name
+     * @return - true if table exists, false otherwise
+     * @throws SQLException - Error
+     */
+    public boolean isTableExists(Connection connection, String tableName) throws SQLException {
+        var realTableName = replaceTableNames(tableName);
+        var meta = connection.getMetaData();
+        var resultSet = meta.getTables(null,
+            null,
+            realTableName,
+            new String[] {"TABLE"});
+        return resultSet.next();
+    }
+
+    /**
      * Issue a SELECT query, process it, and return the result
      *
      * @param <T>      return type
@@ -236,6 +254,17 @@ public class Database {
      */
     public Optional<?> valueOfAll(String query, String columnName) throws SQLException {
         return useConnection(conn -> valueOfAll(conn, query, columnName));
+    }
+
+    /**
+     * Determine if a table exists.
+     *
+     * @param tableName - table name
+     * @return - true if table exists, false otherwise
+     * @throws SQLException - Error
+     */
+    public boolean isTableExists(String tableName) throws SQLException {
+        return useConnection(conn -> isTableExists(conn, tableName));
     }
 
     /**
