@@ -1,11 +1,10 @@
 package org.reldb.wrapd.schema;
 
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.QueryDefinition;
 
 import java.sql.SQLException;
 
-public abstract class Schema {
+public abstract class Schema extends AbstractSchema {
     private Database database;
     private String codeDirectory;
     private String versionTableName = "$$__version";
@@ -39,7 +38,20 @@ public abstract class Schema {
 
     public String getVersionTableAttributeTypeName() {return versionTableAttributeTypeName;}
 
-    public abstract Database.XactGo[] getChanges();
+    @Override
+    public Version getVersion() {
+        return null;
+    }
+
+    @Override
+    protected void setVersion(Number number) {
+
+    }
+
+    @Override
+    protected void createDatabase() {
+
+    }
 
     public void latest() throws SQLException {
         final int version;
