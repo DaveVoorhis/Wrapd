@@ -1,6 +1,7 @@
 package org.reldb.wrapd.schema;
 
 import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.response.Result;
 
 public abstract class AbstractSchema {
 
@@ -9,22 +10,24 @@ public abstract class AbstractSchema {
     protected class NewDatabase implements Version {}
 
     protected class Indeterminate implements Version {
-        private String reason;
-        public Indeterminate(String reason) {
+        private final String reason;
+        private final Throwable error;
+        public Indeterminate(String reason, Throwable error) {
             this.reason = reason;
+            this.error = error;
         }
-        String get() {
-            return reason;
+        public Indeterminate(String reason) {
+            this(reason, null);
+        }
+        public Indeterminate(Throwable error) {
+            this(null, error);
         }
     }
 
     protected class Number implements Version {
-        private int number;
-        public Number(int number) {
-            this.number = number;
-        }
-        int get() {
-            return number;
+        public final int value;
+        public Number(int value) {
+            this.value = value;
         }
     }
 
@@ -40,17 +43,17 @@ public abstract class AbstractSchema {
      *
      * @param number
      */
-    protected abstract boolean setVersion(Number number);
+    protected abstract Result setVersion(Number number);
 
-    protected abstract boolean createDatabase();
+    protected abstract Result createDatabase();
 
     public interface Update {
-        boolean apply(AbstractSchema schema);
+        Result apply(AbstractSchema schema);
     }
 
     protected abstract Update[] getUpdates();
 
-    public boolean establish() {
+    public Result establish() {
         var version = getVersion();
         if (version instanceof NewDatabase)
             return createDatabase();
@@ -59,15 +62,17 @@ public abstract class AbstractSchema {
                 throw new ExceptionFatal("Unable to determine version due to: " + ((Indeterminate) version).get());
             if (!(version instanceof Number))
                 throw new ExceptionFatal("Unrecognised version type: " + version.getClass().getName());
-            int versionNumber = ((Number)version).get();
+            int versionNumber = ((Number)version).value;
             var updates = getUpdates();
             for (int update = versionNumber + 1; update <= updates.length; update++) {
-                if (!updates[update - 1].apply(this))
-                    return false;
-                if (!setVersion(new Number(update)))
-                    return false;
+                var updateResult = updates[update - 1].apply(this);
+                if (updateResult.isError())
+                    return Result.ERROR(updateResult.error);
+                var setVersionResult = setVersion(new Number(update));
+                if (setVersionResult.isError())
+                    return Result.ERROR(setVersionResult.error);
             }
-            return true;
+            return Result.OK;
         }
     }
 

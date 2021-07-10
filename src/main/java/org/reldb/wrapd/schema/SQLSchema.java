@@ -1,5 +1,6 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
@@ -7,8 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class SQLSchema extends AbstractSchema {
-    private static Logger LOG = Logger.getLogger(SQLSchema.class.getName());
-
     private Database database;
     private String codeDirectory;
     private String versionTableName = "$$__version";
@@ -59,37 +58,33 @@ public abstract class SQLSchema extends AbstractSchema {
             }
             return new Number(version);
         } catch (SQLException sqe) {
-            LOG.log(Level.SEVERE, "Unable to get version", sqe);
             return new Indeterminate(sqe.toString());
         }
     }
 
     @Override
-    protected boolean setVersion(Number number) {
+    protected Result setVersion(Number number) {
         try {
-            database.update("UPDATE " + getVersionTableName() + " SET " + getVersionTableAttributeName() + " = ?", number.get());
-            return true;
+            database.update("UPDATE " + getVersionTableName() + " SET " + getVersionTableAttributeName() + " = ?", number.value);
+            return Result.OK;
         } catch (SQLException sqe) {
-            LOG.log(Level.SEVERE, "Unable to update version", sqe);
-            return false;
+            return Result.ERROR(sqe);
         }
     }
 
     @Override
-    protected boolean createDatabase() {
+    protected Result createDatabase() {
         try {
             if (!database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");
                 xact.updateAll("INSERT INTO " + getVersionTableName() + "(" + getVersionTableAttributeName() + ") VALUES (0)");
                 return true;
             })) {
-                LOG.log(Level.SEVERE, "Unable to create database");
-                return false;
+                return Result.FAIL;
             }
-            return true;
+            return Result.OK;
         } catch (SQLException sqe) {
-            LOG.log(Level.SEVERE, "Unable to create database", sqe);
-            return false;
+            return Result.ERROR(sqe);
         }
     }
 
