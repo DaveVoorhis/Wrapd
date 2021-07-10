@@ -4,6 +4,7 @@ import com.mchange.v2.c3p0.DataSources;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
+import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.tuples.Tuple;
 
 import javax.sql.DataSource;
@@ -79,24 +80,6 @@ public class Database {
     }
 
     /**
-     * Return type from connection use.
-     */
-    public static class ConnectionUseResult<T> {
-        public final T returnValue;
-        public final SQLException exception;
-
-        public ConnectionUseResult(T t) {
-            returnValue = t;
-            exception = null;
-        }
-
-        public ConnectionUseResult(SQLException t) {
-            returnValue = null;
-            exception = t;
-        }
-    }
-
-    /**
      * Used to define lambda expressions that make use of a Connection and return a value of type T.
      *
      * @param <T>
@@ -111,15 +94,15 @@ public class Database {
      *
      * @param <T>            type of return value from use of connection.
      * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
-     * @return A ConnectionUseResult<T> containing either a T (indicating success) or a SQLException.
+     * @return A Response<T> containing either a T (indicating success) or a SQLException.
      * @throws SQLException - Error
      */
-    public <T> ConnectionUseResult<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
+    public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
         try (Connection conn = pool.getConnection()) {
             try {
-                return new ConnectionUseResult<>(connectionUser.go(conn));
+                return new Response<>(connectionUser.go(conn));
             } catch (SQLException t) {
-                return new ConnectionUseResult<>(t);
+                return new Response<>(t);
             }
         }
     }
@@ -134,9 +117,9 @@ public class Database {
      */
     public <T> T useConnection(ConnectionUser<T> connectionUser) throws SQLException {
         var result = processConnection(connectionUser);
-        if (result.exception != null)
-            throw result.exception;
-        return result.returnValue;
+        if (result.error != null)
+            throw (SQLException) result.error;
+        return result.value;
     }
 
     /**
