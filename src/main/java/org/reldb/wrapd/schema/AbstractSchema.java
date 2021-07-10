@@ -59,18 +59,18 @@ public abstract class AbstractSchema {
             return createDatabase();
         else {
             if (version instanceof Indeterminate)
-                throw new ExceptionFatal("Unable to determine version due to: " + ((Indeterminate) version).get());
+                return Result.ERROR(new ExceptionFatal("Unable to determine version due to: " + ((Indeterminate) version).reason, ((Indeterminate) version).error));
             if (!(version instanceof Number))
-                throw new ExceptionFatal("Unrecognised version type: " + version.getClass().getName());
+                return Result.ERROR(new ExceptionFatal("Unrecognised version type: " + version.getClass().getName()));
             int versionNumber = ((Number)version).value;
             var updates = getUpdates();
             for (int update = versionNumber + 1; update <= updates.length; update++) {
                 var updateResult = updates[update - 1].apply(this);
                 if (updateResult.isError())
-                    return Result.ERROR(updateResult.error);
+                    return Result.ERROR(new ExceptionFatal("Unable to perform update to version " + update, updateResult.error));
                 var setVersionResult = setVersion(new Number(update));
                 if (setVersionResult.isError())
-                    return Result.ERROR(setVersionResult.error);
+                    return Result.ERROR(new ExceptionFatal("Unable to set version number to " + update, setVersionResult.error));
             }
             return Result.OK;
         }

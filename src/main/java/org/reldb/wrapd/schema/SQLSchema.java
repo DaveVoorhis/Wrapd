@@ -8,15 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public abstract class SQLSchema extends AbstractSchema {
-    private Database database;
-    private String codeDirectory;
+    private final Database database;
     private String versionTableName = "$$__version";
     private String versionTableAttributeName = "version";
     private String versionTableAttributeTypeName = "integer";
 
-    public SQLSchema(Database database, String codeDirectory) {
+    public SQLSchema(Database database) {
         this.database = database;
-        this.codeDirectory = codeDirectory;
     }
 
     public void setVersionTableName(String versionTableName) {
@@ -75,14 +73,11 @@ public abstract class SQLSchema extends AbstractSchema {
     @Override
     protected Result createDatabase() {
         try {
-            if (!database.transact(xact -> {
+            return Result.BOOLEAN(database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");
                 xact.updateAll("INSERT INTO " + getVersionTableName() + "(" + getVersionTableAttributeName() + ") VALUES (0)");
                 return true;
-            })) {
-                return Result.FAIL;
-            }
-            return Result.OK;
+            }));
         } catch (SQLException sqe) {
             return Result.ERROR(sqe);
         }
