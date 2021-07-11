@@ -4,11 +4,10 @@ import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public abstract class SQLSchema extends AbstractSchema {
     private final Database database;
+
     private String versionTableName = "$$__version";
     private String versionTableAttributeName = "version";
     private String versionTableAttributeTypeName = "integer";
