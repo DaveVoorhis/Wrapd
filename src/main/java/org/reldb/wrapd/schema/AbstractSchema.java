@@ -53,7 +53,7 @@ public abstract class AbstractSchema {
 
     protected abstract Update[] getUpdates();
 
-    public Result establish() {
+    public Result setup() {
         var version = getVersion();
         if (version instanceof NewDatabase)
             return createDatabase();
