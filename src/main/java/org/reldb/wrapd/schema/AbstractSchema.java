@@ -58,7 +58,7 @@ public abstract class AbstractSchema {
         return action -> action.run();
     }
 
-    public Result establish(ProgressIndicator progressIndicator) {
+    public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version instanceof NewDatabase)
             return createDatabase();
