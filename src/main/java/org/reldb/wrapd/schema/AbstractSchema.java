@@ -1,5 +1,6 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
 
@@ -53,7 +54,11 @@ public abstract class AbstractSchema {
 
     protected abstract Update[] getUpdates();
 
-    public Result establish() {
+    protected UpdateTransaction getTransaction() {
+        return action -> action.run();
+    }
+
+    public Result establish(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version instanceof NewDatabase)
             return createDatabase();
@@ -64,13 +69,22 @@ public abstract class AbstractSchema {
                 return Result.ERROR(new ExceptionFatal("Unrecognised version type: " + version.getClass().getName()));
             int versionNumber = ((Number)version).value;
             var updates = getUpdates();
+            // TODO initialise progressIndicator
             for (int update = versionNumber + 1; update <= updates.length; update++) {
-                var updateResult = updates[update - 1].apply(this);
-                if (updateResult.isError())
-                    return Result.ERROR(new ExceptionFatal("Unable to perform update to version " + update, updateResult.error));
-                var setVersionResult = setVersion(new Number(update));
-                if (setVersionResult.isError())
-                    return Result.ERROR(new ExceptionFatal("Unable to set version number to " + update, setVersionResult.error));
+                var transaction = getTransaction();
+                final int updateNumber = update;
+                var result = transaction.run(() -> {
+                    var updateResult = updates[updateNumber - 1].apply(this);
+                    if (updateResult.isError())
+                        return Result.ERROR(new ExceptionFatal("Unable to perform update to version " + updateNumber, updateResult.error));
+                    var setVersionResult = setVersion(new Number(updateNumber));
+                    if (setVersionResult.isError())
+                        return Result.ERROR(new ExceptionFatal("Unable to set version number to " + updateNumber, setVersionResult.error));
+                    return updateResult;
+                });
+                if (result.isError())
+                    return result;
+                // TODO update progressIndicator
             }
             return Result.OK;
         }
