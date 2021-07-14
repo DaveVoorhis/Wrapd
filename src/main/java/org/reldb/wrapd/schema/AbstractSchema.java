@@ -1,8 +1,11 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
+
+import static org.reldb.wrapd.il8n.Strings.*;
 
 public abstract class AbstractSchema {
 
@@ -65,10 +68,10 @@ public abstract class AbstractSchema {
         else {
             if (version instanceof Indeterminate) {
                 var noVersion = (Indeterminate)version;
-                return Result.ERROR(new ExceptionFatal("Unable to determine version due to: " + noVersion.reason, noVersion.error));
+                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
             }
             if (!(version instanceof Number))
-                return Result.ERROR(new ExceptionFatal("Unrecognised version type: " + version.getClass().getName()));
+                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             int versionNumber = ((Number)version).value;
             var updates = getUpdates();
             if (progressIndicator != null)
@@ -79,10 +82,10 @@ public abstract class AbstractSchema {
                 var result = transaction.run(() -> {
                     var updateResult = updates[updateNumber - 1].apply(this);
                     if (updateResult.isError())
-                        return Result.ERROR(new ExceptionFatal("Unable to perform update to version " + updateNumber, updateResult.error));
+                        return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                     var setVersionResult = setVersion(new Number(updateNumber));
                     if (setVersionResult.isError())
-                        return Result.ERROR(new ExceptionFatal("Unable to set version number to " + updateNumber, setVersionResult.error));
+                        return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                     return updateResult;
                 });
                 if (result.isError())

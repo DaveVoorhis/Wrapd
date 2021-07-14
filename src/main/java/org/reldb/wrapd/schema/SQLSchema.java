@@ -1,9 +1,13 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.strings.Str;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
+
+import static org.reldb.wrapd.il8n.Strings.ErrVersionTableIsEmpty;
+import static org.reldb.wrapd.il8n.Strings.ErrVersionTableValueIsInvalid;
 
 public abstract class SQLSchema extends AbstractSchema {
     private final Database database;
@@ -45,13 +49,13 @@ public abstract class SQLSchema extends AbstractSchema {
                 return new NewDatabase();
             var versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
             if (versionRaw.isEmpty())
-                return new Indeterminate("Version table " + getVersionTableName() + " is empty. It needs one row.");
+                return new Indeterminate(Str.ing(ErrVersionTableIsEmpty, getVersionTableName()));
             var versionStr = versionRaw.get().toString();
             int version;
             try {
                 version = Integer.valueOf(versionStr);
             } catch (NumberFormatException nfe) {
-                return new Indeterminate("Version table " + getVersionTableName() + " contains an invalid value for " + getVersionTableAttributeName() + ".");
+                return new Indeterminate(Str.ing(ErrVersionTableValueIsInvalid, getVersionTableName(), getVersionTableAttributeName()));
             }
             return new Number(version);
         } catch (SQLException sqe) {

@@ -5,6 +5,8 @@ import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.data.bdbje.BDBJEBase;
 import org.reldb.wrapd.data.bdbje.BDBJEData;
 import org.reldb.wrapd.data.bdbje.BDBJEEnvironment;
+import org.reldb.wrapd.schema.AbstractSchema;
+import org.reldb.wrapd.schema.SQLSchema;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
 /**
@@ -48,4 +50,12 @@ public class Strings {
     public static final int ErrSchemaUpdateFailure = Str.E("Unable to update schema due to: %s", BDBJEData.class.toString());
     public static final int ErrSchemaUpdateCopyFromFailure = Str.E("Unable to update schema due to failure in copyFrom method: %s", BDBJEData.class.toString());
     public static final int ErrUnableToLoadTupleTypeClass2 = Str.E("Unable to load tuple type for %s.", BDBJEData.class.toString());
+
+    public static final int ErrUnableToDetermineVersion = Str.E("Unable to determine version due to: %s", AbstractSchema.class.toString());
+    public static final int ErrUnrecognisedVersionType = Str.E("Unrecognised version type: %s", AbstractSchema.class.toString());
+    public static final int ErrUnableToUpdateToVersion = Str.E("Unable to perform update to version ", AbstractSchema.class.toString());
+    public static final int ErrUnableToSetVersion = Str.E("Unable to set version number to ", AbstractSchema.class.toString());
+
+    public static final int ErrVersionTableIsEmpty = Str.E("Version table %s is empty. It needs one row.", SQLSchema.class.toString());
+    public static final int ErrVersionTableValueIsInvalid = Str.E("Version table %s contains an invalid value for %s.", SQLSchema.class.toString());
 }
