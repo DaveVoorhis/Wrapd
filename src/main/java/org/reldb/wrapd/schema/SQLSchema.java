@@ -45,18 +45,32 @@ public abstract class SQLSchema extends AbstractSchema {
                 return new NewDatabase();
             var versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
             if (versionRaw.isEmpty())
-                return new Indeterminate("Versioning table " + getVersionTableName() + " is empty. It needs one row.");
+                return new Indeterminate("Version table " + getVersionTableName() + " is empty. It needs one row.");
             var versionStr = versionRaw.get().toString();
             int version;
             try {
                 version = Integer.valueOf(versionStr);
             } catch (NumberFormatException nfe) {
-                return new Indeterminate("Versioning table " + getVersionTableName() + " contains an invalid value for " + getVersionTableAttributeName() + ".");
+                return new Indeterminate("Version table " + getVersionTableName() + " contains an invalid value for " + getVersionTableAttributeName() + ".");
             }
             return new Number(version);
         } catch (SQLException sqe) {
             return new Indeterminate(sqe.toString());
         }
+    }
+
+    @Override
+    protected UpdateTransaction getTransaction() {
+        return new UpdateTransaction() {
+            @Override
+            public Result run(ResultAction action) {
+                try {
+                    return Result.BOOLEAN(database.processTransaction(transaction -> action.run().isOk()).success);
+                } catch (SQLException sqe) {
+                    return Result.ERROR(sqe);
+                }
+            }
+        };
     }
 
     @Override

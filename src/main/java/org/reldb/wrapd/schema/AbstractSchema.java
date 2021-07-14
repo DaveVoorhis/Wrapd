@@ -63,13 +63,16 @@ public abstract class AbstractSchema {
         if (version instanceof NewDatabase)
             return createDatabase();
         else {
-            if (version instanceof Indeterminate)
-                return Result.ERROR(new ExceptionFatal("Unable to determine version due to: " + ((Indeterminate) version).reason, ((Indeterminate) version).error));
+            if (version instanceof Indeterminate) {
+                var noVersion = (Indeterminate)version;
+                return Result.ERROR(new ExceptionFatal("Unable to determine version due to: " + noVersion.reason, noVersion.error));
+            }
             if (!(version instanceof Number))
                 return Result.ERROR(new ExceptionFatal("Unrecognised version type: " + version.getClass().getName()));
             int versionNumber = ((Number)version).value;
             var updates = getUpdates();
-            // TODO initialise progressIndicator
+            if (progressIndicator != null)
+                progressIndicator.initialise(updates.length);
             for (int update = versionNumber + 1; update <= updates.length; update++) {
                 var transaction = getTransaction();
                 final int updateNumber = update;
@@ -84,10 +87,15 @@ public abstract class AbstractSchema {
                 });
                 if (result.isError())
                     return result;
-                // TODO update progressIndicator
+                if (progressIndicator != null)
+                    progressIndicator.move(versionNumber, "Version " + versionNumber);
             }
             return Result.OK;
         }
+    }
+
+    public Result setup() {
+        return setup(null);
     }
 
 }
