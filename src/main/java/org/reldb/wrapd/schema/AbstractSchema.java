@@ -76,10 +76,11 @@ public abstract class AbstractSchema {
             var updates = getUpdates();
             if (progressIndicator != null)
                 progressIndicator.initialise(updates.length);
-            for (int update = versionNumber + 1; update <= updates.length; update++) {
+            var result = Result.OK;
+            for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
                 var transaction = getTransaction();
                 final int updateNumber = update;
-                var result = transaction.run(() -> {
+                result = transaction.run(() -> {
                     var updateResult = updates[updateNumber - 1].apply(this);
                     if (updateResult.isError())
                         return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
@@ -88,12 +89,10 @@ public abstract class AbstractSchema {
                         return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                     return updateResult;
                 });
-                if (result.isError())
-                    return result;
                 if (progressIndicator != null)
                     progressIndicator.move(versionNumber, "Version " + versionNumber);
             }
-            return Result.OK;
+            return result;
         }
     }
 
