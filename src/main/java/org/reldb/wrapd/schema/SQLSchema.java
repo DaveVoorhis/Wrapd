@@ -46,20 +46,20 @@ public abstract class SQLSchema extends AbstractSchema {
     public Version getVersion() {
         try {
             if (!database.isTableExists(getVersionTableName()))
-                return new NewDatabase();
+                return new VersionNewDatabase();
             var versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
             if (versionRaw.isEmpty())
-                return new Indeterminate(Str.ing(ErrVersionTableIsEmpty, getVersionTableName()));
+                return new VersionIndeterminate(Str.ing(ErrVersionTableIsEmpty, getVersionTableName()));
             var versionStr = versionRaw.get().toString();
             int version;
             try {
                 version = Integer.valueOf(versionStr);
             } catch (NumberFormatException nfe) {
-                return new Indeterminate(Str.ing(ErrVersionTableValueIsInvalid, getVersionTableName(), getVersionTableAttributeName()));
+                return new VersionIndeterminate(Str.ing(ErrVersionTableValueIsInvalid, getVersionTableName(), getVersionTableAttributeName()));
             }
-            return new Number(version);
+            return new VersionNumber(version);
         } catch (SQLException sqe) {
-            return new Indeterminate(sqe.toString());
+            return new VersionIndeterminate(sqe.toString());
         }
     }
 
@@ -78,7 +78,7 @@ public abstract class SQLSchema extends AbstractSchema {
     }
 
     @Override
-    protected Result setVersion(Number number) {
+    protected Result setVersion(VersionNumber number) {
         try {
             database.update("UPDATE " + getVersionTableName() + " SET " + getVersionTableAttributeName() + " = ?", number.value);
             return Result.OK;

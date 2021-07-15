@@ -1,6 +1,7 @@
 package org.reldb.wrapd.schema;
 
 import org.reldb.toolbox.strings.Str;
+import org.reldb.toolbox.utilities.EmptyProgressIndicator;
 import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
@@ -8,32 +9,6 @@ import org.reldb.wrapd.response.Result;
 import static org.reldb.wrapd.il8n.Strings.*;
 
 public abstract class AbstractSchema {
-
-    protected interface Version {}
-
-    protected class NewDatabase implements Version {}
-
-    protected class Indeterminate implements Version {
-        private final String reason;
-        private final Throwable error;
-        public Indeterminate(String reason, Throwable error) {
-            this.reason = reason;
-            this.error = error;
-        }
-        public Indeterminate(String reason) {
-            this(reason, null);
-        }
-        public Indeterminate(Throwable error) {
-            this(null, error);
-        }
-    }
-
-    protected class Number implements Version {
-        public final int value;
-        public Number(int value) {
-            this.value = value;
-        }
-    }
 
     /**
      * Return NewDatabase instance for new database.
@@ -47,7 +22,7 @@ public abstract class AbstractSchema {
      *
      * @param number
      */
-    protected abstract Result setVersion(Number number);
+    protected abstract Result setVersion(VersionNumber number);
 
     protected abstract Result createDatabase();
 
@@ -63,37 +38,53 @@ public abstract class AbstractSchema {
 
     public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
-        if (version instanceof NewDatabase)
-            return createDatabase();
-        else {
-            if (version instanceof Indeterminate) {
-                var noVersion = (Indeterminate)version;
-                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
-            }
-            if (!(version instanceof Number))
-                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
-            int versionNumber = ((Number)version).value;
-            var updates = getUpdates();
-            if (progressIndicator != null)
-                progressIndicator.initialise(updates.length);
-            var result = Result.OK;
-            for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
-                var transaction = getTransaction();
-                final int updateNumber = update;
-                result = transaction.run(() -> {
-                    var updateResult = updates[updateNumber - 1].apply(this);
-                    if (updateResult.isError())
-                        return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
-                    var setVersionResult = setVersion(new Number(updateNumber));
-                    if (setVersionResult.isError())
-                        return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
-                    return updateResult;
-                });
-                if (progressIndicator != null)
-                    progressIndicator.move(versionNumber, "Version " + versionNumber);
-            }
-            return result;
+        if (version == null)
+            return Result.ERROR(new ExceptionFatal(Str.ing(ErrNullVersion)));
+        if (version instanceof VersionIndeterminate) {
+            var noVersion = (VersionIndeterminate)version;
+            return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
         }
+        final ProgressIndicator progress = (progressIndicator != null)
+            ? progressIndicator
+            : new EmptyProgressIndicator();
+        var updates = getUpdates();
+        int versionNumber = 0;
+        if (version instanceof VersionNewDatabase) {
+            progress.initialise(updates.length * 2 + 1);
+            progress.move(0, "Creating schema");
+            var createResult = createDatabase();
+            if (createResult.isError()) {
+                progress.move(0, "Creating schema failed");
+                return createResult;
+            }
+            progress.move(1, "Schema created");
+        } else {
+            if (!(version instanceof VersionNumber))
+                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
+            versionNumber = ((VersionNumber)version).value;
+            progress.initialise((updates.length - versionNumber) * 2);
+        }
+        var result = Result.OK;
+        for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
+            var transaction = getTransaction();
+            progress.move(progress.getValue() + 1, "Updating to version " + update);
+            final int updateNumber = update;
+            result = transaction.run(() -> {
+                var updateResult = updates[updateNumber - 1].apply(this);
+                if (updateResult.isError()) {
+                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber);
+                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
+                }
+                var setVersionResult = setVersion(new VersionNumber(updateNumber));
+                if (setVersionResult.isError()) {
+                    progress.move(progress.getValue(), "Failed to record update to version " + updateNumber);
+                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
+                }
+                return updateResult;
+            });
+            progress.move(progress.getValue() + 1, "Updated to version " + update);
+        }
+        return result;
     }
 
     public Result setup() {

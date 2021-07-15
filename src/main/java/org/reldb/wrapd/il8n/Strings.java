@@ -53,8 +53,9 @@ public class Strings {
 
     public static final int ErrUnableToDetermineVersion = Str.E("Unable to determine version due to: %s", AbstractSchema.class.toString());
     public static final int ErrUnrecognisedVersionType = Str.E("Unrecognised version type: %s", AbstractSchema.class.toString());
-    public static final int ErrUnableToUpdateToVersion = Str.E("Unable to perform update to version ", AbstractSchema.class.toString());
-    public static final int ErrUnableToSetVersion = Str.E("Unable to set version number to ", AbstractSchema.class.toString());
+    public static final int ErrUnableToUpdateToVersion = Str.E("Unable to perform update to version %s", AbstractSchema.class.toString());
+    public static final int ErrUnableToSetVersion = Str.E("Unable to set version number to %s", AbstractSchema.class.toString());
+    public static final int ErrNullVersion = Str.E("Version is null.", AbstractSchema.class.toString());
 
     public static final int ErrVersionTableIsEmpty = Str.E("Version table %s is empty. It needs one row.", SQLSchema.class.toString());
     public static final int ErrVersionTableValueIsInvalid = Str.E("Version table %s contains an invalid value for %s.", SQLSchema.class.toString());
