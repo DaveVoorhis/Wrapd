@@ -88,7 +88,7 @@ public abstract class SQLSchema extends AbstractSchema {
     }
 
     @Override
-    protected Result createDatabase() {
+    protected Result create() {
         try {
             return Result.BOOLEAN(database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");

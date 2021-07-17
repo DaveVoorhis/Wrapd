@@ -23,7 +23,7 @@ public class TestAbstractSchema {
             }
 
             @Override
-            protected Result createDatabase() {
+            protected Result create() {
                 return null;
             }
 
@@ -39,18 +39,21 @@ public class TestAbstractSchema {
     @Test
     public void testAbstractSchemaNewDatabase() {
         var schema = new AbstractSchema() {
+            private Version version = new VersionNewDatabase();
+
             @Override
             public Version getVersion() {
-                return new VersionNewDatabase();
+                return version;
             }
 
             @Override
             protected Result setVersion(VersionNumber number) {
+                version = number;
                 return Result.OK;
             }
 
             @Override
-            protected Result createDatabase() {
+            protected Result create() {
                 return Result.OK;
             }
 
@@ -61,6 +64,7 @@ public class TestAbstractSchema {
         };
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaNewDatabase: "));
         assertTrue(result.isOk());
+        assertEquals(0, ((VersionNumber)schema.getVersion()).value);
     }
 
     @Test
@@ -80,7 +84,7 @@ public class TestAbstractSchema {
             }
 
             @Override
-            protected Result createDatabase() {
+            protected Result create() {
                 return Result.OK;
             }
 
@@ -130,7 +134,7 @@ public class TestAbstractSchema {
         }
 
         @Override
-        protected Result createDatabase() {
+        protected Result create() {
             return Result.OK;
         }
 

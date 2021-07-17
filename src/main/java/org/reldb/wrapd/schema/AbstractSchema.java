@@ -11,31 +11,61 @@ import static org.reldb.wrapd.il8n.Strings.*;
 public abstract class AbstractSchema {
 
     /**
-     * Return NewDatabase instance for new database.
-     * Return Indeterminate instance for database where version can't be determined.
-     * Return Number instance for database version.
+     * Return VersionNewDatabase instance for new database.
+     * Return VersionIndeterminate instance for database where version can't be determined.
+     * Return VersionNumber instance for database version.
      */
     public abstract Version getVersion();
 
     /**
-     * Set version number.
+     * Set new version number after successful update. Normally not called directly;
+     * only by setup(...)
      *
-     * @param number
+     * @param number - version number
+     * @return Result
      */
     protected abstract Result setVersion(VersionNumber number);
 
-    protected abstract Result createDatabase();
+    /**
+     * Create and initialise a new schema. Typically only contains version store,
+     * because it is assumed that updates will be run to create other content.
+     *
+     * @return Result
+     */
+    protected abstract Result create();
 
+    /**
+     * Definition of a database update.
+     */
     public interface Update {
         Result apply(AbstractSchema schema);
     }
 
+    /**
+     * A collection of schema updates.
+     *
+     * Only add new updates to the end.
+     *
+     * @return array of UpdateS.
+     */
     protected abstract Update[] getUpdates();
 
+    /**
+     * Obtain a new transaction. Within setup(...), each update obtained from @getUpdates() will
+     * run, followed by updating version via setVersion(...) in its own UpdateTransaction.
+     *
+     * @return UpdateTransaction.
+     */
     protected UpdateTransaction getTransaction() {
-        return action -> action.run();
+        return ResultAction::run;
     }
 
+    /**
+     * Verify schema exists and is up-to-date. Otherwise, create it and/or apply updates if necessary.
+     *
+     * @param progressIndicator
+     * @return Result
+     */
     public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version == null)
@@ -50,24 +80,29 @@ public abstract class AbstractSchema {
         var updates = getUpdates();
         int versionNumber = 0;
         if (version instanceof VersionNewDatabase) {
-            progress.initialise(updates.length * 2 + 1);
+            progress.initialise(updates.length + 1);
             progress.move(0, "Creating schema");
-            var createResult = createDatabase();
+            var createResult = create();
             if (createResult.isError()) {
-                progress.move(0, "Creating schema failed");
+                progress.move(progress.getValue(), "Creating schema failed");
                 return createResult;
             }
-            progress.move(1, "Schema created");
+            var setVersionResult = setVersion(new VersionNumber(0));
+            if (setVersionResult.isError()) {
+                progress.move(progress.getValue(), "Failed to record update to version " + 0);
+                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
+            }
+            progress.move(progress.getValue() + 1, "Schema created");
         } else {
             if (!(version instanceof VersionNumber))
                 return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             versionNumber = ((VersionNumber)version).value;
-            progress.initialise((updates.length - versionNumber) * 2);
+            progress.initialise(updates.length - versionNumber);
         }
         var result = Result.OK;
         for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
             var transaction = getTransaction();
-            progress.move(progress.getValue() + 1, "Updating to version " + update);
+            progress.move(progress.getValue(), "Updating to version " + update);
             final int updateNumber = update;
             result = transaction.run(() -> {
                 var updateResult = updates[updateNumber - 1].apply(this);
@@ -87,6 +122,11 @@ public abstract class AbstractSchema {
         return result;
     }
 
+    /**
+     * Verify schema exists and is up-to-date. Otherwise, create it and/or apply updates if necessary.
+     *
+     * @return Result
+     */
     public Result setup() {
         return setup(null);
     }
