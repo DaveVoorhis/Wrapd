@@ -1,4 +1,4 @@
-package org.reldb.wrapd.sqldb.postgresql;
+package org.reldb.wrapd.sqldb.sqlite;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -6,21 +6,20 @@ import java.sql.SQLException;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.TestHelper;
+import org.reldb.wrapd.sqldb.TestQueriesHelper;
 import org.reldb.wrapd.sqldb.QueryDefiner;
+import org.reldb.wrapd.sqldb.TestSchemaHelper;
 
-public class TestQueries {
+public class Tests {
 
 	private static final String testStagePrompt = "[TSET]";
 
 	public static Database getDatabase(String prompt) throws SQLException {
 		try {
 			return new Database(
-					Configuration.dbURL,
-					Configuration.dbUser,
-					Configuration.dbPassword,
-					Configuration.dbTablenamePrefix,
-					null
+				Configuration.dbURL,
+				Configuration.dbTablenamePrefix,
+				new SQLiteCustomisations()
 			);
 		} catch (IOException e) {
 			throw new SQLException(prompt + " Database connection failed. Error is: " + e);
@@ -29,7 +28,12 @@ public class TestQueries {
 
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-		new TestHelper(Configuration.dbPackage,	Configuration.dbName).test(getDatabase(testStagePrompt));
+		new TestQueriesHelper(Configuration.dbPackage, Configuration.dbName).test(getDatabase(testStagePrompt));
+	}
+
+	@Test
+	public void testSchema01() throws SQLException {
+		new TestSchemaHelper().test01(getDatabase(testStagePrompt));
 	}
 
 }

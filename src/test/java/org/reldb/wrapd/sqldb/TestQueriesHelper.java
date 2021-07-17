@@ -20,7 +20,7 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
 
-public class TestHelper {
+public class TestQueriesHelper {
 
 	private final static String testSourceName = "Test_Source01";
 
@@ -42,11 +42,11 @@ public class TestHelper {
 	private final String testTargetName;
 	private final Replacement[] replacements;
 
-	public TestHelper(String dbpackage, String dbname) {
+	public TestQueriesHelper(String dbpackage, String dbname) {
 		this.baseDir = TestDirectory.Is + dbname;
-		this.replacements = new TestHelper.Replacement[] {
-				new TestHelper.Replacement("<dbpackage>", dbpackage),
-				new TestHelper.Replacement("<db>", dbname)
+		this.replacements = new TestQueriesHelper.Replacement[] {
+				new TestQueriesHelper.Replacement("<dbpackage>", dbpackage),
+				new TestQueriesHelper.Replacement("<db>", dbname)
 		};
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
