@@ -5,6 +5,7 @@ import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 import static org.reldb.wrapd.il8n.Strings.ErrVersionTableIsEmpty;
 import static org.reldb.wrapd.il8n.Strings.ErrVersionTableValueIsInvalid;
@@ -44,23 +45,27 @@ public abstract class SQLSchema extends AbstractSchema {
 
     @Override
     public Version getVersion() {
+        Optional<?> versionRaw;
         try {
-            if (!database.isTableExists(getVersionTableName()))
-                return new VersionNewDatabase();
-            var versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
-            if (versionRaw.isEmpty())
-                return new VersionIndeterminate(Str.ing(ErrVersionTableIsEmpty, getVersionTableName()));
-            var versionStr = versionRaw.get().toString();
-            int version;
-            try {
-                version = Integer.valueOf(versionStr);
-            } catch (NumberFormatException nfe) {
-                return new VersionIndeterminate(Str.ing(ErrVersionTableValueIsInvalid, getVersionTableName(), getVersionTableAttributeName()));
-            }
-            return new VersionNumber(version);
+            versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
         } catch (SQLException sqe) {
-            return new VersionIndeterminate(sqe.toString());
+            // TODO improve!
+            // This (rather questionably) assumes that if attempting to get the version fails with a SQLException,
+            // it must be because the database is new. It might not be. But alternatives, like
+            // using database metadata to determine whether the table exists or not, are fraught
+            // with case-sensitivity perils that vary from DBMS to DBMS.
+            return new VersionNewDatabase();
         }
+        if (versionRaw.isEmpty())
+            return new VersionIndeterminate(Str.ing(ErrVersionTableIsEmpty, getVersionTableName()));
+        var versionStr = versionRaw.get().toString();
+        int version;
+        try {
+            version = Integer.valueOf(versionStr);
+        } catch (NumberFormatException nfe) {
+            return new VersionIndeterminate(Str.ing(ErrVersionTableValueIsInvalid, getVersionTableName(), getVersionTableAttributeName()));
+        }
+        return new VersionNumber(version);
     }
 
     @Override
