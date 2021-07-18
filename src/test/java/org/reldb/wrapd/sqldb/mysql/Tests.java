@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb.mysql;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.sqldb.Database;
@@ -29,8 +29,8 @@ public class Tests {
 		}
 	}
 
-	@Before
-	public void clearDb() throws SQLException {
+	@BeforeAll
+	public static void clearDb() throws SQLException {
 		Database db = getDatabase(testStagePrompt);
 		System.out.println(testStagePrompt + " Clearing database " + db.getClass().getName());
 		String[] tableNames = {
