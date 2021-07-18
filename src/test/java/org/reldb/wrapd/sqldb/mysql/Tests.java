@@ -3,6 +3,7 @@ package org.reldb.wrapd.sqldb.mysql;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.sqldb.Database;
@@ -26,6 +27,23 @@ public class Tests {
 		} catch (IOException e) {
 			throw new SQLException(prompt + " Database connection failed. Error is: " + e);
 		}
+	}
+
+	@Before
+	public void clearDb() throws SQLException {
+		Database db = getDatabase(testStagePrompt);
+		System.out.println(testStagePrompt + " Clearing database " + db.getClass().getName());
+		String[] tableNames = {
+				"$$__version",
+				"$$tester",
+				"$$version"};
+		for (String tableName: tableNames)
+			try {
+				System.out.println(testStagePrompt + " Dropping table " + tableName);
+				db.updateAll("DROP TABLE " + tableName);
+			} catch (SQLException sqe) {
+				System.out.println(testStagePrompt + " Oops dropping table: " + sqe);
+			}
 	}
 
 	@Test
