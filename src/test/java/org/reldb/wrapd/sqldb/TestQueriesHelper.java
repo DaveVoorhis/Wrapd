@@ -19,6 +19,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
+import static org.reldb.wrapd.sqldb.TestDbHelper.clearDb;
 
 public class TestQueriesHelper {
 
@@ -61,24 +62,13 @@ public class TestQueriesHelper {
 			throw new ExceptionFatal("Helper: Unable to create directory for test: " + baseDir);
 	}
 
-	private void dropTable(Database database, String tableName) {
-		try {
-			database.updateAll("DROP TABLE " + tableName);
-		} catch (SQLException se) {
-			System.out.println(" ERROR: " + se);
-		}
-	}
-
 	private void destroyDatabase(Database database) {
-		dropTable(database,"$$version");
-		dropTable(database,"$$tester");
+		clearDb(database, new String[] {"$$tester"});
 		Directory.rmAll(getCodeDirectory());
 	}
 
 	private void createDatabase(Database database) throws SQLException {
 		database.transact(xact -> {
-			xact.updateAll("CREATE TABLE $$version (user_db_version INTEGER, framework_db_version INTEGER);");
-			xact.updateAll("INSERT INTO $$version VALUES (0, 0);");
 			xact.updateAll("CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
 			return true;
 		});

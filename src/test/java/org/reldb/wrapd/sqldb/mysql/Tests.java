@@ -29,23 +29,6 @@ public class Tests {
 		}
 	}
 
-	@BeforeAll
-	public static void clearDb() throws SQLException {
-		Database db = getDatabase(testStagePrompt);
-		System.out.println(testStagePrompt + " Clearing database " + db.getClass().getName());
-		String[] tableNames = {
-				"$$__version",
-				"$$tester",
-				"$$version"};
-		for (String tableName: tableNames)
-			try {
-				System.out.println(testStagePrompt + " Dropping table " + tableName);
-				db.updateAll("DROP TABLE " + tableName);
-			} catch (SQLException sqe) {
-				System.out.println(testStagePrompt + " Oops dropping table: " + sqe);
-			}
-	}
-
 	@Test
 	public void testCodeThatUsesGeneratedTuple() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
 		new TestQueriesHelper(Configuration.dbPackage, Configuration.dbName).test(getDatabase(testStagePrompt));

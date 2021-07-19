@@ -4,6 +4,7 @@ import org.reldb.toolbox.utilities.ConsoleProgressIndicator;
 import org.reldb.wrapd.schema.SQLSchema;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.reldb.wrapd.sqldb.TestDbHelper.clearDb;
 
 public class TestSchemaHelper {
 
@@ -20,6 +21,7 @@ public class TestSchemaHelper {
 	}
 
 	public void test01(Database database) {
+		clearDb(database, new String[] {"$$__version"});
 		var testSchema = new TestSchema(database);
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		if (!result.isOk())
