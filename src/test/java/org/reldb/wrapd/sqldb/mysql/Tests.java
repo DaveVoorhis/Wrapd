@@ -39,5 +39,10 @@ public class Tests {
 		new TestSchemaHelper().test01(getDatabase(testStagePrompt));
 	}
 
+	@Test
+	public void testSchema02() throws SQLException {
+		new TestSchemaHelper().test02(getDatabase(testStagePrompt));
+	}
+
 }
 

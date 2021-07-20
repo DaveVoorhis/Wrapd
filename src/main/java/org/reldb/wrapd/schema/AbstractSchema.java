@@ -6,6 +6,8 @@ import org.reldb.toolbox.utilities.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
 
+import java.sql.SQLException;
+
 import static org.reldb.wrapd.il8n.Strings.*;
 
 public abstract class AbstractSchema {
@@ -38,7 +40,7 @@ public abstract class AbstractSchema {
      * Definition of a database update.
      */
     public interface Update {
-        Result apply(AbstractSchema schema);
+        Result apply(AbstractSchema schema) throws SQLException;
     }
 
     /**
@@ -105,9 +107,15 @@ public abstract class AbstractSchema {
             progress.move(progress.getValue(), "Updating to version " + update);
             final int updateNumber = update;
             result = transaction.run(() -> {
-                var updateResult = updates[updateNumber - 1].apply(this);
+                Result updateResult;
+                try {
+                    updateResult = updates[updateNumber - 1].apply(this);
+                } catch (Throwable t) {
+                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to exception.");
+                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
+                }
                 if (updateResult.isError()) {
-                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber);
+                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to false result.");
                     return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
