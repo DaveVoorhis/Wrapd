@@ -20,7 +20,7 @@ public class QueryDefinition {
         var tupleClassCreated = (args == null || args.length == 0)
             ? database.createTupleFromQueryAll(codeDirectory, tupleClassName, sqlText)
             : database.createTupleFromQuery(codeDirectory, tupleClassName, sqlText, args);
-        if (tupleClassCreated) {
+        if (tupleClassCreated.isOk()) {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, queryName, sqlText, args);
             var results = queryGenerator.compile();
             if (!results.compiled)

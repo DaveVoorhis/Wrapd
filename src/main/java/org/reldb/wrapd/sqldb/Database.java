@@ -5,6 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
 import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.tuples.Tuple;
 
 import javax.sql.DataSource;
@@ -434,27 +435,18 @@ public class Database {
      * @param tupleClassName - name for new tuple class
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Boolean> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
+    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             CompilationResults compilationResult;
             try {
                 compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
             } catch (ClassNotFoundException e) {
-                log.error("ERROR: tuple generator failed in createTuple", e);
-                return false;
+                return Result.ERROR(e);
             }
             if (!compilationResult.compiled)
                 log.error("ERROR: tuple class failed to compile due to: " + compilationResult.compilerMessages);
-            return compilationResult.compiled;
+            return Result.BOOLEAN(compilationResult.compiled);
         };
-    }
-
-    private static boolean processGenerateTupleResultTransaction(Transaction transaction) {
-        var transactionResult = transaction.getResult();
-        if (transactionResult.thrown == null)
-            return transactionResult.success;
-        log.error("ERROR: Generating tuple class from query failed due to: " + transactionResult.thrown);
-        return false;
     }
 
     /**
@@ -464,11 +456,12 @@ public class Database {
      * @param codeDirectory  - directory in which compiled Tuple-derived source and .class will be generated
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
-     * @throws SQLException - Error
+     * @return               - Result of code generation
+     * @throws SQLException  - Error
      */
-    public boolean createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
-        return queryAll(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations));
+    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+        return queryAll(connection, query, resultSetReceiver);
     }
 
     /**
@@ -477,11 +470,11 @@ public class Database {
      * @param codeDirectory  - directory in which compiled Tuple-derived source and .class will be generated
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
+     * @return               - Result of code generation
      * @throws SQLException  - Error
      */
-    public boolean createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
-        return processGenerateTupleResultTransaction(new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query)));
+    public Result createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query))).getResult();
     }
 
     /**
@@ -492,11 +485,12 @@ public class Database {
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
      * @param parms          - parameters which positionally match to '?' in the query
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
+     * @return               - Result of code generation
      * @throws SQLException  - Error
      */
-    public boolean createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        return query(connection, query, newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations), parms);
+    public Result createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+        return query(connection, query, resultSetReceiver, parms);
     }
 
     /**
@@ -506,11 +500,11 @@ public class Database {
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
      * @param parms          - parameters which positionally match to '?' in the query
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
+     * @return               - Result
      * @throws SQLException  - Error
      */
-    public boolean createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        return processGenerateTupleResultTransaction(new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms)));
+    public Result createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms))).getResult();
     }
 
     /**
@@ -782,33 +776,7 @@ public class Database {
      */
     @FunctionalInterface
     public interface TransactionRunner {
-        boolean run(Connection connection) throws SQLException;
-    }
-
-    /**
-     * Result of executing a transaction in Transaction.
-     */
-    public static class TransactionResult {
-
-        /**
-         * True if transaction committed. False if transaction rolled back.
-         */
-        public final boolean success;
-
-        /**
-         * Null if transaction committed. Non-null, and contains Throwable if transaction rolled back due to exception.
-         */
-        public final SQLException thrown;
-
-        protected TransactionResult(boolean success) {
-            this.success = success;
-            this.thrown = null;
-        }
-
-        protected TransactionResult(SQLException thrown) {
-            this.success = false;
-            this.thrown = thrown;
-        }
+        Result run(Connection connection) throws SQLException;
     }
 
     /**
@@ -816,7 +784,7 @@ public class Database {
      */
     public class Transaction {
 
-        private final TransactionResult result;
+        private Result result = Result.BOOLEAN(false);
 
         /**
          * Encapsulate a transaction.
@@ -827,28 +795,26 @@ public class Database {
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
             try (Connection connection = pool.getConnection()) {
                 connection.setAutoCommit(false);
-                boolean success;
                 try {
-                    success = transactionRunner.run(connection);
+                    result = transactionRunner.run(connection);
                 } catch (SQLException t) {
                     connection.rollback();
-                    result = new TransactionResult(t);
+                    result = Result.ERROR(t);
                     return;
                 }
-                if (success)
+                if (result.isOk())
                     connection.commit();
                 else
                     connection.rollback();
-                result = new TransactionResult(success);
             }
         }
 
         /**
          * Obtain transaction execution result.
          *
-         * @return TransactionResult - transaction execution result
+         * @return Result - transaction execution result
          */
-        public TransactionResult getResult() {
+        public Result getResult() {
             return result;
         }
     }
@@ -860,7 +826,7 @@ public class Database {
      * @return TransactionResult - transaction execution result
      * @throws SQLException - Error
      */
-    public TransactionResult processTransaction(TransactionRunner transactionRunner) throws SQLException {
+    public Result processTransaction(TransactionRunner transactionRunner) throws SQLException {
         var transaction = new Transaction(transactionRunner);
         return transaction.getResult();
     }
@@ -869,14 +835,11 @@ public class Database {
      * Execute some code in a transaction.
      *
      * @param transactionRunner - lambda specifying code to be run
-     * @return - boolean true if transaction committed, false otherwise
+     * @return - Result if successful
      * @throws SQLException - Error
      */
-    public boolean useTransaction(TransactionRunner transactionRunner) throws SQLException {
-        var result = processTransaction(transactionRunner);
-        if (result.thrown != null)
-            throw result.thrown;
-        return result.success;
+    public Result useTransaction(TransactionRunner transactionRunner) throws SQLException {
+        return processTransaction(transactionRunner);
     }
 
     /**
@@ -884,17 +847,17 @@ public class Database {
      */
     @FunctionalInterface
     public interface XactGo {
-        boolean go(Xact tcw) throws SQLException;
+        Result go(Xact tcw) throws SQLException;
     }
 
     /**
      * Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.
      *
      * @param transactionRunner - lambda defining one or more database operations
-     * @return - boolean - true if transaction committed, false otherwise
+     * @return - Result
      * @throws SQLException - Error
      */
-    public boolean transact(XactGo transactionRunner) throws SQLException {
+    public Result transact(XactGo transactionRunner) throws SQLException {
         return useTransaction(conn -> transactionRunner.go(new Xact(Database.this, conn)));
     }
 

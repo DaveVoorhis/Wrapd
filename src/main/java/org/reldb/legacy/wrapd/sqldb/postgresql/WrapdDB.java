@@ -7,6 +7,7 @@ import org.reldb.legacy.wrapd.sqldb.WrapdDatabaseBase;
 import org.reldb.toolbox.configuration.Configuration;
 import org.reldb.toolbox.security.PasswordAuthentication;
 import org.reldb.toolbox.utilities.ProgressIndicator;
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.Xact;
 import org.reldb.wrapd.sqldb.postgresql.PostgreSQLConfiguration;
@@ -107,7 +108,7 @@ public class WrapdDB extends WrapdDatabaseBase {
                     Configuration.getValue(PostgreSQLConfiguration.class.getName(), PostgreSQLConfiguration.INSTALLER_ADMIN_PASSWORD),
                     "Administrator");
             progress.move(9, "Done.");
-            return true;
+            return Result.OK;
         });
     }
 
@@ -115,7 +116,7 @@ public class WrapdDB extends WrapdDatabaseBase {
         database.transact(connection -> {
             log.info("Wrapd framework database update version 1");
             getDatabase().update("ALTER TABLE $$Users ADD COLUMN lastLogin TIMESTAMP");
-            return true;
+            return Result.OK;
         });
     }
 
@@ -145,7 +146,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     public void addGroup(String groupName, String groupDescription, String privilege) throws SQLException {
         database.transact(transaction -> {
             addGroup(transaction, groupName, groupDescription, privilege);
-            return true;
+            return Result.OK;
         });
     }
 
@@ -167,7 +168,7 @@ public class WrapdDB extends WrapdDatabaseBase {
     public void addUser(String userName, String email, String password, String group) throws SQLException {
         database.transact(connection -> {
             addUser(connection, userName, email, password, group);
-            return true;
+            return Result.OK;
         });
     }
 

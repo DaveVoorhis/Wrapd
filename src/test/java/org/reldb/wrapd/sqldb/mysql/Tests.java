@@ -3,7 +3,6 @@ package org.reldb.wrapd.sqldb.mysql;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import org.reldb.wrapd.sqldb.Database;
@@ -35,13 +34,18 @@ public class Tests {
 	}
 
 	@Test
-	public void testSchema01() throws SQLException {
-		new TestSchemaHelper().test01(getDatabase(testStagePrompt));
+	public void testCreateMinimalSchema() throws SQLException {
+		new TestSchemaHelper().canCreateMinimalSchema(getDatabase(testStagePrompt));
 	}
 
 	@Test
-	public void testSchema02() throws SQLException {
-		new TestSchemaHelper().test02(getDatabase(testStagePrompt));
+	public void testCreateSimpleSchema() throws SQLException {
+		new TestSchemaHelper().canCreateSimpleSchema(getDatabase(testStagePrompt));
+	}
+
+	@Test
+	public void testStopsAtInvalidUpdate() throws SQLException {
+		new TestSchemaHelper().stopsAtInvalidUpdate(getDatabase(testStagePrompt));
 	}
 
 }

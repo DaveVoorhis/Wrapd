@@ -107,15 +107,16 @@ public abstract class AbstractSchema {
             progress.move(progress.getValue(), "Updating to version " + update);
             final int updateNumber = update;
             result = transaction.run(() -> {
+                var updateSpecification = updates[updateNumber - 1];
                 Result updateResult;
                 try {
-                    updateResult = updates[updateNumber - 1].apply(this);
+                    updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
-                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to exception.");
+                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to exception");
                     return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
-                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to false result.");
+                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to false result");
                     return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
@@ -125,7 +126,8 @@ public abstract class AbstractSchema {
                 }
                 return updateResult;
             });
-            progress.move(progress.getValue() + 1, "Updated to version " + update);
+            if (result.isOk())
+                progress.move(progress.getValue() + 1, "Updated to version " + update);
         }
         return result;
     }

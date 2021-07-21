@@ -9,6 +9,7 @@ import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.response.Result;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -70,7 +71,7 @@ public class TestQueriesHelper {
 	private void createDatabase(Database database) throws SQLException {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
-			return true;
+			return Result.OK;
 		});
 	}
 

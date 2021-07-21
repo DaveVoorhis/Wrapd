@@ -1,5 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUseResult;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
 import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
@@ -180,10 +181,10 @@ public class Xact {
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
      * @param parms          - parameters which positionally match to '?' in the query
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
+     * @return               - Result of code generation
      * @throws SQLException - Error
      */
-    public boolean createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
+    public Result createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
         return database.createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms);
     }
 
@@ -193,10 +194,10 @@ public class Xact {
      * @param codeDirectory  - directory in which compiled Tuple-derived source and .class will be generated
      * @param tupleClassName - desired Tuple-derived class name
      * @param query          - String - query to be evaluated
-     * @return - true if Tuple-derived class has been created and compiled; false otherwise
+     * @return               - Result of code generation
      * @throws SQLException - Error
      */
-    public boolean createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
+    public Result createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
         return database.createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query);
     }
 

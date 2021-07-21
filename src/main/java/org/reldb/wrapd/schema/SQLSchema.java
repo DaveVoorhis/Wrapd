@@ -21,6 +21,10 @@ public abstract class SQLSchema extends AbstractSchema {
         this.database = database;
     }
 
+    public Database getDatabase() {
+        return database;
+    }
+
     public void setVersionTableName(String versionTableName) {
         this.versionTableName = versionTableName;
     }
@@ -74,7 +78,7 @@ public abstract class SQLSchema extends AbstractSchema {
             @Override
             public Result run(ResultAction action) {
                 try {
-                    return Result.BOOLEAN(database.processTransaction(transaction -> action.run().isOk()).success);
+                    return database.processTransaction(transaction -> action.run());
                 } catch (SQLException sqe) {
                     return Result.ERROR(sqe);
                 }
@@ -95,11 +99,11 @@ public abstract class SQLSchema extends AbstractSchema {
     @Override
     protected Result create() {
         try {
-            return Result.BOOLEAN(database.transact(xact -> {
+            return database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");
                 xact.updateAll("INSERT INTO " + getVersionTableName() + "(" + getVersionTableAttributeName() + ") VALUES (0)");
-                return true;
-            }));
+                return Result.OK;
+            });
         } catch (SQLException sqe) {
             return Result.ERROR(sqe);
         }
