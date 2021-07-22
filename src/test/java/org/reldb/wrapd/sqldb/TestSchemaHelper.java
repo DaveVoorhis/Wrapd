@@ -29,8 +29,7 @@ public class TestSchemaHelper {
 		clearDb(database, new String[] {"$$__version"});
 		var testSchema = new TestSchema(database);
 		var result = testSchema.setup(new ConsoleProgressIndicator());
-		if (result.isError())
-			System.out.println("test01 error: " + result.error);
+		result.printIfError();
 		assertEquals(true, result.isOk());
 	}
 
@@ -55,12 +54,7 @@ public class TestSchemaHelper {
 			}
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
-		if (result.isError()) {
-			System.out.println("Error: " + result.error);
-			if (result.error.getCause() != null) {
-				System.out.println("Caused by: " + result.error.getCause());
-			}
-		}
+		result.printIfError();
 		assertEquals(true, result.isOk());
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
@@ -87,12 +81,8 @@ public class TestSchemaHelper {
 			}
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
-		if (result.isError()) {
-			System.out.println("Error: " + result.error);
-			if (result.error.getCause() != null) {
-				System.out.println("Caused by: " + result.error.getCause());
-			}
-		}
+		System.out.println("NOTE: The following should be an error.");
+		result.printIfError();
 		assertEquals(true, result.isError());
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
 	}

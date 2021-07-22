@@ -21,4 +21,15 @@ public class Response<T> {
     public boolean isError() {
         return error != null;
     }
+
+    public void printIfError() {
+        if (isError()) {
+            System.out.println("Error: " + error);
+            Throwable cause = error.getCause();
+            while (cause != null) {
+                System.out.println("Caused by: " + cause);
+                cause = cause.getCause();
+            }
+        }
+    }
 }
