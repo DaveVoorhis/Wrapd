@@ -15,8 +15,6 @@ import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 
 public class TestSQLSchema {
 
-	public TestSQLSchema() {}
-
 	private class TestSchema extends SQLSchema {
 
 		public TestSchema(Database database) {
