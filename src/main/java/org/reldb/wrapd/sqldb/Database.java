@@ -266,24 +266,6 @@ public class Database {
     }
 
     /**
-     * Return type from parametric query (prepared statement) use.
-     */
-    public static class PreparedStatementUseResult<T> {
-        public final T returnValue;
-        public final SQLException exception;
-
-        public PreparedStatementUseResult(T t) {
-            returnValue = t;
-            exception = null;
-        }
-
-        public PreparedStatementUseResult(SQLException t) {
-            returnValue = null;
-            exception = t;
-        }
-    }
-
-    /**
      * Used to define lambda expressions that make use of a PreparedStatement and return a value of type T.
      *
      * @param <T>
@@ -304,7 +286,7 @@ public class Database {
      * @return A value of type T as a result of using a PreparedStatement.
      * @throws SQLException         - Error
      */
-    public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
+    public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var sqlized = replaceTableNames(query);
         showSQL("processPreparedStatement: ", sqlized);
         int argCount = parms.length;
@@ -314,9 +296,9 @@ public class Database {
         try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
             setupParms(statement, parms);
             try {
-                return new PreparedStatementUseResult<>(preparedStatementUser.go(statement));
+                return new Response<>(preparedStatementUser.go(statement));
             } catch (SQLException t) {
-                return new PreparedStatementUseResult<>(t);
+                return new Response<>(t);
             }
         }
     }
@@ -334,9 +316,9 @@ public class Database {
      */
     public <T> T usePreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var result = processPreparedStatement(preparedStatementUser, connection, query, parms);
-        if (result.exception != null)
-            throw result.exception;
-        return result.returnValue;
+        if (result.error != null)
+            throw (SQLException)result.error;
+        return result.value;
     }
 
     /**

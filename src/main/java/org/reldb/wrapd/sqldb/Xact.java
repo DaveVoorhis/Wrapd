@@ -1,7 +1,7 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
-import org.reldb.wrapd.sqldb.Database.PreparedStatementUseResult;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
 import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
 import org.reldb.wrapd.tuples.Tuple;
@@ -220,7 +220,7 @@ public class Xact {
      * @return A PreparedStatementUseResult<T> containing either a T (indicating success) or a SQLException.
      * @throws SQLException - Error
      */
-    public <T> PreparedStatementUseResult<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, String query, Object... parms) throws SQLException {
+    public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, String query, Object... parms) throws SQLException {
         return database.processPreparedStatement(preparedStatementUser, connection, query, parms);
     }
 
