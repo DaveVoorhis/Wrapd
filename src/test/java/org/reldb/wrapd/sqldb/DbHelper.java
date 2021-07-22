@@ -32,7 +32,7 @@ public class DbHelper {
     }
 
     public static void clearDb(Database db, String[] tableNames) {
-        System.out.println("Clearing database " + db.getClass().getName());
+        System.out.println("Clearing database " + db.toString());
         for (String tableName: tableNames)
             try {
                 System.out.println("Dropping table " + tableName);
@@ -41,4 +41,5 @@ public class DbHelper {
                 System.out.println(" Oops dropping table: " + sqe);
             }
     }
+
 }
