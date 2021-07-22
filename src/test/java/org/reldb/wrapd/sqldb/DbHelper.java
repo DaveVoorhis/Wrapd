@@ -8,8 +8,8 @@ import java.sql.SQLException;
 
 public class DbHelper {
 
-    protected String baseDir;
-    protected String codeDir;
+    private String baseDir;
+    private String codeDir;
 
     public DbHelper(String dbName) {
         baseDir = TestDirectory.Is + dbName;

@@ -4,7 +4,6 @@ import org.junit.platform.launcher.core.LauncherDiscoveryRequestBuilder;
 import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-import org.reldb.TestDirectory;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.ForeignCompilerJava;
@@ -37,16 +36,15 @@ public class QueriesHelper {
 		}
 	}
 
-	private final String baseDir;
-	private final String codeDir;
 	private final String tupleClassName;
 	private final String queryClassName;
 	private final String testTargetName;
 	private final Replacement[] replacements;
 
+	private final DbHelper dbHelper;
+
 	public QueriesHelper(String dbpackage, String dbname) {
-		var dbHelper = new DbHelper(dbname);
-		this.baseDir = dbHelper.getBaseDir();
+		dbHelper = new DbHelper(dbname);
 		this.replacements = new QueriesHelper.Replacement[] {
 				new QueriesHelper.Replacement("<dbpackage>", dbpackage),
 				new QueriesHelper.Replacement("<db>", dbname)
@@ -54,19 +52,18 @@ public class QueriesHelper {
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
 		queryClassName = testName + "Query";
-		codeDir = dbHelper.getCodeDir();
 		testTargetName = "Test" + dbname + "_Source01";
 		ensureTestDirectoryExists();
 	}
 
 	private void ensureTestDirectoryExists() {
-		if (!Directory.chkmkdir(baseDir))
-			throw new ExceptionFatal("Helper: Unable to create directory for test: " + baseDir);
+		if (!Directory.chkmkdir(dbHelper.getBaseDir()))
+			throw new ExceptionFatal("Helper: Unable to create directory for test: " + dbHelper.getBaseDir());
 	}
 
 	private void destroyDatabase(Database database) {
 		clearDb(database, new String[] {"$$tester"});
-		Directory.rmAll(getCodeDirectory());
+		Directory.rmAll(dbHelper.getCodeDir());
 	}
 
 	private void createDatabase(Database database) throws SQLException {
@@ -77,15 +74,15 @@ public class QueriesHelper {
 	}
 
 	private void destroyTupleClass() {
-		ResultSetToTuple.destroyTuple(getCodeDirectory(), tupleClassName);
+		ResultSetToTuple.destroyTuple(dbHelper.getCodeDir(), tupleClassName);
 	}
 
 	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(getCodeDirectory(), tupleClassName, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(dbHelper.getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws QueryDefiner.QueryDefinerException {
-		(new QueryDefinitions(database, getCodeDirectory(), queryClassName)).generate();
+		(new QueryDefinitions(database, dbHelper.getCodeDir(), queryClassName)).generate();
 	}
 
 	private void setup(Database database) throws SQLException, QueryDefiner.QueryDefinerException {
@@ -97,7 +94,7 @@ public class QueriesHelper {
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
-		var dirClassLoader = new DirClassLoader(getCodeDirectory(), testPackage);
+		var dirClassLoader = new DirClassLoader(dbHelper.getCodeDir(), testPackage);
 		var testClassFullname = testPackage + "." + testTargetName;
 		return dirClassLoader.forName(testClassFullname);
 	}
@@ -117,7 +114,7 @@ public class QueriesHelper {
 		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
 		for (Replacement replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
-		var compiler = new ForeignCompilerJava(getCodeDirectory());
+		var compiler = new ForeignCompilerJava(dbHelper.getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
 		return compiler.compileForeignCode(classpath, testTargetName, testPackage, source);
 	}
@@ -135,10 +132,6 @@ public class QueriesHelper {
 		var testExecutionSummary = runTestsInClass(clazz);
 		testExecutionSummary.printTo(new PrintWriter(System.out));
 		assertEquals(testExecutionSummary.getTotalFailureCount(), 0);
-	}
-
-	public String getCodeDirectory() {
-		return codeDir;
 	}
 
 	public void test(Database database) throws ClassNotFoundException, IOException, SQLException, QueryDefiner.QueryDefinerException {
