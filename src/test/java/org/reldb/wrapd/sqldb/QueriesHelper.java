@@ -20,9 +20,9 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.platform.engine.discovery.DiscoverySelectors.selectClass;
-import static org.reldb.wrapd.sqldb.TestDbHelper.clearDb;
+import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 
-public class TestQueriesHelper {
+public class QueriesHelper {
 
 	private final static String testSourceName = "Test_Source01";
 
@@ -44,16 +44,17 @@ public class TestQueriesHelper {
 	private final String testTargetName;
 	private final Replacement[] replacements;
 
-	public TestQueriesHelper(String dbpackage, String dbname) {
-		this.baseDir = TestDirectory.Is + dbname;
-		this.replacements = new TestQueriesHelper.Replacement[] {
-				new TestQueriesHelper.Replacement("<dbpackage>", dbpackage),
-				new TestQueriesHelper.Replacement("<db>", dbname)
+	public QueriesHelper(String dbpackage, String dbname) {
+		var dbHelper = new DbHelper(dbname);
+		this.baseDir = dbHelper.getBaseDir();
+		this.replacements = new QueriesHelper.Replacement[] {
+				new QueriesHelper.Replacement("<dbpackage>", dbpackage),
+				new QueriesHelper.Replacement("<db>", dbname)
 		};
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
 		queryClassName = testName + "Query";
-		codeDir = baseDir + "/code";
+		codeDir = dbHelper.getCodeDir();
 		testTargetName = "Test" + dbname + "_Source01";
 		ensureTestDirectoryExists();
 	}
@@ -144,4 +145,5 @@ public class TestQueriesHelper {
 		setup(database);
 		run();
 	}
+
 }

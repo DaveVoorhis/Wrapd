@@ -1,5 +1,7 @@
 package org.reldb.wrapd.sqldb;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.reldb.toolbox.utilities.ConsoleProgressIndicator;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.schema.AbstractSchema;
@@ -9,9 +11,11 @@ import org.reldb.wrapd.schema.VersionNumber;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.reldb.wrapd.sqldb.TestDbHelper.clearDb;
+import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 
-public class TestSchemaHelper {
+public class TestSQLSchema {
+
+	public TestSQLSchema() {}
 
 	private class TestSchema extends SQLSchema {
 
@@ -85,6 +89,71 @@ public class TestSchemaHelper {
 		result.printIfError();
 		assertEquals(true, result.isError());
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
+	}
+
+	private String testStagePrompt = "[TSET]";
+
+	// TODO parametrise the following tests
+
+	@BeforeAll
+	public static void setupTestDirectories() {
+		new DbHelper(org.reldb.wrapd.sqldb.mysql.Configuration.dbName);
+		new DbHelper(org.reldb.wrapd.sqldb.postgresql.Configuration.dbName);
+		new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
+	}
+
+	@Test
+	public void testCreateMinimalSchemaMySQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt);
+		canCreateMinimalSchema(db);
+	}
+
+	@Test
+	public void testCreateSimpleSchemaMySQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt);
+		canCreateSimpleSchema(db);
+	}
+
+	@Test
+	public void testStopsAtInvalidUpdateMySQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt);
+		stopsAtInvalidUpdate(db);
+	}
+
+	@Test
+	public void testCreateMinimalSchemaPostgreSQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt);
+		canCreateMinimalSchema(db);
+	}
+
+	@Test
+	public void testCreateSimpleSchemaPostgreSQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt);
+		canCreateSimpleSchema(db);
+	}
+
+	@Test
+	public void testStopsAtInvalidUpdatePostgreSQL() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt);
+		stopsAtInvalidUpdate(db);
+	}
+
+	@Test
+	public void testCreateMinimalSchemaSQLite() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt);
+		canCreateMinimalSchema(db);
+	}
+
+	@Test
+	public void testCreateSimpleSchemaSQLite() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt);
+		canCreateSimpleSchema(db);
+	}
+
+	@Test
+	public void testStopsAtInvalidUpdateSQLite() throws SQLException {
+		var db = org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt);
+		stopsAtInvalidUpdate(db);
 	}
 
 }
