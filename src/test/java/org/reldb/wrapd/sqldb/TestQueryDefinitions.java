@@ -19,6 +19,10 @@ public class TestQueryDefinitions {
             this.name = name;
             this.db = db;
         }
+
+        public String toString() {
+            return "pkg=" + pkg + "; name=" + name + "; db=" + db;
+        }
     }
 
     public static List<TestParms> dbProvider() throws SQLException {
