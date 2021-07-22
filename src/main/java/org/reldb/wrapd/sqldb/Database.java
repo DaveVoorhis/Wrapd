@@ -27,6 +27,8 @@ public class Database {
     private final String dbTablenamePrefix;
     private final Customisations customisations;
 
+    private final String dbURL;
+
     /**
      * Open a database, given a database URL, user name, password, and table name prefix.
      *
@@ -38,6 +40,8 @@ public class Database {
      * @throws IOException      - Error
      */
     public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws IOException {
+        this.dbURL = dbURL;
+
         if (dbURL == null)
             throw new IllegalArgumentException("dbURL must not be null");
 
@@ -57,6 +61,10 @@ public class Database {
         } catch (SQLException e) {
             throw new IOException("Database connection to " + dbURL + " failed. Please check that the database exists and the credentials are correct: " + e.getMessage());
         }
+    }
+
+    public String toString() {
+        return dbURL;
     }
 
     /**
