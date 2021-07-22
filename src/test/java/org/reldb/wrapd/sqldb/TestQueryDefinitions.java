@@ -1,38 +1,49 @@
 package org.reldb.wrapd.sqldb;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 public class TestQueryDefinitions {
 
-    private String testStagePrompt = "[TSET]";
+    private static class TestParms {
+        public final String pkg;
+        public final String name;
+        public final Database db;
 
-    // TODO parametrise the following tests
-
-    @Test
-    public void testCodeThatUsesGeneratedTupleMySQL() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-        var pkg = org.reldb.wrapd.sqldb.mysql.Configuration.dbPackage;
-        var name = org.reldb.wrapd.sqldb.mysql.Configuration.dbName;
-        var db = org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt);
-        new QueriesHelper(pkg, name).test(db);
+        public TestParms(String pkg, String name, Database db) {
+            this.pkg = pkg;
+            this.name = name;
+            this.db = db;
+        }
     }
 
-    @Test
-    public void testCodeThatUsesGeneratedTuplePostgreSQL() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-        var pkg = org.reldb.wrapd.sqldb.postgresql.Configuration.dbPackage;
-        var name = org.reldb.wrapd.sqldb.postgresql.Configuration.dbName;
-        var db = org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt);
-        new QueriesHelper(pkg, name).test(db);
+    public static List<TestParms> dbProvider() throws SQLException {
+        var testStagePrompt = "[TSET]";
+        var parms = new TestParms[] {
+                new TestParms(
+                        org.reldb.wrapd.sqldb.mysql.Configuration.dbPackage,
+                        org.reldb.wrapd.sqldb.mysql.Configuration.dbName,
+                        org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt)),
+                new TestParms(
+                        org.reldb.wrapd.sqldb.postgresql.Configuration.dbPackage,
+                        org.reldb.wrapd.sqldb.postgresql.Configuration.dbName,
+                        org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt)),
+                new TestParms(
+                        org.reldb.wrapd.sqldb.sqlite.Configuration.dbPackage,
+                        org.reldb.wrapd.sqldb.sqlite.Configuration.dbName,
+                        org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt))
+        };
+        return List.of(parms);
     }
 
-    @Test
-    public void testCodeThatUsesGeneratedTupleSQLite() throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-        var pkg = org.reldb.wrapd.sqldb.sqlite.Configuration.dbPackage;
-        var name = org.reldb.wrapd.sqldb.sqlite.Configuration.dbName;
-        var db = org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt);
-        new QueriesHelper(pkg, name).test(db);
+    @ParameterizedTest
+    @MethodSource("dbProvider")
+    public void testCodeThatUsesGeneratedTuple(TestParms parms) throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
+        new QueriesHelper(parms.pkg, parms.name).test(parms.db);
     }
 
 }
