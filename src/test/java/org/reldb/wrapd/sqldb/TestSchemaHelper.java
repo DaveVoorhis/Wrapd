@@ -25,7 +25,7 @@ public class TestSchemaHelper {
 		}
 	}
 
-	public void canCreateMinimalSchema(Database database) {
+	public void canCreateMinimalSchema(final Database database) {
 		clearDb(database, new String[] {"$$__version"});
 		var testSchema = new TestSchema(database);
 		var result = testSchema.setup(new ConsoleProgressIndicator());
