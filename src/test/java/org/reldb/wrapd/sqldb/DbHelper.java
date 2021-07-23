@@ -9,22 +9,15 @@ import java.sql.SQLException;
 public class DbHelper {
 
     private String baseDir;
-    private String codeDir;
 
     public DbHelper(String dbName) {
         baseDir = TestDirectory.Is + dbName;
-        codeDir = baseDir + "/code";
         ensureTestDirectoryExists();
     }
 
     private void ensureTestDirectoryExists() {
         if (!Directory.chkmkdir(baseDir))
-            throw new ExceptionFatal("Helper: Unable to create directory for test: " + baseDir);
-        Directory.rmAll(codeDir);
-    }
-
-    public String getCodeDir() {
-        return codeDir;
+            throw new ExceptionFatal("DbHelper: Unable to create directory for test: " + baseDir);
     }
 
     public String getBaseDir() {

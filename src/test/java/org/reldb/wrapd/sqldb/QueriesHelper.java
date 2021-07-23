@@ -40,8 +40,8 @@ public class QueriesHelper {
 	private final String queryClassName;
 	private final String testTargetName;
 	private final Replacement[] replacements;
-
 	private final DbHelper dbHelper;
+	private final String codeDir;
 
 	public QueriesHelper(String dbpackage, String dbname) {
 		dbHelper = new DbHelper(dbname);
@@ -53,7 +53,12 @@ public class QueriesHelper {
 		tupleClassName = testName + "Tuple";
 		queryClassName = testName + "Query";
 		testTargetName = "Test" + dbname + "_Source01";
+		codeDir = dbHelper.getBaseDir() + "/code";
 		ensureTestDirectoryExists();
+	}
+
+	private String getCodeDir() {
+		return codeDir;
 	}
 
 	private void ensureTestDirectoryExists() {
@@ -63,7 +68,7 @@ public class QueriesHelper {
 
 	private void destroyDatabase(Database database) {
 		clearDb(database, new String[] {"$$tester"});
-		Directory.rmAll(dbHelper.getCodeDir());
+		Directory.rmAll(getCodeDir());
 	}
 
 	private void createDatabase(Database database) throws SQLException {
@@ -74,15 +79,15 @@ public class QueriesHelper {
 	}
 
 	private void destroyTupleClass() {
-		ResultSetToTuple.destroyTuple(dbHelper.getCodeDir(), tupleClassName);
+		ResultSetToTuple.destroyTuple(getCodeDir(), tupleClassName);
 	}
 
 	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(dbHelper.getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws QueryDefiner.QueryDefinerException {
-		(new QueryDefinitions(database, dbHelper.getCodeDir(), queryClassName)).generate();
+		(new QueryDefinitions(database, getCodeDir(), queryClassName)).generate();
 	}
 
 	private void setup(Database database) throws SQLException, QueryDefiner.QueryDefinerException {
@@ -94,7 +99,7 @@ public class QueriesHelper {
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
-		var dirClassLoader = new DirClassLoader(dbHelper.getCodeDir(), testPackage);
+		var dirClassLoader = new DirClassLoader(getCodeDir(), testPackage);
 		var testClassFullname = testPackage + "." + testTargetName;
 		return dirClassLoader.forName(testClassFullname);
 	}
@@ -114,7 +119,7 @@ public class QueriesHelper {
 		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
 		for (Replacement replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
-		var compiler = new ForeignCompilerJava(dbHelper.getCodeDir());
+		var compiler = new ForeignCompilerJava(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
 		return compiler.compileForeignCode(classpath, testTargetName, testPackage, source);
 	}
