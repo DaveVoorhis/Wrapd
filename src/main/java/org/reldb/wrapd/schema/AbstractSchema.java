@@ -6,8 +6,6 @@ import org.reldb.toolbox.progress.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
 
-import java.sql.SQLException;
-
 import static org.reldb.wrapd.il8n.Strings.*;
 
 /**
