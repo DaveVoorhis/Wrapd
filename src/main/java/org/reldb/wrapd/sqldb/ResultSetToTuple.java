@@ -2,7 +2,7 @@ package org.reldb.wrapd.sqldb;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
+import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.tuples.Tuple;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
@@ -123,7 +123,7 @@ public class ResultSetToTuple {
      *
      * @param resultSet                  - ResultSet to iterate
      * @param tupleType                  - tuple type
-     * @return List<? extends Tuple>     - List of tuples returned
+     * @return List&lt;? extends Tuple&gt;     - List of tuples returned
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class
@@ -144,7 +144,7 @@ public class ResultSetToTuple {
      *
      * @param resultSet                  - ResultSet to iterate
      * @param tupleType                  - tuple type
-     * @return List<? extends Tuple>     - List of tuples returned
+     * @return List&lt;? extends Tuple&gt;     - List of tuples returned
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class
@@ -172,7 +172,7 @@ public class ResultSetToTuple {
      *
      * @param resultSet - source ResultSet
      * @param tupleType - subclass of Tuple. Each row will be converted to a new instance of this class.
-     * @return Stream<? extends Tuple>.
+     * @return Stream&lt;? extends Tuple&gt;.
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class
@@ -191,7 +191,7 @@ public class ResultSetToTuple {
      *
      * @param resultSet - source ResultSet
      * @param tupleType - subclass of Tuple. Each row will be converted to a new instance of this class.
-     * @return Stream<? extends Tuple>.
+     * @return Stream&lt;? extends Tuple&gt;.
      * @throws SecurityException         - thrown if tuple constructor is not accessible
      * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
      * @throws InvocationTargetException - thrown if unable to instantiate tuple class

@@ -104,7 +104,7 @@ public class Xact {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(String query, Class<T> tupleClass) throws SQLException {
@@ -117,7 +117,7 @@ public class Xact {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
@@ -130,7 +130,7 @@ public class Xact {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -143,7 +143,7 @@ public class Xact {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -217,7 +217,7 @@ public class Xact {
      *
      * @param <T>                   type of return value from use of connection.
      * @param preparedStatementUser - Instance of PreparedStatementUser, usually as a lambda expression.
-     * @return A PreparedStatementUseResult<T> containing either a T (indicating success) or a SQLException.
+     * @return A PreparedStatementUseResult&lt;T&gt; containing either a T (indicating success) or a SQLException.
      * @throws SQLException - Error
      */
     public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, String query, Object... parms) throws SQLException {

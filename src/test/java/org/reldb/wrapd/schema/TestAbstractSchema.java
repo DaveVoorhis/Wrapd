@@ -1,7 +1,7 @@
 package org.reldb.wrapd.schema;
 
 import org.junit.jupiter.api.Test;
-import org.reldb.toolbox.utilities.ConsoleProgressIndicator;
+import org.reldb.toolbox.progress.ConsoleProgressIndicator;
 import org.reldb.wrapd.response.Result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

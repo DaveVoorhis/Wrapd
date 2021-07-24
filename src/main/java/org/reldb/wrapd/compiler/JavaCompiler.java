@@ -3,7 +3,7 @@ package org.reldb.wrapd.compiler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-import org.reldb.toolbox.strings.Str;
+import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 import java.io.*;
@@ -15,30 +15,58 @@ import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
 /**
  * Machinery for compiling Java code.
  */
-public class ForeignCompilerJava {
-    private final static Logger log = LogManager.getLogger(ForeignCompilerJava.class.toString());
+public class JavaCompiler {
+    private final static Logger log = LogManager.getLogger(JavaCompiler.class.toString());
 
     private final String userSourcePath;
 
-    public ForeignCompilerJava(String userSourcePath) {
+    /**
+     * Constructor.
+     *
+     * @param userSourcePath Specifies path to source code.
+     */
+    public JavaCompiler(String userSourcePath) {
         this.userSourcePath = userSourcePath;
     }
 
+    /**
+     * Encapsulates results of compilation, including compiler messages.
+     */
     public static class CompilationResults {
         public final boolean compiled;
         public final String compilerMessages;
 
+        /**
+         * Constructor.
+         *
+         * @param compiled True if compilation successful.
+         * @param compilerMessages Compiler-generated messages.
+         */
         public CompilationResults(boolean compiled, String compilerMessages) {
             this.compiled = compiled;
             this.compilerMessages = compilerMessages;
         }
 
+        /**
+         * Stringify this.
+         *
+         * @return Compiler messages.
+         */
         public String toString() {
             return "CompilationResults:\n" + compilerMessages;
         }
     }
 
-    public CompilationResults compileForeignCode(String classpath, String className, String packageSpec, String src) {
+    /**
+     * Compile Java code.
+     *
+     * @param classpath The class path.
+     * @param className The class name to be generated.
+     * @param packageSpec The package.
+     * @param src The source code.
+     * @return CompilationResults.
+     */
+    public CompilationResults compileJavaCode(String classpath, String className, String packageSpec, String src) {
         ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
         ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
         String warningSetting = "allDeprecation,"
@@ -122,18 +150,28 @@ public class ForeignCompilerJava {
         return new CompilationResults(compiled, compilerMessages.toString());
     }
 
+    /**
+     * Compile Java code.
+     *
+     * @param className The class name to be generated.
+     * @param packageSpec The package.
+     * @param src The source code.
+     * @return CompilationResults.
+     */
+    public CompilationResults compileJavaCode(String className, String packageSpec, String src) {
+        String classpath = getDefaultClassPath();
+        return compileJavaCode(classpath, className, packageSpec, src);
+    }
+
+    /**
+     * Get the default class path.
+     *
+     * @return Class path.
+     */
     public String getDefaultClassPath() {
         return cleanClassPath(System.getProperty("java.class.path")) +
                 java.io.File.pathSeparatorChar +
                 cleanClassPath(getLocalClasspath());
-    }
-
-    /**
-     * Compile foreign code using Eclipse JDT compiler.
-     */
-    public CompilationResults compileForeignCode(String className, String packageSpec, String src) {
-        String classpath = getDefaultClassPath();
-        return compileForeignCode(classpath, className, packageSpec, src);
     }
 
     /**

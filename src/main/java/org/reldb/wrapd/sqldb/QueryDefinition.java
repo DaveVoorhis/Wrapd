@@ -4,6 +4,9 @@ import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 import java.sql.SQLException;
 
+/**
+ * A Query definition.
+ */
 public class QueryDefinition {
     private final String queryName;
     private final String sqlText;
@@ -15,6 +18,15 @@ public class QueryDefinition {
         this.args = args;
     }
 
+    /**
+     * Generate code to represent this QueryDefinition.
+     *
+     * @param database Database
+     * @param codeDirectory Directory for generated code.
+     * @return boolean true if successful, false if not.
+     * @throws SQLException exception if DBMS access failed
+     */
+    // TODO consider returning Result rather than boolean
     public boolean generate(Database database, String codeDirectory) throws SQLException {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)

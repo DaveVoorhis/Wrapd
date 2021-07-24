@@ -1,15 +1,26 @@
-package org.reldb.toolbox.utilities;
+package org.reldb.toolbox.progress;
 
+/**
+ * A ProgressIndicator that outputs to the console.
+ */
 public class ConsoleProgressIndicator implements ProgressIndicator {
     private int stepCount = 0;
     private int position = 0;
     private String lastMessage = "";
     private String messagePrefix = "";
 
+    /**
+     * Constructor.
+     *
+     * @param messagePrefix This will be prefixed to all outputted messages.
+     */
     public ConsoleProgressIndicator(String messagePrefix) {
         this.messagePrefix = messagePrefix;
     }
 
+    /**
+     * Constructor.
+     */
     public ConsoleProgressIndicator() {
         this("");
     }

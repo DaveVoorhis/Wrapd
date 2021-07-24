@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.reldb.toolbox.utilities.ConsoleProgressIndicator;
+import org.reldb.toolbox.progress.ConsoleProgressIndicator;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;

@@ -6,7 +6,7 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.compiler.ForeignCompilerJava;
+import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
 
@@ -115,13 +115,13 @@ public class QueriesHelper {
 		return listener.getSummary();
 	}
 
-	private ForeignCompilerJava.CompilationResults compileTestCode() throws IOException {
+	private JavaCompiler.CompilationResults compileTestCode() throws IOException {
 		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
 		for (Replacement replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
-		var compiler = new ForeignCompilerJava(getCodeDir());
+		var compiler = new JavaCompiler(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
-		return compiler.compileForeignCode(classpath, testTargetName, testPackage, source);
+		return compiler.compileJavaCode(classpath, testTargetName, testPackage, source);
 	}
 
 	private void run() throws IOException, ClassNotFoundException {

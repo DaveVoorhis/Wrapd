@@ -4,6 +4,9 @@ import org.reldb.wrapd.sqldb.Customisations;
 
 import java.sql.Date;
 
+/**
+ * Customisations required for SQLite.
+ */
 public class SQLiteCustomisations implements Customisations {
     @Override
     public String getSpecificColumnClass(String columnSQLType) {

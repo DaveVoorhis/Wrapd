@@ -15,7 +15,4 @@ public class ExceptionFatal extends Error {
         super(message, cause);
     }
 
-    public ExceptionFatal(Throwable cause) {
-        super(cause);
-    }
 }

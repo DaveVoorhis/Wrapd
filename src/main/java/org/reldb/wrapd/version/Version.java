@@ -3,6 +3,9 @@ package org.reldb.wrapd.version;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Encapsulates this library version.
+ */
 public class Version {
 
     // No instances

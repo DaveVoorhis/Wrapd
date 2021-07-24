@@ -2,6 +2,9 @@ package org.reldb.wrapd.sqldb;
 
 import java.lang.reflect.Method;
 
+/**
+ * Mechanisms for defining Query classes.
+ */
 public class QueryDefiner {
     private final Database database;
     private final String codeDirectory;
@@ -25,6 +28,12 @@ public class QueryDefiner {
         }
     }
 
+    /**
+     * Create a QueryDefiner, given a Database and the directory where Tuple-drived classes will be stored.
+     *
+     * @param database Database
+     * @param codeDirectory Directory for Tuple-derived classes.
+     */
     public QueryDefiner(Database database, String codeDirectory) {
         this.database = database;
         this.codeDirectory = codeDirectory;
@@ -42,7 +51,7 @@ public class QueryDefiner {
      * Run the QueryDefinition against the specified Database (see @QueryDefiner's constructor)
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
-     * @param definition
+     * @param definition QueryDefinition
      */
     protected boolean generate(QueryDefinition definition) throws Exception {
         return definition.generate(getDatabase(), getCodeDirectory());
@@ -64,7 +73,7 @@ public class QueryDefiner {
      * For each, run the QueryDefinition against the specified Database (see @QueryDefiner's constructor)
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
-     * @throws QueryDefinerException
+     * @throws QueryDefinerException if error
      */
     public void generate() throws QueryDefinerException {
         for (Method method: getClass().getMethods()) {

@@ -8,4 +8,3 @@ You'll need to include them in your classpath.
 
 ```ecj-x.xx.jar``` is the Eclipse Compiler for Java from the Eclipse JDT Core.
 
-```je-x.x.xx.jar``` is the Berkeley DB Java Edition.

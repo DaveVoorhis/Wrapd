@@ -1,8 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.toolbox.strings.Str;
+import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.compiler.ForeignCompilerJava;
+import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 import java.io.File;
@@ -60,25 +60,25 @@ public class QueryTypeGenerator {
         String parmConnection = withConnection
                 ? ", Connection connection"
                 : "";
-        String out = "Database db" + parmConnection;
+        StringBuilder out = new StringBuilder("Database db" + parmConnection);
         int pnum = 0;
         if (hasArgs()) {
             for (Object arg: args)
-                out += ", " + arg.getClass().getCanonicalName() + " p" + pnum++;
+                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(pnum++);
         }
-        return out;
+        return out.toString();
     }
 
     private String getArgs() {
         if (!hasArgs())
             return "null";
-        String out = "";
+        StringBuilder out = new StringBuilder();
         for (int pnum = 0; pnum < args.length; pnum++) {
             if (out.length() > 0)
-                out += ", ";
-            out += "p" + pnum;
+                out.append(", ");
+            out.append("p").append(pnum);
         }
-        return out;
+        return out.toString();
     }
 
     private String getConstructor(String tupleTypeName) {
@@ -118,7 +118,7 @@ public class QueryTypeGenerator {
      *
      * @return - an instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
      */
-    public ForeignCompilerJava.CompilationResults compile() {
+    public JavaCompiler.CompilationResults compile() {
         var tupleTypeName = queryName + "Tuple";
         var queryDef =
                 "package " + QueryTypePackage + ";\n\n" +
@@ -134,8 +134,8 @@ public class QueryTypeGenerator {
                 "\n" +
                 getQueryMethods(tupleTypeName) +
                 "}";
-        var compiler = new ForeignCompilerJava(dir);
-        return compiler.compileForeignCode(queryName, QueryTypePackage, queryDef);
+        var compiler = new JavaCompiler(dir);
+        return compiler.compileJavaCode(queryName, QueryTypePackage, queryDef);
     }
 
     /**

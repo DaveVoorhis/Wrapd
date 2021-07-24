@@ -1,9 +1,9 @@
 package org.reldb.wrapd.tuples;
 
-import org.reldb.toolbox.strings.Str;
+import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.compiler.ForeignCompilerJava;
+import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 
 import java.io.File;
@@ -36,8 +36,8 @@ public class TupleTypeGenerator {
     /**
      * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
      *
-     * @param tupleClass - Class<?> - tuple type
-     * @return Stream<Field> of FieldS.
+     * @param tupleClass - Class&lt;?&gt; - tuple type
+     * @return Stream&lt;Field&gt; of FieldS.
      */
     public static Stream<Field> getDataFields(Class<?> tupleClass) {
         return Arrays.stream(tupleClass.getFields())
@@ -78,7 +78,7 @@ public class TupleTypeGenerator {
      * Return the type of an attribute with a given name.
      *
      * @param name - String - attribute name
-     * @return - Class<?> - type of attribute or null if not found.
+     * @return - Class&lt;?&gt; - type of attribute or null if not found.
      */
     public Class<?> typeOf(String name) {
         for (var attribute : attributes)
@@ -228,7 +228,7 @@ public class TupleTypeGenerator {
      *
      * @return - an instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
      */
-    public ForeignCompilerJava.CompilationResults compile() {
+    public JavaCompiler.CompilationResults compile() {
         loader.unload(getTupleClassName());
         if (oldTupleName != null)
             oldTupleName = null;
@@ -251,8 +251,8 @@ public class TupleTypeGenerator {
                         getCopyFromCode() +
                         getToStringCode() +
                         "}";
-        var compiler = new ForeignCompilerJava(dir);
-        return compiler.compileForeignCode(tupleName, TupleTypePackage, tupleDef);
+        var compiler = new JavaCompiler(dir);
+        return compiler.compileJavaCode(tupleName, TupleTypePackage, tupleDef);
     }
 
     /**

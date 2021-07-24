@@ -1,9 +1,3 @@
-/*
- * DirClassLoader.java
- *
- * Created on 21 August 2004, 21:02
- */
-
 package org.reldb.wrapd.compiler;
 
 import java.io.File;
@@ -14,6 +8,8 @@ import java.util.HashMap;
 /**
  * A class loader to load named classes from a specified directory.  With
  * class unload and class caching.
+ *
+ * Created on 21 August 2004, 21:02
  */
 public class DirClassLoader extends ClassLoader {
 

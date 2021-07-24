@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb;
 import com.mchange.v2.c3p0.DataSources;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.reldb.wrapd.compiler.ForeignCompilerJava.CompilationResults;
+import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.tuples.Tuple;
@@ -91,7 +91,7 @@ public class Database {
     /**
      * Used to define lambda expressions that make use of a Connection and return a value of type T.
      *
-     * @param <T>
+     * @param <T> Return type of go(...)
      */
     @FunctionalInterface
     public interface ConnectionUser<T> {
@@ -103,7 +103,7 @@ public class Database {
      *
      * @param <T>            type of return value from use of connection.
      * @param connectionUser - Instance of ConnectionUser, usually as a lambda expression.
-     * @return A Response<T> containing either a T (indicating success) or a SQLException.
+     * @return A Response&lt;T&gt; containing either a T (indicating success) or a SQLException.
      * @throws SQLException - Error
      */
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
@@ -134,7 +134,7 @@ public class Database {
     /**
      * Used to define lambda expressions that receive a ResultSet for processing. T specifies the type of the return value from processing the ResultSet.
      *
-     * @param <T>
+     * @param <T> Return type of go(...)
      */
     @FunctionalInterface
     public interface ResultSetReceiver<T> {
@@ -276,7 +276,7 @@ public class Database {
     /**
      * Used to define lambda expressions that make use of a PreparedStatement and return a value of type T.
      *
-     * @param <T>
+     * @param <T> Return type of go(...)
      */
     @FunctionalInterface
     public interface PreparedStatementUser<T> {
@@ -498,11 +498,11 @@ public class Database {
     }
 
     /**
-     * Obtain a lambda that converts a ResultSet to a Stream<T> where T extends Tuple.
+     * Obtain a lambda that converts a ResultSet to a Stream&lt;T&gt; where T extends Tuple.
      *
      * @param <T>        - T extends Tuple
      * @param tupleClass - the stream will be of instances of tupleClass
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - result stream
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
@@ -516,11 +516,12 @@ public class Database {
     }
 
     /**
-     * Obtain a lambda that converts a ResultSet to a Stream<T> where T extends Tuple, and each Tuple is configured for a future update.
+     * Obtain a lambda that converts a ResultSet to a Stream&lt;T&gt; where T extends Tuple,
+     * and each Tuple is configured for a future update.
      *
      * @param <T>        - T extends Tuple
      * @param tupleClass - the stream will be of instances of tupleClass
-     * @return Stream<T> - with backup() invoked for each T instance
+     * @return Stream&lt;T&gt; - with backup() invoked for each T instance
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
@@ -540,7 +541,7 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - Result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Connection connection, String query, Class<T> tupleClass) throws SQLException {
@@ -553,7 +554,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - a Query
-     * @return Stream<T> - Result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Connection connection, Query<T> query) throws SQLException {
@@ -567,7 +568,7 @@ public class Database {
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
@@ -580,7 +581,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - a Query
-     * @return Stream<T> - Result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, Query<T> query) throws SQLException {
@@ -593,7 +594,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(String query, Class<T> tupleClass) throws SQLException {
@@ -605,7 +606,7 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - a Query
-     * @return Stream<T> - Result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAll(Query<T> query) throws SQLException {
@@ -618,7 +619,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
@@ -630,7 +631,7 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - a Query
-     * @return Stream<T> - Result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
@@ -645,7 +646,7 @@ public class Database {
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
      * @param parms - parameter list
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -658,7 +659,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Connection connection, Query<T> query) throws SQLException {
@@ -673,7 +674,7 @@ public class Database {
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
      * @param parms - parameter list
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -686,7 +687,7 @@ public class Database {
      * @param <T>        - T extends Tuple.
      * @param connection - a java.sql.Connection, typically obtained via a Transaction
      * @param query      - query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query) throws SQLException {
@@ -700,7 +701,7 @@ public class Database {
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
      * @param parms - parameter list
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -712,7 +713,7 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> query(Query<T> query) throws SQLException {
@@ -726,7 +727,7 @@ public class Database {
      * @param query      - query string
      * @param tupleClass - Tuple derivative that represents rows in the ResultSet returned from evaluating the query
      * @param parms - parameter list
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
@@ -738,7 +739,7 @@ public class Database {
      *
      * @param <T>        - T extends Tuple.
      * @param query      - query
-     * @return Stream<T> - result stream
+     * @return Stream&lt;T&gt; - Result stream
      * @throws SQLException - Error
      */
     public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {

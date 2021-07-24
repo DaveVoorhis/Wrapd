@@ -1,4 +1,4 @@
-package org.reldb.toolbox.strings;
+package org.reldb.toolbox.il8n;
 
 import java.lang.reflect.Modifier;
 import java.util.Vector;

@@ -2,6 +2,9 @@ package org.reldb.toolbox.utilities;
 
 import java.io.File;
 
+/**
+ * Directory-handling utilities.
+ */
 public class Directory {
 
     /**

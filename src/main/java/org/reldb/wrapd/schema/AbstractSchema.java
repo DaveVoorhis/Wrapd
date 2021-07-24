@@ -1,8 +1,8 @@
 package org.reldb.wrapd.schema;
 
-import org.reldb.toolbox.strings.Str;
-import org.reldb.toolbox.utilities.EmptyProgressIndicator;
-import org.reldb.toolbox.utilities.ProgressIndicator;
+import org.reldb.toolbox.il8n.Str;
+import org.reldb.toolbox.progress.EmptyProgressIndicator;
+import org.reldb.toolbox.progress.ProgressIndicator;
 import org.reldb.wrapd.exceptions.ExceptionFatal;
 import org.reldb.wrapd.response.Result;
 
@@ -10,6 +10,9 @@ import java.sql.SQLException;
 
 import static org.reldb.wrapd.il8n.Strings.*;
 
+/**
+ * An abstract schema definition that can handle updates on anything definable as a schema.
+ */
 public abstract class AbstractSchema {
 
     /**
@@ -65,7 +68,7 @@ public abstract class AbstractSchema {
     /**
      * Verify schema exists and is up-to-date. Otherwise, create it and/or apply updates if necessary.
      *
-     * @param progressIndicator
+     * @param progressIndicator ProgressIndicator
      * @return Result
      */
     public Result setup(ProgressIndicator progressIndicator) {

@@ -1,5 +1,8 @@
-package org.reldb.toolbox.utilities;
+package org.reldb.toolbox.progress;
 
+/**
+ * Definition of a progress indicator.
+ */
 public interface ProgressIndicator {
     /**
      * Initialise the indicator with the number of steps. Set steps to -1 if unknown number of steps.
