@@ -50,10 +50,9 @@ public abstract class AbstractSchema {
          *
          * @param schema The schema to which the update applies.
          * @return Result of application of update.
-         * @throws SQLException Thrown if failure.
+         * @throws Throwable Thrown if failure.
          */
-        // TODO look at changing SQLException to Throwable
-        Result apply(AbstractSchema schema) throws SQLException;
+        Result apply(AbstractSchema schema) throws Throwable;
     }
 
     /**
