@@ -185,7 +185,7 @@ public class Database {
      *
      * @param connection Database connection.
      * @param sqlStatement SQL query.
-     * @return Rrue if a ResultSet is returned, false otherwise.
+     * @return True if a ResultSet is returned, false otherwise.
      * @throws SQLException Error.
      */
     public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {

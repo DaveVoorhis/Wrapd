@@ -34,7 +34,7 @@ public class QueryDefiner {
     }
 
     /**
-     * Create a QueryDefiner, given a Database and the directory where Tuple-drived classes will be stored.
+     * Create a QueryDefiner, given a Database and the directory where Tuple-derived classes will be stored.
      *
      * @param database Database
      * @param codeDirectory Directory for Tuple-derived classes.

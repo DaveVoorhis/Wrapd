@@ -7,7 +7,7 @@ public class ConsoleProgressIndicator implements ProgressIndicator {
     private int stepCount = 0;
     private int position = 0;
     private String lastMessage = "";
-    private String messagePrefix = "";
+    private final String messagePrefix;
 
     /**
      * Constructor.

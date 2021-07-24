@@ -58,6 +58,6 @@ public class Result extends Response<Boolean> {
      * @return true if result is valid and true.
      */
     public final boolean isOk() {
-        return isValid() && value == true;
+        return isValid() && value != null && value;
     }
 }

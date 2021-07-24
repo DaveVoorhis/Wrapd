@@ -141,7 +141,7 @@ public class TupleTypeGenerator {
      * NOT IMPLEMENTED YET
      *
      * @param oldName The name of the attribute.
-     * @param newName The neew name of the attribute.
+     * @param newName The new name of the attribute.
      * @return Success or failure.
      */
     public Object renameAttribute(String oldName, String newName) {
