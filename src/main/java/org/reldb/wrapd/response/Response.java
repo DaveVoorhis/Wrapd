@@ -6,7 +6,10 @@ package org.reldb.wrapd.response;
  * @param <T> The type of the non-error value.
  */
 public class Response<T> {
+    /** The valid value of this Response. */
     public final T value;
+
+    /** The Throwable error. */
     public final Throwable error;
 
     /**

@@ -14,6 +14,11 @@ public class Version {
 
     private static String cachedVersion = null;
 
+    /**
+     * Obtain the version string for this library.
+     *
+     * @return Version string.
+     */
     public static String getVersionString() {
         if (cachedVersion == null) {
             var versionPropertiesStream = Version.class.getResourceAsStream("/version.properties");

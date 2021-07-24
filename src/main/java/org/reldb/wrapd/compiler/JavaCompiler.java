@@ -33,7 +33,10 @@ public class JavaCompiler {
      * Encapsulates results of compilation, including compiler messages.
      */
     public static class CompilationResults {
+        /** True if compilation successful. */
         public final boolean compiled;
+
+        /** The compiler messages. */
         public final String compilerMessages;
 
         /**

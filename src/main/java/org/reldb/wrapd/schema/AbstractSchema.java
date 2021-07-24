@@ -19,6 +19,8 @@ public abstract class AbstractSchema {
      * Return VersionNewDatabase instance for new database.
      * Return VersionIndeterminate instance for database where version can't be determined.
      * Return VersionNumber instance for database version.
+     *
+     * @return The Version.
      */
     public abstract Version getVersion();
 
@@ -40,9 +42,17 @@ public abstract class AbstractSchema {
     protected abstract Result create();
 
     /**
-     * Definition of a database update.
+     * Definition of a schema update.
      */
     public interface Update {
+        /**
+         * Apply an schema update.
+         *
+         * @param schema The schema to which the update applies.
+         * @return Result of application of updatee.
+         * @throws SQLException Thrown if failure.
+         */
+        // TODO look at changing SQLException to Throwable
         Result apply(AbstractSchema schema) throws SQLException;
     }
 

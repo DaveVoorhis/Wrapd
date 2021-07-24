@@ -4,7 +4,10 @@ package org.reldb.wrapd.tuples;
  * Tuple attribute definition.
  */
 public class Attribute {
+    /** Attribute name. */
     public final String name;
+
+    /** Attribute type. */
     public final Class<?> type;
 
     /**

@@ -25,13 +25,14 @@ public class ResultSetToTuple {
      * Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
      * to host the ResultSet. This will normally be invoked in a setup/build phase run
      *
-     * @param codeDir   - Directory where source code will be stored.
-     * @param tupleName - Name of new Tuple class.
-     * @param results   - ResultSet to be used to create the new Tuple class.
-     * @return - CompilationResults.
-     * @throws SQLException             - thrown if there is a problem retrieving ResultSet metadata.
-     * @throws ClassNotFoundException   - thrown if a column class specified in the ResultSet metadata can't be loaded.
-     * @throws IllegalArgumentException - thrown if an argument is null
+     * @param codeDir Directory where source code will be stored.
+     * @param tupleName Name of new Tuple class.
+     * @param results ResultSet to be used to create the new Tuple class.
+     * @param customisations Customisations for specific DBMS types.
+     * @return CompilationResults.
+     * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
+     * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
+     * @throws IllegalArgumentException thrown if an argument is null
      */
     public static CompilationResults createTuple(String codeDir, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
@@ -66,23 +67,29 @@ public class ResultSetToTuple {
      */
     @FunctionalInterface
     public interface TupleProcessor<T extends Tuple> {
+        /**
+         * Process a tuple.
+         *
+         * @param tupleType A tuple of type T (which extends Tuple.)
+         */
         void process(T tupleType);
     }
 
     /**
      * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
      *
-     * @param resultSet                  - ResultSet to iterate
-     * @param tupleType                  - tuple type
-     * @param tupleProcessor             - tuple processor
-     * @throws SecurityException         - thrown if tuple constructor is not accessible
-     * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
-     * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-     * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or a null argument
-     * @throws IllegalAccessException    - thrown if unable to instantiate tuple class
-     * @throws InstantiationException    - thrown if unable to instantiate tuple class
-     * @throws SQLException              - thrown if accessing ResultSet fails
-     * @throws NoSuchFieldException      - thrown if a given ResultSet field name cannot be found in the Tuple
+     * @param <T> Tuple type.
+     * @param resultSet ResultSet to iterate
+     * @param tupleType tuple type
+     * @param tupleProcessor tuple processor
+     * @throws SecurityException thrown if tuple constructor is not accessible
+     * @throws NoSuchMethodException thrown if tuple constructor doesn't exist
+     * @throws InvocationTargetException thrown if unable to instantiate tuple class
+     * @throws IllegalArgumentException thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or a null argument
+     * @throws IllegalAccessException thrown if unable to instantiate tuple class
+     * @throws InstantiationException thrown if unable to instantiate tuple class
+     * @throws SQLException thrown if accessing ResultSet fails
+     * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      */
     public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws NoSuchMethodException, SecurityException, SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
         if (resultSet == null)
@@ -121,17 +128,18 @@ public class ResultSetToTuple {
     /**
      * Convert a ResultSet to a List of TupleS.
      *
-     * @param resultSet                  - ResultSet to iterate
-     * @param tupleType                  - tuple type
-     * @return List&lt;? extends Tuple&gt;     - List of tuples returned
-     * @throws SecurityException         - thrown if tuple constructor is not accessible
-     * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
-     * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-     * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
-     * @throws IllegalAccessException    - thrown if unable to instantiate tuple class
-     * @throws InstantiationException    - thrown if unable to instantiate tuple class
-     * @throws SQLException              - thrown if accessing ResultSet fails
-     * @throws NoSuchFieldException      - thrown if a given ResultSet field name cannot be found in the Tuple
+     * @param <T> Tuple type.
+     * @param resultSet ResultSet to iterate
+     * @param tupleType tuple type
+     * @return List&lt;? extends Tuple&gt; List of tuples returned
+     * @throws SecurityException thrown if tuple constructor is not accessible
+     * @throws NoSuchMethodException thrown if tuple constructor doesn't exist
+     * @throws InvocationTargetException thrown if unable to instantiate tuple class
+     * @throws IllegalArgumentException thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
+     * @throws IllegalAccessException thrown if unable to instantiate tuple class
+     * @throws InstantiationException thrown if unable to instantiate tuple class
+     * @throws SQLException thrown if accessing ResultSet fails
+     * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      */
     public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
         var rows = new LinkedList<T>();
@@ -142,17 +150,18 @@ public class ResultSetToTuple {
     /**
      * Convert a ResultSet to a List of TupleS, each configured for a possible future update.
      *
-     * @param resultSet                  - ResultSet to iterate
-     * @param tupleType                  - tuple type
-     * @return List&lt;? extends Tuple&gt;     - List of tuples returned
-     * @throws SecurityException         - thrown if tuple constructor is not accessible
-     * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
-     * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-     * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
-     * @throws IllegalAccessException    - thrown if unable to instantiate tuple class
-     * @throws InstantiationException    - thrown if unable to instantiate tuple class
-     * @throws SQLException              - thrown if accessing ResultSet fails
-     * @throws NoSuchFieldException      - thrown if a given ResultSet field name cannot be found in the Tuple
+     * @param <T> Tuple type.
+     * @param resultSet ResultSet to iterate
+     * @param tupleType tuple type
+     * @return List&lt;? extends Tuple&gt; List of tuples returned
+     * @throws SecurityException thrown if tuple constructor is not accessible
+     * @throws NoSuchMethodException thrown if tuple constructor doesn't exist
+     * @throws InvocationTargetException thrown if unable to instantiate tuple class
+     * @throws IllegalArgumentException thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
+     * @throws IllegalAccessException thrown if unable to instantiate tuple class
+     * @throws InstantiationException thrown if unable to instantiate tuple class
+     * @throws SQLException thrown if accessing ResultSet fails
+     * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      */
     public static <T extends Tuple> List<T> toListForUpdate(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
         var rows = new LinkedList<T>();
@@ -170,17 +179,18 @@ public class ResultSetToTuple {
     /**
      * Convert a ResultSet to a Stream of TupleS.
      *
-     * @param resultSet - source ResultSet
-     * @param tupleType - subclass of Tuple. Each row will be converted to a new instance of this class.
+     * @param <T> Tuple type.
+     * @param resultSet source ResultSet
+     * @param tupleType subclass of Tuple. Each row will be converted to a new instance of this class.
      * @return Stream&lt;? extends Tuple&gt;.
-     * @throws SecurityException         - thrown if tuple constructor is not accessible
-     * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
-     * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-     * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
-     * @throws IllegalAccessException    - thrown if unable to instantiate tuple class
-     * @throws InstantiationException    - thrown if unable to instantiate tuple class
-     * @throws SQLException              - thrown if accessing ResultSet fails
-     * @throws NoSuchFieldException      - thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws SecurityException thrown if tuple constructor is not accessible
+     * @throws NoSuchMethodException thrown if tuple constructor doesn't exist
+     * @throws InvocationTargetException thrown if unable to instantiate tuple class
+     * @throws IllegalArgumentException thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
+     * @throws IllegalAccessException thrown if unable to instantiate tuple class
+     * @throws InstantiationException thrown if unable to instantiate tuple class
+     * @throws SQLException thrown if accessing ResultSet fails
+     * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      */
     public static <T extends Tuple> Stream<T> toStream(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
         return toList(resultSet, tupleType).stream();
@@ -189,17 +199,18 @@ public class ResultSetToTuple {
     /**
      * Convert a ResultSet to a Stream of TupleS, each configured for a possible future update.
      *
-     * @param resultSet - source ResultSet
-     * @param tupleType - subclass of Tuple. Each row will be converted to a new instance of this class.
+     * @param <T> Tuple type.
+     * @param resultSet source ResultSet
+     * @param tupleType subclass of Tuple. Each row will be converted to a new instance of this class.
      * @return Stream&lt;? extends Tuple&gt;.
-     * @throws SecurityException         - thrown if tuple constructor is not accessible
-     * @throws NoSuchMethodException     - thrown if tuple constructor doesn't exist
-     * @throws InvocationTargetException - thrown if unable to instantiate tuple class
-     * @throws IllegalArgumentException  - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
-     * @throws IllegalAccessException    - thrown if unable to instantiate tuple class
-     * @throws InstantiationException    - thrown if unable to instantiate tuple class
-     * @throws SQLException              - thrown if accessing ResultSet fails
-     * @throws NoSuchFieldException      - thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws SecurityException thrown if tuple constructor is not accessible
+     * @throws NoSuchMethodException thrown if tuple constructor doesn't exist
+     * @throws InvocationTargetException thrown if unable to instantiate tuple class
+     * @throws IllegalArgumentException thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or null arguments
+     * @throws IllegalAccessException thrown if unable to instantiate tuple class
+     * @throws InstantiationException thrown if unable to instantiate tuple class
+     * @throws SQLException thrown if accessing ResultSet fails
+     * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      */
     public static <T extends Tuple> Stream<T> toStreamForUpdate(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
         return toListForUpdate(resultSet, tupleType).stream();
@@ -208,8 +219,8 @@ public class ResultSetToTuple {
     /**
      * Eliminate the tuple with a given name.
      *
-     * @param codeDir   - Directory where source code will be stored.
-     * @param tupleName - Name of tuple class.
+     * @param codeDir Directory where source code will be stored.
+     * @param tupleName Name of tuple class.
      */
     public static void destroyTuple(String codeDir, String tupleName) {
         if (codeDir == null)

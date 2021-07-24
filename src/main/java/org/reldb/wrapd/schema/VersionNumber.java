@@ -4,6 +4,7 @@ package org.reldb.wrapd.schema;
  * The database is this Version.
  */
 public class VersionNumber implements Version {
+    /** The version number. */
     public final int value;
 
     /**

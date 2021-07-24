@@ -18,13 +18,21 @@ public class DirClassLoader extends ClassLoader {
     private final String dir;
     private final String packageName;
 
+    /**
+     * Create a DirClassLoader.
+     *
+     * @param dir Directory from which to load classes.
+     * @param packageName Package name (specifies subdirectories) within directory.
+     */
     public DirClassLoader(String dir, String packageName) {
         this.dir = dir;
         this.packageName = packageName;
     }
 
     /**
-     * Unload a given Class.
+     * Unload a given class.
+     *
+     * @param name Name of class to unload.
      */
     public void unload(String name) {
         classCache.remove(name);
@@ -56,6 +64,7 @@ public class DirClassLoader extends ClassLoader {
         return clazz;
     }
 
+    @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
         Class<?> clazz = findClass(name);
         if (clazz == null)
@@ -90,6 +99,10 @@ public class DirClassLoader extends ClassLoader {
 
     /**
      * Get Class for given name.  Will check the system loader first, then the specified directory.
+     *
+     * @param name Class name to look for.
+     * @return Class found.
+     * @throws ClassNotFoundException thrown if class name cannot be found.
      */
     public Class<?> forName(final String name) throws ClassNotFoundException {
         return loadClass(name);

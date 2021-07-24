@@ -1,5 +1,7 @@
 package org.reldb.wrapd.tuples;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.exceptions.InvalidValueException;
 import org.reldb.wrapd.sqldb.Database;
 
@@ -16,13 +18,17 @@ import java.util.stream.Stream;
  */
 public abstract class Tuple implements Serializable, Cloneable {
 
+    private static final Logger log = LogManager.getLogger(Tuple.class);
+
     private static final long serialVersionUID = 1L;
 
-    // Backup made at time tuple is retrieved, prior to changing any fields.
+    /** Backup made at time tuple is retrieved, prior to changing any fields. */
     private Tuple __backup = null;
 
     /**
      * Create backup, to facilitate identifying changed fields as part of update.
+     *
+     * @throws CloneNotSupportedException Thrown if creating clone() of Tuple fails.
      */
     public void backup() throws CloneNotSupportedException {
         __backup = (Tuple) super.clone();
@@ -30,6 +36,8 @@ public abstract class Tuple implements Serializable, Cloneable {
 
     /**
      * Obtain backup, to facilitate identifying changed fields as part of update.
+     *
+     * @return Backup Tuple.
      */
     public Tuple getBackup() {
         return __backup;
@@ -38,11 +46,11 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Insert this Tuple.
      *
-     * @param database   - Database
-     * @param connection - java.sql.Connection
-     * @param tableName  - table name
-     * @return - should return false
-     * @throws SQLException on failure
+     * @param database Database.
+     * @param connection Connection to database, typically obtained via a Transaction.
+     * @param tableName Table name.
+     * @return Should return false.
+     * @throws SQLException Failure.
      */
     public boolean insert(Database database, Connection connection, String tableName) throws SQLException {
         Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
@@ -58,7 +66,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                     try {
                         return field.get(this);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        Database.log.error("ERROR: insert failed on field " + field.getName(), e);
+                        log.error("ERROR: insert failed on field " + field.getName(), e);
                         return null;
                     }
                 })
@@ -69,10 +77,10 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Insert this Tuple.
      *
-     * @param database  - Database
-     * @param tableName - table name
-     * @return - should return false
-     * @throws SQLException on failure
+     * @param database Database.
+     * @param tableName Table name
+     * @return Should return false.
+     * @throws SQLException Failure.
      */
     public boolean insert(Database database, String tableName) throws SQLException {
         return database.useConnection(conn -> insert(database, conn, tableName));
@@ -81,11 +89,11 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Update this tuple.
      *
-     * @param database   - Database
-     * @param connection - java.sql.Connection
-     * @param tableName  - table name
-     * @return - should return false
-     * @throws SQLException on failure
+     * @param database Database.
+     * @param connection Connection to database, typically obtained via a Transaction.
+     * @param tableName Table name.
+     * @return Should return false.
+     * @throws SQLException Failure.
      */
     public boolean update(Database database, Connection connection, String tableName) throws SQLException {
         var backup = getBackup();
@@ -100,7 +108,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                 fieldOldValue = field.get(backup);
                 return !fieldNewValue.equals(fieldOldValue);
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Database.log.error("ERROR: unable to compare old and new field values", e);
+                log.error("ERROR: unable to compare old and new field values", e);
                 return false;
             }
         });
@@ -113,7 +121,7 @@ public abstract class Tuple implements Serializable, Cloneable {
             try {
                 return field.get(this);
             } catch (IllegalArgumentException | IllegalAccessException e) {
-                Database.log.error("ERROR: unable to retrieve new field value", e);
+                log.error("ERROR: unable to retrieve new field value", e);
                 return null;
             }
         }).toArray();
@@ -122,7 +130,7 @@ public abstract class Tuple implements Serializable, Cloneable {
                     try {
                         return field.get(backup);
                     } catch (IllegalArgumentException | IllegalAccessException e) {
-                        Database.log.error("ERROR: unable to retrieve predicate field value", e);
+                        log.error("ERROR: unable to retrieve predicate field value", e);
                         return null;
                     }
                 }).toArray();
@@ -132,10 +140,10 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Update this tuple.
      *
-     * @param database  - Database
-     * @param tableName - table name
-     * @return - should return false
-     * @throws SQLException on failure
+     * @param database Database.
+     * @param tableName Table name.
+     * @return Should return false.
+     * @throws SQLException Failure.
      */
     public boolean update(Database database, String tableName) throws SQLException {
         return database.useConnection(conn -> update(database, conn, tableName));

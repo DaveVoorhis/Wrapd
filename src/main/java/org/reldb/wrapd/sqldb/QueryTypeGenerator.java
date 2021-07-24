@@ -19,15 +19,16 @@ public class QueryTypeGenerator {
     private final String sqlText;
     private final Object[] args;
 
+    /** Package to which generated query code belongs. */
     public static final String QueryTypePackage = "org.reldb.wrapd.tuples.generated";
 
     /**
      * Create a generator of compiled query invokers.
      *
-     * @param dir       Directory into which generated class(es) will be put.
+     * @param dir Directory into which generated class(es) will be put.
      * @param queryName Name of generated query class.
-     * @param sqlText   SQL query text
-     * @param args      Sample arguments
+     * @param sqlText SQL query text.
+     * @param args Sample arguments.
      */
     public QueryTypeGenerator(String dir, String queryName, String sqlText, Object[] args) {
         if (queryName.startsWith(QueryTypePackage))
@@ -42,6 +43,10 @@ public class QueryTypeGenerator {
 
     /**
      * Delete this query type, given its name, before loading it.
+     *
+     * @param dir The directory containing the query definition.
+     * @param className The class name of the query definition.
+     * @return boolean true if query definition successfully deleted.
      */
     public static boolean destroy(String dir, String className) {
         var pathName = dir + File.separator + QueryTypePackage.replace('.', File.separatorChar) + File.separator + className;
@@ -116,7 +121,7 @@ public class QueryTypeGenerator {
     /**
      * Compile this query type as a class.
      *
-     * @return - an instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
+     * @return An instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
      */
     public JavaCompiler.CompilationResults compile() {
         var tupleTypeName = queryName + "Tuple";
@@ -141,12 +146,18 @@ public class QueryTypeGenerator {
     /**
      * Return the class name of the tuple.
      *
-     * @return - class name
+     * @return The class name.
      */
     public String getQueryClassName() {
         return getQueryClassName(queryName);
     }
 
+    /**
+     * Given a class name, return a fully-qualified class name obtained by prepending QueryTypePackage.
+     *
+     * @param newName The query class name.
+     * @return Fully-qualified class name.
+     */
     public static String getQueryClassName(String newName) {
         return QueryTypePackage + "." + newName;
     }

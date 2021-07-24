@@ -15,12 +15,17 @@ public class BytestreamOutputArray extends BytestreamOutput {
     private byte[] vb = new byte[minimumCapacity];
     private int index = 0;
 
+    /**
+     * Reset index.
+     */
     public void reset() {
         index = 0;
     }
 
     /**
      * Get the array of bytes that represents the stream.
+     *
+     * @return An array of byte.
      */
     public byte[] getBytes() {
         byte[] outArray = new byte[index];
@@ -28,6 +33,7 @@ public class BytestreamOutputArray extends BytestreamOutput {
         return outArray;
     }
 
+    @Override
     public void put(int b) {
         if (index + 1 > vb.length) {
             int newCapacity = (vb.length + 1) * 2;

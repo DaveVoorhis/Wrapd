@@ -47,7 +47,11 @@ public abstract class SQLSchema extends AbstractSchema {
         this.versionTableName = versionTableName;
     }
 
-    /** Get the name of the table that contains the version number. */
+    /**
+     * Get the name of the table that contains the schema version number.
+     *
+     * @return The name of the table that contains the schema version number.
+     */
     public String getVersionTableName() {
         return versionTableName;
     }
@@ -61,7 +65,11 @@ public abstract class SQLSchema extends AbstractSchema {
         this.versionTableAttributeName = versionTableAttributeName;
     }
 
-    /** Get the name of the column of the version able that contains the version number. */
+    /**
+     * Get the name of the column of the version table that contains the version number.
+     *
+     * @return The name of the column of the version table that contains the version number.
+     */
     public String getVersionTableAttributeName() {
         return versionTableAttributeName;
     }
@@ -75,7 +83,11 @@ public abstract class SQLSchema extends AbstractSchema {
         this.versionTableAttributeTypeName = versionTableAttributeTypeName;
     }
 
-    /** Get the name of the type of the column of the version table that contains the version number. */
+    /**
+     * Get the name of the type of the column of the version table that contains the version number.
+     *
+     * @return Name of the type of the column of the version table that contains the version number.
+     */
     public String getVersionTableAttributeTypeName() {return versionTableAttributeTypeName;}
 
     @Override

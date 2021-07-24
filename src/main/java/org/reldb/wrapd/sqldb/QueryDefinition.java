@@ -12,6 +12,14 @@ public class QueryDefinition {
     private final String sqlText;
     private final Object[] args;
 
+    /**
+     * Create a Query definition.
+     *
+     * @param queryName Query name. Should be unique.
+     * @param sqlText SQL query text.
+     * @param args Query arguments. These may be any arguments that allow the (parametric) query to
+     *             run and are of the same type as will be used in production.
+     */
     public QueryDefinition(String queryName, String sqlText, Object... args) {
         this.queryName = queryName;
         this.sqlText = sqlText;
@@ -21,7 +29,7 @@ public class QueryDefinition {
     /**
      * Generate code to represent this QueryDefinition.
      *
-     * @param database Database
+     * @param database Database.
      * @param codeDirectory Directory for generated code.
      * @return boolean true if successful, false if not.
      * @throws SQLException exception if DBMS access failed

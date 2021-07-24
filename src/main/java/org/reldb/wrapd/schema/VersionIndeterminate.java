@@ -4,7 +4,10 @@ package org.reldb.wrapd.schema;
  * An indeterminate Version. We don't know the version, but we know why we don't know the version.
  */
 public class VersionIndeterminate implements Version {
+    /** Reason for indeterminacy. */
     public final String reason;
+
+    /** Error that caused indeterminacy. */
     public final Throwable error;
 
     /**

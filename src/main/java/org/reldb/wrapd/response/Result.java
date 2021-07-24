@@ -46,7 +46,7 @@ public class Result extends Response<Boolean> {
     /**
      * Create a Result from a Throwable error.
      *
-     * @param error
+     * @param error The Throwable error to be recorded in this Result.
      */
     protected Result(Throwable error) {
         super(error);

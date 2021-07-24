@@ -9,22 +9,27 @@ public class QueryDefiner {
     private final Database database;
     private final String codeDirectory;
 
+    /**
+     * A QueryDefiner exception.
+     */
     public static class QueryDefinerException extends Exception {
-        private final QueryDefiner definer;
-        private final Method method;
+        /** The QueryDefiner in which the exception occurred. */
+        public final QueryDefiner definer;
 
+        /** The defining Method that caused the exception. */
+        public final Method method;
+
+        /**
+         * Create a QueryDefinerException.
+         *
+         * @param definer The QueryDefiner in which the exception occurred.
+         * @param method The Method in which the exception occurred.
+         * @param exception The underlying error thrown.
+         */
         public QueryDefinerException(QueryDefiner definer, Method method, Exception exception) {
             super(exception);
             this.definer = definer;
             this.method = method;
-        }
-
-        public QueryDefiner getQueryDefiner() {
-            return definer;
-        }
-
-        public Method getMethod() {
-            return method;
         }
     }
 
@@ -39,10 +44,20 @@ public class QueryDefiner {
         this.codeDirectory = codeDirectory;
     }
 
+    /**
+     * Return the Database.
+     *
+     * @return Database.
+     */
     public Database getDatabase() {
         return database;
     }
 
+    /**
+     * Return directory where code is stored.
+     *
+     * @return Code directory path.
+     */
     public String getCodeDirectory() {
         return codeDirectory;
     }
@@ -51,14 +66,22 @@ public class QueryDefiner {
      * Run the QueryDefinition against the specified Database (see @QueryDefiner's constructor)
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
-     * @param definition QueryDefinition
+     * @param definition QueryDefinition.
+     * @return True if generation is successful.
+     * @throws Exception if failed.
      */
     protected boolean generate(QueryDefinition definition) throws Exception {
+        // TODO consider returning Result
         return definition.generate(getDatabase(), getCodeDirectory());
     }
 
     /**
      * Shorthand for invoking generate(new QueryDefinition(...)).
+     *
+     * @param queryName Name of query. Should be unique.
+     * @param sqlText SQL query text.
+     * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @throws Exception Error.
      */
     protected void define(String queryName, String sqlText, Object... args) throws Exception {
          generate(new QueryDefinition(queryName, sqlText, args));
