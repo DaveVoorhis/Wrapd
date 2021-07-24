@@ -34,7 +34,6 @@ public class QueryDefinition {
      * @return boolean true if successful, false if not.
      * @throws SQLException exception if DBMS access failed
      */
-    // TODO consider returning Result rather than boolean
     public boolean generate(Database database, String codeDirectory) throws SQLException {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)

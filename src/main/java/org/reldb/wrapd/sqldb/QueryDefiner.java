@@ -71,7 +71,6 @@ public class QueryDefiner {
      * @throws Exception if failed.
      */
     protected boolean generate(QueryDefinition definition) throws Exception {
-        // TODO consider returning Result
         return definition.generate(getDatabase(), getCodeDirectory());
     }
 
