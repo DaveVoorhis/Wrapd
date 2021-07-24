@@ -31,10 +31,9 @@ public class QueryDefinition {
      *
      * @param database Database.
      * @param codeDirectory Directory for generated code.
-     * @return boolean true if successful, false if not.
      * @throws SQLException exception if DBMS access failed
      */
-    public boolean generate(Database database, String codeDirectory) throws SQLException {
+    public void generate(Database database, String codeDirectory) throws SQLException {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)
             ? database.createTupleFromQueryAll(codeDirectory, tupleClassName, sqlText)
@@ -45,7 +44,6 @@ public class QueryDefinition {
             if (!results.compiled)
                 throw new ExceptionFatal("Unable to generate Query derivative " + queryName + ": " + results.compilerMessages);
         }
-        return true;
     }
 
 }

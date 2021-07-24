@@ -67,11 +67,10 @@ public class QueryDefiner {
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
      * @param definition QueryDefinition.
-     * @return True if generation is successful.
-     * @throws Exception if failed.
+     * @throws Exception Failed.
      */
-    protected boolean generate(QueryDefinition definition) throws Exception {
-        return definition.generate(getDatabase(), getCodeDirectory());
+    protected void generate(QueryDefinition definition) throws Exception {
+        definition.generate(getDatabase(), getCodeDirectory());
     }
 
     /**
