@@ -1,5 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -42,6 +43,13 @@ public class TestQueryDefinitions {
                         org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt))
         };
         return List.of(parms);
+    }
+
+    @BeforeAll
+    public static void setupTestDirectories() {
+        new DbHelper(org.reldb.wrapd.sqldb.mysql.Configuration.dbName);
+        new DbHelper(org.reldb.wrapd.sqldb.postgresql.Configuration.dbName);
+        new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
     }
 
     @ParameterizedTest
