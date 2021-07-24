@@ -1,16 +1,19 @@
 Wrapd
 =====
 
-Wrapd is a lightweight, pure Java, XML-and-annotation-free SQL database 
-abstraction layer. 
-
-It's pronounced "wrapped", "rapid" and "rapt."
+Wrapd is a *SQL amplifier*, a lightweight database abstraction layer to make SQL in Java easy.
 
 Highly opinionated, Wrapd doesn't hide SQL from you. Instead, it's 
-a *SQL amplifier* that makes SQL easier to use and better 
-Java- integrated, tested, migrated and managed than using 
+a pure Java, annotation-free *SQL amplifier* that makes SQL easier to use and better 
+Java-integrated, tested, migrated and managed than using 
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
+
+*It's pronounced "wrapped", "rapid" and "rapt."*
+
+* ResultSets are *wrapped* in Java Streams.
+* Development is *rapid*.
+* SQL focus is *rapt*.
 
 ### To build Wrapd: ###
 
