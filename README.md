@@ -9,10 +9,10 @@ Java-integrated, tested, migrated and managed than using
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
-*It's pronounced "wrapped", "rapid" and "rapt."*
+*"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
 
-* ResultSets are *wrapped* in Java Streams.
-* Development is *rapid*.
+* SQL is effectively *wrapped*, not awkwardly hidden.
+* SQL in Java development is *rapid*.
 * SQL focus is *rapt*.
 
 ### To build Wrapd: ###
