@@ -63,3 +63,7 @@ publishing {
         mavenLocal()
     }
 }
+
+javadoc {
+    options.overview = "src/javadoc/overview.html"
+}
