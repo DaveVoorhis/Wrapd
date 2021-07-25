@@ -14,7 +14,7 @@ Wrapd's key features are:
 1. **SQL Queries are Easy.**<br>
    You can use Java Streams on query results and reference columns as native attributes. You can do this:
     ```
-    database.query("SELECT * FROM $$tester WHERE x > ? AND x < ?", TestTuple.class, 3, 7)
+    database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
    ```
 
