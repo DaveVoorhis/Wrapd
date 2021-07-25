@@ -11,9 +11,9 @@ while staying light, lean, and loveable.
 
 *"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
 
-* SQL is effectively *wrapped*, not awkwardly hidden.
+* SQL access is helpfully *wrapped*, not awkwardly hidden.
 * SQL in Java development is *rapid*.
-* SQL focus is *rapt*.
+* SQL focus can be *rapt*.
 
 ### To build Wrapd: ###
 
@@ -26,3 +26,5 @@ while staying light, lean, and loveable.
 2.  _gradle clean_
 3.  _gradle test_
 4.  _docker-compose down -v_
+ 
+### Documentation and examples are a work-in-progress. Watch this space! ###
