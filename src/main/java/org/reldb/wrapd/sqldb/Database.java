@@ -250,27 +250,19 @@ public class Database {
     }
 
     /**
-     * Represents a SQL NULL on behalf of a specified SQL type from the Types enum.
+     * Represents a SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
      */
-    public static class Null {
-        private final int type;
+    private static class Null {
+        /** The {@link java.sql.Types} enum value for this Null. */
+        final int type;
 
         /**
          * Create a Null for a given type.
          *
-         * @param type Type value from the Types enum.
+         * @param type Type value from the {@link java.sql.Types} enum.
          */
-        public Null(int type) {
+        Null(int type) {
             this.type = type;
-        }
-
-        /**
-         * Return the Types enum value for this Null.
-         *
-         * @return Types enum value.
-         */
-        int getType() {
-            return type;
         }
     }
 
@@ -281,7 +273,7 @@ public class Database {
             if (parm == null)
                 statement.setNull(parmNumber, Types.VARCHAR);
             else if (parm instanceof Null)
-                statement.setNull(parmNumber, ((Null) parm).getType());
+                statement.setNull(parmNumber, ((Null) parm).type);
             else if (parm instanceof Integer)
                 statement.setInt(parmNumber, (Integer) parm);
             else if (parm instanceof Double)
@@ -800,7 +792,7 @@ public class Database {
     }
 
     /**
-     * FunctionalInterface to define lambdas for transactional processing.
+     * Used to define lambda expressions for transactional processing.
      */
     @FunctionalInterface
     public interface TransactionRunner {
@@ -878,7 +870,7 @@ public class Database {
     }
 
     /**
-     * Functional interface to define lambdas for more ergonomic transaction processing.
+     * Used to define lambda expressions for more ergonomic transaction processing.
      */
     @FunctionalInterface
     public interface XactGo {
