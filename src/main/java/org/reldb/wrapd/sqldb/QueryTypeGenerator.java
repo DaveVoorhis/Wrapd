@@ -10,7 +10,7 @@ import java.io.File;
 import static org.reldb.wrapd.il8n.Strings.*;
 
 /**
- * Generates Java code to represent a query, which is a class that implements Query.
+ * Generates Java code to represent a query, which is a class that implements {@link Query}.
  */
 public class QueryTypeGenerator {
 
