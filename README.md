@@ -17,6 +17,7 @@ Wrapd's key features are:
     database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
    ```
+   The required class, MyTable, is generated for you.
 
 2. **SQL Schemas are Easy.**<br>
    Version migrations/upgrades can be completely automated.
