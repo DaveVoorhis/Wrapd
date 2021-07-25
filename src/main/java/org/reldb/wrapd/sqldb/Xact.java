@@ -33,19 +33,6 @@ public class Xact {
     }
 
     /**
-     * Issue a SELECT query, process it, and return the result
-     *
-     * @param <T> Return type.
-     * @param query Query text.
-     * @param receiver ResultSet receiver lambda.
-     * @return Return value.
-     * @throws SQLException Error.
-     */
-    public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
-        return database.queryAll(connection, query, receiver);
-    }
-
-    /**
      * Issue an update query.
      *
      * @param sqlStatement String SQL query.
@@ -69,32 +56,6 @@ public class Xact {
     }
 
     /**
-     * Issue a parametric SELECT query with '?' substitutions, process it, and return the result
-     *
-     * @param <T> Return type
-     * @param query SQL query.
-     * @param receiver ResultSet receiver lambda.
-     * @param parms Parameter arguments.
-     * @return Return value.
-     * @throws SQLException Error.
-     */
-    public <T> T query(String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
-        return database.query(connection, query, receiver, parms);
-    }
-
-    /**
-     * Issue a parametric update query with '?' substitutions.
-     *
-     * @param query SQL query.
-     * @param parms Parameter arguments.
-     * @return True if a ResultSet is returned, false otherwise.
-     * @throws SQLException Error.
-     */
-    public boolean update(String query, Object... parms) throws SQLException {
-        return database.update(connection, query, parms);
-    }
-
-    /**
      * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name. Intended to obtain a single value.
      *
      * @param query SELECT query.
@@ -105,6 +66,19 @@ public class Xact {
      */
     public Object valueOf(String query, String columnName, Object... parms) throws SQLException {
         return database.valueOf(connection, query, columnName, parms);
+    }
+
+    /**
+     * Issue a SELECT query, process it, and return the result
+     *
+     * @param <T> Return type.
+     * @param query Query text.
+     * @param receiver ResultSet receiver lambda.
+     * @return Return value.
+     * @throws SQLException Error.
+     */
+    public <T> T queryAll(String query, ResultSetReceiver<T> receiver) throws SQLException {
+        return database.queryAll(connection, query, receiver);
     }
 
     /**
@@ -121,6 +95,18 @@ public class Xact {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T> T extends Tuple.
+     * @param query A Query.
+     * @return Stream&lt;T&gt; Result stream.
+     * @throws SQLException Error.
+     */
+    public <T extends Tuple> Stream<T> queryAll(Query<T> query) throws SQLException {
+        return database.queryAll(connection, query.getQueryText(), query.getTupleClass());
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T> T extends Tuple.
@@ -131,6 +117,32 @@ public class Xact {
      */
     public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
         return database.queryAllForUpdate(connection, query, tupleClass);
+    }
+
+    /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T> T extends Tuple.
+     * @param query A Query.
+     * @return Stream&lt;T&gt; Result stream.
+     * @throws SQLException Error.
+     */
+    public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
+        return database.queryAllForUpdate(connection, query.getQueryText(), query.getTupleClass());
+    }
+
+    /**
+     * Issue a parametric SELECT query with '?' substitutions, process it, and return the result
+     *
+     * @param <T> Return type
+     * @param query SQL query.
+     * @param receiver ResultSet receiver lambda.
+     * @param parms Parameter arguments.
+     * @return Return value.
+     * @throws SQLException Error.
+     */
+    public <T> T query(String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
+        return database.query(connection, query, receiver, parms);
     }
 
     /**
@@ -148,6 +160,18 @@ public class Xact {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation.
+     *
+     * @param <T>  T extends Tuple.
+     * @param query A Query
+     * @return Stream&lt;T&gt; Result stream.
+     * @throws SQLException Error.
+     */
+    public <T extends Tuple> Stream<T> query(Query<T> query) throws SQLException {
+        return database.query(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
+    }
+
+    /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
      * @param <T> T extends Tuple.
@@ -162,6 +186,18 @@ public class Xact {
     }
 
     /**
+     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     *
+     * @param <T> T extends Tuple.
+     * @param query A Query.
+     * @return Stream&lt;T&gt; Result stream.
+     * @throws SQLException Error.
+     */
+    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
+        return database.queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
+    }
+
+    /**
      * Insert specified Tuple.
      *
      * @param tuple Tuple to insert.
@@ -171,6 +207,18 @@ public class Xact {
      */
     public boolean insert(Tuple tuple, String tableName) throws SQLException {
         return tuple.insert(database, connection, tableName);
+    }
+
+    /**
+     * Issue a parametric update query with '?' substitutions.
+     *
+     * @param query SQL query.
+     * @param parms Parameter arguments.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean update(String query, Object... parms) throws SQLException {
+        return database.update(connection, query, parms);
     }
 
     /**
