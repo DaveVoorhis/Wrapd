@@ -1,7 +1,8 @@
 Wrapd
 =====
 
-Wrapd is a *SQL amplifier*, a lightweight database abstraction layer to make SQL in Java easy by not hiding it.
+Wrapd is a *SQL amplifier*, a lightweight database abstraction layer to make using SQL in Java easy
+by exposing it the right way rather than hiding it.
 
 Highly opinionated, Wrapd doesn't hide SQL from you. Instead, it's 
 a pure Java, annotation-free *SQL amplifier* that makes SQL easier to use and better 
