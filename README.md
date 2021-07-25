@@ -10,7 +10,7 @@ Java-integrated, tested, migrated and managed than using
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
-Wrapd's key features are:
+### Key Features ###
 
 1. **SQL Queries are Easy.**<br>
    You can use Java Streams on query results and reference columns as native attributes. You can do this:
@@ -29,12 +29,12 @@ Wrapd's key features are:
 * SQL in Java development is *rapid*.
 * SQL focus can be *rapt*.
 
-### To build Wrapd: ###
+### To build Wrapd ###
 
 1.   _gradle clean_
 2.   _gradle publishToMavenLocal_
 
-### To test Wrapd: ###
+### To test Wrapd ###
 
 1.  _docker-compose up -d_
 2.  _gradle clean_
