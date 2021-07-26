@@ -58,7 +58,7 @@ var schema = new TestSchema(database) {
         return new AbstractSchema.Update[] {
             // version 1
             schema -> {
-                database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
+                database.updateAll("CREATE TABLE mytab01 (x INT NOT NULL PRIMARY KEY)");
                 return Result.OK;
             }
         };
@@ -74,12 +74,12 @@ var schema = new TestSchema(database) {
         return new AbstractSchema.Update[] {
             // version 1
             schema -> {
-                database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
+                database.updateAll("CREATE TABLE mytab01 (x INT NOT NULL PRIMARY KEY)");
                 return Result.OK;
             },
             // migration to version 2
             schema -> {
-                database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY)");
+                database.updateAll("CREATE TABLE mytab02 (a INT NOT NULL PRIMARY KEY)");
                 return Result.OK;
             }
         };
