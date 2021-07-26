@@ -23,10 +23,12 @@ while staying light, lean, and loveable.
     database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
    ```
-   The required class, MyTable, is generated for you.
-
-   You can define parametric SQL queries with example arguments like this, which
-   also serve as tests:
+   The required class, MyTable, is generated for you by doing something like this:
+   ```
+   database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
+   ```
+   
+   Usually, you'll define queries (possibly with example arguments) like this:
    ```
     public class MyQueryDefinitions extends QueryDefiner {
       ...
@@ -37,7 +39,8 @@ while staying light, lean, and loveable.
       ...
     }
     ```
-   Wrapd will generate convenient, type-checked methods to invoke your queries. You can use them like this:
+   Wrapd will generate relevant classes and type-checked methods to invoke your queries easily 
+   like this:
    ```
    MyTableQuery01.query(database, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
