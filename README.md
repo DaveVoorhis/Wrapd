@@ -23,7 +23,7 @@ while staying light, lean, and loveable.
     database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
    ```
-   The required class, MyTable, is generated for you when you do something like this:
+   The required class, MyTable, is generated for you by doing something like this:
    ```
    database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM mytable");
    ```
