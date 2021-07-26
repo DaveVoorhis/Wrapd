@@ -28,7 +28,7 @@ while staying light, lean, and loveable.
    You can define parametric SQL queries with example arguments like this, which
    also serve as tests:
    ```
-    public class QueryDefinitions extends QueryDefiner {
+    public class MyQueryDefinitions extends QueryDefiner {
       ...
       public QueryDefinition QueryDefinition01() {
           return new QueryDefinition("QueryDefinition01", 
