@@ -56,11 +56,11 @@ Create a new 'version 1' database:
 var schema = new TestSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
-                // version 1
-                schema -> {
-                    database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
-                    return Result.OK;
-                }
+            // version 1
+            schema -> {
+                database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
+                return Result.OK;
+            }
         };
     }
 }
@@ -72,16 +72,16 @@ Later, add a migration from version 1 to version 2:
 var schema = new TestSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
-                // version 1
-                schema -> {
-                    database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
-                    return Result.OK;
-                },
-                // migration to version 2
-                schema -> {
-                    database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY)");
-                    return Result.OK;
-                }
+            // version 1
+            schema -> {
+                database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY)");
+                return Result.OK;
+            },
+            // migration to version 2
+            schema -> {
+                database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY)");
+                return Result.OK;
+            }
         };
     }
 };
