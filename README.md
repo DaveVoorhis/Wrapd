@@ -26,7 +26,7 @@ database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 
 ```
 The required class, MyTable, is generated for you by doing something like this:
 ```
-database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM mytable");
+database.createTupleFromQueryAll(getCodeDir(), "MyTable", "SELECT * FROM mytable");
 ```
 
 Usually, you'll define queries -- which may have example arguments -- like this:
