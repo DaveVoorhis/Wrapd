@@ -99,6 +99,8 @@ Run standalone schema migrations on servers to create or update their databases 
 
 ### To test Wrapd ###
 
+You need Docker installed on your system, because Docker images of popular DBMSs are used to perform end-to-end tests.
+
 1.  _docker-compose up -d_
 2.  _gradle clean_
 3.  _gradle test_
