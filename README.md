@@ -25,6 +25,23 @@ while staying light, lean, and loveable.
    ```
    The required class, MyTable, is generated for you.
 
+   You can define parametric SQL queries with example arguments like this, which
+   also serve as tests:
+   ```
+    public class QueryDefinitions extends QueryDefiner {
+      ...
+      public QueryDefinition QueryDefinition01() {
+          return new QueryDefinition(queryName + "Query01", "SELECT * FROM $$tester WHERE x > ? AND x < ?", 3, 7);
+      }
+      ...
+    }
+    ```
+   Wrapd will generate convenient, type-checked methods to invoke your queries. You can use them like this:
+   ```
+   QueryDefinition01.query(database, 3, 7)
+            .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
+   ```
+
 2. **SQL Schemas are Easy.**<br>
    Version migrations/upgrades can be completely automated.
 
