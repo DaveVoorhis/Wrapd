@@ -10,6 +10,12 @@ Java-integrated, tested, migrated and managed than using
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
+*"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
+
+* SQL access is helpfully *wrapped*, not awkwardly hidden.
+* SQL-in-Java development is *rapid*.
+* SQL focus can be *rapt*.
+
 ### Key Features ###
 
 1. **SQL Queries are Easy.**<br>
@@ -22,12 +28,6 @@ while staying light, lean, and loveable.
 
 2. **SQL Schemas are Easy.**<br>
    Version migrations/upgrades can be completely automated.
-
-*"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
-
-* SQL access is helpfully *wrapped*, not awkwardly hidden.
-* SQL in Java development is *rapid*.
-* SQL focus can be *rapt*.
 
 ### To build Wrapd ###
 
