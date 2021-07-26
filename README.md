@@ -25,7 +25,7 @@ while staying light, lean, and loveable.
    ```
    The required class, MyTable, is generated for you when you do something like this:
    ```
-   database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
+   database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM mytable");
    ```
    
    Usually, you'll define queries -- which may have example arguments -- like this:
