@@ -90,7 +90,7 @@ schema.setup();
 Embed schema migrations in your applications to automatically create or update their local
 databases on startup.
 
-Run schema migrations on servers to manually create or update their databases during new-version deployment.
+Run standalone schema migrations on servers to manually create or update their databases during new-version deployment.
 
 ### To build Wrapd ###
 
