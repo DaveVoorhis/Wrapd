@@ -31,7 +31,8 @@ while staying light, lean, and loveable.
     public class QueryDefinitions extends QueryDefiner {
       ...
       public QueryDefinition QueryDefinition01() {
-          return new QueryDefinition(queryName + "Query01", "SELECT * FROM $$tester WHERE x > ? AND x < ?", 3, 7);
+          return new QueryDefinition("QueryDefinition01", 
+              "SELECT * FROM $$tester WHERE x > ? AND x < ?", 3, 7);
       }
       ...
     }
