@@ -17,37 +17,39 @@ while staying light, lean, and loveable.
 
 ### Key Features ###
 
-1. **SQL Queries are Easy.**<br>
-   You can use Java Streams on query results and reference columns as native attributes. You can do this:
-    ```
-    database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
-            .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
-   ```
-   The required class, MyTable, is generated for you by doing something like this:
-   ```
-   database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM mytable");
-   ```
+#### SQL Queries are Easy ####
    
-   Usually, you'll define queries -- which may have example arguments -- like this:
-   ```
-    public class MyQueryDefinitions extends QueryDefiner {
+You can use Java Streams on query results and reference columns as native attributes. You can do this:
+```
+database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
+        .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
+```
+The required class, MyTable, is generated for you by doing something like this:
+```
+database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM mytable");
+```
+
+Usually, you'll define queries -- which may have example arguments -- like this:
+```
+public class MyQueryDefinitions extends QueryDefiner {
       ...
       public QueryDefinition QueryDefinition01() {
           return new QueryDefinition("MyTableQuery01", 
               "SELECT * FROM mytable WHERE x > ? AND x < ?", 3, 7);
       }
       ...
-    }
-    ```
-   Wrapd will generate relevant classes and type-checked methods to invoke your queries easily 
-   like this:
-   ```
-   MyTableQuery01.query(database, 3, 7)
-            .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
-   ```
+}
+```
+Wrapd will generate relevant classes and type-checked methods to invoke your queries easily 
+like this:
+```
+MyTableQuery01.query(database, 3, 7)
+              .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
+```
 
-2. **SQL Schemas are Easy.**<br>
-   Version migrations/upgrades can be completely automated.
+#### SQL Schemas are Easy ####
+
+Version migrations/upgrades can be completely automated.
 
 ### To build Wrapd ###
 
