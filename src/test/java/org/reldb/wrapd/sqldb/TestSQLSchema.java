@@ -112,4 +112,50 @@ public class TestSQLSchema {
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
+
+	@ParameterizedTest
+	@MethodSource("dbProvider")
+	public void versionUpdatesWork(final Database database) {
+		clearDb(database, new String[] {
+				"$$__version",
+				"$$tester01",
+				"$$tester02"
+		});
+		var testSchema01 = new TestSchema(database) {
+			protected AbstractSchema.Update[] getUpdates() {
+				return new AbstractSchema.Update[] {
+						// version 1
+						schema -> {
+							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+							return Result.OK;
+						}
+				};
+			}
+		};
+		var testSchema02 = new TestSchema(database) {
+			protected AbstractSchema.Update[] getUpdates() {
+				return new AbstractSchema.Update[] {
+						// version 1
+						schema -> {
+							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+							return Result.OK;
+						},
+						// migration to version 2
+						schema -> {
+							database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
+							return Result.OK;
+						}
+				};
+			}
+		};
+		var result1 = testSchema01.setup(new ConsoleProgressIndicator());
+		result1.printIfError();
+		assertEquals(true, result1.isOk());
+		assertEquals(1, ((VersionNumber)testSchema01.getVersion()).value);
+		var result2 = testSchema02.setup(new ConsoleProgressIndicator());
+		result2.printIfError();
+		assertEquals(true, result1.isOk());
+		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
+	}
+
 }
