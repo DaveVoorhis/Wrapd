@@ -31,15 +31,15 @@ while staying light, lean, and loveable.
     public class MyQueryDefinitions extends QueryDefiner {
       ...
       public QueryDefinition QueryDefinition01() {
-          return new QueryDefinition("QueryDefinition01", 
-              "SELECT * FROM $$tester WHERE x > ? AND x < ?", 3, 7);
+          return new QueryDefinition("MyTableQuery01", 
+              "SELECT * FROM mytable WHERE x > ? AND x < ?", 3, 7);
       }
       ...
     }
     ```
    Wrapd will generate convenient, type-checked methods to invoke your queries. You can use them like this:
    ```
-   QueryDefinition01.query(database, 3, 7)
+   MyTableQuery01.query(database, 3, 7)
             .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
    ```
 
