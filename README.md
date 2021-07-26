@@ -51,6 +51,47 @@ MyTableQuery01.query(database, 3, 7)
 
 Version migrations/upgrades can be completely automated.
 
+Create a new 'version 1' database:
+```
+var schema = new TestSchema(database) {
+    protected AbstractSchema.Update[] getUpdates() {
+        return new AbstractSchema.Update[] {
+                // version 1
+                schema -> {
+                    database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+                    return Result.OK;
+                }
+        };
+    }
+}
+schema.setup();
+```
+
+Later, add a migration from version 1 to version 2:
+```
+var schema = new TestSchema(database) {
+    protected AbstractSchema.Update[] getUpdates() {
+        return new AbstractSchema.Update[] {
+                // version 1
+                schema -> {
+                    database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+                    return Result.OK;
+                },
+                // migration to version 2
+                schema -> {
+                    database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
+                    return Result.OK;
+                }
+        };
+    }
+};
+schema.setup();
+```
+Embed schema migrations in your applications to automatically update their local
+databases on startup.
+
+Run schema migrations on servers to manually update their databases during new-version deployment.
+
 ### To build Wrapd ###
 
 1.   _gradle clean_
