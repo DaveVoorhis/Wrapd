@@ -20,17 +20,17 @@ while staying light, lean, and loveable.
 #### SQL Queries are Easy ####
    
 You can use Java Streams on query results and reference columns as native attributes. You can do this:
-```
+```java
 database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
         .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
 ```
 The required class, MyTable, is generated for you by doing something like this:
-```
+```java
 database.createTupleFromQueryAll(getCodeDir(), "MyTable", "SELECT * FROM mytable");
 ```
 
 Usually, you'll define queries -- which may have example arguments -- like this, which is both test and definition:
-```
+```java
 public class MyQueryDefinitions extends QueryDefiner {
       ...
       public QueryDefinition QueryDefinition01() {
@@ -42,7 +42,7 @@ public class MyQueryDefinitions extends QueryDefiner {
 ```
 Wrapd will generate relevant classes and type-checked methods to invoke your queries easily 
 like this:
-```
+```java
 MyTableQuery01.query(database, 3, 7)
               .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
 ```
@@ -52,7 +52,7 @@ MyTableQuery01.query(database, 3, 7)
 Version migrations/upgrades can be completely automated.
 
 Create a new 'version 1' database:
-```
+```java
 var schema = new TestSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
@@ -68,7 +68,7 @@ schema.setup();
 ```
 
 Later, add a migration from version 1 to version 2:
-```
+```java
 var schema = new TestSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
