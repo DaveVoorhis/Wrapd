@@ -87,10 +87,10 @@ var schema = new TestSchema(database) {
 };
 schema.setup();
 ```
-Embed schema migrations in your applications to automatically update their local
+Embed schema migrations in your applications to automatically create or update their local
 databases on startup.
 
-Run schema migrations on servers to manually update their databases during new-version deployment.
+Run schema migrations on servers to manually create or update their databases during new-version deployment.
 
 ### To build Wrapd ###
 
