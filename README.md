@@ -29,7 +29,7 @@ The required class, MyTable, is generated for you by doing something like this:
 database.createTupleFromQueryAll(getCodeDir(), "MyTable", "SELECT * FROM mytable");
 ```
 
-Usually, you'll define queries -- which may have example arguments -- like this:
+Usually, you'll define queries -- which may have example arguments -- like this, which is both test and definition:
 ```
 public class MyQueryDefinitions extends QueryDefiner {
       ...
