@@ -109,8 +109,9 @@ You run some simple machinery (not shown here) to iterate all the query definiti
 them and compile the source code to binary .class files.
 
 That creates ready-to-use methods to invoke your previously-defined SQL queries with
-type-checked parameters and no visible SQL -- that's back in the query definitions -- that emit Java Streams with native,
-compile-time type-checked attributes.
+type-checked parameters and no visible SQL (that's back in the query definitions, in 
+the database abstraction layer) that emit Java Streams with native, statically type-checked 
+attributes.
 
 That's SQL, amplified, in Java.
 
