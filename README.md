@@ -32,7 +32,7 @@ public class MyQueryDefinitions extends QueryDefiner {
 ```
 Note the example arguments, which are used to test the query and determine its parameter and result types.
 
-Wrapd will generate classes and type-checked methods to invoke your queries easily. Run the query defined above like this:
+Wrapd will generate classes and type-checked methods to conveniently invoke your queries. Run the query defined above like this:
 ```java
 MyTableQuery01.query(database, 22, 88)
               .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
