@@ -45,7 +45,7 @@ In short, Wrapd provides a type-checked, statically-compiled bridge between JDBC
 Version migrations/upgrades can be completely automated.
 
 Create a new 'version 1' database:
-```java
+``` java
 var schema = new SQLSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
@@ -61,7 +61,7 @@ schema.setup();
 ```
 
 Later, add a migration from version 1 to version 2:
-```java
+``` java
 var schema = new SQLSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
