@@ -1,7 +1,7 @@
 Wrapd
 =====
 
-Wrapd is a *SQL amplifier*, a lightweight database abstraction layer to make using SQL in Java easy
+Wrapd is a *SQL amplifier*, a lightweight database abstraction layer generator and schema migrator to make using SQL in Java easy
 by exposing it the right way rather than hiding it.
 
 Highly opinionated, Wrapd doesn't hide SQL from you. Instead, it makes SQL easier 
@@ -18,18 +18,8 @@ while staying light, lean, and loveable.
 ### Key Features ###
 
 #### SQL Queries are Easy ####
-   
-You can use Java Streams on query results and reference columns as native attributes. You can do this:
-```java
-database.query("SELECT * FROM mytable WHERE x > ? AND x < ?", MyTable.class, 3, 7)
-        .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
-```
-The required class, MyTable, is generated for you by doing something like this:
-```java
-database.createTupleFromQueryAll(getCodeDir(), "MyTable", "SELECT * FROM mytable");
-```
 
-Usually, you'll define queries -- which may have example arguments -- like this, which is both a test of the query and automatic generation of Java code to use it:
+Predefine SQL queries like this, which tests the queries and automatically generates the database access layer Java code to use them:
 ```java
 public class MyQueryDefinitions extends QueryDefiner {
       ...
@@ -40,10 +30,11 @@ public class MyQueryDefinitions extends QueryDefiner {
       ...
 }
 ```
-Wrapd will generate relevant classes and type-checked methods to invoke your queries easily 
-like this:
+Note the example arguments, which are used to test the query and determine its parameter and result types.
+
+Wrapd will generate classes and type-checked methods to invoke your queries easily. Run the above like this:
 ```java
-MyTableQuery01.query(database, 3, 7)
+MyTableQuery01.query(database, 22, 88)
               .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
 ```
 
