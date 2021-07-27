@@ -103,14 +103,14 @@ either via Wrapd's schema migration mechanisms or externally defined.
 
 Then, you define your SQL queries inside Java. Collectively, your query definitions form a database abstraction layer.
 All the SQL lives within the database abstraction layer. Normally, no SQL is found outside it, and all queries are
-invoked by regular Java methods.
+invoked by regular type-safe Java methods.
 
 You run some simple machinery (not shown here) to iterate all the query definitions and generate Java source code from
 them and compile the source code to binary .class files.
 
-That creates ready-to-use methods to invoke your previously-defined SQL queries via Java methods with
-type-checked parameters (and no visible SQL -- that's back in the query definitions) that emit Java Streams with native,
-compile-time-checked attributes.
+That creates ready-to-use methods to invoke your previously-defined SQL queries with
+type-checked parameters and no visible SQL -- that's back in the query definitions -- that emit Java Streams with native,
+compile-time type-checked attributes.
 
 That's SQL, amplified, in Java.
 
