@@ -56,7 +56,7 @@ var schema = new SQLSchema(database) {
             }
         };
     }
-}
+};
 schema.setup();
 ```
 
