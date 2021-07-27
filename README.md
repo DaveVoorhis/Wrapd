@@ -88,6 +88,24 @@ databases on startup.
 
 In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
+### Rationale ###
+
+Wrapd is a bridge between SQL and Java, and specifically between JDBC and Java Streams, to reduce the pain of some of the usual SQL-in-Java pain points. That includes avoiding hulking, complicated, awkward ORMs.
+
+There is intentionally no attempt to hide SQL. You use it the way you usually use it in JDBC. The goal is to expose it appropriately, and make it easy to use SQL queries with Java Streams.
+
+That, plus automated schema migration, is Wrapd's main selling point: JDBC-to-Streams, bridged.
+
+First, you create your database. This is not a "code first" library, where the programming language code implicitly creates SQL and defines the database from that. This is a "SQL first" library, where the presumption is that the database exists, either via Wrapd's schema mechanisms or externally defined.
+
+Then, you define your SQL queries inside Java. Collectively, your query definitions form a database abstraction layer. All the SQL lives within the database abstraction layer. Normally, no SQL is found outside of it, and all queries are invoked by regular Java methods.
+
+You run some simple machinery (not shown here) to iterate all the query definitions and generate Java source code from them and compile the source code to binary .class files.
+
+That creates ready-to-use methods to invoke your previously-defined SQL queries via auto-generated Java methods with type-checked parameters (and no visible SQL -- that's back in the query definitions) that emit Java Streams with native, compile-time-checked attributes.
+
+That's SQL, amplified, in Java.
+
 ### To build Wrapd ###
 
 1.   _gradle clean_
