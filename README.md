@@ -38,6 +38,8 @@ MyTableQuery01.query(database, 22, 88)
               .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
 ```
 
+In short, Wrapd provides a type-checked, statically-compiled bridge between JDBC and Java Streams.
+
 #### SQL Schemas are Easy ####
 
 Version migrations/upgrades can be completely automated.
@@ -82,6 +84,8 @@ Embed schema migrations in your applications to automatically create or update t
 databases on startup.
 
 Run standalone schema migrations on servers to create or update their databases during new-version deployment.
+
+In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
 ### To build Wrapd ###
 
