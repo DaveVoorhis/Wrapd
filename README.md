@@ -98,17 +98,19 @@ appropriately -- but preferably _only_ in the database abstraction layer -- and 
 
 That, plus automated schema migration, is Wrapd's main selling point: JDBC-to-Streams, bridged.
 
-First, you create your database. This is a "SQL first" library, where the presumption is that the database exists,
+It's easy:
+
+1. Create your database. Wrapd is a "SQL first" library, where the presumption is that the database exists,
 either via Wrapd's schema migration mechanisms or externally defined.
 
-Then, you define your SQL queries inside Java. Collectively, your query definitions form a database abstraction layer.
+2. Define your SQL queries inside Java. Collectively, your query definitions form a database abstraction layer.
 All the SQL lives within the database abstraction layer. Normally, no SQL is found outside it, and all queries are
 invoked by regular type-safe Java methods.
 
-You run some simple machinery (not shown here) to iterate all the query definitions and generate Java source code from
+3. Run some simple machinery (not shown here) to iterate all the query definitions and generate Java source code from
 them and compile the source code to binary .class files.
 
-That creates ready-to-use methods to invoke your previously-defined SQL queries with
+4. Use the generated methods to invoke your previously-defined SQL queries with
 type-checked parameters and no visible SQL (that's back in the query definitions, in 
 the database abstraction layer) that emit Java Streams with native, statically type-checked 
 attributes.
