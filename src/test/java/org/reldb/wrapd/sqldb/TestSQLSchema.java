@@ -34,21 +34,16 @@ public class TestSQLSchema {
 		new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
 	}
 
-	private class TestSchema extends SQLSchema {
-		public TestSchema(Database database) {
-			super(database);
-		}
-		@Override
-		protected Update[] getUpdates() {
-			return new Update[0];
-		}
-	}
-
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void canCreateMinimalSchema(final Database database) {
 		clearDb(database, new String[] {"$$__version"});
-		var testSchema = new TestSchema(database);
+		var testSchema = new SQLSchema(database) {
+			@Override
+			protected Update[] getUpdates() {
+				return new Update[0];
+			}
+		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
 		assertEquals(true, result.isOk());
@@ -62,7 +57,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema = new TestSchema(database) {
+		var testSchema = new SQLSchema(database) {
 			protected AbstractSchema.Update[] getUpdates() {
 				return new AbstractSchema.Update[] {
 					schema -> {
@@ -90,7 +85,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema = new TestSchema(database) {
+		var testSchema = new SQLSchema(database) {
 			protected AbstractSchema.Update[] getUpdates() {
 				return new AbstractSchema.Update[] {
 						schema -> {
@@ -121,7 +116,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema01 = new TestSchema(database) {
+		var testSchema01 = new SQLSchema(database) {
 			protected AbstractSchema.Update[] getUpdates() {
 				return new AbstractSchema.Update[] {
 						// version 1
@@ -132,7 +127,7 @@ public class TestSQLSchema {
 				};
 			}
 		};
-		var testSchema02 = new TestSchema(database) {
+		var testSchema02 = new SQLSchema(database) {
 			protected AbstractSchema.Update[] getUpdates() {
 				return new AbstractSchema.Update[] {
 						// version 1
