@@ -210,8 +210,7 @@ public class TupleTypeGenerator {
     }
 
     private String getContentString() {
-        return
-                attributes.stream().map(entry -> "this." + entry.name).collect(Collectors.joining(", "));
+        return attributes.stream().map(entry -> "this." + entry.name).collect(Collectors.joining(", "));
     }
 
     private String prefixWithCommaIfPresent(String s) {
@@ -223,7 +222,7 @@ public class TupleTypeGenerator {
     private String getToStringCode() {
         return
                 "\n\t/** Create string representation of this tuple. */\n" +
-                        "\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixWithCommaIfPresent(getContentString()) + ");\n\t}\n";
+                "\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixWithCommaIfPresent(getContentString()) + ");\n\t}\n";
     }
 
     /**
@@ -254,7 +253,7 @@ public class TupleTypeGenerator {
     /**
      * Compile this tuple type as a class.
      *
-     * @return An instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
+     * @return Compilation results.
      */
     public JavaCompiler.CompilationResults compile() {
         loader.unload(getTupleClassName());
@@ -270,15 +269,15 @@ public class TupleTypeGenerator {
                         .collect(Collectors.joining());
         var tupleDef =
                 "package " + TupleTypePackage + ";\n\n" +
-                        "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
-                        "import org.reldb.wrapd.tuples.Tuple;\n\n" +
-                        "/** " + tupleName + " tuple class version " + serialValue + " */\n" +
-                        "public class " + tupleName + " extends Tuple {\n" +
-                        version +
-                        attributeDefs +
-                        getCopyFromCode() +
-                        getToStringCode() +
-                        "}";
+                "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
+                "import org.reldb.wrapd.tuples.Tuple;\n\n" +
+                "/** " + tupleName + " tuple class version " + serialValue + " */\n" +
+                "public class " + tupleName + " extends Tuple {\n" +
+                    version +
+                    attributeDefs +
+                    getCopyFromCode() +
+                    getToStringCode() +
+                "}";
         var compiler = new JavaCompiler(dir);
         return compiler.compileJavaCode(tupleName, TupleTypePackage, tupleDef);
     }
