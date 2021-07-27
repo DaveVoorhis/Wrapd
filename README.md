@@ -93,7 +93,7 @@ In short, Wrapd makes it easy to deploy database creation and database upgrades.
 Wrapd is a bridge between SQL and Java, particularly between JDBC and Java Streams, to reduce the pain of
 the usual SQL-in-Java pain points. That includes avoiding hulking, complicated, awkward ORMs.
 
-There is intentionally no attempt to hide SQL. You use it the way you usually use it in JDBC. Instead, Wrapd exposes it
+There is intentionally no attempt to hide SQL. Instead, Wrapd exposes it
 appropriately -- but preferably _only_ in the database abstraction layer -- and makes it easy to use SQL query results with Java Streams.
 
 That, plus automated schema migration, is Wrapd's main selling point: JDBC-to-Streams, bridged.
