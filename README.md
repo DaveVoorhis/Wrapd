@@ -19,7 +19,7 @@ while staying light, lean, and loveable.
 
 #### SQL Queries are Easy ####
 
-Predefine SQL queries like this, which tests the queries and automatically generates the database access layer, i.e., the Java code to use the queries:
+Predefine SQL queries like this, which tests the queries and automatically generates the database access layer:
 ```java
 public class MyQueryDefinitions extends QueryDefiner {
       ...
