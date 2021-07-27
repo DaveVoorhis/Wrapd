@@ -46,7 +46,7 @@ Version migrations/upgrades can be completely automated.
 
 Create a new 'version 1' database:
 ```java
-var schema = new TestSchema(database) {
+var schema = new SQLSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
             // version 1
@@ -62,7 +62,7 @@ schema.setup();
 
 Later, add a migration from version 1 to version 2:
 ```java
-var schema = new TestSchema(database) {
+var schema = new SQLSchema(database) {
     protected AbstractSchema.Update[] getUpdates() {
         return new AbstractSchema.Update[] {
             // version 1
