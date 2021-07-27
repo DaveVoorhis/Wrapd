@@ -80,10 +80,11 @@ var schema = new TestSchema(database) {
 };
 schema.setup();
 ```
-Embed schema migrations in your applications to automatically create or update their local
-databases on startup.
 
-Run standalone schema migrations on servers to create or update their databases during new-version deployment.
+Use cases:
+* Embed schema migrations in your applications to automatically create or update their local
+databases on startup.
+* Run standalone schema migrations on servers to create or update their databases during new-version deployment.
 
 In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
