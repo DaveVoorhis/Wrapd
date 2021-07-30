@@ -21,15 +21,19 @@ import static org.reldb.wrapd.il8n.Strings.*;
  * Generates Java code to represent a tuple, which is a class that implements Tuple.
  */
 public class TupleTypeGenerator {
+    private static class Attribute {
+        final String name;
+        final Class<?> type;
+        Attribute(String name, Class<?> type) {
+            this.name = name;
+            this.type = type;
+        }
+    }
 
     private final String dir;
     private String tupleName;
-    private boolean existing;
-    private long serialValue = 0;
     private final DirClassLoader loader;
-    private String oldTupleName;
     private final List<Attribute> attributes = new LinkedList<>();
-    private TupleTypeGenerator copyFrom = null;
 
     /** The package name for generated Tuple types. */
     public static final String TupleTypePackage = "org.reldb.wrapd.tuples.generated";
@@ -59,20 +63,6 @@ public class TupleTypeGenerator {
         if (!Directory.chkmkdir(dir))
             throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
         loader = new DirClassLoader(dir, TupleTypePackage);
-        try {
-            var className = TupleTypePackage + "." + tupleName;
-            var tupleClass = loader.forName(className);
-            getDataFields(tupleClass).forEach(field -> attributes.add(new Attribute(field.getName(), field.getType())));
-            try {
-                var serialVersionUIDField = tupleClass.getDeclaredField("serialVersionUID");
-                serialValue = serialVersionUIDField.getLong(null);
-            } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-                serialValue = 9999999;
-            }
-            existing = true;
-        } catch (ClassNotFoundException e) {
-            existing = false;
-        }
     }
 
     /**
@@ -89,29 +79,6 @@ public class TupleTypeGenerator {
     }
 
     /**
-     * Return the ordinal position of an attribute with a given name.
-     *
-     * @param name Attribute name.
-     * @return Ordinal position of attribute; -1 if not found.
-     */
-    public int positionOf(String name) {
-        for (int index = 0; index < attributes.size(); index++) {
-            if (attributes.get(index).name.equals(name))
-                return index;
-        }
-        return -1;
-    }
-
-    /**
-     * Return true if this tuple definition already exists.
-     *
-     * @return True if this tuple definition already exists, false if it is new.
-     */
-    public boolean isExisting() {
-        return existing;
-    }
-
-    /**
      * Add the specified attribute of specified type. NOTE: Will not take effect until compile() has been invoked.
      *
      * @param name Name of new attribute.
@@ -121,84 +88,6 @@ public class TupleTypeGenerator {
         if (typeOf(name) != null)
             throw new ExceptionFatal(Str.ing(ErrAttemptToAddDuplicateAttributeName, name, type.getName(), getTupleClassName()));
         attributes.add(new Attribute(name, type));
-    }
-
-    /**
-     * Remove the specified attribute. NOTE: Will not take effect until compile() has been invoked.
-     *
-     * @param name Attribute to remove.
-     */
-    public void removeAttribute(String name) {
-        int position = positionOf(name);
-        if (position == -1)
-            throw new ExceptionFatal(Str.ing(ErrAttemptToRemoveNonexistentAttribute, name));
-        attributes.remove(position);
-    }
-
-    /**
-     * Change attribute name.
-     *
-     * NOT IMPLEMENTED YET
-     *
-     * @param oldName The name of the attribute.
-     * @param newName The new name of the attribute.
-     * @return Success or failure.
-     */
-    public Object renameAttribute(String oldName, String newName) {
-        // TODO Auto-generated method stub
-        System.out.println("TupleTypeGenerator: renameAttribute not implemented yet.");
-        return null;
-    }
-
-    /**
-     * Change attribute type.
-     *
-     * NOT IMPLEMENTED YET
-     *
-     * @param name The name of the attribute.
-     * @param type The new type of the attribute.
-     * @return Success or failure.
-     */
-    public Object changeAttributeType(String name, Class<?> type) {
-        // TODO Auto-generated method stub
-        System.out.println("TupleTypeGenerator: changeAttributeType not implemented yet.");
-        return null;
-    }
-
-    /**
-     * Rename this tuple type (class) definition and associated files to that specified by newName. NOTE: Will not take effect until compile() has been invoked.
-     *
-     * @param newName The new name, which must follow Java class name identifier rules.
-     */
-    public void rename(String newName) {
-        if (existing && oldTupleName == null)
-            oldTupleName = tupleName;
-        tupleName = newName;
-    }
-
-    /**
-     * Create a new tuple type (class) definition that is a copy of this one. NOTE: Will not take effect until compile() has been invoked.
-     *
-     * @param newName The new name, which must follow Java class name identifier rules.
-     * @return A new TupleTypeGenerator which is a copy of this one.
-     */
-    public TupleTypeGenerator copyTo(String newName) {
-        var target = new TupleTypeGenerator(dir, newName);
-        target.attributes.addAll(attributes);
-        target.serialValue = serialValue + 1;
-        target.copyFrom = this;
-        return target;
-    }
-
-    private String getCopyFromCode() {
-        if (copyFrom == null)
-            return "";
-        return
-                "\n\t/** Method to copy from specified tuple to this tuple.\n\t@param source - tuple to copy from */\n" +
-                        "\tpublic void copyFrom(" + copyFrom.tupleName + " source) {\n" +
-                        attributes.stream().filter(entry -> copyFrom.typeOf(entry.name) != null)
-                                .map(entry -> "\t\tthis." + entry.name + " = source." + entry.name + ";\n").collect(Collectors.joining()) +
-                        "\t}\n";
     }
 
     private String getFormatString() {
@@ -242,40 +131,27 @@ public class TupleTypeGenerator {
     }
 
     /**
-     * Get the tuple serial number.
-     *
-     * @return Serial number.
-     */
-    public long getSerial() {
-        return serialValue;
-    }
-
-    /**
      * Compile this tuple type as a class.
      *
      * @return Compilation results.
      */
     public JavaCompiler.CompilationResults compile() {
         loader.unload(getTupleClassName());
-        if (oldTupleName != null)
-            oldTupleName = null;
-        var version =
-                "\n\t/** Version number */\n" +
-                        "\tpublic static final long serialVersionUID = " + serialValue + ";\n";
         var attributeDefs =
                 attributes
                         .stream()
                         .map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
                         .collect(Collectors.joining());
+        var version =
+                "\n\t/** Version number */\n" +
+                        "\tpublic static final long serialVersionUID = 0L;\n";
         var tupleDef =
                 "package " + TupleTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import org.reldb.wrapd.tuples.Tuple;\n\n" +
-                "/** " + tupleName + " tuple class version " + serialValue + " */\n" +
                 "public class " + tupleName + " extends Tuple {\n" +
                     version +
                     attributeDefs +
-                    getCopyFromCode() +
                     getToStringCode() +
                 "}";
         var compiler = new JavaCompiler(dir);
