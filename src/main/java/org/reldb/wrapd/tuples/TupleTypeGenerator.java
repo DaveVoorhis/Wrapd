@@ -140,9 +140,7 @@ public class TupleTypeGenerator {
                         .stream()
                         .map(entry -> "\n\t/** Field */\n\tpublic " + entry.type.getCanonicalName() + " " + entry.name + ";\n")
                         .collect(Collectors.joining());
-        var version =
-                "\n\t/** Version number */\n" +
-                        "\tpublic static final long serialVersionUID = 0L;\n";
+        var version = "\tpublic static final long serialVersionUID = 0L;\n";
         var tupleDef =
                 "package " + TupleTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
@@ -162,17 +160,7 @@ public class TupleTypeGenerator {
      * @return Class name.
      */
     public String getTupleClassName() {
-        return getTupleClassName(tupleName);
-    }
-
-    /**
-     * Return the fully-qualified class name of the tuple, given a new tuple.
-     *
-     * @param newName New (short) tuple class name.
-     * @return Fully-qualified tuple class name.
-     */
-    public static String getTupleClassName(String newName) {
-        return TupleTypePackage + "." + newName;
+        return TupleTypePackage + "." + tupleName;
     }
 
 }
