@@ -221,13 +221,14 @@ public class ResultSetToTuple {
      *
      * @param codeDir Directory where source code will be stored.
      * @param tupleName Name of tuple class.
+     * @returns True if source code and generated class have been deleted.
      */
-    public static void destroyTuple(String codeDir, String tupleName) {
+    public static boolean destroyTuple(String codeDir, String tupleName) {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
             throw new IllegalArgumentException("tupleName may not be null");
-        TupleTypeGenerator.destroy(codeDir, tupleName);
+        return new TupleTypeGenerator(codeDir, tupleName).destroy();
     }
 
 }

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.reldb.toolbox.il8n.Str;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.*;
 
@@ -89,7 +89,7 @@ public class JavaCompiler {
         File resourceDir = new File(userSourcePath);
         if (!(resourceDir.exists()))
             if (!resourceDir.mkdirs())
-                throw new ExceptionFatal(Str.ing(ErrUnableToCreateResourceDir, resourceDir.toString()));
+                throw new FatalException(Str.ing(ErrUnableToCreateResourceDir, resourceDir.toString()));
         File sourcef;
         try {
             // Convert package to directories
@@ -97,14 +97,14 @@ public class JavaCompiler {
             var packageDirFile = new File(packageDir);
             if (!packageDirFile.exists())
                 if (!packageDirFile.mkdirs())
-                    throw new ExceptionFatal(Str.ing(ErrUnableToCreatePackageDir, packageDirFile.toString()));
+                    throw new FatalException(Str.ing(ErrUnableToCreatePackageDir, packageDirFile.toString()));
             // Write source to a Java source file
             sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
             PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
             sourcePS.print(src);
             sourcePS.close();
         } catch (IOException ioe) {
-            throw new ExceptionFatal(Str.ing(ErrSavingJavaSource, ioe.toString()));
+            throw new FatalException(Str.ing(ErrSavingJavaSource, ioe.toString()));
         }
 
         log.debug(src);

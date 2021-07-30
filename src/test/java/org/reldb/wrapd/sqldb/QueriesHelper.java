@@ -7,7 +7,7 @@ import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.JavaCompiler;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Result;
 
 import java.io.IOException;
@@ -63,7 +63,7 @@ public class QueriesHelper {
 
 	private void ensureTestDirectoryExists() {
 		if (!Directory.chkmkdir(dbHelper.getBaseDir()))
-			throw new ExceptionFatal("Helper: Unable to create directory for test: " + dbHelper.getBaseDir());
+			throw new FatalException("Helper: Unable to create directory for test: " + dbHelper.getBaseDir());
 	}
 
 	private void destroyDatabase(Database database) {

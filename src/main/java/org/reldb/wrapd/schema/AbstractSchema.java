@@ -3,7 +3,7 @@ package org.reldb.wrapd.schema;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.progress.EmptyProgressIndicator;
 import org.reldb.toolbox.progress.ProgressIndicator;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Result;
 
 import static org.reldb.wrapd.il8n.Strings.*;
@@ -81,10 +81,10 @@ public abstract class AbstractSchema {
     public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version == null)
-            return Result.ERROR(new ExceptionFatal(Str.ing(ErrNullVersion)));
+            return Result.ERROR(new FatalException(Str.ing(ErrNullVersion)));
         if (version instanceof VersionIndeterminate) {
             var noVersion = (VersionIndeterminate)version;
-            return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
+            return Result.ERROR(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
         }
         final ProgressIndicator progress = (progressIndicator != null)
             ? progressIndicator
@@ -102,12 +102,12 @@ public abstract class AbstractSchema {
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
                 progress.move(progress.getValue(), "Failed to record update to version " + 0);
-                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
+                return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
             progress.move(progress.getValue() + 1, "Schema created");
         } else {
             if (!(version instanceof VersionNumber))
-                return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
+                return Result.ERROR(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             versionNumber = ((VersionNumber)version).value;
             progress.initialise(updates.length - versionNumber);
         }
@@ -123,16 +123,16 @@ public abstract class AbstractSchema {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
                     progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to exception");
-                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
                     progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to false result");
-                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
                     progress.move(progress.getValue(), "Failed to record update to version " + updateNumber);
-                    return Result.ERROR(new ExceptionFatal(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });

@@ -3,7 +3,7 @@ package org.reldb.wrapd.exceptions;
 /**
  * This exception is thrown when fatal errors are encountered.
  */
-public class ExceptionFatal extends Error {
+public class FatalException extends Error {
 
     static final long serialVersionUID = 0;
 
@@ -12,7 +12,7 @@ public class ExceptionFatal extends Error {
      *
      * @param message Message associated with this error.
      */
-    public ExceptionFatal(String message) {
+    public FatalException(String message) {
         super(message);
     }
 
@@ -22,7 +22,7 @@ public class ExceptionFatal extends Error {
      * @param message Message associated with this error.
      * @param cause Throwable cause of this error.
      */
-    public ExceptionFatal(String message, Throwable cause) {
+    public FatalException(String message, Throwable cause) {
         super(message, cause);
     }
 

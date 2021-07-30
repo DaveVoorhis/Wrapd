@@ -21,10 +21,8 @@ public class TestTupleTypeGenerator {
 		var codeDir = getCodeDirectory();
 		var tupleName = "TestTuple";
 
-		TupleTypeGenerator.destroy(codeDir, tupleName);
-
 		var generator = new TupleTypeGenerator(codeDir, tupleName);
-		
+		generator.destroy();
 		generator.addAttribute("Col1", String.class);
 		generator.addAttribute("Col2", Integer.class);
 		generator.addAttribute("Col3", Boolean.class);

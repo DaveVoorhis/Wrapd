@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.JavaCompiler;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public class QueryTypeGenerator {
         this.sqlText = sqlText;
         this.args = args;
         if (!Directory.chkmkdir(dir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
+            throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
     }
 
     /**

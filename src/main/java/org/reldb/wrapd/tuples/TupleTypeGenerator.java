@@ -4,7 +4,7 @@ import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.JavaCompiler;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -61,8 +61,22 @@ public class TupleTypeGenerator {
         this.dir = dir;
         this.tupleName = tupleName;
         if (!Directory.chkmkdir(dir))
-            throw new ExceptionFatal(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
+            throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
         loader = new DirClassLoader(dir, TupleTypePackage);
+    }
+
+    /**
+     * Delete this tuple type before loading it.
+     *
+     * @return True if source code and class have been successfully deleted.
+     */
+    public boolean destroy() {
+        var pathName = dir + File.separator + TupleTypePackage.replace('.', File.separatorChar) + File.separator + tupleName;
+        var fJava = new File(pathName + ".java");
+        boolean fJavaDelete = fJava.delete();
+        var fClass = new File(pathName + ".class");
+        boolean fClassDelete = fClass.delete();
+        return fJavaDelete && fClassDelete;
     }
 
     /**
@@ -86,7 +100,7 @@ public class TupleTypeGenerator {
      */
     public void addAttribute(String name, Class<?> type) {
         if (typeOf(name) != null)
-            throw new ExceptionFatal(Str.ing(ErrAttemptToAddDuplicateAttributeName, name, type.getName(), getTupleClassName()));
+            throw new FatalException(Str.ing(ErrAttemptToAddDuplicateAttributeName, name, type.getName(), getTupleClassName()));
         attributes.add(new Attribute(name, type));
     }
 
@@ -112,22 +126,6 @@ public class TupleTypeGenerator {
         return
                 "\n\t/** Create string representation of this tuple. */\n" +
                 "\tpublic String toString() {\n\t\treturn String.format(\"" + getFormatString() + "\"" + prefixWithCommaIfPresent(getContentString()) + ");\n\t}\n";
-    }
-
-    /**
-     * Delete this tuple type, given its name, before loading it.
-     *
-     * @param dir The directory containing this Tuple type.
-     * @param className The class name of this Tuple type.
-     * @return True if source code and class have been successfully deleted.
-     */
-    public static boolean destroy(String dir, String className) {
-        var pathName = dir + File.separator + TupleTypePackage.replace('.', File.separatorChar) + File.separator + className;
-        var fJava = new File(pathName + ".java");
-        boolean fJavaDelete = fJava.delete();
-        var fClass = new File(pathName + ".class");
-        boolean fClassDelete = fClass.delete();
-        return fJavaDelete && fClassDelete;
     }
 
     /**

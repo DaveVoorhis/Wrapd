@@ -2,7 +2,7 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.TestDirectory;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.exceptions.ExceptionFatal;
+import org.reldb.wrapd.exceptions.FatalException;
 
 import java.sql.SQLException;
 
@@ -17,7 +17,7 @@ public class DbHelper {
 
     private void ensureTestDirectoryExists() {
         if (!Directory.chkmkdir(baseDir))
-            throw new ExceptionFatal("DbHelper: Unable to create directory for test: " + baseDir);
+            throw new FatalException("DbHelper: Unable to create directory for test: " + baseDir);
     }
 
     public String getBaseDir() {
