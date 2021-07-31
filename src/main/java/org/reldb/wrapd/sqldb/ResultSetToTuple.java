@@ -221,7 +221,7 @@ public class ResultSetToTuple {
      *
      * @param codeDir Directory where source code will be stored.
      * @param tupleName Name of tuple class.
-     * @returns True if source code and generated class have been deleted.
+     * @return True if source code and generated class have been deleted.
      */
     public static boolean destroyTuple(String codeDir, String tupleName) {
         if (codeDir == null)
