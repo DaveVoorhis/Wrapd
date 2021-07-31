@@ -1,5 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.types.Pair;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
@@ -8,6 +9,7 @@ import org.reldb.wrapd.tuples.Tuple;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -202,10 +204,10 @@ public class Xact {
      *
      * @param tuple Tuple to insert.
      * @param tableName Table name.
-     * @return Should return false.
+     * @return List of failures to retrieve one or more fields. Empty if all fields retrieved.
      * @throws SQLException Failure.
      */
-    public boolean insert(Tuple tuple, String tableName) throws SQLException {
+    public List<Tuple.FieldGetFailure> insert(Tuple tuple, String tableName) throws SQLException {
         return tuple.insert(database, connection, tableName);
     }
 
@@ -226,10 +228,12 @@ public class Xact {
      *
      * @param tuple Tuple to update.
      * @param tableName Table name.
-     * @return Should return false.
+     * @return Return a pair of List&lt;<FieldGetFailure&gt; where the left item is the new field
+     *         get failures, and the right item is the original (backup) field get failures.
+     *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.
      */
-    public boolean update(Tuple tuple, String tableName) throws SQLException {
+    public Pair<List<Tuple.FieldGetFailure>, List<Tuple.FieldGetFailure>> update(Tuple tuple, String tableName) throws SQLException {
         return tuple.update(database, connection, tableName);
     }
 

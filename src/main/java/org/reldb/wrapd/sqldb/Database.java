@@ -1,9 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
 import com.mchange.v2.c3p0.DataSources;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
+import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.tuples.Tuple;
@@ -20,14 +19,44 @@ import java.util.stream.Stream;
  */
 public class Database {
 
-    private static final Logger log = LogManager.getLogger(Database.class);
-
     private final DataSource pool;
 
     private final String dbTablenamePrefix;
     private final Customisations customisations;
 
     private final String dbURL;
+
+    private final Vector<SQLListener> sqlListeners = new Vector<>();
+
+    /**
+     * An instance of a SQL query, for monitoring queries processed by a Database.
+     */
+    public static class SQLEvent {
+        /** The SQL text of the query. */
+        public final String sqlText;
+
+        /** Where the query was issued. */
+        public final String location;
+
+        /**
+         * Constructor.
+         *
+         * @param sqlText The SQL text of the query.
+         * @param location Where the query was issued.
+         */
+        public SQLEvent(String sqlText, String location) {
+            this.sqlText = sqlText;
+            this.location = location;
+        }
+    }
+
+    /**
+     * Receiver of SQL queries, for monitoring queries being processed by a Database.
+     */
+    @FunctionalInterface
+    public interface SQLListener {
+        void receive(SQLEvent sqlEvent);
+    }
 
     /**
      * Open a database, given a database URL, user name, password, and table name prefix.
@@ -63,6 +92,23 @@ public class Database {
         }
     }
 
+    public void addSQLListener(SQLListener listener) {
+        sqlListeners.add(listener);
+    }
+
+    public void removeSQLListener(SQLListener listener) {
+        sqlListeners.remove(listener);
+    }
+
+    protected void fireSQLEvent(SQLEvent sqlEvent) {
+        for (SQLListener listener: sqlListeners)
+            listener.receive(sqlEvent);
+    }
+
+    protected void fireSQLEvent(String location, String query) {
+        fireSQLEvent(new SQLEvent(location, query));
+    }
+
     public String toString() {
         return dbURL;
     }
@@ -87,10 +133,6 @@ public class Database {
      */
     public String replaceTableNames(String query) {
         return query.replaceAll("\\$\\$", dbTablenamePrefix);
-    }
-
-    private void showSQL(String location, String query) {
-        log.debug(location + ": " + query);
     }
 
     /**
@@ -171,7 +213,7 @@ public class Database {
     public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             var sqlized = replaceTableNames(sqlStatement);
-            showSQL("updateAll: ", sqlized);
+            fireSQLEvent("updateAll: ", sqlized);
             return statement.execute(sqlized);
         }
     }
@@ -291,7 +333,7 @@ public class Database {
      */
     public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var sqlized = replaceTableNames(query);
-        showSQL("processPreparedStatement: ", sqlized);
+        fireSQLEvent("processPreparedStatement: ", sqlized);
         int argCount = parms.length;
         int parmCount = (int) sqlized.chars().filter(ch -> ch == '?').count();
         if (argCount != parmCount)
@@ -397,8 +439,8 @@ public class Database {
                 return Result.ERROR(e);
             }
             if (!compilationResult.compiled)
-                log.error("ERROR: tuple class failed to compile due to: " + compilationResult.compilerMessages);
-            return Result.BOOLEAN(compilationResult.compiled);
+                return Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages));
+            return Result.OK;
         };
     }
 
@@ -472,7 +514,8 @@ public class Database {
             try {
                 return ResultSetToTuple.toStream(result, tupleClass);
             } catch (Throwable e) {
-                log.error("ERROR: ResultSet to Stream conversion failed due to: ", e);
+                // TODO find a better way to handle this
+                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
                 return null;
             }
         };
@@ -491,7 +534,8 @@ public class Database {
             try {
                 return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
             } catch (Throwable e) {
-                log.error("ERROR: ResultSet to Stream conversion failed due to: ", e);
+                // TODO find a better way to handle this
+                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
                 return null;
             }
         };
@@ -510,7 +554,7 @@ public class Database {
     public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             var sqlized = replaceTableNames(query);
-            showSQL("queryAll: ", sqlized);
+            fireSQLEvent("queryAll: ", sqlized);
             try (ResultSet rs = statement.executeQuery(sqlized)) {
                 return receiver.go(rs);
             }
