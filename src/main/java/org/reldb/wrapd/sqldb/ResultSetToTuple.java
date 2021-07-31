@@ -1,7 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.tuples.Tuple;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
@@ -18,8 +16,6 @@ import java.util.stream.Stream;
  * Tools for creating Tuple-derived classes from ResultSetS and for turning ResultSetS into Tuple-derived instances for processing directly or as a List or Stream.
  */
 public class ResultSetToTuple {
-
-    private static final Logger log = LogManager.getLogger(ResultSetToTuple.class.toString());
 
     /**
      * Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
@@ -45,17 +41,11 @@ public class ResultSetToTuple {
         var metadata = results.getMetaData();
         for (int column = 1; column <= metadata.getColumnCount(); column++) {
             var name = metadata.getColumnName(column);
-            var sqlType = metadata.getColumnType(column);
             var sqlTypeName = metadata.getColumnTypeName(column);
             var columnClassName = metadata.getColumnClassName(column);
             if (customisations != null) {
                 columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
             }
-            log.debug("ResultSetToTuple:"
-                    + " columnName = " + name
-                    + " columnClassName = " + columnClassName
-                    + " sqlType = " + sqlType
-                    + " sqlTypeName = " + sqlTypeName);
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
@@ -72,7 +62,7 @@ public class ResultSetToTuple {
          *
          * @param tupleType A tuple of type T (which extends Tuple.)
          */
-        void process(T tupleType);
+        void process(T tupleType) throws Throwable;
     }
 
     /**
@@ -90,8 +80,9 @@ public class ResultSetToTuple {
      * @throws InstantiationException thrown if unable to instantiate tuple class
      * @throws SQLException thrown if accessing ResultSet fails
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws NoSuchMethodException, SecurityException, SQLException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchFieldException {
+    public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws Throwable {
         if (resultSet == null)
             throw new IllegalArgumentException("resultSet may not be null");
         if (tupleType == null)
@@ -140,8 +131,9 @@ public class ResultSetToTuple {
      * @throws InstantiationException thrown if unable to instantiate tuple class
      * @throws SQLException thrown if accessing ResultSet fails
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+    public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws Throwable {
         var rows = new LinkedList<T>();
         process(resultSet, tupleType, rows::add);
         return rows;
@@ -162,15 +154,12 @@ public class ResultSetToTuple {
      * @throws InstantiationException thrown if unable to instantiate tuple class
      * @throws SQLException thrown if accessing ResultSet fails
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> List<T> toListForUpdate(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+    public static <T extends Tuple> List<T> toListForUpdate(ResultSet resultSet, Class<T> tupleType) throws Throwable {
         var rows = new LinkedList<T>();
         process(resultSet, tupleType, tuple -> {
-            try {
-                tuple.backup();
-            } catch (CloneNotSupportedException e) {
-                log.error("ERROR: toListForUpdate: Unable to clone tuple of type " + tupleType.getName(), e);
-            }
+            tuple.backup();
             rows.add(tuple);
         });
         return rows;
@@ -191,8 +180,9 @@ public class ResultSetToTuple {
      * @throws InstantiationException thrown if unable to instantiate tuple class
      * @throws SQLException thrown if accessing ResultSet fails
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> Stream<T> toStream(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+    public static <T extends Tuple> Stream<T> toStream(ResultSet resultSet, Class<T> tupleType) throws Throwable {
         return toList(resultSet, tupleType).stream();
     }
 
@@ -211,8 +201,9 @@ public class ResultSetToTuple {
      * @throws InstantiationException thrown if unable to instantiate tuple class
      * @throws SQLException thrown if accessing ResultSet fails
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
+     * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> Stream<T> toStreamForUpdate(ResultSet resultSet, Class<T> tupleType) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, SQLException, NoSuchFieldException {
+    public static <T extends Tuple> Stream<T> toStreamForUpdate(ResultSet resultSet, Class<T> tupleType) throws Throwable {
         return toListForUpdate(resultSet, tupleType).stream();
     }
 
