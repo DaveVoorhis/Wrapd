@@ -31,7 +31,7 @@ public class TupleTypeGenerator {
     }
 
     private final String dir;
-    private String tupleName;
+    private final String tupleName;
     private final DirClassLoader loader;
     private final List<Attribute> attributes = new LinkedList<>();
 
