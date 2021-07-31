@@ -1,7 +1,5 @@
 package org.reldb.wrapd.compiler;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
@@ -16,8 +14,6 @@ import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
  * Machinery for compiling Java code.
  */
 public class JavaCompiler {
-    private final static Logger log = LogManager.getLogger(JavaCompiler.class);
-
     private final String userSourcePath;
 
     /**
@@ -30,7 +26,7 @@ public class JavaCompiler {
     }
 
     /**
-     * Encapsulates results of compilation, including compiler messages.
+     * Encapsulates parameters to and results of compilation, including compiler messages.
      */
     public static class CompilationResults {
         /** True if compilation successful. */
@@ -39,15 +35,30 @@ public class JavaCompiler {
         /** The compiler messages. */
         public final String compilerMessages;
 
+        /** The compiler invocation commandline */
+        public final String commandLine;
+
+        /** The source code to be compiled. */
+        public final String source;
+
+        /** The filespec of the file to be compiled. */
+        public final File sourceFile;
+
         /**
          * Constructor.
          *
          * @param compiled True if compilation successful.
          * @param compilerMessages Compiler-generated messages.
+         * @param commandLine Compiler-invocation command-line.
+         * @param source Source code to be compiled.
+         * @param sourceFile Filespec of the file to be compiled.
          */
-        public CompilationResults(boolean compiled, String compilerMessages) {
+        public CompilationResults(boolean compiled, String compilerMessages, String commandLine, String source, File sourceFile) {
             this.compiled = compiled;
             this.compilerMessages = compilerMessages;
+            this.commandLine = commandLine;
+            this.source = source;
+            this.sourceFile = sourceFile;
         }
 
         /**
@@ -107,14 +118,10 @@ public class JavaCompiler {
             throw new FatalException(Str.ing(ErrSavingJavaSource, ioe.toString()));
         }
 
-        log.debug(src);
-        log.debug("\nCompile:\n" + sourcef);
-
         // Start compilation using JDT
         String commandLine = "-14 -source 14 -warn:" +
                 warningSetting + " " +
                 "-cp " + classpath + " \"" + sourcef + "\"";
-        log.debug("Compile command: " + commandLine);
         boolean compiled = BatchCompiler.compile(
                 commandLine,
                 new PrintWriter(messageStream),
@@ -149,8 +156,7 @@ public class JavaCompiler {
             }
             compilerMessages.append(str).append('\n');
         }
-        log.debug(compilerMessages.toString());
-        return new CompilationResults(compiled, compilerMessages.toString());
+        return new CompilationResults(compiled, compilerMessages.toString(), commandLine, src, sourcef);
     }
 
     /**
