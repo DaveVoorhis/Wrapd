@@ -1,5 +1,4 @@
-package org.reldb.toolbox.types;
-
 /**
- * Miscellaneous useful utility types.
+ * Miscellaneous useful types.
  */
+package org.reldb.toolbox.types;
