@@ -16,7 +16,7 @@ import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
  * Machinery for compiling Java code.
  */
 public class JavaCompiler {
-    private final static Logger log = LogManager.getLogger(JavaCompiler.class.toString());
+    private final static Logger log = LogManager.getLogger(JavaCompiler.class);
 
     private final String userSourcePath;
 
