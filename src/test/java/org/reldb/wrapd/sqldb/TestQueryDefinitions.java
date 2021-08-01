@@ -27,20 +27,19 @@ public class TestQueryDefinitions {
     }
 
     public static List<TestParms> dbProvider() throws SQLException {
-        var testStagePrompt = "[TSET]";
         var parms = new TestParms[] {
                 new TestParms(
                         org.reldb.wrapd.sqldb.mysql.Configuration.dbPackage,
                         org.reldb.wrapd.sqldb.mysql.Configuration.dbName,
-                        org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt)),
+                        org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase()),
                 new TestParms(
                         org.reldb.wrapd.sqldb.postgresql.Configuration.dbPackage,
                         org.reldb.wrapd.sqldb.postgresql.Configuration.dbName,
-                        org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt)),
+                        org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase()),
                 new TestParms(
                         org.reldb.wrapd.sqldb.sqlite.Configuration.dbPackage,
                         org.reldb.wrapd.sqldb.sqlite.Configuration.dbName,
-                        org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt))
+                        org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase())
         };
         return List.of(parms);
     }

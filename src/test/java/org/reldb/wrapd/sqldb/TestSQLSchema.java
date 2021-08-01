@@ -13,16 +13,16 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 
 public class TestSQLSchema {
 
 	private static List<Database> dbProvider() throws SQLException {
-		var testStagePrompt = "[TSET]";
 		var db = new Database[] {
-				org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(testStagePrompt),
-				org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(testStagePrompt),
-				org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase(testStagePrompt)
+				org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(),
+				org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(),
+				org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase()
 		};
 		return List.of(db);
 	}
@@ -46,7 +46,7 @@ public class TestSQLSchema {
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertEquals(true, result.isOk());
+		assertTrue(result.isOk());
 	}
 
 	@ParameterizedTest
@@ -73,7 +73,7 @@ public class TestSQLSchema {
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertEquals(true, result.isOk());
+		assertTrue(result.isOk());
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
@@ -103,7 +103,7 @@ public class TestSQLSchema {
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		System.out.println("NOTE: The following should be an error.");
 		result.printIfError();
-		assertEquals(true, result.isError());
+		assertTrue(result.isError());
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
@@ -145,11 +145,11 @@ public class TestSQLSchema {
 		};
 		var result1 = testSchema01.setup(new ConsoleProgressIndicator());
 		result1.printIfError();
-		assertEquals(true, result1.isOk());
+		assertTrue(result1.isOk());
 		assertEquals(1, ((VersionNumber)testSchema01.getVersion()).value);
 		var result2 = testSchema02.setup(new ConsoleProgressIndicator());
 		result2.printIfError();
-		assertEquals(true, result1.isOk());
+		assertTrue(result1.isOk());
 		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
 	}
 
