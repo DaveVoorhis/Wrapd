@@ -1,6 +1,7 @@
 package org.reldb.wrapd.sqldb;
 
 import com.mchange.v2.c3p0.DataSources;
+import org.reldb.toolbox.events.EventHandler;
 import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
@@ -26,8 +27,6 @@ public class Database {
 
     private final String dbURL;
 
-    private final Vector<SQLListener> sqlListeners = new Vector<>();
-
     /**
      * An instance of a SQL query, for monitoring queries processed by a Database.
      */
@@ -50,13 +49,8 @@ public class Database {
         }
     }
 
-    /**
-     * Receiver of SQL queries, for monitoring queries being processed by a Database.
-     */
-    @FunctionalInterface
-    public interface SQLListener {
-        void receive(SQLEvent sqlEvent);
-    }
+    /** Subscribe to monitor queries processed by a Database. */
+    public final EventHandler<SQLEvent> sqlEvents = new EventHandler<>();
 
     /**
      * Open a database, given a database URL, user name, password, and table name prefix.
@@ -92,21 +86,8 @@ public class Database {
         }
     }
 
-    public void addSQLListener(SQLListener listener) {
-        sqlListeners.add(listener);
-    }
-
-    public void removeSQLListener(SQLListener listener) {
-        sqlListeners.remove(listener);
-    }
-
-    protected void fireSQLEvent(SQLEvent sqlEvent) {
-        for (SQLListener listener: sqlListeners)
-            listener.receive(sqlEvent);
-    }
-
-    protected void fireSQLEvent(String location, String query) {
-        fireSQLEvent(new SQLEvent(location, query));
+    protected void distributeSQLEvent(String location, String query) {
+        sqlEvents.distribute(new SQLEvent(location, query));
     }
 
     public String toString() {
@@ -213,7 +194,7 @@ public class Database {
     public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             var sqlized = replaceTableNames(sqlStatement);
-            fireSQLEvent("updateAll: ", sqlized);
+            distributeSQLEvent("updateAll: ", sqlized);
             return statement.execute(sqlized);
         }
     }
@@ -333,7 +314,7 @@ public class Database {
      */
     public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var sqlized = replaceTableNames(query);
-        fireSQLEvent("processPreparedStatement: ", sqlized);
+        distributeSQLEvent("processPreparedStatement: ", sqlized);
         int argCount = parms.length;
         int parmCount = (int) sqlized.chars().filter(ch -> ch == '?').count();
         if (argCount != parmCount)
@@ -554,7 +535,7 @@ public class Database {
     public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
         try (Statement statement = connection.createStatement()) {
             var sqlized = replaceTableNames(query);
-            fireSQLEvent("queryAll: ", sqlized);
+            distributeSQLEvent("queryAll: ", sqlized);
             try (ResultSet rs = statement.executeQuery(sqlized)) {
                 return receiver.go(rs);
             }
