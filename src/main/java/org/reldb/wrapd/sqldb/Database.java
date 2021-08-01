@@ -422,7 +422,7 @@ public class Database {
             CompilationResults compilationResult;
             try {
                 compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
-            } catch (ClassNotFoundException e) {
+            } catch (Throwable e) {
                 return Result.ERROR(e);
             }
             if (!compilationResult.compiled)
@@ -855,7 +855,7 @@ public class Database {
                 connection.setAutoCommit(false);
                 try {
                     result = transactionRunner.run(connection);
-                } catch (SQLException t) {
+                } catch (Throwable t) {
                     connection.rollback();
                     result = Result.ERROR(t);
                     return;
