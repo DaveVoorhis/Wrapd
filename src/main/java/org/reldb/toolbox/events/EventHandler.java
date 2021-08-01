@@ -3,18 +3,18 @@ package org.reldb.toolbox.events;
 import java.util.Vector;
 
 /**
- * A generic event handler. Typically, declared like the following:
- * 
- *    public final EventHandler&lt;MyEvent&gt; myEvent = new EventHandler&lt;&gt;();
- *    
+ * A generic event handler. Typically, declared in the event-generating class like the following:
+ * <blockquote>
+ *    <pre>public final EventHandler&lt;MyEvent&gt; myEvent = new EventHandler&lt;&gt;();</pre>
+ * </blockquote>
  * To distribute a message to listeners:
- * 
- *    myEvent.distribute(new MyEvent());
- *    
+ * <blockquote>
+ *    <pre>myEvent.distribute(new MyEvent());</pre>
+ * </blockquote>
  * To add a listener:
- * 
- *    myEvent.addListener(event -> { do something here });
- *
+ * <blockquote>
+ *    <pre>myEvent.addListener(event -> { do something here });</pre>
+ * </blockquote>
  * @param <Event> The event type.
  */
 public class EventHandler<Event> {
