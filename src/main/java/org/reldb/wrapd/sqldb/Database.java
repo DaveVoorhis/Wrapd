@@ -9,7 +9,6 @@ import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.tuples.Tuple;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.*;
 import java.util.*;
@@ -28,7 +27,7 @@ public class Database {
     private final String dbURL;
 
     /**
-     * An instance of a SQL query, for monitoring queries processed by a Database.
+     * An instance of an SQL query, for monitoring queries processed by a Database.
      */
     public static class SQLEvent {
         /** The SQL text of the query. */
@@ -242,7 +241,7 @@ public class Database {
     }
 
     /**
-     * Represents a SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
+     * Represents an SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
      */
     private static class Null {
         /** The {@link java.sql.Types} enum value for this Null. */
@@ -490,15 +489,16 @@ public class Database {
      *
      * @param <T> T extends Tuple.
      * @param tupleClass The stream will be of instances of tupleClass.
-     * @return Stream&lt;T&gt; Result stream.
+     * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt;.
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
+                //throw new Exception("Deliberate test exception in newResultSetToStream.");
                 return ResultSetToTuple.toStream(result, tupleClass);
             } catch (Throwable e) {
                 // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
+                System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStream due to: " + e);
                 return null;
             }
         };
@@ -510,15 +510,17 @@ public class Database {
      *
      * @param <T> T extends Tuple.
      * @param tupleClass The stream will be of instances of tupleClass.
-     * @return Stream&lt;T&gt; with backup() invoked for each T instance.
+     * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt; where the stream of tuples will have
+     *         backup() invoked for each instance.
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
-                return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
+                throw new Exception("Deliberate test exception in newResultSetToStreamForUpdate.");
+                // return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
             } catch (Throwable e) {
                 // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
+                System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStreamForUpdate due to: " + e);
                 return null;
             }
         };
@@ -539,7 +541,13 @@ public class Database {
             var sqlized = replaceTableNames(query);
             distributeSQLEvent("queryAll: ", sqlized);
             try (ResultSet rs = statement.executeQuery(sqlized)) {
-                return receiver.go(rs);
+                // TODO find a better way to handle this
+                System.out.println("In Database queryAll: receiver = " + receiver);
+                var v = receiver.go(rs);
+                System.out.println("In Database queryAll: v = " + v);
+                if (v == null)
+                    throw new SQLException("Failure inside ResultSetReceiver in queryAll.");
+                return v;
             }
         }
     }
@@ -729,7 +737,13 @@ public class Database {
     public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return usePreparedStatement(statement -> {
             try (ResultSet rs = statement.executeQuery()) {
-                return receiver.go(rs);
+                // TODO find a better way to handle this
+                System.out.println("In Database query: receiver = " + receiver);
+                var v = receiver.go(rs);
+                System.out.println("In Database query: v = " + v);
+                if (v == null)
+                    throw new SQLException("Failure inside ResultSetReceiver in query.");
+                return v;
             }
         }, connection, query, parms);
     }
