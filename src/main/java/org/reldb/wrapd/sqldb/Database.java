@@ -60,9 +60,9 @@ public class Database {
      * @param dbPassword Database password
      * @param dbTablenamePrefix Table name prefix
      * @param customisations DBMS-specific customisations
-     * @throws IOException Error
+     * @throws SQLException Error.
      */
-    public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws IOException {
+    public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws SQLException {
         this.dbURL = dbURL;
 
         if (dbURL == null)
@@ -77,13 +77,9 @@ public class Database {
         if (dbPassword != null)
             props.setProperty("password", dbPassword);
 
-        try {
-            DriverManager.getConnection(dbURL, props).close();
-            DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
-            pool = DataSources.pooledDataSource(unpooledSource);
-        } catch (SQLException e) {
-            throw new IOException("Database connection to " + dbURL + " failed. Please check that the database exists and the credentials are correct: " + e.getMessage());
-        }
+        DriverManager.getConnection(dbURL, props).close();
+        DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
+        pool = DataSources.pooledDataSource(unpooledSource);
     }
 
     /**
@@ -106,9 +102,9 @@ public class Database {
      * @param dbURL Database URL.
      * @param dbTablenamePrefix Table name prefix.
      * @param customisations DBMS-specific customisations.
-     * @throws IOException Error.
+     * @throws SQLException Error.
      */
-    public Database(String dbURL, String dbTablenamePrefix, Customisations customisations) throws IOException {
+    public Database(String dbURL, String dbTablenamePrefix, Customisations customisations) throws SQLException {
         this(dbURL, null, null, dbTablenamePrefix, customisations);
     }
 
