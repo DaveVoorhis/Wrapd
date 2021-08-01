@@ -41,12 +41,12 @@ public class Database {
         /**
          * Constructor.
          *
-         * @param sqlText The SQL text of the query.
          * @param location Where the query was issued.
+         * @param sqlText The SQL text of the query.
          */
-        public SQLEvent(String sqlText, String location) {
-            this.sqlText = sqlText;
+        public SQLEvent(String location, String sqlText) {
             this.location = location;
+            this.sqlText = sqlText;
         }
     }
 
