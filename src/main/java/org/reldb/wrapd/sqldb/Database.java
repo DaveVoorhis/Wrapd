@@ -86,6 +86,12 @@ public class Database {
         }
     }
 
+    /**
+     * Distribute a SQLEvent to interested listeners.
+     *
+     * @param location Where the query was generated or processed.
+     * @param query The SQL text of the query.
+     */
     protected void distributeSQLEvent(String location, String query) {
         sqlEvents.distribute(new SQLEvent(location, query));
     }

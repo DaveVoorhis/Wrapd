@@ -113,7 +113,7 @@ public abstract class Tuple implements Serializable, Cloneable {
      * @param database Database.
      * @param connection Connection to database, typically obtained via a Transaction.
      * @param tableName Table name.
-     * @return Return a pair of List&lt;<FieldGetFailure&gt; where the left item is the new field
+     * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
      *         get failures, and the right item is the original (backup) field get failures.
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.
@@ -162,7 +162,7 @@ public abstract class Tuple implements Serializable, Cloneable {
      *
      * @param database Database.
      * @param tableName Table name.
-     * @return Return a pair of List&lt;<FieldGetFailure&gt; where the left item is the new field
+     * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
      *         get failures, and the right item is the original (backup) field get failures.
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.

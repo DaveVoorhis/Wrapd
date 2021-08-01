@@ -228,7 +228,7 @@ public class Xact {
      *
      * @param tuple Tuple to update.
      * @param tableName Table name.
-     * @return Return a pair of List&lt;<FieldGetFailure&gt; where the left item is the new field
+     * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
      *         get failures, and the right item is the original (backup) field get failures.
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.

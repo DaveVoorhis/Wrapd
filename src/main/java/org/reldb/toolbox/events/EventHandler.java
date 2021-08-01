@@ -5,7 +5,7 @@ import java.util.Vector;
 /**
  * A generic event handler. Typically, declared like the following:
  * 
- *    public final EventHandler<MyEvent> myEvent = new EventHandler<>();
+ *    public final EventHandler&lt;MyEvent&gt; myEvent = new EventHandler&lt;&gt;();
  *    
  * To distribute a message to listeners:
  * 

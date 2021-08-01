@@ -7,5 +7,10 @@ package org.reldb.toolbox.events;
  */
 @FunctionalInterface
 public interface EventListener<Event> {
+	/**
+	 * Send a notification to a listener.
+	 *
+	 * @param event The notification being sent.
+	 */
 	void notify(Event event);
 }
