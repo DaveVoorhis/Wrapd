@@ -18,6 +18,12 @@ dependencies {
     implementation 'org.eclipse.jdt:ecj:3.26.0'
 }
 
+// only for WrapDemo
+dependencies {
+    implementation 'mysql:mysql-connector-java:8.0.25'
+    compile files("./_TestData/WrapDemo/code")
+}
+
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
     testImplementation 'org.junit.platform:junit-platform-runner:1.7.2'
