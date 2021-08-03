@@ -40,7 +40,7 @@ public class QueryDefinition {
             ? database.createTupleFromQueryAll(codeDirectory, packageSpec, tupleClassName, sqlText)
             : database.createTupleFromQuery(codeDirectory, packageSpec, tupleClassName, sqlText, args);
         if (tupleClassCreated.isOk()) {
-            var queryGenerator = new QueryTypeGenerator(codeDirectory, queryName, sqlText, args);
+            var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
             var results = queryGenerator.compile();
             if (!results.compiled)
                 throw new FatalException("Unable to generate Query derivative " + queryName + ": " + results.compilerMessages);
