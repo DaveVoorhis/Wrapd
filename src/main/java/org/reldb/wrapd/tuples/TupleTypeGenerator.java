@@ -32,11 +32,9 @@ public class TupleTypeGenerator {
 
     private final String dir;
     private final String tupleName;
+    private final String tupleTypePackage;
     private final DirClassLoader loader;
     private final List<Attribute> attributes = new LinkedList<>();
-
-    /** The package name for generated Tuple types. */
-    public static final String TupleTypePackage = "org.reldb.wrapd.tuples.generated";
 
     /**
      * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
@@ -53,16 +51,18 @@ public class TupleTypeGenerator {
      * Create a generator of compiled Tuple-derived classes, which can be used to conveniently receive SELECT query results and generate INSERT and UPDATE queries.
      *
      * @param dir Directory into which generated class(es) will be put.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleName Name of generated tuple class.
      */
-    public TupleTypeGenerator(String dir, String tupleName) {
-        if (tupleName.startsWith(TupleTypePackage))
-            tupleName = tupleName.substring(TupleTypePackage.length() + 1);
+    public TupleTypeGenerator(String dir, String packageSpec, String tupleName) {
+        this.tupleTypePackage = packageSpec;
+        if (tupleName.startsWith(tupleTypePackage))
+            tupleName = tupleName.substring(tupleTypePackage.length() + 1);
         this.dir = dir;
         this.tupleName = tupleName;
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        loader = new DirClassLoader(dir, TupleTypePackage);
+        loader = new DirClassLoader(dir, tupleTypePackage);
     }
 
     /**
@@ -71,7 +71,7 @@ public class TupleTypeGenerator {
      * @return True if source code and class have been successfully deleted.
      */
     public boolean destroy() {
-        var pathName = dir + File.separator + TupleTypePackage.replace('.', File.separatorChar) + File.separator + tupleName;
+        var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + tupleName;
         var fJava = new File(pathName + ".java");
         boolean fJavaDelete = fJava.delete();
         var fClass = new File(pathName + ".class");
@@ -142,7 +142,7 @@ public class TupleTypeGenerator {
                         .collect(Collectors.joining());
         var version = "\tpublic static final long serialVersionUID = 0L;\n";
         var tupleDef =
-                "package " + TupleTypePackage + ";\n\n" +
+                "package " + tupleTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import org.reldb.wrapd.tuples.Tuple;\n\n" +
                 "public class " + tupleName + " extends Tuple {\n" +
@@ -151,7 +151,7 @@ public class TupleTypeGenerator {
                     getToStringCode() +
                 "}";
         var compiler = new JavaCompiler(dir);
-        return compiler.compileJavaCode(tupleName, TupleTypePackage, tupleDef);
+        return compiler.compileJavaCode(tupleName, tupleTypePackage, tupleDef);
     }
 
     /**
@@ -160,7 +160,7 @@ public class TupleTypeGenerator {
      * @return Class name.
      */
     public String getTupleClassName() {
-        return TupleTypePackage + "." + tupleName;
+        return tupleTypePackage + "." + tupleName;
     }
 
 }
