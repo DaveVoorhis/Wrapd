@@ -408,15 +408,16 @@ public class Database {
      * Obtain a lambda to generate a new Tuple-derived class from a ResultSet.
      *
      * @param codeDirectory Directory into which generated class (both source and .class) will be placed.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name for new tuple class.
      * @param customisations Customisations for specific DBMS types.
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
+    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             CompilationResults compilationResult;
             try {
-                compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
+                compilationResult = ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
             } catch (Throwable e) {
                 return Result.ERROR(e);
             }
@@ -431,13 +432,14 @@ public class Database {
      *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return queryAll(connection, query, resultSetReceiver);
     }
 
@@ -445,13 +447,14 @@ public class Database {
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query))).getResult();
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query))).getResult();
     }
 
     /**
@@ -459,14 +462,15 @@ public class Database {
      *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return query(connection, query, resultSetReceiver, parms);
     }
 
@@ -474,14 +478,15 @@ public class Database {
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms))).getResult();
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms))).getResult();
     }
 
     /**
@@ -494,8 +499,8 @@ public class Database {
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                //throw new Exception("Deliberate test exception in newResultSetToStream.");
-                return ResultSetToTuple.toStream(result, tupleClass);
+                throw new Exception("Deliberate test exception in newResultSetToStream.");
+                //return ResultSetToTuple.toStream(result, tupleClass);
             } catch (Throwable e) {
                 // TODO find a better way to handle this
                 System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStream due to: " + e);
