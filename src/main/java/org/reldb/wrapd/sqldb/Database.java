@@ -499,8 +499,8 @@ public class Database {
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                throw new Exception("Deliberate test exception in newResultSetToStream.");
-                //return ResultSetToTuple.toStream(result, tupleClass);
+                //throw new Exception("Deliberate test exception in newResultSetToStream.");
+                return ResultSetToTuple.toStream(result, tupleClass);
             } catch (Throwable e) {
                 // TODO find a better way to handle this
                 System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStream due to: " + e);
