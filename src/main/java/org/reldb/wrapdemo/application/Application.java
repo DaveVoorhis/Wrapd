@@ -2,11 +2,12 @@ package org.reldb.wrapdemo.application;
 
 import org.reldb.wrapdemo.database.mysql.GetDatabase;
 
-import org.reldb.wrapd.tuples.generated.*;
+import org.reldb.wrapdemo.generated.*;
 
 import java.sql.SQLException;
 
 public class Application {
+
     public static void populate() throws SQLException {
         var database = GetDatabase.getDatabase();
         for (int x = 1000; x < 1010; x++) {
@@ -18,11 +19,17 @@ public class Application {
     }
 
     public static void main(String args[]) {
-        try {
-            populate();
-        } catch (SQLException e) {
-            System.out.println("ERROR in Application: main: populate(): " + e);
-        }
+            try {
+                populate();
+            } catch (Throwable t) {
+                System.out.println("ERROR populating db: " + t);
+            }
+            try {
+                Query04.query(GetDatabase.getDatabase())
+                        .forEach(row -> System.out.println("Row: x = " + row.x));
+            } catch (Throwable t) {
+                System.out.println("ERROR querying db: " + t);
+            }
     }
 
 }

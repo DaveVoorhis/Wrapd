@@ -14,9 +14,10 @@ public class Queries extends QueryDefiner {
      *
      * @param database      Database
      * @param codeDirectory Directory for Tuple-derived classes.
+     * @param packageSpec The package, in dotted notation, to which the generated code belongs.
      */
-    public Queries(Database database, String codeDirectory) {
-        super(database, codeDirectory);
+    public Queries(Database database, String codeDirectory, String packageSpec) {
+        super(database, codeDirectory, packageSpec);
     }
 
     public QueryDefinition QueryDefinition01() {
@@ -43,12 +44,13 @@ public class Queries extends QueryDefiner {
             System.out.println("ERROR in Queries: main: GetDatabase.getDatabase(): " + e);
             return;
         }
-        var codeDirectory = "./_TestData/WrapDemo/code";
+        var codeDirectory = "src/main/java";
+        var codePackage = "org.reldb.wrapdemo.generated";
         if (!Directory.chkmkdir(codeDirectory)) {
             System.out.println("ERROR creating code directory " + codeDirectory);
             return;
         }
-        var queryDefinitions = new Queries(db, codeDirectory);
+        var queryDefinitions = new Queries(db, codeDirectory, codePackage);
         try {
             queryDefinitions.generate();
         } catch (QueryDefinerException e) {
