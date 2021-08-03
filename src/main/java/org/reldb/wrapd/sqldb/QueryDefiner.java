@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 public class QueryDefiner {
     private final Database database;
     private final String codeDirectory;
+    private final String packageSpec;
 
     /**
      * A QueryDefiner exception.
@@ -34,14 +35,16 @@ public class QueryDefiner {
     }
 
     /**
-     * Create a QueryDefiner, given a Database and the directory where Tuple-derived classes will be stored.
+     * Create a QueryDefiner, given a Database, the directory where Tuple-derived classes will be stored, and their package.
      *
      * @param database Database
      * @param codeDirectory Directory for Tuple-derived classes.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      */
-    public QueryDefiner(Database database, String codeDirectory) {
+    public QueryDefiner(Database database, String codeDirectory, String packageSpec) {
         this.database = database;
         this.codeDirectory = codeDirectory;
+        this.packageSpec = packageSpec;
     }
 
     /**
@@ -63,6 +66,13 @@ public class QueryDefiner {
     }
 
     /**
+     * Return the package for generated code.
+     */
+    public String getPackageSpec() {
+        return packageSpec;
+    }
+
+    /**
      * Run the QueryDefinition against the specified Database (see @QueryDefiner's constructor)
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
@@ -70,7 +80,7 @@ public class QueryDefiner {
      * @throws Exception Failed.
      */
     protected void generate(QueryDefinition definition) throws Exception {
-        definition.generate(getDatabase(), getCodeDirectory());
+        definition.generate(getDatabase(), getCodeDirectory(), getPackageSpec());
     }
 
     /**
