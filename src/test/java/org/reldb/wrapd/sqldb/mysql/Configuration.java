@@ -1,11 +1,5 @@
 package org.reldb.wrapd.sqldb.mysql;
 
-import org.junit.jupiter.api.Test;
-import org.reldb.TestDirectory;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
 public class Configuration {
 
 	public static final String dbName = "MySQL";

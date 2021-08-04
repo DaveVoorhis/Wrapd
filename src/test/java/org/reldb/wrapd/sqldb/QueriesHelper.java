@@ -5,6 +5,7 @@ import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
+import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.FatalException;
@@ -24,8 +25,6 @@ import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 public class QueriesHelper {
 
 	private final static String testSourceName = "Test_Source01";
-
-	private static final String testPackage = "org.reldb.wrapd.tuples.generated";
 
 	private static class Replacement {
 		public final String from;
@@ -79,15 +78,15 @@ public class QueriesHelper {
 	}
 
 	private void destroyTupleClass() {
-		ResultSetToTuple.destroyTuple(getCodeDir(), tupleClassName);
+		ResultSetToTuple.destroyTuple(getCodeDir(), TestConfiguration.Package, tupleClassName);
 	}
 
 	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(getCodeDir(), tupleClassName, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(getCodeDir(), TestConfiguration.Package, tupleClassName, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws QueryDefiner.QueryDefinerException {
-		(new QueryDefinitions(database, getCodeDir(), queryClassName)).generate();
+		(new QueryDefinitions(database, getCodeDir(), TestConfiguration.Package, queryClassName)).generate();
 	}
 
 	private void setup(Database database) throws SQLException, QueryDefiner.QueryDefinerException {
@@ -99,8 +98,8 @@ public class QueriesHelper {
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
-		var dirClassLoader = new DirClassLoader(getCodeDir(), testPackage);
-		var testClassFullname = testPackage + "." + testTargetName;
+		var dirClassLoader = new DirClassLoader(getCodeDir(), TestConfiguration.Package);
+		var testClassFullname = TestConfiguration.Package + "." + testTargetName;
 		return dirClassLoader.forName(testClassFullname);
 	}
 
@@ -121,7 +120,7 @@ public class QueriesHelper {
 			source = source.replace(replacement.from, replacement.to);
 		var compiler = new JavaCompiler(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
-		return compiler.compileJavaCode(classpath, testTargetName, testPackage, source);
+		return compiler.compileJavaCode(classpath, testTargetName, TestConfiguration.Package, source);
 	}
 
 	private void run() throws IOException, ClassNotFoundException {

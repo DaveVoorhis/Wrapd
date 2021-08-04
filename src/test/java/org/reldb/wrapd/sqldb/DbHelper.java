@@ -1,6 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.TestDirectory;
+import org.reldb.wrapd.TestConfiguration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.FatalException;
 
@@ -8,10 +8,10 @@ import java.sql.SQLException;
 
 public class DbHelper {
 
-    private String baseDir;
+    private final String baseDir;
 
     public DbHelper(String dbName) {
-        baseDir = TestDirectory.Is + dbName;
+        baseDir = TestConfiguration.Directory + dbName;
         ensureTestDirectoryExists();
     }
 

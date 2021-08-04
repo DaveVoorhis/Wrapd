@@ -1,4 +1,5 @@
 package org.reldb.wrapd.tuples.generated;
+// NOTE: above package must match Package in TestConfiguration.java
 
 /* NOTE: This is a template. Content will be replaced at runtime. See <db> and <dbpackage>. */
 
