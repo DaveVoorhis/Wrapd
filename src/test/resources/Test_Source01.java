@@ -1,7 +1,6 @@
-package org.reldb.wrapd.tuples.generated;
-// NOTE: above package must match Package in TestConfiguration.java
+package <tuplepackage>;
 
-/* NOTE: This is a template. Content will be replaced at runtime. See <db> and <dbpackage>. */
+/* NOTE: This is a template. Content will be replaced at runtime. See <db>, <dbpackage>, and <tuplepackage>. */
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

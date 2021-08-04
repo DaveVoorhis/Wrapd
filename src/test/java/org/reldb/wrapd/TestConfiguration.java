@@ -5,6 +5,5 @@ public class TestConfiguration {
     public static final String Directory = "./_TestData/";
 
     // All generated code belongs to this package.
-    // Must match package of resources/Test_Source01.java, and vice versa.
-    public static final String Package = "org.reldb.wrapd.tuples.generated";
+    public static final String Package = "org.reldb.wrapd.test.tuples.generated";
 }

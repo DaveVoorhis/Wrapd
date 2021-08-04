@@ -42,11 +42,12 @@ public class QueriesHelper {
 	private final DbHelper dbHelper;
 	private final String codeDir;
 
-	public QueriesHelper(String dbpackage, String dbname) {
+	public QueriesHelper(String dbpackage, String dbname, String tuplePackage) {
 		dbHelper = new DbHelper(dbname);
 		this.replacements = new QueriesHelper.Replacement[] {
 				new QueriesHelper.Replacement("<dbpackage>", dbpackage),
-				new QueriesHelper.Replacement("<db>", dbname)
+				new QueriesHelper.Replacement("<db>", dbname),
+				new QueriesHelper.Replacement("<tuplepackage>", tuplePackage)
 		};
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
