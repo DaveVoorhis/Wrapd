@@ -25,10 +25,16 @@ public class Application {
                 System.out.println("ERROR populating db: " + t);
             }
             try {
-                Query04.query(GetDatabase.getDatabase())
+                var db = GetDatabase.getDatabase();
+                Query04.query(db)
                         .forEach(row -> System.out.println("Row: x = " + row.x));
             } catch (Throwable t) {
                 System.out.println("ERROR querying db: " + t);
+                Throwable inner = t.getCause();
+                while (inner != null) {
+                    System.out.println("Caused by..." + inner);
+                    inner = inner.getCause();
+                }
             }
     }
 
