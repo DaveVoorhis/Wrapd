@@ -178,10 +178,9 @@ public class Database {
          * Process a ResultSet.
          *
          * @param r ResultSet to process.
-         * @return Specified return type.
-         * @throws SQLException thrown if the operation fails.
+         * @return Specified return type, wrapped in a Response.
          */
-        T go(ResultSet r) throws SQLException;
+        Response<T> go(ResultSet r);
     }
 
     /**
@@ -222,9 +221,13 @@ public class Database {
      */
     public Optional<?> valueOfAll(Connection connection, String query, String columnName) throws SQLException {
         return queryAll(connection, query, rs -> {
-            if (rs.next())
-                return Optional.ofNullable(rs.getObject(columnName));
-            return Optional.empty();
+            try {
+                if (rs.next())
+                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                return new Response<>(Optional.empty());
+            } catch (SQLException sqe) {
+                return new Response<>(sqe);
+            }
         });
     }
 
@@ -385,9 +388,13 @@ public class Database {
      */
     public Optional<?> valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
         return query(connection, query, rs -> {
-            if (rs.next())
-                return Optional.ofNullable(rs.getObject(columnName));
-            return Optional.empty();
+            try {
+                if (rs.next())
+                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                return new Response<>(Optional.empty());
+            } catch (SQLException sqe) {
+                return new Response<>(sqe);
+            }
         }, parms);
     }
 
@@ -419,11 +426,11 @@ public class Database {
             try {
                 compilationResult = ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
             } catch (Throwable e) {
-                return Result.ERROR(e);
+                return new Response<>(Result.ERROR(e));
             }
             if (!compilationResult.compiled)
-                return Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages));
-            return Result.OK;
+                return new Response<>(Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages)));
+            return new Response<>(Result.OK);
         };
     }
 
@@ -499,12 +506,9 @@ public class Database {
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                //throw new Exception("Deliberate test exception in newResultSetToStream.");
-                return ResultSetToTuple.toStream(result, tupleClass);
+                return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
             } catch (Throwable e) {
-                // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStream due to: " + e);
-                return null;
+                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStream.", e));
             }
         };
     }
@@ -521,12 +525,9 @@ public class Database {
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
-                // throw new Exception("Deliberate test exception in newResultSetToStreamForUpdate.");
-                return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
+                return new Response<>(ResultSetToTuple.toStreamForUpdate(result, tupleClass));
             } catch (Throwable e) {
-                // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed in newResultSetToStreamForUpdate due to: " + e);
-                return null;
+                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", e));
             }
         };
     }
@@ -546,13 +547,10 @@ public class Database {
             var sqlized = replaceTableNames(query);
             distributeSQLEvent("queryAll: ", sqlized);
             try (ResultSet rs = statement.executeQuery(sqlized)) {
-                // TODO find a better way to handle this
-                System.out.println("In Database queryAll: receiver = " + receiver);
-                var v = receiver.go(rs);
-                System.out.println("In Database queryAll: v = " + v);
-                if (v == null)
-                    throw new SQLException("Failure inside ResultSetReceiver in queryAll.");
-                return v;
+                var response = receiver.go(rs);
+                if (response.isError())
+                    throw new SQLException("Failure inside ResultSetReceiver in queryAll.", response.error);
+                return response.value;
             }
         }
     }
@@ -742,13 +740,10 @@ public class Database {
     public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return usePreparedStatement(statement -> {
             try (ResultSet rs = statement.executeQuery()) {
-                // TODO find a better way to handle this
-                System.out.println("In Database query: receiver = " + receiver);
-                var v = receiver.go(rs);
-                System.out.println("In Database query: v = " + v);
-                if (v == null)
-                    throw new SQLException("Failure inside ResultSetReceiver in query.");
-                return v;
+                var response = receiver.go(rs);
+                if (response.isError())
+                    throw new SQLException("Failure inside ResultSetReceiver in query.", response.error);
+                return response.value;
             }
         }, connection, query, parms);
     }
