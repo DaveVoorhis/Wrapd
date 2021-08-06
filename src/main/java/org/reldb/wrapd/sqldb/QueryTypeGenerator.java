@@ -52,9 +52,9 @@ public class QueryTypeGenerator {
     public static boolean destroy(String dir, String packageSpec, String className) {
         var pathName = dir + File.separator + packageSpec.replace('.', File.separatorChar) + File.separator + className;
         var fJava = new File(pathName + ".java");
-        boolean fJavaDelete = fJava.delete();
+        var fJavaDelete = fJava.delete();
         var fClass = new File(pathName + ".class");
-        boolean fClassDelete = fClass.delete();
+        var fClassDelete = fClass.delete();
         return fJavaDelete && fClassDelete;
     }
 
@@ -67,10 +67,10 @@ public class QueryTypeGenerator {
                 ? ", Connection connection"
                 : "";
         StringBuilder out = new StringBuilder("Database db" + parmConnection);
-        int pnum = 0;
+        int parameterNumber = 0;
         if (hasArgs()) {
             for (Object arg: args)
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(pnum++);
+                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(parameterNumber++);
         }
         return out.toString();
     }
@@ -78,11 +78,11 @@ public class QueryTypeGenerator {
     private String getArgs() {
         if (!hasArgs())
             return "null";
-        StringBuilder out = new StringBuilder();
-        for (int pnum = 0; pnum < args.length; pnum++) {
+        var out = new StringBuilder();
+        for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
             if (out.length() > 0)
                 out.append(", ");
-            out.append("p").append(pnum);
+            out.append("p").append(parameterNumber);
         }
         return out.toString();
     }
@@ -96,7 +96,7 @@ public class QueryTypeGenerator {
     }
 
     private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection) {
-        String argConnection = withConnection
+        var argConnection = withConnection
                 ? "connection, "
                 : "";
         return "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms(withConnection) + ") throws SQLException {\n" +
@@ -106,13 +106,13 @@ public class QueryTypeGenerator {
     }
 
     private String getQueryMethods(String tupleTypeName) {
-        String methodName = (args == null || args.length == 0)
+        var methodName = (args == null || args.length == 0)
                 ? "queryAll"
                 : "query";
-        String args = hasArgs()
+        var args = hasArgs()
                 ? ", " + getArgs()
                 : "";
-        String newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
+        var newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
         return
                 buildQueryMethod(methodName, tupleTypeName, newQuery, false) +
                 "\n" +

@@ -77,7 +77,7 @@ public class Database {
             props.setProperty("password", dbPassword);
 
         DriverManager.getConnection(dbURL, props).close();
-        DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
+        var unpooledSource = DataSources.unpooledDataSource(dbURL, props);
         pool = DataSources.pooledDataSource(unpooledSource);
     }
 
@@ -92,7 +92,7 @@ public class Database {
     }
 
     public String toString() {
-        return dbURL;
+        return "Database: " + dbURL;
     }
 
     /**
@@ -140,7 +140,7 @@ public class Database {
      * @param <T> Type of return value from use of connection.
      * @param connectionUser Instance of ConnectionUser, usually as a lambda expression.
      * @return A Response&lt;T&gt; containing either a T (indicating success) or a SQLException.
-     * @throws SQLException Error.
+     * @throws SQLException Error obtaining connection.
      */
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
         try (Connection conn = pool.getConnection()) {
@@ -852,13 +852,13 @@ public class Database {
      */
     public class Transaction {
 
-        private Result result = Result.BOOLEAN(false);
+        private Result result;
 
         /**
          * Encapsulate a transaction.
          *
          * @param transactionRunner A lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
-         * @throws SQLException Error.
+         * @throws SQLException Error getting connection.
          */
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
             try (Connection connection = pool.getConnection()) {

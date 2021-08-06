@@ -1,6 +1,7 @@
 package org.reldb.wrapdemo.database;
 
 import org.reldb.toolbox.utilities.Directory;
+import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.sqldb.Database;
 import org.reldb.wrapd.sqldb.QueryDefiner;
 import org.reldb.wrapd.sqldb.QueryDefinition;
@@ -36,12 +37,12 @@ public class Queries extends QueryDefiner {
         define("Query04", "SELECT x FROM $$tester01");
     }
 
-    public static void main(String args[]) {
-        Database db = null;
+    public static void main(String[] args) {
+        Database db;
         try {
             db = GetDatabase.getDatabase();
         } catch (SQLException e) {
-            System.out.println("ERROR in Queries: main: GetDatabase.getDatabase(): " + e);
+            Response.printError("ERROR in Queries: main: GetDatabase.getDatabase():", e);
             return;
         }
         var codeDirectory = "src/main/java";
@@ -54,7 +55,7 @@ public class Queries extends QueryDefiner {
         try {
             queryDefinitions.generate();
         } catch (QueryDefinerException e) {
-            System.out.println("ERROR in Queries: main: queryDefinitions.generate(): " + e);
+            Response.printError("ERROR in Queries: main: queryDefinitions.generate():", e);
         }
         System.out.println("OK: Queries are ready.");
     }

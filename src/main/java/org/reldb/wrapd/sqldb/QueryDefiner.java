@@ -107,7 +107,7 @@ public class QueryDefiner {
      * @throws QueryDefinerException if error
      */
     public void generate() throws QueryDefinerException {
-        for (Method method: getClass().getMethods()) {
+        for (var method: getClass().getMethods()) {
             if (method.getName().toLowerCase().startsWith("query") && method.getParameterCount() == 0) {
                 if (method.getReturnType().equals(QueryDefinition.class)) {
                     try {

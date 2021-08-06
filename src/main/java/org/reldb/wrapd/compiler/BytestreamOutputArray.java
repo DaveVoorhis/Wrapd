@@ -12,6 +12,7 @@ package org.reldb.wrapd.compiler;
 public class BytestreamOutputArray extends BytestreamOutput {
 
     private final static int minimumCapacity = 1024;
+
     private byte[] vb = new byte[minimumCapacity];
     private int index = 0;
 
@@ -28,7 +29,7 @@ public class BytestreamOutputArray extends BytestreamOutput {
      * @return An array of byte.
      */
     public byte[] getBytes() {
-        byte[] outArray = new byte[index];
+        var outArray = new byte[index];
         System.arraycopy(vb, 0, outArray, 0, index);
         return outArray;
     }
@@ -36,13 +37,13 @@ public class BytestreamOutputArray extends BytestreamOutput {
     @Override
     public void put(int b) {
         if (index + 1 > vb.length) {
-            int newCapacity = (vb.length + 1) * 2;
+            var newCapacity = (vb.length + 1) * 2;
             if (newCapacity < 0) {
                 newCapacity = Integer.MAX_VALUE;
             } else if (minimumCapacity > newCapacity) {
                 newCapacity = minimumCapacity;
             }
-            byte[] newValue = new byte[newCapacity];
+            var newValue = new byte[newCapacity];
             System.arraycopy(vb, 0, newValue, 0, index);
             vb = newValue;
         }

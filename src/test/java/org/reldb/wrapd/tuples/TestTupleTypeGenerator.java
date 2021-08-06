@@ -33,13 +33,13 @@ public class TestTupleTypeGenerator {
 		System.out.println("[TEST] " + compilation.compilerMessages);
 
 		var loader = new DirClassLoader(codeDir, TestConfiguration.Package);
-		var testclass = loader.forName(generator.getTupleClassName());
+		var testClass = loader.forName(generator.getTupleClassName());
 		
-		for (Field field: testclass.getFields())
+		for (Field field: testClass.getFields())
 			System.out.println("[TEST] Has field: " + field.getType() + " " + field.getName());
 
 		// 4 defined fields plus serial number is 5
-		assertEquals(5, testclass.getFields().length);
+		assertEquals(5, testClass.getFields().length);
 	}
 
 }

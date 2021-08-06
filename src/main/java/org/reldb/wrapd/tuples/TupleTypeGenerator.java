@@ -21,6 +21,7 @@ import static org.reldb.wrapd.il8n.Strings.*;
  * Generates Java code to represent a tuple, which is a class that implements Tuple.
  */
 public class TupleTypeGenerator {
+
     private static class Attribute {
         final String name;
         final Class<?> type;
@@ -73,9 +74,9 @@ public class TupleTypeGenerator {
     public boolean destroy() {
         var pathName = dir + File.separator + tupleTypePackage.replace('.', File.separatorChar) + File.separator + tupleName;
         var fJava = new File(pathName + ".java");
-        boolean fJavaDelete = fJava.delete();
+        var fJavaDelete = fJava.delete();
         var fClass = new File(pathName + ".class");
-        boolean fClassDelete = fClass.delete();
+        var fClassDelete = fClass.delete();
         return fJavaDelete && fClassDelete;
     }
 

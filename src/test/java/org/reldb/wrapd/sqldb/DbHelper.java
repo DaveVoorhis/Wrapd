@@ -26,7 +26,7 @@ public class DbHelper {
 
     public static void clearDb(Database db, String[] tableNames) {
         System.out.println("Clearing database " + db.toString());
-        for (String tableName: tableNames)
+        for (var tableName: tableNames)
             try {
                 System.out.println("Dropping table " + tableName);
                 db.updateAll("DROP TABLE " + tableName);

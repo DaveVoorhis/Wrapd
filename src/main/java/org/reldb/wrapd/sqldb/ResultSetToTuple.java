@@ -40,13 +40,12 @@ public class ResultSetToTuple {
             throw new IllegalArgumentException("results may not be null");
         var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
         var metadata = results.getMetaData();
-        for (int column = 1; column <= metadata.getColumnCount(); column++) {
+        for (var column = 1; column <= metadata.getColumnCount(); column++) {
             var name = metadata.getColumnName(column);
             var sqlTypeName = metadata.getColumnTypeName(column);
             var columnClassName = metadata.getColumnClassName(column);
-            if (customisations != null) {
+            if (customisations != null)
                 columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
-            }
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
@@ -93,19 +92,19 @@ public class ResultSetToTuple {
             throw new IllegalArgumentException("tupleProcessor may not be null");
         var tupleConstructor = tupleType.getConstructor((Class<?>[]) null);
         var metadata = resultSet.getMetaData();
-        boolean optimised = false;
+        var optimised = false;
         Field[] fields = null;
         while (resultSet.next()) {
             var tuple = tupleConstructor.newInstance((Object[]) null);
             if (optimised) {
-                for (int column = 1; column <= metadata.getColumnCount(); column++) {
+                for (var column = 1; column <= metadata.getColumnCount(); column++) {
                     var value = resultSet.getObject(column);
                     fields[column].set(tuple, value);
                 }
             } else {
-                int columnCount = metadata.getColumnCount();
+                var columnCount = metadata.getColumnCount();
                 fields = new Field[columnCount + 1];
-                for (int column = 1; column <= columnCount; column++) {
+                for (var column = 1; column <= columnCount; column++) {
                     var name = metadata.getColumnName(column);
                     var value = resultSet.getObject(column);
                     var field = tuple.getClass().getField(name);

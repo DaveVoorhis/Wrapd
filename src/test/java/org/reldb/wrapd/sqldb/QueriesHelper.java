@@ -116,8 +116,8 @@ public class QueriesHelper {
 	}
 
 	private JavaCompiler.CompilationResults compileTestCode() throws IOException {
-		String source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
-		for (Replacement replacement: replacements)
+		var source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
+		for (var replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
 		var compiler = new JavaCompiler(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();

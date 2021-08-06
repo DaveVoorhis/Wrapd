@@ -1,5 +1,7 @@
 package org.reldb.wrapdemo.schema;
 
+import org.reldb.toolbox.progress.ConsoleProgressIndicator;
+import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
@@ -32,19 +34,19 @@ public class Schema extends SQLSchema {
         };
     }
 
-    public static void main(String args[]) {
-        Schema schema = null;
+    public static void main(String[] args) {
+        Schema schema;
         try {
             schema = new Schema(GetDatabase.getDatabase());
         } catch (SQLException e) {
-            System.out.println("ERROR in Schema: main: GetDatabase.getDatabase(): " + e);
+            Response.printError("ERROR in Schema: main: GetDatabase.getDatabase():", e);
             return;
         }
-        var result = schema.setup();
+        var result = schema.setup(new ConsoleProgressIndicator());
         if (result.isOk())
             System.out.println("OK: Schema has been set up.");
         else {
-            System.out.println("ERROR: Schema creation: " + result.error);
+            Response.printError("ERROR in Schema: Schema creation:", result.error);
         }
     }
 }

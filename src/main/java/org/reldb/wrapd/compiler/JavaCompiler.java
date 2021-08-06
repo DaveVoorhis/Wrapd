@@ -5,6 +5,7 @@ import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.*;
+import java.util.StringTokenizer;
 
 import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
 import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateResourceDir;
@@ -81,9 +82,9 @@ public class JavaCompiler {
      * @return CompilationResults.
      */
     public CompilationResults compileJavaCode(String classpath, String className, String packageSpec, String src) {
-        ByteArrayOutputStream messageStream = new ByteArrayOutputStream();
-        ByteArrayOutputStream warningStream = new ByteArrayOutputStream();
-        String warningSetting = "allDeprecation,"
+        var messageStream = new ByteArrayOutputStream();
+        var warningStream = new ByteArrayOutputStream();
+        var warningSetting = "allDeprecation,"
                 + "assertIdentifier," + "charConcat,"
                 + "conditionAssign," + "constructorName," + "deprecation,"
                 + "emptyBlock," + "fieldHiding," + "finalBound,"
@@ -97,7 +98,7 @@ public class JavaCompiler {
                 + "unusedPrivate," + "unusedThrown";
 
         // If resource directory doesn't exist, create it.
-        File resourceDir = new File(userSourcePath);
+        var resourceDir = new File(userSourcePath);
         if (!(resourceDir.exists()))
             if (!resourceDir.mkdirs())
                 throw new FatalException(Str.ing(ErrUnableToCreateResourceDir, resourceDir.toString()));
@@ -111,7 +112,7 @@ public class JavaCompiler {
                     throw new FatalException(Str.ing(ErrUnableToCreatePackageDir, packageDirFile.toString()));
             // Write source to a Java source file
             sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
-            PrintStream sourcePS = new PrintStream(new FileOutputStream(sourcef));
+            var sourcePS = new PrintStream(new FileOutputStream(sourcef));
             sourcePS.print(src);
             sourcePS.close();
         } catch (IOException ioe) {
@@ -119,18 +120,18 @@ public class JavaCompiler {
         }
 
         // Start compilation using JDT
-        String commandLine = "-14 -source 14 -warn:" +
+        var commandLine = "-14 -source 14 -warn:" +
                 warningSetting + " " +
                 "-cp " + classpath + " \"" + sourcef + "\"";
-        boolean compiled = BatchCompiler.compile(
+        var compiled = BatchCompiler.compile(
                 commandLine,
                 new PrintWriter(messageStream),
                 new PrintWriter(warningStream),
                 null);
 
-        StringBuilder compilerMessages = new StringBuilder();
+        var compilerMessages = new StringBuilder();
         // Parse the messages and the warnings.
-        BufferedReader br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStream.toByteArray())));
+        var br = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(messageStream.toByteArray())));
         while (true) {
             String str = null;
             try {
@@ -168,7 +169,7 @@ public class JavaCompiler {
      * @return CompilationResults.
      */
     public CompilationResults compileJavaCode(String className, String packageSpec, String src) {
-        String classpath = getDefaultClassPath();
+        var classpath = getDefaultClassPath();
         return compileJavaCode(classpath, className, packageSpec, src);
     }
 
@@ -187,18 +188,17 @@ public class JavaCompiler {
      * Return a classpath cleaned of non-existent files and Web Start's deploy.jar.
      * Classpath elements with spaces are converted to quote-delimited strings.
      */
-    private static String cleanClassPath(String s) {
-        if (java.io.File.separatorChar == '/')
-            s = s.replace('\\', '/');
-        else
-            s = s.replace('/', '\\');
-        StringBuilder outstr = new StringBuilder();
-        java.util.StringTokenizer st = new java.util.StringTokenizer(s, java.io.File.pathSeparator);
-        while (st.hasMoreElements()) {
-            String element = (String) st.nextElement();
-            java.io.File f = new java.io.File(element);
-            if (f.exists() && !element.contains("deploy.jar")) {
-                String fname = f.toString();
+    private static String cleanClassPath(String string) {
+        string = (File.separatorChar == '/')
+            ? string.replace('\\', '/')
+            : string.replace('/', '\\');
+        var outstr = new StringBuilder();
+        var stringTokenizer = new StringTokenizer(string, File.pathSeparator);
+        while (stringTokenizer.hasMoreElements()) {
+            String element = (String) stringTokenizer.nextElement();
+            var file = new File(element);
+            if (file.exists() && !element.contains("deploy.jar")) {
+                var fname = file.toString();
                 if (fname.indexOf(' ') >= 0)
                     fname = '"' + fname + '"';
                 outstr.append((outstr.length() > 0) ? File.pathSeparator : "").append(fname);
@@ -218,11 +218,10 @@ public class JavaCompiler {
      * Get a stripped name.  Only return text after the final '.'
      */
     private static String getStrippedName(String name) {
-        int lastDot = name.lastIndexOf('.');
-        if (lastDot >= 0)
-            return name.substring(lastDot + 1);
-        else
-            return name;
+        var lastDot = name.lastIndexOf('.');
+        return (lastDot >= 0)
+            ? name.substring(lastDot + 1)
+            : name;
     }
 
     /**
