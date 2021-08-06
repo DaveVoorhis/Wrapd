@@ -19,7 +19,7 @@ import java.util.Vector;
  */
 public class EventHandler<Event> {
 
-	private Vector<EventListener<Event>> listeners = new Vector<>();
+	private final Vector<EventListener<Event>> listeners = new Vector<>();
 	
 	/** 
 	 * Add a listener.
