@@ -67,6 +67,8 @@ public class QueryDefiner {
 
     /**
      * Return the package for generated code.
+     *
+     * @return Package specification for generated code.
      */
     public String getPackageSpec() {
         return packageSpec;
