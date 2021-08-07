@@ -21,7 +21,7 @@ dependencies {
 // only for WrapDemo
 dependencies {
     implementation 'mysql:mysql-connector-java:8.0.25'
-    compile files("./_TestData/WrapDemo/code")
+    implementation files("./_TestData/WrapDemo/code")
 }
 
 dependencies {
