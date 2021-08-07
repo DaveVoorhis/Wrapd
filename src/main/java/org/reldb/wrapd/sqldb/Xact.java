@@ -241,7 +241,7 @@ public class Xact {
      * Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
-d     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name of desired Tuple-derived class.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
