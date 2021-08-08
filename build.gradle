@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'org.reldb'
-version = '0.0.4-SNAPSHOT'
+version = '0.0.5-SNAPSHOT'
 description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
