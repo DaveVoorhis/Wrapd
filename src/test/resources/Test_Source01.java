@@ -1,6 +1,6 @@
-package org.reldb.wrapd.tuples.generated;
+package <tuplepackage>;
 
-/* NOTE: This is a template. Content will be replaced at runtime. See <db> and <dbpackage>. */
+/* NOTE: This is a template. Content will be replaced at runtime. See <db>, <dbpackage>, and <tuplepackage>. */
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ public class Test<db>_Source01 {
 
     private static void resetDatabase(Database database) throws SQLException {
         database.updateAll("DELETE FROM $$tester");
-        for (int i = 0; i < 20; i++) {
+        for (var i = 0; i < 20; i++) {
             database.update("INSERT INTO $$tester VALUES (?, ?);", i, i * 10);
         }
     }
@@ -55,7 +55,7 @@ public class Test<db>_Source01 {
     public void testInsert01() throws SQLException {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testInsert01");
-        for (int x = 1000; x < 1010; x++) {
+        for (var x = 1000; x < 1010; x++) {
             var tuple = new Test<db>Tuple();
             tuple.x = x;
             tuple.y = x * 2;

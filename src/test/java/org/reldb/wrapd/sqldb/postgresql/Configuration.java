@@ -1,7 +1,5 @@
 package org.reldb.wrapd.sqldb.postgresql;
 
-import org.reldb.TestDirectory;
-
 public class Configuration {
 
 	public static final String dbName = "PostgreSQL";

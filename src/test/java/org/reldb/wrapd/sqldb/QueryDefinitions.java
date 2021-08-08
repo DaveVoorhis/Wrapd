@@ -4,8 +4,8 @@ public class QueryDefinitions extends QueryDefiner {
 
     private String queryName;
 
-    public QueryDefinitions(Database database, String codeDirectory, String queryName) {
-        super(database, codeDirectory);
+    public QueryDefinitions(Database database, String codeDirectory, String pkg, String queryName) {
+        super(database, codeDirectory, pkg);
         this.queryName = queryName;
     }
 

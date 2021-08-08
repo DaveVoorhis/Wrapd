@@ -126,8 +126,8 @@ public abstract class Tuple implements Serializable, Cloneable {
         var fieldGetFailuresOld = new LinkedList<FieldGetFailure>();
         Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
         Supplier<Stream<Field>> changedFields = () -> dataFields.get().filter(field -> {
-            Object fieldNewValue = fieldGetWrapper(fieldGetFailuresNew, field, this);
-            Object fieldOldValue = fieldGetWrapper(fieldGetFailuresOld, field, backup);
+            var fieldNewValue = fieldGetWrapper(fieldGetFailuresNew, field, this);
+            var fieldOldValue = fieldGetWrapper(fieldGetFailuresOld, field, backup);
             return !Objects.equals(fieldNewValue, fieldOldValue);
         });
         if (fieldGetFailuresNew.size() > 0 || fieldGetFailuresOld.size() > 0)

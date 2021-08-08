@@ -3,6 +3,7 @@ package org.reldb.wrapd.sqldb;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.reldb.wrapd.TestConfiguration;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -54,7 +55,7 @@ public class TestQueryDefinitions {
     @ParameterizedTest
     @MethodSource("dbProvider")
     public void testCodeThatUsesGeneratedTuple(TestParms parms) throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
-        new QueriesHelper(parms.pkg, parms.name).test(parms.db);
+        new QueriesHelper(parms.pkg, parms.name, TestConfiguration.Package).test(parms.db);
     }
 
 }

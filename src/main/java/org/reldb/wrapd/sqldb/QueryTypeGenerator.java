@@ -15,24 +15,24 @@ import static org.reldb.wrapd.il8n.Strings.*;
 public class QueryTypeGenerator {
 
     private final String dir;
+    private final String packageSpec;
     private final String queryName;
     private final String sqlText;
     private final Object[] args;
-
-    /** Package to which generated query code belongs. */
-    public static final String QueryTypePackage = "org.reldb.wrapd.tuples.generated";
 
     /**
      * Create a generator of compiled query invokers.
      *
      * @param dir Directory into which generated class(es) will be put.
+     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
      * @param queryName Name of generated query class.
      * @param sqlText SQL query text.
      * @param args Sample arguments.
      */
-    public QueryTypeGenerator(String dir, String queryName, String sqlText, Object[] args) {
-        if (queryName.startsWith(QueryTypePackage))
-            queryName = queryName.substring(QueryTypePackage.length() + 1);
+    public QueryTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
+        this.packageSpec = packageSpec;
+        if (queryName.startsWith(packageSpec))
+            queryName = queryName.substring(packageSpec.length() + 1);
         this.dir = dir;
         this.queryName = queryName;
         this.sqlText = sqlText;
@@ -45,15 +45,16 @@ public class QueryTypeGenerator {
      * Delete this query type, given its name, before loading it.
      *
      * @param dir The directory containing the query definition.
+     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
      * @param className The class name of the query definition.
      * @return boolean true if query definition successfully deleted.
      */
-    public static boolean destroy(String dir, String className) {
-        var pathName = dir + File.separator + QueryTypePackage.replace('.', File.separatorChar) + File.separator + className;
+    public static boolean destroy(String dir, String packageSpec, String className) {
+        var pathName = dir + File.separator + packageSpec.replace('.', File.separatorChar) + File.separator + className;
         var fJava = new File(pathName + ".java");
-        boolean fJavaDelete = fJava.delete();
+        var fJavaDelete = fJava.delete();
         var fClass = new File(pathName + ".class");
-        boolean fClassDelete = fClass.delete();
+        var fClassDelete = fClass.delete();
         return fJavaDelete && fClassDelete;
     }
 
@@ -66,10 +67,10 @@ public class QueryTypeGenerator {
                 ? ", Connection connection"
                 : "";
         StringBuilder out = new StringBuilder("Database db" + parmConnection);
-        int pnum = 0;
+        int parameterNumber = 0;
         if (hasArgs()) {
             for (Object arg: args)
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(pnum++);
+                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(parameterNumber++);
         }
         return out.toString();
     }
@@ -77,11 +78,11 @@ public class QueryTypeGenerator {
     private String getArgs() {
         if (!hasArgs())
             return "null";
-        StringBuilder out = new StringBuilder();
-        for (int pnum = 0; pnum < args.length; pnum++) {
+        var out = new StringBuilder();
+        for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
             if (out.length() > 0)
                 out.append(", ");
-            out.append("p").append(pnum);
+            out.append("p").append(parameterNumber);
         }
         return out.toString();
     }
@@ -95,7 +96,7 @@ public class QueryTypeGenerator {
     }
 
     private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection) {
-        String argConnection = withConnection
+        var argConnection = withConnection
                 ? "connection, "
                 : "";
         return "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms(withConnection) + ") throws SQLException {\n" +
@@ -105,13 +106,13 @@ public class QueryTypeGenerator {
     }
 
     private String getQueryMethods(String tupleTypeName) {
-        String methodName = (args == null || args.length == 0)
+        var methodName = (args == null || args.length == 0)
                 ? "queryAll"
                 : "query";
-        String args = hasArgs()
+        var args = hasArgs()
                 ? ", " + getArgs()
                 : "";
-        String newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
+        var newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
         return
                 buildQueryMethod(methodName, tupleTypeName, newQuery, false) +
                 "\n" +
@@ -126,7 +127,7 @@ public class QueryTypeGenerator {
     public JavaCompiler.CompilationResults compile() {
         var tupleTypeName = queryName + "Tuple";
         var queryDef =
-                "package " + QueryTypePackage + ";\n\n" +
+                "package " + packageSpec + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import java.sql.SQLException;\n" +
                 "import java.sql.Connection;\n" +
@@ -140,7 +141,7 @@ public class QueryTypeGenerator {
                 getQueryMethods(tupleTypeName) +
                 "}";
         var compiler = new JavaCompiler(dir);
-        return compiler.compileJavaCode(queryName, QueryTypePackage, queryDef);
+        return compiler.compileJavaCode(queryName, packageSpec, queryDef);
     }
 
     /**
@@ -149,17 +150,18 @@ public class QueryTypeGenerator {
      * @return The class name.
      */
     public String getQueryClassName() {
-        return getQueryClassName(queryName);
+        return getQueryClassName(packageSpec, queryName);
     }
 
     /**
      * Given a class name, return a fully-qualified class name obtained by prepending QueryTypePackage.
      *
+     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
      * @param newName The query class name.
      * @return Fully-qualified class name.
      */
-    public static String getQueryClassName(String newName) {
-        return QueryTypePackage + "." + newName;
+    public static String getQueryClassName(String packageSpec, String newName) {
+        return packageSpec + "." + newName;
     }
 
 }

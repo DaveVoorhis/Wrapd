@@ -1,6 +1,6 @@
 package org.reldb.wrapd.sqldb.sqlite;
 
-import org.reldb.TestDirectory;
+import org.reldb.wrapd.TestConfiguration;
 
 public class Configuration {
 
@@ -11,6 +11,6 @@ public class Configuration {
 	public static final String dbDatabase = "sqlitedb.sqlite";
 
 	public static final String dbURLPrefix = "jdbc:sqlite";
-	public static final String dbURL = dbURLPrefix + ":" + TestDirectory.Is + dbName + "/" + dbDatabase;
+	public static final String dbURL = dbURLPrefix + ":" + TestConfiguration.Directory + dbName + "/" + dbDatabase;
 }
 

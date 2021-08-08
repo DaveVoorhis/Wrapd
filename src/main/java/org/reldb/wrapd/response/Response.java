@@ -54,13 +54,19 @@ public class Response<T> {
      * If this Response isError() == true, dump the error.
      */
     public void printIfError() {
-        if (error != null) {
-            System.out.println("Error: " + error);
-            Throwable cause = error.getCause();
-            while (cause != null) {
-                System.out.println("Caused by: " + cause);
-                cause = cause.getCause();
-            }
-        }
+        if (error != null)
+            printError("Error:", error);
+    }
+
+    /**
+     * Dump an error's description, and its cause(s).
+     *
+     * @param prompt Text to precede error message.
+     * @param error Throwable error.
+     */
+    public static void printError(String prompt, Throwable error) {
+        System.out.println(prompt + " " + error);
+        if (error.getCause() != null)
+            printError("Caused by:", error.getCause());
     }
 }

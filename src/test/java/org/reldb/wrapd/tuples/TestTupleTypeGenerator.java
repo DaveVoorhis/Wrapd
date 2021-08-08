@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.Test;
-import org.reldb.TestDirectory;
+import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
 
 public class TestTupleTypeGenerator {
 
-	private static final String baseDir = TestDirectory.Is + "Tuples";
+	private static final String baseDir = TestConfiguration.Directory + "Tuples";
 
 	private static String getCodeDirectory() {
 		return baseDir + "/code";
@@ -21,7 +21,7 @@ public class TestTupleTypeGenerator {
 		var codeDir = getCodeDirectory();
 		var tupleName = "TestTuple";
 
-		var generator = new TupleTypeGenerator(codeDir, tupleName);
+		var generator = new TupleTypeGenerator(codeDir, TestConfiguration.Package, tupleName);
 		generator.destroy();
 		generator.addAttribute("Col1", String.class);
 		generator.addAttribute("Col2", Integer.class);
@@ -32,14 +32,14 @@ public class TestTupleTypeGenerator {
 		System.out.println("[TEST] === Compilation " + ((compilation.compiled) ? "succeeded" : "failed") + " ===");
 		System.out.println("[TEST] " + compilation.compilerMessages);
 
-		var loader = new DirClassLoader(codeDir, TupleTypeGenerator.TupleTypePackage);
-		var testclass = loader.forName(generator.getTupleClassName());
+		var loader = new DirClassLoader(codeDir, TestConfiguration.Package);
+		var testClass = loader.forName(generator.getTupleClassName());
 		
-		for (Field field: testclass.getFields())
-			System.out.println("[TEST] Has field: " + field.getType().toString() + " " + field.getName());
+		for (Field field: testClass.getFields())
+			System.out.println("[TEST] Has field: " + field.getType() + " " + field.getName());
 
 		// 4 defined fields plus serial number is 5
-		assertEquals(5, testclass.getFields().length);
+		assertEquals(5, testClass.getFields().length);
 	}
 
 }

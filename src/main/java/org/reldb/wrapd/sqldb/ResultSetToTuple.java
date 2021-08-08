@@ -22,6 +22,7 @@ public class ResultSetToTuple {
      * to host the ResultSet. This will normally be invoked in a setup/build phase run
      *
      * @param codeDir Directory where source code will be stored.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleName Name of new Tuple class.
      * @param results ResultSet to be used to create the new Tuple class.
      * @param customisations Customisations for specific DBMS types.
@@ -30,22 +31,21 @@ public class ResultSetToTuple {
      * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException thrown if an argument is null
      */
-    public static CompilationResults createTuple(String codeDir, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
+    public static CompilationResults createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
             throw new IllegalArgumentException("tupleName may not be null");
         if (results == null)
             throw new IllegalArgumentException("results may not be null");
-        var generator = new TupleTypeGenerator(codeDir, tupleName);
+        var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
         var metadata = results.getMetaData();
-        for (int column = 1; column <= metadata.getColumnCount(); column++) {
+        for (var column = 1; column <= metadata.getColumnCount(); column++) {
             var name = metadata.getColumnName(column);
             var sqlTypeName = metadata.getColumnTypeName(column);
             var columnClassName = metadata.getColumnClassName(column);
-            if (customisations != null) {
+            if (customisations != null)
                 columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
-            }
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
@@ -92,19 +92,19 @@ public class ResultSetToTuple {
             throw new IllegalArgumentException("tupleProcessor may not be null");
         var tupleConstructor = tupleType.getConstructor((Class<?>[]) null);
         var metadata = resultSet.getMetaData();
-        boolean optimised = false;
+        var optimised = false;
         Field[] fields = null;
         while (resultSet.next()) {
             var tuple = tupleConstructor.newInstance((Object[]) null);
             if (optimised) {
-                for (int column = 1; column <= metadata.getColumnCount(); column++) {
+                for (var column = 1; column <= metadata.getColumnCount(); column++) {
                     var value = resultSet.getObject(column);
                     fields[column].set(tuple, value);
                 }
             } else {
-                int columnCount = metadata.getColumnCount();
+                var columnCount = metadata.getColumnCount();
                 fields = new Field[columnCount + 1];
-                for (int column = 1; column <= columnCount; column++) {
+                for (var column = 1; column <= columnCount; column++) {
                     var name = metadata.getColumnName(column);
                     var value = resultSet.getObject(column);
                     var field = tuple.getClass().getField(name);
@@ -212,15 +212,16 @@ public class ResultSetToTuple {
      * Eliminate the tuple with a given name.
      *
      * @param codeDir Directory where source code will be stored.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleName Name of tuple class.
      * @return True if source code and generated class have been deleted.
      */
-    public static boolean destroyTuple(String codeDir, String tupleName) {
+    public static boolean destroyTuple(String codeDir, String packageSpec, String tupleName) {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
             throw new IllegalArgumentException("tupleName may not be null");
-        return new TupleTypeGenerator(codeDir, tupleName).destroy();
+        return new TupleTypeGenerator(codeDir, packageSpec, tupleName).destroy();
     }
 
 }

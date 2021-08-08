@@ -45,7 +45,7 @@ public class DirClassLoader extends ClassLoader {
             } catch (ClassNotFoundException e1) {
                 return null;
             }
-        Class<?> clazz = classCache.get(name);
+        var clazz = classCache.get(name);
         if (clazz == null) {
             byte[] bytes;
             try {
@@ -66,7 +66,7 @@ public class DirClassLoader extends ClassLoader {
 
     @Override
     protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        Class<?> clazz = findClass(name);
+        var clazz = findClass(name);
         if (clazz == null)
             throw new ClassNotFoundException();
         if (resolve)
@@ -83,12 +83,12 @@ public class DirClassLoader extends ClassLoader {
     }
 
     private byte[] loadClassData(String name) throws IOException {
-        File f = getClassFileName(name);
+        var file = getClassFileName(name);
         BytestreamOutputArray byteStream = new BytestreamOutputArray();
-        FileInputStream reader = new FileInputStream(f);
-        byte[] bytes = new byte[65535];
+        FileInputStream reader = new FileInputStream(file);
+        var bytes = new byte[65535];
         while (true) {
-            int read = reader.read(bytes);
+            var read = reader.read(bytes);
             if (read < 0)
                 break;
             byteStream.put(bytes, 0, read);

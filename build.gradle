@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'org.reldb'
-version = '0.0.4-SNAPSHOT'
+version = '0.0.5-SNAPSHOT'
 description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -16,6 +16,12 @@ repositories {
 dependencies {
     implementation 'com.mchange:c3p0:0.9.5.5'
     implementation 'org.eclipse.jdt:ecj:3.26.0'
+}
+
+// only for WrapDemo
+dependencies {
+    implementation 'mysql:mysql-connector-java:8.0.25'
+    implementation files("./_TestData/WrapDemo/code")
 }
 
 dependencies {

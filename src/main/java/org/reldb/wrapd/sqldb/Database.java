@@ -9,7 +9,6 @@ import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.tuples.Tuple;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 import java.sql.Date;
 import java.sql.*;
 import java.util.*;
@@ -28,7 +27,7 @@ public class Database {
     private final String dbURL;
 
     /**
-     * An instance of a SQL query, for monitoring queries processed by a Database.
+     * An instance of an SQL query, for monitoring queries processed by a Database.
      */
     public static class SQLEvent {
         /** The SQL text of the query. */
@@ -78,7 +77,7 @@ public class Database {
             props.setProperty("password", dbPassword);
 
         DriverManager.getConnection(dbURL, props).close();
-        DataSource unpooledSource = DataSources.unpooledDataSource(dbURL, props);
+        var unpooledSource = DataSources.unpooledDataSource(dbURL, props);
         pool = DataSources.pooledDataSource(unpooledSource);
     }
 
@@ -93,7 +92,7 @@ public class Database {
     }
 
     public String toString() {
-        return dbURL;
+        return "Database: " + dbURL;
     }
 
     /**
@@ -141,7 +140,7 @@ public class Database {
      * @param <T> Type of return value from use of connection.
      * @param connectionUser Instance of ConnectionUser, usually as a lambda expression.
      * @return A Response&lt;T&gt; containing either a T (indicating success) or a SQLException.
-     * @throws SQLException Error.
+     * @throws SQLException Error obtaining connection.
      */
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
         try (Connection conn = pool.getConnection()) {
@@ -179,10 +178,9 @@ public class Database {
          * Process a ResultSet.
          *
          * @param r ResultSet to process.
-         * @return Specified return type.
-         * @throws SQLException thrown if the operation fails.
+         * @return Specified return type, wrapped in a Response.
          */
-        T go(ResultSet r) throws SQLException;
+        Response<T> go(ResultSet r);
     }
 
     /**
@@ -223,9 +221,13 @@ public class Database {
      */
     public Optional<?> valueOfAll(Connection connection, String query, String columnName) throws SQLException {
         return queryAll(connection, query, rs -> {
-            if (rs.next())
-                return Optional.ofNullable(rs.getObject(columnName));
-            return Optional.empty();
+            try {
+                if (rs.next())
+                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                return new Response<>(Optional.empty());
+            } catch (SQLException sqe) {
+                return new Response<>(sqe);
+            }
         });
     }
 
@@ -242,7 +244,7 @@ public class Database {
     }
 
     /**
-     * Represents a SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
+     * Represents an SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
      */
     private static class Null {
         /** The {@link java.sql.Types} enum value for this Null. */
@@ -386,9 +388,13 @@ public class Database {
      */
     public Optional<?> valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
         return query(connection, query, rs -> {
-            if (rs.next())
-                return Optional.ofNullable(rs.getObject(columnName));
-            return Optional.empty();
+            try {
+                if (rs.next())
+                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                return new Response<>(Optional.empty());
+            } catch (SQLException sqe) {
+                return new Response<>(sqe);
+            }
         }, parms);
     }
 
@@ -409,21 +415,22 @@ public class Database {
      * Obtain a lambda to generate a new Tuple-derived class from a ResultSet.
      *
      * @param codeDirectory Directory into which generated class (both source and .class) will be placed.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name for new tuple class.
      * @param customisations Customisations for specific DBMS types.
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String tupleClassName, Customisations customisations) {
+    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             CompilationResults compilationResult;
             try {
-                compilationResult = ResultSetToTuple.createTuple(codeDirectory, tupleClassName, resultSet, customisations);
+                compilationResult = ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
             } catch (Throwable e) {
-                return Result.ERROR(e);
+                return new Response<>(Result.ERROR(e));
             }
             if (!compilationResult.compiled)
-                return Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages));
-            return Result.OK;
+                return new Response<>(Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages)));
+            return new Response<>(Result.OK);
         };
     }
 
@@ -432,13 +439,14 @@ public class Database {
      *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String tupleClassName, String query) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return queryAll(connection, query, resultSetReceiver);
     }
 
@@ -446,13 +454,14 @@ public class Database {
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String tupleClassName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, tupleClassName, query))).getResult();
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query))).getResult();
     }
 
     /**
@@ -460,14 +469,15 @@ public class Database {
      *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(Connection connection, String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, tupleClassName, customisations);
+    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return query(connection, query, resultSetReceiver, parms);
     }
 
@@ -475,14 +485,15 @@ public class Database {
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String tupleClassName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, tupleClassName, query, parms))).getResult();
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms))).getResult();
     }
 
     /**
@@ -490,16 +501,14 @@ public class Database {
      *
      * @param <T> T extends Tuple.
      * @param tupleClass The stream will be of instances of tupleClass.
-     * @return Stream&lt;T&gt; Result stream.
+     * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt;.
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                return ResultSetToTuple.toStream(result, tupleClass);
+                return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
             } catch (Throwable e) {
-                // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
-                return null;
+                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStream.", e));
             }
         };
     }
@@ -510,16 +519,15 @@ public class Database {
      *
      * @param <T> T extends Tuple.
      * @param tupleClass The stream will be of instances of tupleClass.
-     * @return Stream&lt;T&gt; with backup() invoked for each T instance.
+     * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt; where the stream of tuples will have
+     *         backup() invoked for each instance.
      */
     public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
-                return ResultSetToTuple.toStreamForUpdate(result, tupleClass);
+                return new Response<>(ResultSetToTuple.toStreamForUpdate(result, tupleClass));
             } catch (Throwable e) {
-                // TODO find a better way to handle this
-                System.err.println("ERROR: ResultSet to Stream conversion failed due to: " + e);
-                return null;
+                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", e));
             }
         };
     }
@@ -539,7 +547,10 @@ public class Database {
             var sqlized = replaceTableNames(query);
             distributeSQLEvent("queryAll: ", sqlized);
             try (ResultSet rs = statement.executeQuery(sqlized)) {
-                return receiver.go(rs);
+                var response = receiver.go(rs);
+                if (response.isError())
+                    throw new SQLException("Failure inside ResultSetReceiver in queryAll.", response.error);
+                return response.value;
             }
         }
     }
@@ -729,7 +740,10 @@ public class Database {
     public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return usePreparedStatement(statement -> {
             try (ResultSet rs = statement.executeQuery()) {
-                return receiver.go(rs);
+                var response = receiver.go(rs);
+                if (response.isError())
+                    throw new SQLException("Failure inside ResultSetReceiver in query.", response.error);
+                return response.value;
             }
         }, connection, query, parms);
     }
@@ -838,13 +852,13 @@ public class Database {
      */
     public class Transaction {
 
-        private Result result = Result.BOOLEAN(false);
+        private Result result;
 
         /**
          * Encapsulate a transaction.
          *
          * @param transactionRunner A lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
-         * @throws SQLException Error.
+         * @throws SQLException Error getting connection.
          */
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
             try (Connection connection = pool.getConnection()) {

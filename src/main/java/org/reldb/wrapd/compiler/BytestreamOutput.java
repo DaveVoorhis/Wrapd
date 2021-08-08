@@ -47,8 +47,8 @@ public abstract class BytestreamOutput {
      * @param length Number of bytes to output.
      */
     public void put(byte[] b, int offset, int length) {
-        int count = 0;
-        for (int i = offset; i < b.length && count++ < length; i++)
+        var count = 0;
+        for (var i = offset; i < b.length && count++ < length; i++)
             putUnsignedByte(b[i]);
     }
 

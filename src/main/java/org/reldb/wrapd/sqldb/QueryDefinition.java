@@ -31,15 +31,16 @@ public class QueryDefinition {
      *
      * @param database Database.
      * @param codeDirectory Directory for generated code.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @throws SQLException exception if DBMS access failed
      */
-    public void generate(Database database, String codeDirectory) throws SQLException {
+    public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)
-            ? database.createTupleFromQueryAll(codeDirectory, tupleClassName, sqlText)
-            : database.createTupleFromQuery(codeDirectory, tupleClassName, sqlText, args);
+            ? database.createTupleFromQueryAll(codeDirectory, packageSpec, tupleClassName, sqlText)
+            : database.createTupleFromQuery(codeDirectory, packageSpec, tupleClassName, sqlText, args);
         if (tupleClassCreated.isOk()) {
-            var queryGenerator = new QueryTypeGenerator(codeDirectory, queryName, sqlText, args);
+            var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
             var results = queryGenerator.compile();
             if (!results.compiled)
                 throw new FatalException("Unable to generate Query derivative " + queryName + ": " + results.compilerMessages);

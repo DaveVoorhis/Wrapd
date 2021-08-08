@@ -1,6 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.TestDirectory;
+import org.reldb.wrapd.TestConfiguration;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.FatalException;
 
@@ -8,10 +8,10 @@ import java.sql.SQLException;
 
 public class DbHelper {
 
-    private String baseDir;
+    private final String baseDir;
 
     public DbHelper(String dbName) {
-        baseDir = TestDirectory.Is + dbName;
+        baseDir = TestConfiguration.Directory + dbName;
         ensureTestDirectoryExists();
     }
 
@@ -26,7 +26,7 @@ public class DbHelper {
 
     public static void clearDb(Database db, String[] tableNames) {
         System.out.println("Clearing database " + db.toString());
-        for (String tableName: tableNames)
+        for (var tableName: tableNames)
             try {
                 System.out.println("Dropping table " + tableName);
                 db.updateAll("DROP TABLE " + tableName);
