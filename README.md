@@ -9,6 +9,8 @@ to use and better integrated, tested, migrated and managed than using
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
+For a skeleton working application built using Wrapd, see https://github.com/DaveVoorhis/Wrapd-demo
+
 *"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
 
 * SQL access is helpfully *wrapped*, not awkwardly hidden.
