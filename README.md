@@ -133,4 +133,4 @@ You need Docker installed on your system, because Docker images of popular DBMSs
 3.  _gradle test_
 4.  _docker-compose down -v_
  
-### Documentation and examples are a work-in-progress. Watch this space! ###
+### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
