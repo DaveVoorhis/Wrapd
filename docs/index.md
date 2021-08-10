@@ -95,7 +95,7 @@ There is intentionally no attempt to hide SQL. Instead, Wrapd exposes it
 appropriately -- but preferably _only_ in the database abstraction layer -- and
 makes it easy to use SQL query results with Java Streams.
 
-That, plus automated schema migration, is Wrapd's main selling point: JDBC-to-Streams, bridged.
+That -- plus automated schema migration -- is Wrapd's main selling point: JDBC-to-Streams, bridged.
 
 It's easy:
 
