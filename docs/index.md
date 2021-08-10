@@ -1,7 +1,8 @@
-A _SQL amplifier_ makes SQL easier
-to use in Java, better integrated, better tested, more easily migrated and managed than using
-alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
+A _SQL amplifier_ makes SQL easier to use, better integrated, better tested, 
+more easily migrated and managed than using alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
+
+Wrapd is for Java 11 and above.
 
 See [https://github.com/DaveVoorhis/Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) for a Wrapd-ly built demo application.
 
