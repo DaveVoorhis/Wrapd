@@ -9,7 +9,7 @@ to use and better integrated, tested, migrated and managed than using
 alternatives like ORMs (Object-Relational Mappers) or raw JDBC,
 while staying light, lean, and loveable.
 
-See https://davevoorhis.github.io/Wrapd/ for Wrapd documentation and rationale.
+See https://wrapd.org for Wrapd documentation.
 
 This is the source project for the Wrapd library.
 
