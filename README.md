@@ -6,7 +6,7 @@ SQL in Java rather than hiding it.
 
 See https://wrapd.org for Wrapd documentation.
 
-See https://github.com/DaveVoorhis/Wrapd-demo for a Wrapd-ly built simple application.
+See https://github.com/DaveVoorhis/Wrapd-demo for a Wrapd-ly written demo application.
 
 This is the source project for the Wrapd library.
 
