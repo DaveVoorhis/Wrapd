@@ -1,4 +1,4 @@
-# SQL Queries are Easy #
+# SQL Queries are Easy
 
 Predefine SQL queries like this, which tests the queries and automatically generates the database access layer:
 ```java

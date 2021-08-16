@@ -1,4 +1,4 @@
-# SQL Schemas are Easy #
+# SQL Schemas are Easy
 
 Version migrations/upgrades can be completely automated.
 
