@@ -17,6 +17,9 @@ var schema = new SQLSchema(database) {
 };
 schema.setup();
 ```
+When ```schema.setup()``` is run:
+- If the database doesn't exist, it's created and brought up to version 1.
+- If the database is already version 1, there is no schema change.
 
 Later, add a migration from version 1 to version 2:
 ``` java
@@ -38,7 +41,6 @@ var schema = new SQLSchema(database) {
 };
 schema.setup();
 ```
-
 When ```schema.setup()``` is run:
 - If the database doesn't exist, it's created and brought up to version 2.
 - If the database is version 1, it's brought up to version 2.
