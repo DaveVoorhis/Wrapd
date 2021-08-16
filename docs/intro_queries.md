@@ -16,7 +16,7 @@ Note the example arguments, which are used to test the query and determine its p
 Wrapd will generate classes and type-checked methods to conveniently invoke your queries. Run the query defined above like this:
 ```java
 MyTableQuery01.query(database, 22, 88)
-              .forEach(tuple -> System.out.println("x = " + tuple.x + ", y = " + tuple.y));
+              .forEach(row -> System.out.println("x = " + row.x + ", y = " + row.y));
 ```
 
 In short, Wrapd provides a type-checked, statically-compiled bridge between JDBC and Java Streams.
