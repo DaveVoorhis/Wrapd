@@ -18,6 +18,6 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 
 | Beginning | Intermediate | Advanced |
 |-----------|--------------|----------|
-| [Rationale](rationale.md)<br>[Easy Queries](intro_queries.md)<br>[Easy Schemas](intro_schemas.md) |   |  [JavaDoc](javadoc/index.html) |
+| [Rationale](rationale.md)<br>[Easy Queries](intro_queries.md)<br>[Easy Schemas](intro_schemas.md) |   |  [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"} |
 
 ### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
