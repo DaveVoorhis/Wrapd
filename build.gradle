@@ -61,4 +61,12 @@ publishing {
 
 javadoc {
     options.overview = "src/javadoc/overview.html"
+
+    doLast {
+        delete "docs/javadoc"
+        copy {
+            from "build/docs/"
+            into "docs/"
+        }
+    }
 }
