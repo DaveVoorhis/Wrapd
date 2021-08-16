@@ -20,3 +20,6 @@ MyTableQuery01.query(database, 22, 88)
 ```
 
 In short, Wrapd provides a type-checked, statically-compiled bridge between JDBC and Java Streams.
+
+----
+[Home](index.md)

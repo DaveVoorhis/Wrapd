@@ -45,3 +45,6 @@ Use cases:
 * Run standalone schema migrations on servers to create or update their databases during new-version deployment.
 
 In short, Wrapd makes it easy to deploy database creation and database upgrades.
+
+----
+[Home](index.md)
