@@ -15,15 +15,12 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 * SQL focus can be *rapt*.
 
 ### Table of Contents ###
-
-<style>
-    table {
-        width: 100%;
-    }
-</style>
-
-| Beginning | Intermediate | Advanced |
-| :--- | :----: | ---: |
-| [Rationale](rationale.md)<br>[Easy Queries](intro_queries.md)<br>[Easy Schemas](intro_schemas.md) |   |  [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"} |
-
+1. Beginning Wrapd
+   1. [Rationale](rationale.md)
+   2. [Easy Queries](intro_queries.md)
+   3. [Easy Schemas](intro_schemas.md)
+2. Intermediate Wrapd
+3. Advanced Wrapd
+   1. [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"}
+   
 ### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
