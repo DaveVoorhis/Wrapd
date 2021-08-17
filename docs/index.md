@@ -16,6 +16,12 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 
 ### Table of Contents ###
 
+<style>
+    table {
+        width: 100%;
+    }
+</style>
+
 | Beginning | Intermediate | Advanced |
 | :--- | :----: | ---: |
 | [Rationale](rationale.md)<br>[Easy Queries](intro_queries.md)<br>[Easy Schemas](intro_schemas.md) |   |  [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"} |
