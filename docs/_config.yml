@@ -1,1 +1,3 @@
 theme: jekyll-theme-cayman
+title: Wrapd - the SQL Amplifier for Java
+description: Wrapd is a SQL amplifier, a lightweight database abstraction layer generator and schema migrator that helpfully exposes SQL in Java rather than hiding it.
