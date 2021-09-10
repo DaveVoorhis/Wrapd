@@ -96,18 +96,6 @@ public class Database {
     }
 
     /**
-     * Open a database given a database URL and table name prefix.
-     *
-     * @param dbURL Database URL.
-     * @param dbTablenamePrefix Table name prefix.
-     * @param customisations DBMS-specific customisations.
-     * @throws SQLException Error.
-     */
-    public Database(String dbURL, String dbTablenamePrefix, Customisations customisations) throws SQLException {
-        this(dbURL, null, null, dbTablenamePrefix, customisations);
-    }
-
-    /**
      * Wherever $$ appears in the argument, replace it with dbTableNamePrefix.
      *
      * @param query The source text.
