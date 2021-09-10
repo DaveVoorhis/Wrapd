@@ -52,6 +52,16 @@ public class Database {
     public final EventHandler<SQLEvent> sqlEvents = new EventHandler<>();
 
     /**
+     * Distribute a SQLEvent to interested listeners.
+     *
+     * @param location Where the query was generated or processed.
+     * @param query The SQL text of the query.
+     */
+    protected void distributeSQLEvent(String location, String query) {
+        sqlEvents.distribute(new SQLEvent(location, query));
+    }
+
+    /**
      * Open a database, given a database URL, user name, password, and table name prefix.
      *
      * @param dbURL Database URL
@@ -79,16 +89,6 @@ public class Database {
         DriverManager.getConnection(dbURL, props).close();
         var unpooledSource = DataSources.unpooledDataSource(dbURL, props);
         pool = DataSources.pooledDataSource(unpooledSource);
-    }
-
-    /**
-     * Distribute a SQLEvent to interested listeners.
-     *
-     * @param location Where the query was generated or processed.
-     * @param query The SQL text of the query.
-     */
-    protected void distributeSQLEvent(String location, String query) {
-        sqlEvents.distribute(new SQLEvent(location, query));
     }
 
     public String toString() {
