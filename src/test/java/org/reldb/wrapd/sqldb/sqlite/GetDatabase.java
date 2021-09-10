@@ -10,6 +10,8 @@ public class GetDatabase {
 	public static Database getDatabase() throws SQLException {
 		return new Database(
 			Configuration.dbURL,
+			null,
+			null,
 			Configuration.dbTablenamePrefix,
 			new SQLiteCustomisations()
 		);
