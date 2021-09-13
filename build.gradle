@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'org.reldb'
-version = '0.0.5-SNAPSHOT'
+version = '0.0.6-SNAPSHOT'
 description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -14,13 +14,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.mchange:c3p0:0.9.5.5'
     implementation 'org.eclipse.jdt:ecj:3.26.0'
 }
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
     testImplementation 'org.junit.platform:junit-platform-runner:1.7.2'
+    testImplementation 'com.mchange:c3p0:0.9.5.5'
     testImplementation 'org.postgresql:postgresql:42.2.23'
     testImplementation 'org.xerial:sqlite-jdbc:3.36.0.2'
     testImplementation 'mysql:mysql-connector-java:8.0.25'

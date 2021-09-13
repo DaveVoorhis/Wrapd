@@ -1,19 +1,20 @@
 package org.reldb.wrapd.sqldb.postgresql;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Pool;
 
 public class GetDatabase {
 
 	public static Database getDatabase() throws SQLException {
-		return new Database(
+		return new Database(new Pool(
 				Configuration.dbURL,
 				Configuration.dbUser,
-				Configuration.dbPassword,
-				Configuration.dbTablenamePrefix,
-				null
+				Configuration.dbPassword
+			).getDataSource(),
+			Configuration.dbTablenamePrefix,
+			null
 		);
 	}
 

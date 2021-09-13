@@ -1,6 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import com.mchange.v2.c3p0.DataSources;
 import org.reldb.toolbox.events.EventHandler;
 import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.exceptions.FatalException;
@@ -19,12 +18,10 @@ import java.util.stream.Stream;
  */
 public class Database {
 
-    private final DataSource pool;
+    private final DataSource dataSource;
 
     private final String dbTablenamePrefix;
     private final Customisations customisations;
-
-    private final String dbURL;
 
     /**
      * An instance of an SQL query, for monitoring queries processed by a Database.
@@ -62,37 +59,20 @@ public class Database {
     }
 
     /**
-     * Open a database, given a database URL, user name, password, and table name prefix.
+     * Construct a Database.
      *
-     * @param dbURL Database URL
-     * @param dbUser Database user
-     * @param dbPassword Database password
+     * @param dataSource Data source
      * @param dbTablenamePrefix Table name prefix
      * @param customisations DBMS-specific customisations
-     * @throws SQLException Error.
      */
-    public Database(String dbURL, String dbUser, String dbPassword, String dbTablenamePrefix, Customisations customisations) throws SQLException {
-        this.dbURL = dbURL;
-
-        if (dbURL == null)
-            throw new IllegalArgumentException("dbURL must not be null");
-
+    public Database(DataSource dataSource, String dbTablenamePrefix, Customisations customisations) {
+        this.dataSource = dataSource;
         this.dbTablenamePrefix = nullToEmptyString(dbTablenamePrefix);
         this.customisations = customisations;
-
-        Properties props = new Properties();
-        if (dbUser != null)
-            props.setProperty("user", dbUser);
-        if (dbPassword != null)
-            props.setProperty("password", dbPassword);
-
-        DriverManager.getConnection(dbURL, props).close();
-        var unpooledSource = DataSources.unpooledDataSource(dbURL, props);
-        pool = DataSources.pooledDataSource(unpooledSource);
     }
 
     public String toString() {
-        return "Database: " + dbURL;
+        return "Database: " + dataSource.toString();
     }
 
     /**
@@ -131,7 +111,7 @@ public class Database {
      * @throws SQLException Error obtaining connection.
      */
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
-        try (Connection conn = pool.getConnection()) {
+        try (Connection conn = dataSource.getConnection()) {
             try {
                 return new Response<>(connectionUser.go(conn));
             } catch (SQLException t) {
@@ -849,7 +829,7 @@ public class Database {
          * @throws SQLException Error getting connection.
          */
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
-            try (Connection connection = pool.getConnection()) {
+            try (Connection connection = dataSource.getConnection()) {
                 connection.setAutoCommit(false);
                 try {
                     result = transactionRunner.run(connection);
