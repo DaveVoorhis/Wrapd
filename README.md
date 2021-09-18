@@ -16,6 +16,7 @@ You need Docker installed on your system, because Docker images of popular DBMSs
 
 ```
 docker-compose up -d
+sleep 10   # give DBMSs time to spool up
 gradle clean
 gradle build
 gradle javadoc
