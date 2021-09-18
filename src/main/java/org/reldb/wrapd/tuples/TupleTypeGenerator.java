@@ -2,8 +2,7 @@ package org.reldb.wrapd.tuples;
 
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.compiler.DirClassLoader;
-import org.reldb.wrapd.compiler.JavaCompiler;
+import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.File;
@@ -34,7 +33,6 @@ public class TupleTypeGenerator {
     private final String dir;
     private final String tupleName;
     private final String tupleTypePackage;
-    private final DirClassLoader loader;
     private final List<Attribute> attributes = new LinkedList<>();
 
     /**
@@ -63,7 +61,6 @@ public class TupleTypeGenerator {
         this.tupleName = tupleName;
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        loader = new DirClassLoader(dir, tupleTypePackage);
     }
 
     /**
@@ -130,12 +127,11 @@ public class TupleTypeGenerator {
     }
 
     /**
-     * Compile this tuple type as a class.
+     * Generate this tuple type as a Java class definition.
      *
-     * @return Compilation results.
+     * @return The generated Java source file.
      */
-    public JavaCompiler.CompilationResults compile() {
-        loader.unload(getTupleClassName());
+    public File generate() {
         var attributeDefs =
                 attributes
                         .stream()
@@ -151,8 +147,8 @@ public class TupleTypeGenerator {
                     attributeDefs +
                     getToStringCode() +
                 "}";
-        var compiler = new JavaCompiler(dir);
-        return compiler.compileJavaCode(tupleName, tupleTypePackage, tupleDef);
+        var generator = new JavaGenerator(dir);
+        return generator.generateJavaCode(tupleName, tupleTypePackage, tupleDef);
     }
 
     /**

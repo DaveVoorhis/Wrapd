@@ -7,9 +7,7 @@ import org.reldb.wrapd.exceptions.FatalException;
 import java.io.*;
 import java.util.StringTokenizer;
 
-import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateResourceDir;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
+import static org.reldb.wrapd.il8n.Strings.*;
 
 /**
  * Machinery for compiling Java code.
@@ -39,9 +37,6 @@ public class JavaCompiler {
         /** The compiler invocation commandline */
         public final String commandLine;
 
-        /** The source code to be compiled. */
-        public final String source;
-
         /** The filespec of the file to be compiled. */
         public final File sourceFile;
 
@@ -51,14 +46,12 @@ public class JavaCompiler {
          * @param compiled True if compilation successful.
          * @param compilerMessages Compiler-generated messages.
          * @param commandLine Compiler-invocation command-line.
-         * @param source Source code to be compiled.
          * @param sourceFile Filespec of the file to be compiled.
          */
-        public CompilationResults(boolean compiled, String compilerMessages, String commandLine, String source, File sourceFile) {
+        public CompilationResults(boolean compiled, String compilerMessages, String commandLine, File sourceFile) {
             this.compiled = compiled;
             this.compilerMessages = compilerMessages;
             this.commandLine = commandLine;
-            this.source = source;
             this.sourceFile = sourceFile;
         }
 
@@ -76,12 +69,10 @@ public class JavaCompiler {
      * Compile Java code.
      *
      * @param classpath The class path.
-     * @param className The class name to be generated.
-     * @param packageSpec The package.
-     * @param src The source code.
+     * @param sourcef The source file to compile.
      * @return CompilationResults.
      */
-    public CompilationResults compileJavaCode(String classpath, String className, String packageSpec, String src) {
+    public CompilationResults compileJavaCode(String classpath, File sourcef) {
         var messageStream = new ByteArrayOutputStream();
         var warningStream = new ByteArrayOutputStream();
         var warningSetting = "allDeprecation,"
@@ -96,28 +87,6 @@ public class JavaCompiler {
                 + "unnecessaryElse," + "uselessTypeCheck," + "unsafe,"
                 + "unusedArgument," + "unusedImport," + "unusedLocal,"
                 + "unusedPrivate," + "unusedThrown";
-
-        // If resource directory doesn't exist, create it.
-        var resourceDir = new File(userSourcePath);
-        if (!(resourceDir.exists()))
-            if (!resourceDir.mkdirs())
-                throw new FatalException(Str.ing(ErrUnableToCreateResourceDir, resourceDir.toString()));
-        File sourcef;
-        try {
-            // Convert package to directories
-            var packageDir = userSourcePath + "/" + packageSpec.replace('.', '/');
-            var packageDirFile = new File(packageDir);
-            if (!packageDirFile.exists())
-                if (!packageDirFile.mkdirs())
-                    throw new FatalException(Str.ing(ErrUnableToCreatePackageDir, packageDirFile.toString()));
-            // Write source to a Java source file
-            sourcef = new File(packageDir + "/" + getStrippedClassname(className) + ".java");
-            var sourcePS = new PrintStream(new FileOutputStream(sourcef));
-            sourcePS.print(src);
-            sourcePS.close();
-        } catch (IOException ioe) {
-            throw new FatalException(Str.ing(ErrSavingJavaSource, ioe.toString()));
-        }
 
         // Start compilation using JDT
         var commandLine = "-14 -source 14 -warn:" +
@@ -157,20 +126,7 @@ public class JavaCompiler {
             }
             compilerMessages.append(str).append('\n');
         }
-        return new CompilationResults(compiled, compilerMessages.toString(), commandLine, src, sourcef);
-    }
-
-    /**
-     * Compile Java code.
-     *
-     * @param className The class name to be generated.
-     * @param packageSpec The package.
-     * @param src The source code.
-     * @return CompilationResults.
-     */
-    public CompilationResults compileJavaCode(String className, String packageSpec, String src) {
-        var classpath = getDefaultClassPath();
-        return compileJavaCode(classpath, className, packageSpec, src);
+        return new CompilationResults(compiled, compilerMessages.toString(), commandLine, sourcef);
     }
 
     /**
@@ -180,7 +136,7 @@ public class JavaCompiler {
      */
     public String getDefaultClassPath() {
         return cleanClassPath(System.getProperty("java.class.path")) +
-                java.io.File.pathSeparatorChar +
+                File.pathSeparatorChar +
                 cleanClassPath(getLocalClasspath());
     }
 
@@ -212,23 +168,6 @@ public class JavaCompiler {
      */
     private String getLocalClasspath() {
         return System.getProperty("user.dir") + File.pathSeparatorChar + userSourcePath;
-    }
-
-    /**
-     * Get a stripped name.  Only return text after the final '.'
-     */
-    private static String getStrippedName(String name) {
-        var lastDot = name.lastIndexOf('.');
-        return (lastDot >= 0)
-            ? name.substring(lastDot + 1)
-            : name;
-    }
-
-    /**
-     * Get stripped Java Class name.
-     */
-    private static String getStrippedClassname(String name) {
-        return getStrippedName(name);
     }
 
 }

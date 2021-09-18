@@ -1,6 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.tuples.Tuple;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
 
@@ -26,12 +25,11 @@ public class ResultSetToTuple {
      * @param tupleName Name of new Tuple class.
      * @param results ResultSet to be used to create the new Tuple class.
      * @param customisations Customisations for specific DBMS types.
-     * @return CompilationResults.
      * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
      * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException thrown if an argument is null
      */
-    public static CompilationResults createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
+    public static void createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
@@ -49,7 +47,7 @@ public class ResultSetToTuple {
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
-        return generator.compile();
+        generator.generate();
     }
 
     /**

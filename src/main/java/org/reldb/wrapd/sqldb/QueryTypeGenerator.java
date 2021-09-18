@@ -2,7 +2,7 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.compiler.JavaCompiler;
+import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.File;
@@ -120,11 +120,11 @@ public class QueryTypeGenerator {
     }
 
     /**
-     * Compile this query type as a class.
+     * Generate this query type as a Java class definition.
      *
-     * @return An instance of ForeignCompilerJava.CompilationResults, which indicates compilation results.
+     * @return The generated Java source file.
      */
-    public JavaCompiler.CompilationResults compile() {
+    public File generate() {
         var tupleTypeName = queryName + "Tuple";
         var queryDef =
                 "package " + packageSpec + ";\n\n" +
@@ -140,8 +140,8 @@ public class QueryTypeGenerator {
                 "\n" +
                 getQueryMethods(tupleTypeName) +
                 "}";
-        var compiler = new JavaCompiler(dir);
-        return compiler.compileJavaCode(queryName, packageSpec, queryDef);
+        var generator = new JavaGenerator(dir);
+        return generator.generateJavaCode(queryName, packageSpec, queryDef);
     }
 
     /**

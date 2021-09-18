@@ -1,7 +1,7 @@
 package org.reldb.wrapd.il8n;
 
 import org.reldb.toolbox.il8n.Str;
-import org.reldb.wrapd.compiler.JavaCompiler;
+import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
 import org.reldb.wrapd.tuples.TupleTypeGenerator;
@@ -12,13 +12,13 @@ import org.reldb.wrapd.tuples.TupleTypeGenerator;
 public class Strings {
 
     /** Unable to create resource directory. */
-    public static final int ErrUnableToCreateResourceDir = Str.E("Unable to create resource directory: %s.", JavaCompiler.class.toString());
+    public static final int ErrUnableToCreateResourceDir = Str.E("Unable to create resource directory: %s.", JavaGenerator.class.toString());
 
     /** Unable to create package directory. */
-    public static final int ErrUnableToCreatePackageDir = Str.E("Unable to create package directory: %s.", JavaCompiler.class.toString());
+    public static final int ErrUnableToCreatePackageDir = Str.E("Unable to create package directory: %s.", JavaGenerator.class.toString());
 
     /** Unable to write generated Java code. */
-    public static final int ErrSavingJavaSource = Str.E("Unable to save Java source: %s.", JavaCompiler.class.toString());
+    public static final int ErrSavingJavaSource = Str.E("Unable to save Java source: %s.", JavaGenerator.class.toString());
 
     /** Unable to create or open directory for generated Java code and classes. */
     public static final int ErrUnableToCreateOrOpenCodeDirectory = Str.E("Unable to create or open code directory %s.", TupleTypeGenerator.class.toString());

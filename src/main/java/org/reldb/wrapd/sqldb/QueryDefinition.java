@@ -1,7 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.wrapd.exceptions.FatalException;
-
 import java.sql.SQLException;
 
 /**
@@ -41,9 +39,7 @@ public class QueryDefinition {
             : database.createTupleFromQuery(codeDirectory, packageSpec, tupleClassName, sqlText, args);
         if (tupleClassCreated.isOk()) {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
-            var results = queryGenerator.compile();
-            if (!results.compiled)
-                throw new FatalException("Unable to generate Query derivative " + queryName + ": " + results.compilerMessages);
+            queryGenerator.generate();
         }
     }
 

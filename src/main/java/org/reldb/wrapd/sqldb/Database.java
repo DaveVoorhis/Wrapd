@@ -1,7 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.events.EventHandler;
-import org.reldb.wrapd.compiler.JavaCompiler.CompilationResults;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
@@ -390,14 +389,11 @@ public class Database {
      */
     public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
         return resultSet -> {
-            CompilationResults compilationResult;
             try {
-                compilationResult = ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
+                ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
             } catch (Throwable e) {
                 return new Response<>(Result.ERROR(e));
             }
-            if (!compilationResult.compiled)
-                return new Response<>(Result.ERROR(new FatalException("Tuple class " + tupleClassName + " failed to compile due to: " + compilationResult.compilerMessages)));
             return new Response<>(Result.OK);
         };
     }

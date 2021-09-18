@@ -7,6 +7,7 @@ import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
+import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Result;
@@ -119,9 +120,11 @@ public class QueriesHelper {
 		var source = Files.readString(Path.of("src/test/resources/" + testSourceName + ".java"), StandardCharsets.UTF_8);
 		for (var replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
+		var generator = new JavaGenerator(getCodeDir());
+		var sourcef = generator.generateJavaCode(testTargetName, TestConfiguration.Package, source);
 		var compiler = new JavaCompiler(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
-		return compiler.compileJavaCode(classpath, testTargetName, TestConfiguration.Package, source);
+		return compiler.compileJavaCode(classpath, sourcef);
 	}
 
 	private void run() throws IOException, ClassNotFoundException {

@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
+import org.reldb.wrapd.compiler.JavaCompiler;
 
 public class TestTupleTypeGenerator {
 
@@ -27,8 +28,11 @@ public class TestTupleTypeGenerator {
 		generator.addAttribute("Col2", Integer.class);
 		generator.addAttribute("Col3", Boolean.class);
 		generator.addAttribute("Col4", Double.class);
-		var compilation = generator.compile();
-		
+		var sourcef = generator.generate();
+		var compiler = new JavaCompiler(codeDir);
+		var classpath = compiler.getDefaultClassPath();
+		var compilation = compiler.compileJavaCode(classpath, sourcef);
+
 		System.out.println("[TEST] === Compilation " + ((compilation.compiled) ? "succeeded" : "failed") + " ===");
 		System.out.println("[TEST] " + compilation.compilerMessages);
 
