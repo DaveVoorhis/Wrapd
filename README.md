@@ -10,18 +10,22 @@ See https://github.com/DaveVoorhis/Wrapd-demo for a Wrapd-ly written demo applic
 
 This is the source project for the Wrapd library.
 
-### To build the Wrapd library ###
-
-1.   _gradle clean_
-2.   _gradle publishToMavenLocal_
+### To build the Wrapd library (with javadoc and local publish) ###
+```
+gradle clean
+gradle build
+gradle javadoc
+gradle publishToMavenLocal
+```
 
 ### To test the Wrapd library ###
 
 You need Docker installed on your system, because Docker images of popular DBMSs are used to perform end-to-end tests.
+```
+docker-compose up -d
+gradle clean
+gradle test
+docker-compose down -v
+```
 
-1.  _docker-compose up -d_
-2.  _gradle clean_
-3.  _gradle test_
-4.  _docker-compose down -v_
- 
 ### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
