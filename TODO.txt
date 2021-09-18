@@ -1,3 +1,4 @@
+- Do we really need to compile via the JDT ECJ? Maybe leave it to the development environment?
 - Improve QueryDefiner to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
   addition to existing query(Database db, ...), etc.
   This may require predefined Query derivatives called Select, Insert, Update and Delete,
