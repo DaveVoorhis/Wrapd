@@ -21,7 +21,7 @@ public class Version {
      */
     public static String getVersionString() {
         if (cachedVersion == null) {
-            var versionPropertiesStream = Version.class.getResourceAsStream("/version.properties");
+            var versionPropertiesStream = Version.class.getResourceAsStream("/wrapd.version.properties");
             if (versionPropertiesStream == null) {
                 cachedVersion = "?";
             } else {
