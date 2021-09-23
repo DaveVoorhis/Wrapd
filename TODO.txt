@@ -1,3 +1,4 @@
+- Combine QueryDefinition and UpdateDefinition into one(?)
 - Use Wrapd-demo as basis for more comprehensive tests, maybe.
 - Improve QueryDefiner to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
   addition to existing query(Database db, ...), etc. (Part way there...)
