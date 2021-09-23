@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb;
 import org.reldb.wrapd.tuples.Tuple;
 
 /**
- * A SQL Query. Normally not used directly, but inherited.
+ * A SQL SELECT (or equivalent RecordSet-returning) Query. Normally not used directly, but inherited.
  */
 public class Query<T extends Tuple> {
     private final String text;

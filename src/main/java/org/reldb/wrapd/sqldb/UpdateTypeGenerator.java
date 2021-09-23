@@ -2,17 +2,17 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.exceptions.FatalException;
+import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.io.File;
 
-import static org.reldb.wrapd.il8n.Strings.*;
+import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateOrOpenCodeDirectory;
 
 /**
- * Generates Java code to represent a query, which is a class that implements {@link Query}.
+ * Generates Java code to represent an update query, which is a class that implements {@link Update}.
  */
-public class QueryTypeGenerator {
+public class UpdateTypeGenerator {
 
     private final String dir;
     private final String packageSpec;
@@ -21,7 +21,7 @@ public class QueryTypeGenerator {
     private final Object[] args;
 
     /**
-     * Create a generator of compiled query invokers.
+     * Create a generator of compiled update invokers.
      *
      * @param dir Directory into which generated class(es) will be put.
      * @param packageSpec Package to which generated class(es) belong, in dotted notation.
@@ -29,7 +29,7 @@ public class QueryTypeGenerator {
      * @param sqlText SQL query text.
      * @param args Sample arguments.
      */
-    public QueryTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
+    public UpdateTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
         this.packageSpec = packageSpec;
         if (queryName.startsWith(packageSpec))
             queryName = queryName.substring(packageSpec.length() + 1);
@@ -87,36 +87,40 @@ public class QueryTypeGenerator {
         return out.toString();
     }
 
-    private String getConstructor(String tupleTypeName) {
+    private String getConstructor() {
         return
             "\t@SuppressWarnings(\"unchecked\")\n" +
-            "\tprotected " + queryName + "(String queryText, Class<" + tupleTypeName + "> tupleClass, Object... arguments) {\n" +
-            "\t\tsuper(queryText, (Class<T>)tupleClass, arguments);\n" +
+            "\tprotected " + queryName + "(String queryText" +
+                (hasArgs() ? ", Object... arguments" : "") +
+            ") {\n" +
+            "\t\tsuper(queryText, " +
+                (hasArgs() ? "arguments" : "(Object)null") +
+            ");\n" +
             "\t}\n";
     }
 
-    private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection) {
+    private String buildQueryMethod(String methodName, String newQuery, boolean withConnection) {
         var argConnection = withConnection
                 ? "connection, "
                 : "";
-        return "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms(withConnection) + ") throws SQLException {\n" +
+        return "\tpublic static boolean update(" + getParms(withConnection) + ") throws SQLException {\n" +
                 "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
     }
 
-    private String getQueryMethods(String tupleTypeName) {
+    private String getQueryMethods() {
         var methodName = (args == null || args.length == 0)
-                ? "queryAll"
-                : "query";
+                ? "updateAll"
+                : "update";
         var args = hasArgs()
                 ? ", " + getArgs()
                 : "";
-        var newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
+        var newQuery = "new " + queryName + "(sqlText" + args + ")";
         return
-                buildQueryMethod(methodName, tupleTypeName, newQuery, false) +
+                buildQueryMethod(methodName, newQuery, false) +
                 "\n" +
-                buildQueryMethod(methodName, tupleTypeName, newQuery, true);
+                buildQueryMethod(methodName, newQuery, true);
     }
 
     /**
@@ -131,14 +135,12 @@ public class QueryTypeGenerator {
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import java.sql.SQLException;\n" +
                 "import java.sql.Connection;\n" +
-                "import java.util.stream.Stream;\n\n" +
-                "import org.reldb.wrapd.tuples.Tuple;\n" +
                 "import org.reldb.wrapd.sqldb.Database;\n" +
-                "import org.reldb.wrapd.sqldb.Query;\n\n" +
-                "public class " + queryName + "<T extends Tuple> extends Query<T> {\n" +
-                getConstructor(tupleTypeName) +
+                "import org.reldb.wrapd.sqldb.Update;\n\n" +
+                "public class " + queryName + " extends Update {\n" +
+                getConstructor() +
                 "\n" +
-                getQueryMethods(tupleTypeName) +
+                getQueryMethods() +
                 "}";
         var generator = new JavaGenerator(dir);
         return generator.generateJavaCode(queryName, packageSpec, queryDef);

@@ -3,7 +3,8 @@ package org.reldb.wrapd.sqldb;
 import java.sql.SQLException;
 
 /**
- * A Query definition.
+ * A Query definition, which normally maps to a SELECT query or a stored procedure invocation that returns
+ * a RecordSet equivalent to a SELECT query invocation.
  */
 public class QueryDefinition {
     private final String queryName;
@@ -29,7 +30,7 @@ public class QueryDefinition {
      *
      * @param database Database.
      * @param codeDirectory Directory for generated code.
-     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param packageSpec The package, in dotted notation, to which the generated definitions belong.
      * @throws SQLException exception if DBMS access failed
      */
     public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {

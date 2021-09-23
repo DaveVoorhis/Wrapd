@@ -781,6 +781,52 @@ public class Database {
     }
 
     /**
+     * Issue an update query.
+     *
+     * @param update Update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean updateAll(Update update) throws SQLException {
+        return updateAll(update.getQueryText());
+    }
+
+    /**
+     * Issue an update query.
+     *
+     * @param connection Database connection.
+     * @param update Update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean updateAll(Connection connection, Update update) throws SQLException {
+        return updateAll(connection, update.getQueryText());
+    }
+
+    /**
+     * Issue an update query.
+     *
+     * @param update Parametric update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean update(Update update) throws SQLException {
+        return update(update.getQueryText(), update.getArguments());
+    }
+
+    /**
+     * Issue an update query.
+     *
+     * @param connection Database connection.
+     * @param update Parametric update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean update(Connection connection, Update update) throws SQLException {
+        return update(connection, update.getQueryText(), update.getArguments());
+    }
+
+    /**
      * Given multiple argument arrays, combine them into one unified argument list for passing to a parametrised query's "Object ... parms", above.
      *
      * @param parms Parameter arguments.

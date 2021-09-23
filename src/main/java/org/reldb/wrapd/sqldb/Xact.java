@@ -224,6 +224,28 @@ public class Xact {
     }
 
     /**
+     * Issue an update query.
+     *
+     * @param update Update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean updateAll(Update update) throws SQLException {
+        return database.updateAll(update.getQueryText());
+    }
+
+    /**
+     * Issue an update query.
+     *
+     * @param update Parametric update query specification.
+     * @return True if a ResultSet is returned, false otherwise.
+     * @throws SQLException Error.
+     */
+    public boolean update(Update update) throws SQLException {
+        return database.update(update.getQueryText(), update.getArguments());
+    }
+
+    /**
      * Update specified tuple.
      *
      * @param tuple Tuple to update.
