@@ -1,5 +1,6 @@
+- Use Wrapd-demo as basis for more comprehensive tests, maybe.
 - Improve QueryDefiner to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
-  addition to existing query(Database db, ...), etc.
+  addition to existing query(Database db, ...), etc. (Part way there...)
   This may require predefined Query derivatives called Select, Insert, Update and Delete,
   from which the generated ones are derived.
 - Consider making transactional and non-transactional query method names different,
