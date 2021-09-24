@@ -17,11 +17,11 @@ public class QueryDefinitions extends Definer {
         return new QueryDefinition(queryName + "Query02", "SELECT * FROM $$tester");
     }
 
-    public void QueryDefinition03() throws Exception {
+    public void QueryDefinition03() throws Throwable {
         defineQuery(queryName + "Query03", "SELECT * FROM $$tester WHERE x > ?", 3);
     }
 
-    public void queryDefinition04() throws Exception {
+    public void queryDefinition04() throws Throwable {
         defineQuery(queryName + "Query04", "SELECT x FROM $$tester");
     }
 }

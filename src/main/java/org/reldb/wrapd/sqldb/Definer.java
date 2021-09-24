@@ -13,7 +13,7 @@ public class Definer {
     /**
      * A Definer exception.
      */
-    public static class DefinerException extends Exception {
+    public static class DefinerException extends Throwable {
         /** The Definer in which the exception occurred. */
         public final Definer definer;
 
@@ -27,7 +27,7 @@ public class Definer {
          * @param method The Method in which the exception occurred.
          * @param exception The underlying error thrown.
          */
-        public DefinerException(Definer definer, Method method, Exception exception) {
+        public DefinerException(Definer definer, Method method, Throwable exception) {
             super(exception);
             this.definer = definer;
             this.method = method;
@@ -79,9 +79,9 @@ public class Definer {
      * to create Query subclass that can be passed to a Database for future evaluation.
      *
      * @param definition QueryDefinition.
-     * @throws Exception Failed.
+     * @throws Throwable Failed.
      */
-    protected void generate(QueryDefinition definition) throws Exception {
+    protected void generate(QueryDefinition definition) throws Throwable {
         definition.generate(getDatabase(), getCodeDirectory(), getPackageSpec());
     }
 
@@ -90,9 +90,9 @@ public class Definer {
      * to create Update subclass that can be passed to a Database for future evaluation.
      *
      * @param definition UpdateDefinition.
-     * @throws Exception Failed.
+     * @throws Throwable Failed.
      */
-    protected void generate(UpdateDefinition definition) throws Exception {
+    protected void generate(UpdateDefinition definition) throws Throwable {
         definition.generate(getDatabase(), getCodeDirectory(), getPackageSpec());
     }
 
@@ -102,9 +102,9 @@ public class Definer {
      * @param queryName Name of query. Should be unique.
      * @param sqlText SQL query text.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
-     * @throws Exception Error.
+     * @throws Throwable Error.
      */
-    protected void defineQuery(String queryName, String sqlText, Object... args) throws Exception {
+    protected void defineQuery(String queryName, String sqlText, Object... args) throws Throwable {
          generate(new QueryDefinition(queryName, sqlText, args));
     }
 
@@ -114,9 +114,9 @@ public class Definer {
      * @param queryName Name of update query. Should be unique.
      * @param sqlText SQL update query text.
      * @param args Arguments that specify parameter type(s) and allow update query to succeed.
-     * @throws Exception Error.
+     * @throws Throwable Error.
      */
-    protected void defineUpdate(String queryName, String sqlText, Object... args) throws Exception {
+    protected void defineUpdate(String queryName, String sqlText, Object... args) throws Throwable {
         generate(new UpdateDefinition(queryName, sqlText, args));
     }
 
@@ -145,7 +145,7 @@ public class Definer {
                 if (method.getReturnType().equals(QueryDefinition.class)) {
                     try {
                         generate((QueryDefinition) method.invoke(this));
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         throw new DefinerException(this, method, e);
                     }
                 } else if (method.getReturnType().equals(Void.TYPE)) {
@@ -159,7 +159,7 @@ public class Definer {
                 if (method.getReturnType().equals(UpdateDefinition.class)) {
                     try {
                         generate((UpdateDefinition) method.invoke(this));
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         throw new DefinerException(this, method, e);
                     }
                 } else if (method.getReturnType().equals(Void.TYPE)) {

@@ -31,9 +31,9 @@ public class QueryDefinition {
      * @param database Database.
      * @param codeDirectory Directory for generated code.
      * @param packageSpec The package, in dotted notation, to which the generated definitions belong.
-     * @throws SQLException exception if DBMS access failed
+     * @throws Throwable exception if failed
      */
-    public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {
+    public void generate(Database database, String codeDirectory, String packageSpec) throws Throwable {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)
             ? database.createTupleFromQueryAll(codeDirectory, packageSpec, tupleClassName, sqlText)
@@ -41,7 +41,8 @@ public class QueryDefinition {
         if (tupleClassCreated.isOk()) {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
             queryGenerator.generate();
-        }
+        } else
+            throw tupleClassCreated.error;
     }
 
 }

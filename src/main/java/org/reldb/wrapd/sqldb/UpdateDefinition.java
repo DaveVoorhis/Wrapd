@@ -30,9 +30,9 @@ public class UpdateDefinition {
      * @param database Database.
      * @param codeDirectory Directory for generated code.
      * @param packageSpec The package, in dotted notation, to which the generated class definition belongs.
-     * @throws SQLException exception if DBMS access failed
+     * @throws Throwable exception if failed
      */
-    public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {
+    public void generate(Database database, String codeDirectory, String packageSpec) throws Throwable {
         // Test the query by running it; hope you're not doing this on a production database!
         if (args == null || args.length == 0)
             database.updateAll(sqlText);
