@@ -1,10 +1,11 @@
 plugins {
     id 'java'
+    id 'java-library'
     id 'maven-publish'
 }
 
 group = 'org.reldb'
-version = '0.0.22-SNAPSHOT'
+version = '0.0.23-SNAPSHOT'
 description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -14,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.reldb:Toolbox:0.0.1-SNAPSHOT'
+    api 'org.reldb:Toolbox:0.0.1-SNAPSHOT'
 }
 
 dependencies {
