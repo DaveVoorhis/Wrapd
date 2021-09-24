@@ -18,7 +18,6 @@ import java.util.stream.Stream;
 public class Database {
 
     private final DataSource dataSource;
-
     private final String dbTablenamePrefix;
     private final Customisations customisations;
 
@@ -110,9 +109,9 @@ public class Database {
      * @throws SQLException Error obtaining connection.
      */
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
-        try (Connection conn = dataSource.getConnection()) {
+        try (var connection = dataSource.getConnection()) {
             try {
-                return new Response<>(connectionUser.go(conn));
+                return new Response<>(connectionUser.go(connection));
             } catch (SQLException t) {
                 return new Response<>(t);
             }
@@ -159,7 +158,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public boolean updateAll(Connection connection, String sqlStatement) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+        try (var statement = connection.createStatement()) {
             var sqlized = replaceTableNames(sqlStatement);
             distributeSQLEvent("updateAll: ", sqlized);
             return statement.execute(sqlized);
@@ -187,10 +186,10 @@ public class Database {
      * @throws SQLException Error.
      */
     public Optional<?> valueOfAll(Connection connection, String query, String columnName) throws SQLException {
-        return queryAll(connection, query, rs -> {
+        return queryAll(connection, query, resultSet -> {
             try {
-                if (rs.next())
-                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                if (resultSet.next())
+                    return new Response<>(Optional.ofNullable(resultSet.getObject(columnName)));
                 return new Response<>(Optional.empty());
             } catch (SQLException sqe) {
                 return new Response<>(sqe);
@@ -229,8 +228,8 @@ public class Database {
 
     // Canonical setup of prepared statement parameters from Java types.
     private static void setupParms(PreparedStatement statement, Object... parms) throws SQLException {
-        int parmNumber = 1;
-        for (Object parm : parms) {
+        var parmNumber = 1;
+        for (var parm : parms) {
             if (parm == null)
                 statement.setNull(parmNumber, Types.VARCHAR);
             else if (parm instanceof Null)
@@ -286,11 +285,11 @@ public class Database {
     public <T> Response<T> processPreparedStatement(PreparedStatementUser<T> preparedStatementUser, Connection connection, String query, Object... parms) throws SQLException {
         var sqlized = replaceTableNames(query);
         distributeSQLEvent("processPreparedStatement: ", sqlized);
-        int argCount = parms.length;
-        int parmCount = (int) sqlized.chars().filter(ch -> ch == '?').count();
+        var argCount = parms.length;
+        var parmCount = (int) sqlized.chars().filter(ch -> ch == '?').count();
         if (argCount != parmCount)
             throw new IllegalArgumentException("ERROR: processPreparedStatement: Number of parameters (" + parmCount + ") doesn't match number of arguments (" + argCount + ") in " + sqlized);
-        try (PreparedStatement statement = connection.prepareStatement(sqlized)) {
+        try (var statement = connection.prepareStatement(sqlized)) {
             setupParms(statement, parms);
             try {
                 return new Response<>(preparedStatementUser.go(statement));
@@ -354,10 +353,10 @@ public class Database {
      * @throws SQLException Error.
      */
     public Optional<?> valueOf(Connection connection, String query, String columnName, Object... parms) throws SQLException {
-        return query(connection, query, rs -> {
+        return query(connection, query, resultSet -> {
             try {
-                if (rs.next())
-                    return new Response<>(Optional.ofNullable(rs.getObject(columnName)));
+                if (resultSet.next())
+                    return new Response<>(Optional.ofNullable(resultSet.getObject(columnName)));
                 return new Response<>(Optional.empty());
             } catch (SQLException sqe) {
                 return new Response<>(sqe);
@@ -507,11 +506,11 @@ public class Database {
      * @throws SQLException Error.
      */
     public <T> T queryAll(Connection connection, String query, ResultSetReceiver<T> receiver) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
+        try (var statement = connection.createStatement()) {
             var sqlized = replaceTableNames(query);
             distributeSQLEvent("queryAll: ", sqlized);
-            try (ResultSet rs = statement.executeQuery(sqlized)) {
-                var response = receiver.go(rs);
+            try (var resultSet = statement.executeQuery(sqlized)) {
+                var response = receiver.go(resultSet);
                 if (response.isError())
                     throw new SQLException("Failure inside ResultSetReceiver in queryAll.", response.error);
                 return response.value;
@@ -703,8 +702,8 @@ public class Database {
      */
     public <T> T query(Connection connection, String query, ResultSetReceiver<T> receiver, Object... parms) throws SQLException {
         return usePreparedStatement(statement -> {
-            try (ResultSet rs = statement.executeQuery()) {
-                var response = receiver.go(rs);
+            try (var resultSet = statement.executeQuery()) {
+                var response = receiver.go(resultSet);
                 if (response.isError())
                     throw new SQLException("Failure inside ResultSetReceiver in query.", response.error);
                 return response.value;
@@ -833,8 +832,8 @@ public class Database {
      * @return Object array of parameter arguments.
      */
     public static Object[] allArguments(Object... parms) {
-        Vector<Object> newArgs = new Vector<>();
-        for (Object parm : parms)
+        var newArgs = new Vector<Object>();
+        for (var parm : parms)
             if (parm instanceof Object[])
                 Collections.addAll(newArgs, (Object[]) parm);
             else
@@ -871,7 +870,7 @@ public class Database {
          * @throws SQLException Error getting connection.
          */
         public Transaction(TransactionRunner transactionRunner) throws SQLException {
-            try (Connection connection = dataSource.getConnection()) {
+            try (var connection = dataSource.getConnection()) {
                 connection.setAutoCommit(false);
                 try {
                     result = transactionRunner.run(connection);
