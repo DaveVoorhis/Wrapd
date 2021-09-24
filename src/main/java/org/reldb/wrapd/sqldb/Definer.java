@@ -93,7 +93,7 @@ public class Definer {
      * @throws Exception Failed.
      */
     protected void generate(UpdateDefinition definition) throws Exception {
-        definition.generate(getCodeDirectory(), getPackageSpec());
+        definition.generate(getDatabase(), getCodeDirectory(), getPackageSpec());
     }
 
     /**

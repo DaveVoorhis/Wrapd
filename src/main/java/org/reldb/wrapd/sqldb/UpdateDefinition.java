@@ -27,11 +27,17 @@ public class UpdateDefinition {
     /**
      * Generate code to represent this UpdateDefinition.
      *
+     * @param database Database.
      * @param codeDirectory Directory for generated code.
      * @param packageSpec The package, in dotted notation, to which the generated class definition belongs.
      * @throws SQLException exception if DBMS access failed
      */
-    public void generate(String codeDirectory, String packageSpec) throws SQLException {
+    public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {
+        // Test the query by running it; hope you're not doing this on a production database!
+        if (args == null || args.length == 0)
+            database.updateAll(sqlText);
+        else
+            database.update(sqlText, args);
         var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
         updateGenerator.generate();
     }
