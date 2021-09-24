@@ -1,4 +1,3 @@
-- Maybe combine QueryDefinition and UpdateDefinition into one(??)
 - Improve Definer to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
   addition to existing query(Database db, ...), etc. (Part way there...)
   This may require predefined Query derivatives called Select, Insert, Update and Delete,
