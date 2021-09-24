@@ -82,7 +82,7 @@ public class UpdateDefiner {
      * @throws Exception Failed.
      */
     protected void generate(UpdateDefinition definition) throws Exception {
-        definition.generate(getDatabase(), getCodeDirectory(), getPackageSpec());
+        definition.generate(getCodeDirectory(), getPackageSpec());
     }
 
     /**

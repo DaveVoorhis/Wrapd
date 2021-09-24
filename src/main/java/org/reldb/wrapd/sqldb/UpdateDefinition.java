@@ -27,12 +27,11 @@ public class UpdateDefinition {
     /**
      * Generate code to represent this UpdateDefinition.
      *
-     * @param database Database.
      * @param codeDirectory Directory for generated code.
      * @param packageSpec The package, in dotted notation, to which the generated class definition belongs.
      * @throws SQLException exception if DBMS access failed
      */
-    public void generate(Database database, String codeDirectory, String packageSpec) throws SQLException {
+    public void generate(String codeDirectory, String packageSpec) throws SQLException {
         var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
         updateGenerator.generate();
     }
