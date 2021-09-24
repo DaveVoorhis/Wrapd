@@ -131,7 +131,8 @@ java.lang.Object...&nbsp;args)</code></th>
 <tbody>
 <tr class="alt-color" id="i0">
 <td class="col-first"><code>void</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#generate(java.lang.String,java.lang.String)">generate</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#generate(org.reldb.wrapd.sqldb.Database,java.lang.String,java.lang.String)">generate</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
+java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec)</code></th>
 <td class="col-last">
 <div class="block">Generate code to represent this UpdateDefinition.</div>
@@ -180,14 +181,16 @@ java.lang.Object...&nbsp;args)</span></div>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="generate(java.lang.String,java.lang.String)">
+<section class="detail" id="generate(org.reldb.wrapd.sqldb.Database,java.lang.String,java.lang.String)">
 <h3>generate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">generate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">generate</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
+java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec)</span>
               throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Generate code to represent this UpdateDefinition.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
+<dd><code>database</code> - Database.</dd>
 <dd><code>codeDirectory</code> - Directory for generated code.</dd>
 <dd><code>packageSpec</code> - The package, in dotted notation, to which the generated class definition belongs.</dd>
 <dt>Throws:</dt>
