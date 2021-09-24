@@ -1,6 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
-public class QueryDefinitions extends QueryDefiner {
+public class QueryDefinitions extends Definer {
 
     private String queryName;
 
@@ -18,10 +18,10 @@ public class QueryDefinitions extends QueryDefiner {
     }
 
     public void QueryDefinition03() throws Exception {
-        define(queryName + "Query03", "SELECT * FROM $$tester WHERE x > ?", 3);
+        defineQuery(queryName + "Query03", "SELECT * FROM $$tester WHERE x > ?", 3);
     }
 
     public void queryDefinition04() throws Exception {
-        define(queryName + "Query04", "SELECT x FROM $$tester");
+        defineQuery(queryName + "Query04", "SELECT x FROM $$tester");
     }
 }

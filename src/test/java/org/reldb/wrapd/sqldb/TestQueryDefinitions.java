@@ -54,7 +54,7 @@ public class TestQueryDefinitions {
 
     @ParameterizedTest
     @MethodSource("dbProvider")
-    public void testCodeThatUsesGeneratedTuple(TestParms parms) throws IOException, ClassNotFoundException, SQLException, QueryDefiner.QueryDefinerException {
+    public void testCodeThatUsesGeneratedTuple(TestParms parms) throws IOException, ClassNotFoundException, SQLException, Definer.DefinerException {
         new QueriesHelper(parms.pkg, parms.name, TestConfiguration.Package).test(parms.db);
     }
 
