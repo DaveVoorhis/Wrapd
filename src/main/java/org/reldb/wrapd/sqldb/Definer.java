@@ -87,7 +87,7 @@ public class Definer {
     }
 
     /**
-     * Define a Query for future use, with a Tuple type that has an insert(...)
+     * Define a Query for future use, with a Tuple type that has an insert(...) and an update(...)
      * for the specified table. The Query is SELECT * FROM tableName.
      *
      * @param tableName Name of the table, optionally including $$.
