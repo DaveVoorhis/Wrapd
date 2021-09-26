@@ -25,11 +25,12 @@ public class ResultSetToTuple {
      * @param tupleName Name of new Tuple class.
      * @param results ResultSet to be used to create the new Tuple class.
      * @param customisations Customisations for specific DBMS types.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
      * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException thrown if an argument is null
      */
-    public static void createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
+    public static void createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
             throw new IllegalArgumentException("codeDir may not be null");
         if (tupleName == null)
@@ -37,6 +38,7 @@ public class ResultSetToTuple {
         if (results == null)
             throw new IllegalArgumentException("results may not be null");
         var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
+        generator.setTableName(tableName);
         var metadata = results.getMetaData();
         for (var column = 1; column <= metadata.getColumnCount(); column++) {
             var name = metadata.getColumnName(column);

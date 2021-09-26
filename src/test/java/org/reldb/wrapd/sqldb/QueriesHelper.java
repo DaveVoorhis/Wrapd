@@ -87,11 +87,11 @@ public class QueriesHelper {
 		database.createTupleFromQueryAll(getCodeDir(), TestConfiguration.Package, tupleClassName, "SELECT * FROM $$tester");
 	}
 
-	private void createQueryDefinitions(Database database) throws Definer.DefinerException {
+	private void createQueryDefinitions(Database database) throws Throwable {
 		(new QueryDefinitions(database, getCodeDir(), TestConfiguration.Package, queryClassName)).generate();
 	}
 
-	private void setup(Database database) throws SQLException, Definer.DefinerException {
+	private void setup(Database database) throws Throwable {
 		destroyDatabase(database);
 		createDatabase(database);
 		destroyTupleClass();
@@ -142,7 +142,7 @@ public class QueriesHelper {
 		assertEquals(testExecutionSummary.getTotalFailureCount(), 0);
 	}
 
-	public void test(Database database) throws ClassNotFoundException, IOException, SQLException, Definer.DefinerException {
+	public void test(Database database) throws Throwable {
 		setup(database);
 		run();
 	}
