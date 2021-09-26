@@ -95,28 +95,34 @@ public class QueryTypeGenerator {
             "\t}\n";
     }
 
-    private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection) {
+    private String buildQueryMethod(String methodName, String tupleTypeName, String newQuery, boolean withConnection, String methodNameSuffix) {
         var argConnection = withConnection
                 ? "connection, "
                 : "";
-        return "\tpublic static Stream<" + tupleTypeName + "> query(" + getParms(withConnection) + ") throws SQLException {\n" +
-                "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
+        return "\tpublic static Stream<" + tupleTypeName + "> query" + methodNameSuffix + "(" + getParms(withConnection) + ") throws SQLException {\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
     }
 
-    private String getQueryMethods(String tupleTypeName) {
+    private String getQueryMethodsSpecific(String tupleTypeName, String methodNameSuffix) {
         var methodName = (args == null || args.length == 0)
-                ? "queryAll"
-                : "query";
+                ? ("queryAll" + methodNameSuffix)
+                : ("query" + methodNameSuffix);
         var args = hasArgs()
                 ? ", " + getArgs()
                 : "";
         var newQuery = "new " + queryName + "<>(sqlText, " + tupleTypeName + ".class" + args + ")";
         return
-                buildQueryMethod(methodName, tupleTypeName, newQuery, false) +
+                buildQueryMethod(methodName, tupleTypeName, newQuery, false, methodNameSuffix) +
                 "\n" +
-                buildQueryMethod(methodName, tupleTypeName, newQuery, true);
+                buildQueryMethod(methodName, tupleTypeName, newQuery, true, methodNameSuffix);
+    }
+
+    private String getQueryMethods(String tupleTypeName) {
+        return
+                getQueryMethodsSpecific(tupleTypeName, "") +
+                "\n" +
+                getQueryMethodsSpecific(tupleTypeName, "ForUpdate");
     }
 
     /**
@@ -136,6 +142,7 @@ public class QueryTypeGenerator {
                 "import org.reldb.wrapd.sqldb.Database;\n" +
                 "import org.reldb.wrapd.sqldb.Query;\n\n" +
                 "public class " + queryName + "<T extends Tuple> extends Query<T> {\n" +
+                "\tprivate final static String sqlText = \"" + sqlText + "\";\n\n" +
                 getConstructor(tupleTypeName) +
                 "\n" +
                 getQueryMethods(tupleTypeName) +

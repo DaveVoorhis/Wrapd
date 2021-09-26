@@ -104,7 +104,6 @@ public class UpdateTypeGenerator {
                 ? "connection, "
                 : "";
         return "\tpublic static boolean update(" + getParms(withConnection) + ") throws SQLException {\n" +
-                "\t\tfinal String sqlText = \"" + sqlText + "\";\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
     }
@@ -138,6 +137,7 @@ public class UpdateTypeGenerator {
                 "import org.reldb.wrapd.sqldb.Database;\n" +
                 "import org.reldb.wrapd.sqldb.Update;\n\n" +
                 "public class " + queryName + " extends Update {\n" +
+                "\tprivate final static String sqlText = \"" + sqlText + "\";\n\n" +
                 getConstructor() +
                 "\n" +
                 getQueryMethods() +
