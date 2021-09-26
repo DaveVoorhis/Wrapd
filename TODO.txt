@@ -1,11 +1,6 @@
-- Improve Definer to generate Query derivatives with update(Database db, ...), insert(Database db, ...) in
-  addition to existing query(Database db, ...), etc. (Part way there...)
-  This may require predefined Query derivatives called Select, Insert, Update and Delete,
-  from which the generated ones are derived.
-- Use Wrapd-demo as basis for more comprehensive tests, maybe.
-- Expose Toolbox dependency via Gradle api directive?
-- Implement a quick query definition for 'SELECT * FROM $$x' on a specific table x,
-  with an insert(...) on its Tuple definition that doesn't require explicitly naming the table.
+- Add queryForUpdate(...) to generated Query subclasses.
+- Define 'final String sqlText' at class level in Query and Update subclasses.
+- Use Wrapd-demo as basis for more comprehensive unit/e2e tests.
 - Consider making transactional and non-transactional query method names different,
   so it's less likely to mix transactional and non-transactional code by accident.
 - Auto-generate hashCode()/equals() code for generated tuple classes and/or support Java records.
