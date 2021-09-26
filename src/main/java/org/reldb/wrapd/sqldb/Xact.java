@@ -5,7 +5,6 @@ import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
 import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
-import org.reldb.wrapd.tuples.Tuple;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -208,7 +207,7 @@ public class Xact {
      * @throws SQLException Failure.
      */
     public List<Tuple.FieldGetFailure> insert(Tuple tuple, String tableName) throws SQLException {
-        return tuple.insert(database, connection, tableName);
+        return tuple.insert(connection, tableName);
     }
 
     /**
@@ -256,7 +255,7 @@ public class Xact {
      * @throws SQLException Failure.
      */
     public Pair<List<Tuple.FieldGetFailure>, List<Tuple.FieldGetFailure>> update(Tuple tuple, String tableName) throws SQLException {
-        return tuple.update(database, connection, tableName);
+        return tuple.update(connection, tableName);
     }
 
     /**

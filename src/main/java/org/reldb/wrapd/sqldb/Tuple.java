@@ -1,8 +1,7 @@
-package org.reldb.wrapd.tuples;
+package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.types.Pair;
 import org.reldb.wrapd.exceptions.InvalidValueException;
-import org.reldb.wrapd.sqldb.Database;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -22,8 +21,15 @@ public abstract class Tuple implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
 
+    /** Database used to create this Tuple. */
+    protected final Database database;
+
     /** Backup made at time tuple is retrieved, prior to changing any fields. */
     private Tuple __backup = null;
+
+    public Tuple(Database database) {
+        this.database = database;
+    }
 
     /**
      * Create backup, to facilitate identifying changed fields as part of update.
@@ -70,13 +76,12 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Insert this Tuple.
      *
-     * @param database Database.
      * @param connection Connection to database, typically obtained via a Transaction.
      * @param tableName Table name.
      * @return List of failures to retrieve one or more fields. Empty if all fields retrieved.
      * @throws SQLException Failure.
      */
-    public List<FieldGetFailure> insert(Database database, Connection connection, String tableName) throws SQLException {
+    public List<FieldGetFailure> insert(Connection connection, String tableName) throws SQLException {
         Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
         Supplier<Stream<String>> columns = () -> dataFields.get().map(Field::getName);
         var columnNames = columns.get().collect(Collectors.joining(", "));
@@ -98,19 +103,17 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Insert this Tuple.
      *
-     * @param database Database.
      * @param tableName Table name
      * @return List of failures to retrieve one or more fields. Empty if all fields retrieved.
      * @throws SQLException Failure.
      */
-    public List<FieldGetFailure> insert(Database database, String tableName) throws SQLException {
-        return database.useConnection(conn -> insert(database, conn, tableName));
+    public List<FieldGetFailure> insert(String tableName) throws SQLException {
+        return database.useConnection(conn -> insert(conn, tableName));
     }
 
     /**
      * Update this tuple.
      *
-     * @param database Database.
      * @param connection Connection to database, typically obtained via a Transaction.
      * @param tableName Table name.
      * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
@@ -118,7 +121,7 @@ public abstract class Tuple implements Serializable, Cloneable {
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.
      */
-    public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Database database, Connection connection, String tableName) throws SQLException {
+    public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Connection connection, String tableName) throws SQLException {
         var backup = getBackup();
         if (backup == null)
             throw new InvalidValueException("Tuple is not updatable. Tuples become updatable by invoking backup() after population and before mutation, usually by being obtained via Database::queryForUpdate or Database::queryAllForUpdate.");
@@ -160,14 +163,13 @@ public abstract class Tuple implements Serializable, Cloneable {
     /**
      * Update this tuple.
      *
-     * @param database Database.
      * @param tableName Table name.
      * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
      *         get failures, and the right item is the original (backup) field get failures.
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.
      */
-    public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Database database, String tableName) throws SQLException {
-        return database.useConnection(conn -> update(database, conn, tableName));
+    public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(String tableName) throws SQLException {
+        return database.useConnection(conn -> update(conn, tableName));
     }
 }

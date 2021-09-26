@@ -56,10 +56,10 @@ public class Test<db>_Source01 {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testInsert01");
         for (var x = 1000; x < 1010; x++) {
-            var tuple = new Test<db>Tuple();
+            var tuple = new Test<db>Tuple(database);
             tuple.x = x;
             tuple.y = x * 2;
-            tuple.insert(database, "$$tester");
+            tuple.insert("$$tester");
         }
         database.query("SELECT * FROM $$tester WHERE x >= ? AND x < ?", Test<db>Tuple.class, 1000, 1010)
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.toString()));
@@ -74,7 +74,7 @@ public class Test<db>_Source01 {
                     tuple.x *= 100;
                     tuple.y *= 100;
                     try {
-                        tuple.update(database, "$$tester");
+                        tuple.update("$$tester");
                     } catch (SQLException e) {
                         System.out.println("Update failed.");
                     }
@@ -94,7 +94,7 @@ public class Test<db>_Source01 {
                         tuple.x *= 100;
                         tuple.y *= 100;
                         try {
-                            tuple.update(database, "$$tester");
+                            tuple.update("$$tester");
                         } catch (SQLException e) {
                             System.out.println("Update failed.");
                         }

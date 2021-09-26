@@ -4,7 +4,7 @@ import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
-import org.reldb.wrapd.tuples.TupleTypeGenerator;
+import org.reldb.wrapd.sqldb.TupleTypeGenerator;
 
 /**
  * Internationalisable messages.

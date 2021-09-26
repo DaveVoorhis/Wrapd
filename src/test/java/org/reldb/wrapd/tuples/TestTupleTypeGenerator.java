@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.compiler.JavaCompiler;
+import org.reldb.wrapd.sqldb.TupleTypeGenerator;
 
 public class TestTupleTypeGenerator {
 

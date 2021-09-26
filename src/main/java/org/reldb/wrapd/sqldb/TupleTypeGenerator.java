@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tuples;
+package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
@@ -146,7 +146,6 @@ public class TupleTypeGenerator {
             "import java.sql.*;" +
             "\nimport java.util.*;" +
             "\nimport org.reldb.toolbox.types.Pair;" +
-            "\nimport org.reldb.wrapd.sqldb.Database;" +
             "\n";
     }
 
@@ -157,51 +156,60 @@ public class TupleTypeGenerator {
             "\n\t/** " +
             "\n\t* Insert this Tuple into table '" + tableName + "'." +
             "\n\t*" +
-            "\n\t* @param database Database." +
             "\n\t* @param connection Connection to database, typically obtained via a Transaction." +
             "\n\t* @return List of failures to retrieve one or more fields. Empty if all fields retrieved." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic List<Tuple.FieldGetFailure> insert(Database database, Connection connection) throws SQLException {" +
-            "\n\t\treturn insert(database, connection, \"" + tableName + "\");" +
+            "\n\tpublic List<Tuple.FieldGetFailure> insert(Connection connection) throws SQLException {" +
+            "\n\t\treturn insert(connection, \"" + tableName + "\");" +
             "\n\t}" +
             "\n" +
             "\n\t/** " +
             "\n\t* Insert this Tuple into table '" + tableName + "'." +
             "\n\t*" +
-            "\n\t* @param database Database." +
             "\n\t* @return List of failures to retrieve one or more fields. Empty if all fields retrieved." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic List<Tuple.FieldGetFailure> insert(Database database) throws SQLException {" +
-            "\n\t\treturn insert(database, \"" + tableName + "\");" +
+            "\n\tpublic List<Tuple.FieldGetFailure> insert() throws SQLException {" +
+            "\n\t\treturn insert(\"" + tableName + "\");" +
             "\n\t}" +
             "\n" +
             "\n\t/** " +
             "\n\t* Update this Tuple in table '" + tableName + "'." +
             "\n\t*" +
-            "\n\t* @param database Database." +
             "\n\t* @param connection Connection to database, typically obtained via a Transaction." +
             "\n\t* @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field" +
             "\n\t*         get failures, and the right item is the original (backup) field get failures." +
             "\n\t*         Both lists in the Pair are empty if successful." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Database database, Connection connection) throws SQLException {" +
-            "\n\t\treturn update(database, connection, \"" + tableName + "\");" +
+            "\n\tpublic Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Connection connection) throws SQLException {" +
+            "\n\t\treturn update(connection, \"" + tableName + "\");" +
             "\n\t}" +
             "\n" +
             "\n\t/** " +
             "\n\t* Update this Tuple in table '" + tableName + "'." +
             "\n\t*" +
-            "\n\t* @param database Database." +
             "\n\t* @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field" +
             "\n\t*         get failures, and the right item is the original (backup) field get failures." +
             "\n\t*         Both lists in the Pair are empty if successful." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Database database) throws SQLException {" +
-            "\n\t\treturn update(database, \"" + tableName + "\");" +
+            "\n\tpublic Pair<List<FieldGetFailure>, List<FieldGetFailure>> update() throws SQLException {" +
+            "\n\t\treturn update(\"" + tableName + "\");" +
+            "\n\t}" +
+            "\n";
+    }
+
+    private String getConstructor() {
+        return
+            "\n\t/** " +
+            "\n\t* Tuple constructor." +
+            "\n\t*" +
+            "\n\t* @param db Database." +
+            "\n\t*/" +
+            "\n\tpublic " + tupleName + "(Database db) {" +
+            "\n\t\tsuper(db);" +
             "\n\t}" +
             "\n";
     }
@@ -221,12 +229,14 @@ public class TupleTypeGenerator {
         var tupleDef =
                 "package " + tupleTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
-                "import org.reldb.wrapd.tuples.Tuple;\n" +
+                "import org.reldb.wrapd.sqldb.Tuple;\n" +
+                "import org.reldb.wrapd.sqldb.Database;\n" +
                 getTableImports() +
                 "\n" +
                 "public class " + tupleName + " extends Tuple {\n" +
                     version +
                     attributeDefs +
+                    getConstructor() +
                     getTableDefs() +
                     getToStringCode() +
                 "}";

@@ -4,7 +4,6 @@ import org.reldb.toolbox.events.EventHandler;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
-import org.reldb.wrapd.tuples.Tuple;
 
 import javax.sql.DataSource;
 import java.sql.Date;
@@ -563,10 +562,10 @@ public class Database {
      * @param tupleClass The stream will be of instances of tupleClass.
      * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt;.
      */
-    public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
+    public <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
+                return new Response<>(ResultSetToTuple.toStream(this, result, tupleClass));
             } catch (Throwable e) {
                 return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStream.", e));
             }
@@ -582,10 +581,10 @@ public class Database {
      * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt; where the stream of tuples will have
      *         backup() invoked for each instance.
      */
-    public static <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
+    public <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
-                return new Response<>(ResultSetToTuple.toStreamForUpdate(result, tupleClass));
+                return new Response<>(ResultSetToTuple.toStreamForUpdate(this, result, tupleClass));
             } catch (Throwable e) {
                 return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", e));
             }

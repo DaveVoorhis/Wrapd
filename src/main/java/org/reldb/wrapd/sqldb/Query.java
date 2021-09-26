@@ -1,7 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.wrapd.tuples.Tuple;
-
 /**
  * A SQL SELECT (or equivalent RecordSet-returning) Query. Normally not used directly, but inherited.
  */

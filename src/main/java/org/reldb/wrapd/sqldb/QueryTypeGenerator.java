@@ -138,7 +138,7 @@ public class QueryTypeGenerator {
                 "import java.sql.SQLException;\n" +
                 "import java.sql.Connection;\n" +
                 "import java.util.stream.Stream;\n\n" +
-                "import org.reldb.wrapd.tuples.Tuple;\n" +
+                "import org.reldb.wrapd.sqldb.Tuple;\n" +
                 "import org.reldb.wrapd.sqldb.Database;\n" +
                 "import org.reldb.wrapd.sqldb.Query;\n\n" +
                 "public class " + queryName + "<T extends Tuple> extends Query<T> {\n" +

@@ -1,8 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.wrapd.tuples.Tuple;
-import org.reldb.wrapd.tuples.TupleTypeGenerator;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -70,6 +67,7 @@ public class ResultSetToTuple {
      * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
      *
      * @param <T> Tuple type.
+     * @param database The Database that issued the query that produced the ResultSet.
      * @param resultSet ResultSet to iterate
      * @param tupleType tuple type
      * @param tupleProcessor tuple processor
@@ -83,19 +81,21 @@ public class ResultSetToTuple {
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws Throwable {
+    public static <T extends Tuple> void process(Database database, ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws Throwable {
+        if (database == null)
+            throw new IllegalArgumentException("database may not be null");
         if (resultSet == null)
             throw new IllegalArgumentException("resultSet may not be null");
         if (tupleType == null)
             throw new IllegalArgumentException("tupleType may not be null");
         if (tupleProcessor == null)
             throw new IllegalArgumentException("tupleProcessor may not be null");
-        var tupleConstructor = tupleType.getConstructor((Class<?>[]) null);
+        var tupleConstructor = tupleType.getConstructor(Database.class);
         var metadata = resultSet.getMetaData();
         var optimised = false;
         Field[] fields = null;
         while (resultSet.next()) {
-            var tuple = tupleConstructor.newInstance((Object[]) null);
+            var tuple = tupleConstructor.newInstance(database);
             if (optimised) {
                 for (var column = 1; column <= metadata.getColumnCount(); column++) {
                     var value = resultSet.getObject(column);
@@ -121,6 +121,7 @@ public class ResultSetToTuple {
      * Convert a ResultSet to a List of TupleS.
      *
      * @param <T> Tuple type.
+     * @param database The Database that issued the query that produced the ResultSet.
      * @param resultSet ResultSet to iterate
      * @param tupleType tuple type
      * @return List&lt;? extends Tuple&gt; List of tuples returned
@@ -134,9 +135,9 @@ public class ResultSetToTuple {
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> List<T> toList(ResultSet resultSet, Class<T> tupleType) throws Throwable {
+    public static <T extends Tuple> List<T> toList(Database database, ResultSet resultSet, Class<T> tupleType) throws Throwable {
         var rows = new LinkedList<T>();
-        process(resultSet, tupleType, rows::add);
+        process(database, resultSet, tupleType, rows::add);
         return rows;
     }
 
@@ -144,6 +145,7 @@ public class ResultSetToTuple {
      * Convert a ResultSet to a List of TupleS, each configured for a possible future update.
      *
      * @param <T> Tuple type.
+     * @param database The Database that issued the query that produced the ResultSet.
      * @param resultSet ResultSet to iterate
      * @param tupleType tuple type
      * @return List&lt;? extends Tuple&gt; List of tuples returned
@@ -157,9 +159,9 @@ public class ResultSetToTuple {
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> List<T> toListForUpdate(ResultSet resultSet, Class<T> tupleType) throws Throwable {
+    public static <T extends Tuple> List<T> toListForUpdate(Database database, ResultSet resultSet, Class<T> tupleType) throws Throwable {
         var rows = new LinkedList<T>();
-        process(resultSet, tupleType, tuple -> {
+        process(database, resultSet, tupleType, tuple -> {
             tuple.backup();
             rows.add(tuple);
         });
@@ -170,6 +172,7 @@ public class ResultSetToTuple {
      * Convert a ResultSet to a Stream of TupleS.
      *
      * @param <T> Tuple type.
+     * @param database The Database that issued the query that produced the ResultSet.
      * @param resultSet source ResultSet
      * @param tupleType subclass of Tuple. Each row will be converted to a new instance of this class.
      * @return Stream&lt;? extends Tuple&gt;.
@@ -183,14 +186,15 @@ public class ResultSetToTuple {
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> Stream<T> toStream(ResultSet resultSet, Class<T> tupleType) throws Throwable {
-        return toList(resultSet, tupleType).stream();
+    public static <T extends Tuple> Stream<T> toStream(Database database, ResultSet resultSet, Class<T> tupleType) throws Throwable {
+        return toList(database, resultSet, tupleType).stream();
     }
 
     /**
      * Convert a ResultSet to a Stream of TupleS, each configured for a possible future update.
      *
      * @param <T> Tuple type.
+     * @param database The Database that issued the query that produced the ResultSet.
      * @param resultSet source ResultSet
      * @param tupleType subclass of Tuple. Each row will be converted to a new instance of this class.
      * @return Stream&lt;? extends Tuple&gt;.
@@ -204,8 +208,8 @@ public class ResultSetToTuple {
      * @throws NoSuchFieldException thrown if a given ResultSet field name cannot be found in the Tuple
      * @throws CloneNotSupportedException thrown af a Tuple cannot be cloned to create a backup
      */
-    public static <T extends Tuple> Stream<T> toStreamForUpdate(ResultSet resultSet, Class<T> tupleType) throws Throwable {
-        return toListForUpdate(resultSet, tupleType).stream();
+    public static <T extends Tuple> Stream<T> toStreamForUpdate(Database database, ResultSet resultSet, Class<T> tupleType) throws Throwable {
+        return toListForUpdate(database, resultSet, tupleType).stream();
     }
 
     /**
