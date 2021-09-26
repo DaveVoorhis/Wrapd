@@ -1,5 +1,4 @@
-- Define 'final String sqlText' at class level in Query and Update subclasses.
-- Add queryForUpdate(...) to generated Query subclasses.
+- Pass Database to Tuple instance, so update and insert methods can be defined to use it.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
 - Add Definer::defineAllStoredProcedureInvoke(...) to wrap all stored proc invocations.
