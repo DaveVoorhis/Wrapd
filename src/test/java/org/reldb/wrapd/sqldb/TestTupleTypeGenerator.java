@@ -1,4 +1,4 @@
-package org.reldb.wrapd.tuples;
+package org.reldb.wrapd.sqldb;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
