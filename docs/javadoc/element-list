@@ -5,5 +5,4 @@ org.reldb.wrapd.response
 org.reldb.wrapd.schema
 org.reldb.wrapd.sqldb
 org.reldb.wrapd.sqldb.sqlite
-org.reldb.wrapd.tuples
 org.reldb.wrapd.version

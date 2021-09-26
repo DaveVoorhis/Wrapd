@@ -27,6 +27,11 @@ public abstract class Tuple implements Serializable, Cloneable {
     /** Backup made at time tuple is retrieved, prior to changing any fields. */
     private Tuple __backup = null;
 
+    /**
+     * Tuple constructor.
+     *
+     * @param database The Database that created this Tuple.
+     */
     public Tuple(Database database) {
         this.database = database;
     }
