@@ -106,6 +106,8 @@ public class Definer {
      * for the specified table. The Query is SELECT * FROM tableName WHERE whereClause.
      *
      * @param tableName Name of the table, optionally including $$.
+     * @param whereClause The WHERE clause without the 'WHERE' keyword, and ? to indicate parameter replacement.
+     * @param args Arguments that specify parameter type(s) and allow query to succeed.
      * @throws Throwable Error.
      */
     public void defineTable(String tableName, String whereClause, Object... args) throws Throwable {
