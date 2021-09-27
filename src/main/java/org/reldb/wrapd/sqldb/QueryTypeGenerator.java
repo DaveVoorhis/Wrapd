@@ -20,6 +20,8 @@ public class QueryTypeGenerator {
     private final String sqlText;
     private final Object[] args;
 
+    private boolean isForTable = false;
+
     /**
      * Create a generator of compiled query invokers.
      *
@@ -39,6 +41,17 @@ public class QueryTypeGenerator {
         this.args = args;
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
+    }
+
+    /**
+     * Set to 'true' to have queryAllForUpdate(...) and queryForUpdate(...) methods generated, generally
+     * because this Query is a whole-table Query.
+     *
+     * @param isForTable True if this is a whole-table query, i.e., attributes map one-to-one to those
+     *                   of a corresponding database table.
+     */
+    public void setIsForTable(boolean isForTable) {
+        this.isForTable = isForTable;
     }
 
     /**
@@ -121,8 +134,9 @@ public class QueryTypeGenerator {
     private String getQueryMethods(String tupleTypeName) {
         return
                 getQueryMethodsSpecific(tupleTypeName, "") +
-                "\n" +
-                getQueryMethodsSpecific(tupleTypeName, "ForUpdate");
+                (isForTable
+                    ? "\n" +  getQueryMethodsSpecific(tupleTypeName, "ForUpdate")
+                    : "");
     }
 
     /**
