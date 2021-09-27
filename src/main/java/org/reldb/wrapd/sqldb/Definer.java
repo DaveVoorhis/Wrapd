@@ -100,7 +100,6 @@ public class Definer {
         var tupleClassCreated = database.createTupleFromTable(codeDirectory, packageSpec, tupleClassName, tableInfo);
         if (tupleClassCreated.isOk()) {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, tableInfo.getSQLText(), null);
-            queryGenerator.setIsForTable(true);
             queryGenerator.generate();
         } else
             throw tupleClassCreated.error;
