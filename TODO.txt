@@ -1,4 +1,3 @@
-- Add optional where clause and parms to defineTable().
 - Make insert(...) and update(...) only available on defineTable(...)-generated or ForUpdate Tuple derivatives.
   Only these will need Database instance passed in. Maybe divide into Tuple and UpdatableTuple base classes?
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
