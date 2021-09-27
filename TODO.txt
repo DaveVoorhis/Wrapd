@@ -1,4 +1,4 @@
-- Make update(...) and insert(...) only available where appropriate. (Think on this.)
+- Make insert(...) and update(...) only available on defineTable(...)-generated Tuple derivatives.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
 - Add Definer::defineAllStoredProcedureInvoke(...) to wrap all stored proc invocations.
