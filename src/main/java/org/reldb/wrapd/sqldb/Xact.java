@@ -264,13 +264,14 @@ public class Xact {
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name of desired Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
-        return database.createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms);
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        return database.createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms);
     }
 
     /**
@@ -279,12 +280,13 @@ public class Xact {
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name of desired Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
-        return database.createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query);
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        return database.createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, tableName, query);
     }
 
     /**

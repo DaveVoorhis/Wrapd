@@ -84,7 +84,7 @@ public class QueriesHelper {
 	}
 
 	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(getCodeDir(), TestConfiguration.Package, tupleClassName, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(getCodeDir(), TestConfiguration.Package, tupleClassName, null, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws Throwable {

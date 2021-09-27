@@ -400,159 +400,83 @@ public class Database {
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
+     * If tableName is not null:
+     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
+     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
+     *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, null);
+    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return queryAll(connection, query, resultSetReceiver);
     }
 
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
+     * If tableName is not null:
+     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
+     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
+     *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query))).getResult();
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, tableName, query))).getResult();
     }
 
     /**
      * Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
+     * If tableName is not null:
+     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
+     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
+     *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, null);
+    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return query(connection, query, resultSetReceiver, parms);
     }
 
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
+     * If tableName is not null:
+     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
+     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
+     *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms))).getResult();
-    }
-
-    /**
-     * Encapsulate information about a database table before and after invocation of createTupleFromTable(...)
-     */
-    public static class TableInfo {
-        /**
-         * Table name provided. May include $$ to inject table name prefix.
-         */
-        public final String providedTableName;
-
-        private String realTableName;
-        private String sqlText;
-
-        /**
-         * Constructor.
-         *
-         * @param providedTableName Table name. May include $$ to inject table name prefix.
-         */
-        public TableInfo(String providedTableName) {
-            this.providedTableName = providedTableName;
-        }
-
-        /**
-         * Set real table name.
-         *
-         * @param realTableName Real table name.
-         */
-        void setRealTableName(String realTableName) {
-            this.realTableName = realTableName;
-        }
-
-        /**
-         * Get real table name.
-         *
-         * @return Real table name.
-         */
-        public String getRealTableName() {
-            return realTableName;
-        }
-
-        /**
-         * Set SQL query text.
-         *
-         * @param sqlText SQL query text.
-         */
-        void setSQLText(String sqlText) {
-            this.sqlText = sqlText;
-        }
-
-        /**
-         * Get SQL query text.
-         *
-         * @return SQL query text.
-         */
-        public String getSQLText() {
-            return sqlText;
-        }
-    }
-
-    /**
-     * Use a table name (which may include $$ to inject a table name prefix) to generate a 'SELECT * FROM tableName'
-     * query, which is used to generate a corresponding Tuple-derived class to represent future evaluation of the
-     * same query or similar queries. The Tuple-derived class will have an insert(...) method equivalent to
-     * insert(..., tableName).
-     *
-     * @param connection Connection to database, usually obtained via a Transaction.
-     * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
-     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
-     * @param tupleClassName Desired name of Tuple-derived class.
-     * @param tableInfo Information about a table, both before and after invocation of this method
-     * @return Result of code generation.
-     * @throws SQLException Error.
-     */
-    public Result createTupleFromTable(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, TableInfo tableInfo) throws SQLException {
-        tableInfo.setRealTableName(replaceTableNames(tableInfo.providedTableName));
-        tableInfo.setSQLText("SELECT * FROM " + tableInfo.getRealTableName());
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, tableInfo.getRealTableName());
-        return queryAll(connection, tableInfo.getSQLText(), resultSetReceiver);
-    }
-
-    /**
-     * Use a table name (which may include $$ to inject a table name prefix) to generate a 'SELECT * FROM tableName'
-     * query, which is used to generate a corresponding Tuple-derived class to represent future evaluation of the
-     * same query or similar queries. The Tuple-derived class will have an insert() method equivalent to
-     * insert(tableName).
-     *
-     * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
-     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
-     * @param tupleClassName Desired name of Tuple-derived class.
-     * @param tableInfo Information about a table, both before and after invocation of this method
-     * @return Result of code generation.
-     * @throws SQLException Error.
-     */
-    public Result createTupleFromTable(String codeDirectory, String packageSpec, String tupleClassName, TableInfo tableInfo) throws SQLException {
-        return (new Transaction(connection -> createTupleFromTable(connection, codeDirectory, packageSpec, tupleClassName, tableInfo))).getResult();
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms))).getResult();
     }
 
     /**
