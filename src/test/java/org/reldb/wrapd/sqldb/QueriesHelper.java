@@ -5,7 +5,6 @@ import org.junit.platform.launcher.core.LauncherFactory;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.TestConfiguration;
 import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.compiler.JavaCompiler;
@@ -36,14 +35,15 @@ public class QueriesHelper {
 		}
 	}
 
+	private final String tuplePackage;
 	private final String tupleClassName;
-	private final String queryClassName;
 	private final String testTargetName;
 	private final Replacement[] replacements;
 	private final DbHelper dbHelper;
 	private final String codeDir;
 
 	public QueriesHelper(String dbpackage, String dbname, String tuplePackage) {
+		this.tuplePackage = tuplePackage;
 		dbHelper = new DbHelper(dbname);
 		this.replacements = new QueriesHelper.Replacement[] {
 				new QueriesHelper.Replacement("<dbpackage>", dbpackage),
@@ -52,7 +52,6 @@ public class QueriesHelper {
 		};
 		var testName = "Test" + dbname;
 		tupleClassName = testName + "Tuple";
-		queryClassName = testName + "Query";
 		testTargetName = "Test" + dbname + "_Source01";
 		codeDir = dbHelper.getBaseDir() + "/code";
 		ensureTestDirectoryExists();
@@ -68,27 +67,33 @@ public class QueriesHelper {
 	}
 
 	private void destroyDatabase(Database database) {
-		clearDb(database, new String[] {"$$tester"});
+		clearDb(database, new String[] {
+				"$$tester",
+				"$$xyz",
+				"$$abc"
+		});
 		Directory.rmAll(getCodeDir());
 	}
 
 	private void createDatabase(Database database) throws SQLException {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
+			xact.updateAll("CREATE TABLE $$xyz (x INTEGER, y INTEGER, z VARCHAR(20), PRIMARY KEY (x));");
+			xact.updateAll("CREATE TABLE $$abc (a INTEGER, b INTEGER, c VARCHAR(40), PRIMARY KEY (a));");
 			return Result.OK;
 		});
 	}
 
 	private void destroyTupleClass() {
-		ResultSetToTuple.destroyTuple(getCodeDir(), TestConfiguration.Package, tupleClassName);
+		ResultSetToTuple.destroyTuple(getCodeDir(), tuplePackage, tupleClassName);
 	}
 
 	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(getCodeDir(), TestConfiguration.Package, tupleClassName, null, "SELECT * FROM $$tester");
+		database.createTupleFromQueryAll(getCodeDir(), tuplePackage, tupleClassName, null, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws Throwable {
-		(new QueryDefinitions(database, getCodeDir(), TestConfiguration.Package, queryClassName)).generate();
+		(new QueryDefinitions(database, getCodeDir(), tuplePackage)).generate();
 	}
 
 	private void setup(Database database) throws Throwable {
@@ -100,8 +105,8 @@ public class QueriesHelper {
 	}
 
 	private Class<?> obtainTestCodeClass() throws ClassNotFoundException {
-		var dirClassLoader = new DirClassLoader(getCodeDir(), TestConfiguration.Package);
-		var testClassFullname = TestConfiguration.Package + "." + testTargetName;
+		var dirClassLoader = new DirClassLoader(getCodeDir(), tuplePackage);
+		var testClassFullname = tuplePackage + "." + testTargetName;
 		return dirClassLoader.forName(testClassFullname);
 	}
 
@@ -121,7 +126,7 @@ public class QueriesHelper {
 		for (var replacement: replacements)
 			source = source.replace(replacement.from, replacement.to);
 		var generator = new JavaGenerator(getCodeDir());
-		var sourcef = generator.generateJavaCode(testTargetName, TestConfiguration.Package, source);
+		var sourcef = generator.generateJavaCode(testTargetName, tuplePackage, source);
 		var compiler = new JavaCompiler(getCodeDir());
 		var classpath = compiler.getDefaultClassPath();
 		return compiler.compileJavaCode(classpath, sourcef);

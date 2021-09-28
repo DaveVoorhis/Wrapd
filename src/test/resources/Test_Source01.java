@@ -108,7 +108,7 @@ public class Test<db>_Source01 {
     public void testQueryToStream04() throws SQLException {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testQueryToStream04");
-        Test<db>QueryQuery02.query(database)
+        Query02.query(database)
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
     }
 
@@ -116,7 +116,7 @@ public class Test<db>_Source01 {
     public void testQueryToStream05() throws SQLException {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testQueryToStream05");
-        Test<db>QueryQuery01.query(database, 3, 7)
+        Query01.query(database, 3, 7)
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
     }
 
@@ -124,7 +124,7 @@ public class Test<db>_Source01 {
     public void testQueryToStream06() throws SQLException {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testQueryToStream06");
-        Test<db>QueryQuery03.query(database, 3)
+        Query03.query(database, 3)
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x + ", " + tuple.y));
     }
 
@@ -132,8 +132,99 @@ public class Test<db>_Source01 {
     public void testQueryToStream07() throws SQLException {
         var database = GetDatabase.getDatabase();
         System.out.println(prompt + " testQueryToStream07");
-        Test<db>QueryQuery04.query(database)
+        Query04.query(database)
                 .forEach(tuple -> System.out.println(prompt + " " + tuple.x));
+    }
+
+    private static void populateABC(Database database) throws Exception {
+        for (var i = 1000; i < 1010; i++) {
+            var tuple = new abcTuple(database);
+            tuple.a = i;
+            tuple.b = i * 2;
+            tuple.c = Integer.toString(i * 10);
+            tuple.insert();
+        }
+    }
+
+    private static void populateXYZ(Database database) throws Exception {
+        for (var i = 1005; i < 1015; i++) {
+            var tuple = new xyzTuple(database);
+            tuple.x = i;
+            tuple.y = i * 2;
+            tuple.z = Integer.toString(i * 100);
+            tuple.insert();
+        }
+    }
+
+    @Test
+    public void testABC01() throws Exception {
+        var database = GetDatabase.getDatabase();
+        ClearABC.update(database);
+        populateABC(database);
+        System.out.println("== ABC ==");
+        abc.query(database)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+    }
+
+    @Test
+    public void testXYZ01() throws Exception {
+        var database = GetDatabase.getDatabase();
+        ClearXYZ.update(database);
+        populateXYZ(database);
+        System.out.println("== XYZ (1007) ==");
+        xyz.query(database, 1007)
+                .forEach(row -> System.out.println("Row: x = " + row.x + " y = " + row.y + " z = " + row.z));
+    }
+
+    @Test
+    public void testABC02() throws Exception {
+        var database = GetDatabase.getDatabase();
+        ClearABC.update(database);
+        populateABC(database);
+        ClearABCWhere.update(database, 1007);
+        System.out.println("== ABC ==");
+        abc.query(database)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+    }
+
+    @Test
+    public void testABC03() throws Exception {
+        var database = GetDatabase.getDatabase();
+        ClearABC.update(database);
+        populateABC(database);
+        ClearABCWhere.update(database, 1007);
+        System.out.println("== ABC with 1007 removed ==");
+        abc.query(database)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+        abc.queryForUpdate(database)
+                .forEach(row -> {
+                    row.b += 100;
+                    try {
+                        row.update();
+                    } catch (SQLException e) {
+                        System.out.println("Row update failed due to: " + e);
+                    }
+                });
+        System.out.println("== ABC updated with b += 100 ==");
+        abc.query(database)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+    }
+
+    @Test
+    public void testJoin01() throws Exception {
+        var database = GetDatabase.getDatabase();
+        ClearABC.update(database);
+        ClearXYZ.update(database);
+        populateABC(database);
+        populateXYZ(database);
+        System.out.println("== ABCJoinXYZ ==");
+        ABCJoinXYZ.query(database)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+                        " x = " + row.x + " y = " + row.y + " z = " + row.z));
+        System.out.println("== ABCJoinXYZWhere (1002, 1008) ==");
+        ABCJoinXYZWhere.query(database, 1002, 1008)
+                .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+                        " x = " + row.x + " y = " + row.y + " z = " + row.z));
     }
 
 }

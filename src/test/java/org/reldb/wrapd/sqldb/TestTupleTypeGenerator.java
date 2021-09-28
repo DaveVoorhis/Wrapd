@@ -21,9 +21,10 @@ public class TestTupleTypeGenerator {
 	@Test 
 	public void testTupleGenerator01() throws Exception {
 		var codeDir = getCodeDirectory();
+		var tuplePackage = "org.reldb.wrapd.test.tuples.tupletest.generated";
 		var tupleName = "TestTuple";
 
-		var generator = new TupleTypeGenerator(codeDir, TestConfiguration.Package, tupleName);
+		var generator = new TupleTypeGenerator(codeDir, tuplePackage, tupleName);
 		generator.destroy();
 		generator.addAttribute("Col1", String.class);
 		generator.addAttribute("Col2", Integer.class);
@@ -37,7 +38,7 @@ public class TestTupleTypeGenerator {
 		System.out.println("[TEST] === Compilation " + ((compilation.compiled) ? "succeeded" : "failed") + " ===");
 		System.out.println("[TEST] " + compilation.compilerMessages);
 
-		var loader = new DirClassLoader(codeDir, TestConfiguration.Package);
+		var loader = new DirClassLoader(codeDir, tuplePackage);
 		var testClass = loader.forName(generator.getTupleClassName());
 		
 		for (Field field: testClass.getFields())
