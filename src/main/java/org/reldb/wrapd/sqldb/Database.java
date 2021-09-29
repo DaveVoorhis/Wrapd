@@ -383,13 +383,33 @@ public class Database {
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name for new tuple class.
      * @param customisations Customisations for specific DBMS types.
+     * @return - lambda which will generate the class given a ResultSet.
+     */
+    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
+        return resultSet -> {
+            try {
+                ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
+            } catch (Throwable e) {
+                return new Response<>(Result.ERROR(e));
+            }
+            return new Response<>(Result.OK);
+        };
+    }
+
+    /**
+     * Obtain a lambda to generate a new UpdatableTuple-derived class from a ResultSet.
+     *
+     * @param codeDirectory Directory into which generated class (both source and .class) will be placed.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Name for new tuple class.
+     * @param customisations Customisations for specific DBMS types.
      * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations, String tableName) {
+    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClassForUpdate(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations, String tableName) {
         return resultSet -> {
             try {
-                ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName);
+                ResultSetToTuple.createTupleForUpdate(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName);
             } catch (Throwable e) {
                 return new Response<>(Result.ERROR(e));
             }
@@ -400,9 +420,21 @@ public class Database {
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
-     * If tableName is not null:
-     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
-     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
+     * @param connection Connection to database, usually obtained via a Transaction.
+     * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Desired name of Tuple-derived class.
+     * @param query Query to be evaluated.
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
+        return queryAll(connection, query, resultSetReceiver);
+    }
+
+    /**
+     * Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.
      *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated
@@ -413,70 +445,104 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
+    public Result createTupleFromQueryAllForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClassForUpdate(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return queryAll(connection, query, resultSetReceiver);
     }
 
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
-     * If tableName is not null:
-     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
-     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
-     *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
-     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, tableName, query))).getResult();
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query))).getResult();
+    }
+
+    /**
+     * Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.
+     *
+     * @param codeDirectory Directory in which compiled UpdatableTuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the UpdatableTuple belongs.
+     * @param tupleClassName Desired name of UpdatableTuple-derived class.
+     * @param tableName Name of table this UpdatableTuple maps to. Null if not mapped to a table.
+     * @param query Query to be evaluated.
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query))).getResult();
     }
 
     /**
      * Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
-     * If tableName is not null:
-     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
-     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
-     *
      * @param connection Connection to database, usually obtained via a Transaction.
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
-     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
-        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
+    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
+        return query(connection, query, resultSetReceiver, parms);
+    }
+
+    /**
+     * Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
+     *
+     * @param connection Connection to database, usually obtained via a Transaction.
+     * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Desired name of Tuple-derived class.
+     * @param tableName Name of table this UpdatableTuple maps to. Null if not mapped to a table.
+     * @param query Query to be evaluated.
+     * @param parms Parameter arguments which positionally match to '?' in the query.
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object[] parms) throws SQLException {
+        var resultSetReceiver = newResultSetGeneratesTupleClassForUpdate(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return query(connection, query, resultSetReceiver, parms);
     }
 
     /**
      * Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.
      *
-     * If tableName is not null:
-     *   The Tuple-derived class will have an insert(...) method equivalent to insert(..., tableName).
-     *   The Tuple-derived class will have an update(...) method equivalent to update(..., tableName).
-     *
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Desired name of Tuple-derived class.
-     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms))).getResult();
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms))).getResult();
+    }
+
+    /**
+     * Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.
+     *
+     * @param codeDirectory Directory in which compiled UpdatableTuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Desired name of UpdatableTuple-derived class.
+     * @param tableName Name of table this UpdatableTuple maps to. Null if not mapped to a table.
+     * @param query Query to be evaluated.
+     * @param parms Parameter arguments which positionally match to '?' in the query
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        return (new Transaction(connection -> createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms))).getResult();
     }
 
     /**
@@ -489,7 +555,7 @@ public class Database {
     public <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                return new Response<>(ResultSetToTuple.toStream(this, result, tupleClass));
+                return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
             } catch (Throwable e) {
                 return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStream.", e));
             }
@@ -497,7 +563,7 @@ public class Database {
     }
 
     /**
-     * Obtain a lambda that converts a ResultSet to a Stream&lt;T&gt; where T extends Tuple,
+     * Obtain a lambda that converts a ResultSet to a Stream&lt;T&gt; where T extends UpdatableTuple,
      * and each Tuple is configured for a future update.
      *
      * @param <T> T extends Tuple.
@@ -505,7 +571,7 @@ public class Database {
      * @return A ResultSetReceiver&lt;Stream&lt;T&gt;&gt; where the stream of tuples will have
      *         backup() invoked for each instance.
      */
-    public <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
+    public <T extends UpdatableTuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
                 return new Response<>(ResultSetToTuple.toStreamForUpdate(this, result, tupleClass));
@@ -604,108 +670,108 @@ public class Database {
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param connection Database connection, typically obtained via a Transaction
      * @param query Query string.
      * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(Connection connection, String query, Class<T> tupleClass) throws SQLException {
         return queryAll(connection, query, newResultSetToStreamForUpdate(tupleClass));
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param connection Connection to database, typically obtained via a Transaction
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(Connection connection, Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(Connection connection, Query<T> query) throws SQLException {
         return queryAllForUpdate(connection, query.getQueryText(), query.getTupleClass());
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T>  T extends Tuple.
+     * @param <T>  T extends UpdatableTuple.
      * @param query Query string.
-     * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query.
+     * @param tupleClass UpdatableTuple derivative that represents rows in the ResultSet returned from evaluating the query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
         return queryAll(query, newResultSetToStreamForUpdate(tupleClass));
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
         return queryAllForUpdate(query.getQueryText(), query.getTupleClass());
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param connection Database connection, typically obtained via a Transaction.
      * @param query Query string.
-     * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query.
+     * @param tupleClass UpdatableTuple derivative that represents rows in the ResultSet returned from evaluating the query.
      * @param parms Parameter argument list.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(Connection connection, String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(connection, query, newResultSetToStreamForUpdate(tupleClass), parms);
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param connection Database connection, typically obtained via a Transaction.
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Connection connection, Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(Connection connection, Query<T> query) throws SQLException {
         return queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T>  T extends Tuple.
+     * @param <T>  T extends UpdatableTuple.
      * @param query Query string.
-     * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query.
+     * @param tupleClass UpdatableTuple derivative that represents rows in the ResultSet returned from evaluating the query.
      * @param parms Parameter argument list.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return query(query, newResultSetToStreamForUpdate(tupleClass), parms);
     }
 
     /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
         return queryForUpdate(query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 

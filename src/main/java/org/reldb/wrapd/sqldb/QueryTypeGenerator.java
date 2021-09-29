@@ -20,6 +20,8 @@ public class QueryTypeGenerator {
     private final String sqlText;
     private final Object[] args;
 
+    private String tableName;
+
     /**
      * Create a generator of compiled query invokers.
      *
@@ -121,8 +123,9 @@ public class QueryTypeGenerator {
     private String getQueryMethods(String tupleTypeName) {
         return
                 getQueryMethodsSpecific(tupleTypeName, "") +
-                "\n" +
-                getQueryMethodsSpecific(tupleTypeName, "ForUpdate");
+                (tableName != null
+                    ? "\n" + getQueryMethodsSpecific(tupleTypeName, "ForUpdate")
+                    : "");
     }
 
     /**
@@ -149,6 +152,15 @@ public class QueryTypeGenerator {
                 "}";
         var generator = new JavaGenerator(dir);
         return generator.generateJavaCode(queryName, packageSpec, queryDef);
+    }
+
+    /**
+     * Set table name.
+     *
+     * @param tableName If not null, methods will be created to update/insert to this table.
+     */
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
     }
 
     /**
