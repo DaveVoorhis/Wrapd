@@ -3,7 +3,6 @@ package org.reldb.wrapd.sqldb;
 import org.reldb.toolbox.types.Pair;
 import org.reldb.wrapd.exceptions.InvalidValueException;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -126,6 +125,16 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
     }
 
     /**
+     * Return true if the result of an insert(...) contains no field failures.
+     *
+     * @param insertResult Result of an insert(...)
+     * @return true if insertResult contains no field failures.
+     */
+    public static boolean isOk(List<FieldGetFailure> insertResult) {
+        return insertResult.isEmpty();
+    }
+
+    /**
      * Update this tuple.
      *
      * @param connection Connection to database, typically obtained via a Transaction.
@@ -189,5 +198,15 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
         if (database == null)
             throw new InvalidValueException("Tuple is not insertable, because this Tuple was not constructed with a Database argument.");
         return database.useConnection(conn -> update(conn, tableName));
+    }
+
+    /**
+     * Return true if the result of an update(...) contains no field failurees.
+     *
+     * @param updateResult Result of an update(...)
+     * @return true if updateResult contains no field failures.
+     */
+    public static boolean isOk(Pair<List<FieldGetFailure>, List<FieldGetFailure>> updateResult) {
+        return updateResult.left.isEmpty() && updateResult.right.isEmpty();
     }
 }
