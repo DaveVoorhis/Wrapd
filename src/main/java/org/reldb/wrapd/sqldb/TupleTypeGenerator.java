@@ -145,8 +145,9 @@ public class TupleTypeGenerator {
         return
             "import java.sql.*;" +
             "\nimport java.util.*;" +
-            "\nimport org.reldb.wrapd.sqldb.UpdatableTuple;" +
             "\nimport org.reldb.toolbox.types.Pair;" +
+            "\nimport org.reldb.wrapd.sqldb.UpdatableTuple;" +
+            "\nimport org.reldb.wrapd.sqldb.Database;" +
             "\n";
     }
 
@@ -203,20 +204,16 @@ public class TupleTypeGenerator {
     }
 
     private String getConstructor() {
-        var defaultCtor =
-                "\n\t/** " +
-                "\n\t* Tuple constructor." +
-                "\n\t*/" +
-                "\n\tpublic " + tupleName + "() {" +
-                "\n\t\tsuper();" +
-                "\n\t}" +
-                "\n";
         if (tableName == null)
-            return defaultCtor;
+            return "";
         return
-            defaultCtor +
             "\n\t/** " +
-            "\n\t* Tuple constructor." +
+            "\n\t* Constructor for using this UpdatableTuple in non-update context." +
+            "\n\t*/" +
+            "\n\tpublic " + tupleName + "() {}" +
+            "\n" +
+            "\n\t/** " +
+            "\n\t* Constructor for updatable & insertable UpdatableTuple." +
             "\n\t*" +
             "\n\t* @param db Database." +
             "\n\t*/" +
@@ -242,7 +239,6 @@ public class TupleTypeGenerator {
                 "package " + tupleTypePackage + ";\n\n" +
                 "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
                 "import org.reldb.wrapd.sqldb.Tuple;\n" +
-                "import org.reldb.wrapd.sqldb.Database;\n" +
                 getTableImports() +
                 "\n" +
                 "public class " + tupleName + " extends " + ((tableName == null) ? "Tuple" : "UpdatableTuple") + " {\n" +
