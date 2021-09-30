@@ -68,7 +68,6 @@ public class QueriesHelper {
 
 	private void destroyDatabase(Database database) {
 		clearDb(database, new String[] {
-				"$$tester",
 				"$$xyz",
 				"$$abc"
 		});
@@ -77,19 +76,10 @@ public class QueriesHelper {
 
 	private void createDatabase(Database database) throws SQLException {
 		database.transact(xact -> {
-			xact.updateAll("CREATE TABLE $$tester (x INTEGER, y INTEGER, PRIMARY KEY (x, y));");
 			xact.updateAll("CREATE TABLE $$xyz (x INTEGER, y INTEGER, z VARCHAR(20), PRIMARY KEY (x));");
 			xact.updateAll("CREATE TABLE $$abc (a INTEGER, b INTEGER, c VARCHAR(40), PRIMARY KEY (a));");
 			return Result.OK;
 		});
-	}
-
-	private void destroyTupleClass() {
-		ResultSetToTuple.destroyTuple(getCodeDir(), tuplePackage, tupleClassName);
-	}
-
-	private void createTupleClass(Database database) throws SQLException {
-		database.createTupleFromQueryAll(getCodeDir(), tuplePackage, tupleClassName, null, "SELECT * FROM $$tester");
 	}
 
 	private void createQueryDefinitions(Database database) throws Throwable {
@@ -99,8 +89,6 @@ public class QueriesHelper {
 	private void setup(Database database) throws Throwable {
 		destroyDatabase(database);
 		createDatabase(database);
-		destroyTupleClass();
-		createTupleClass(database);
 		createQueryDefinitions(database);
 	}
 
@@ -144,7 +132,7 @@ public class QueriesHelper {
 
 		var testExecutionSummary = runTestsInClass(clazz);
 		testExecutionSummary.printTo(new PrintWriter(System.out));
-		assertEquals(testExecutionSummary.getTotalFailureCount(), 0);
+		assertEquals(0, testExecutionSummary.getTotalFailureCount());
 	}
 
 	public void test(Database database) throws Throwable {

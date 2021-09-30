@@ -62,10 +62,11 @@ public class Definer {
     public void defineQueryForTable(String queryName, String tableName, String sqlText, Object... args) throws Throwable {
         var tupleClassName = queryName + "Tuple";
         var tupleClassCreated = (args == null || args.length == 0)
-                ? database.createTupleFromQueryAll(codeDirectory, packageSpec, tupleClassName, tableName, sqlText)
-                : database.createTupleFromQuery(codeDirectory, packageSpec, tupleClassName, tableName, sqlText, args);
+                ? database.createTupleFromQueryAllForUpdate(codeDirectory, packageSpec, tupleClassName, tableName, sqlText)
+                : database.createTupleFromQueryForUpdate(codeDirectory, packageSpec, tupleClassName, tableName, sqlText, args);
         if (tupleClassCreated.isOk()) {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
+            queryGenerator.setTableName(tableName);
             queryGenerator.generate();
         } else
             throw tupleClassCreated.error;

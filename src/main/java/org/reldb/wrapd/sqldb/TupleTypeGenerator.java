@@ -145,6 +145,7 @@ public class TupleTypeGenerator {
         return
             "import java.sql.*;" +
             "\nimport java.util.*;" +
+            "\nimport org.reldb.wrapd.sqldb.UpdatableTuple;" +
             "\nimport org.reldb.toolbox.types.Pair;" +
             "\n";
     }
@@ -160,7 +161,7 @@ public class TupleTypeGenerator {
             "\n\t* @return List of failures to retrieve one or more fields. Empty if all fields retrieved." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic List<Tuple.FieldGetFailure> insert(Connection connection) throws SQLException {" +
+            "\n\tpublic List<FieldGetFailure> insert(Connection connection) throws SQLException {" +
             "\n\t\treturn insert(connection, \"" + tableName + "\");" +
             "\n\t}" +
             "\n" +
@@ -170,7 +171,7 @@ public class TupleTypeGenerator {
             "\n\t* @return List of failures to retrieve one or more fields. Empty if all fields retrieved." +
             "\n\t* @throws SQLException Failure." +
             "\n\t*/" +
-            "\n\tpublic List<Tuple.FieldGetFailure> insert() throws SQLException {" +
+            "\n\tpublic List<FieldGetFailure> insert() throws SQLException {" +
             "\n\t\treturn insert(\"" + tableName + "\");" +
             "\n\t}" +
             "\n" +
@@ -202,7 +203,18 @@ public class TupleTypeGenerator {
     }
 
     private String getConstructor() {
+        var defaultCtor =
+                "\n\t/** " +
+                "\n\t* Tuple constructor." +
+                "\n\t*/" +
+                "\n\tpublic " + tupleName + "() {" +
+                "\n\t\tsuper();" +
+                "\n\t}" +
+                "\n";
+        if (tableName == null)
+            return defaultCtor;
         return
+            defaultCtor +
             "\n\t/** " +
             "\n\t* Tuple constructor." +
             "\n\t*" +
@@ -233,7 +245,7 @@ public class TupleTypeGenerator {
                 "import org.reldb.wrapd.sqldb.Database;\n" +
                 getTableImports() +
                 "\n" +
-                "public class " + tupleName + " extends Tuple {\n" +
+                "public class " + tupleName + " extends " + ((tableName == null) ? "Tuple" : "UpdatableTuple") + " {\n" +
                     version +
                     attributeDefs +
                     getConstructor() +

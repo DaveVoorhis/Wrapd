@@ -9,11 +9,6 @@ public class QueryDefinitions extends Definer {
     }
 
     public void generate() throws Throwable {
-        defineQuery("Query01", "SELECT * FROM $$tester WHERE x > ? AND x < ?", 3, 7);
-        defineQuery("Query02", "SELECT * FROM $$tester");
-        defineQuery("Query03", "SELECT * FROM $$tester WHERE x > ?", 3);
-        defineQuery("Query04", "SELECT x FROM $$tester");
-
         defineTable("$$abc");
         defineTable("$$xyz", "x = ?", 22);
         defineQueryForTable("ABCWhere", "$$abc", "SELECT * FROM $$abc WHERE a = ?", 22);

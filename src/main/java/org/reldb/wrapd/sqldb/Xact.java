@@ -108,27 +108,27 @@ public class Xact {
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query Query string.
      * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(String query, Class<T> tupleClass) throws SQLException {
         return database.queryAllForUpdate(connection, query, tupleClass);
     }
 
     /**
      * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryAllForUpdate(Query<T> query) throws SQLException {
         return database.queryAllForUpdate(connection, query.getQueryText(), query.getTupleClass());
     }
 
@@ -173,40 +173,40 @@ public class Xact {
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query SQL query string.
      * @param tupleClass Tuple derivative that represents rows in the ResultSet returned from evaluating the query
      * @param parms Parameter arguments to parametric query.
      * @return Stream&lt;T&gt; Result stream
      * @throws SQLException Error
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(String query, Class<T> tupleClass, Object... parms) throws SQLException {
         return database.queryForUpdate(connection, query, tupleClass, parms);
     }
 
     /**
-     * Obtain a stream of Tuple derivatives from a query evaluation for possible update.
+     * Obtain a stream of UpdatableTuple derivatives from a query evaluation for possible update.
      *
-     * @param <T> T extends Tuple.
+     * @param <T> T extends UpdatableTuple.
      * @param query A Query.
      * @return Stream&lt;T&gt; Result stream.
      * @throws SQLException Error.
      */
-    public <T extends Tuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
+    public <T extends UpdatableTuple> Stream<T> queryForUpdate(Query<T> query) throws SQLException {
         return database.queryForUpdate(connection, query.getQueryText(), query.getTupleClass(), query.getArguments());
     }
 
     /**
      * Insert specified Tuple.
      *
-     * @param tuple Tuple to insert.
+     * @param tuple UpdatableTuple to insert.
      * @param tableName Table name.
      * @return List of failures to retrieve one or more fields. Empty if all fields retrieved.
      * @throws SQLException Failure.
      */
-    public List<Tuple.FieldGetFailure> insert(Tuple tuple, String tableName) throws SQLException {
+    public List<UpdatableTuple.FieldGetFailure> insert(UpdatableTuple tuple, String tableName) throws SQLException {
         return tuple.insert(connection, tableName);
     }
 
@@ -247,14 +247,14 @@ public class Xact {
     /**
      * Update specified tuple.
      *
-     * @param tuple Tuple to update.
+     * @param tuple UpdatableTuple to update.
      * @param tableName Table name.
      * @return Return a pair of List&lt;FieldGetFailure&gt; where the left item is the new field
      *         get failures, and the right item is the original (backup) field get failures.
      *         Both lists in the Pair are empty if successful.
      * @throws SQLException Failure.
      */
-    public Pair<List<Tuple.FieldGetFailure>, List<Tuple.FieldGetFailure>> update(Tuple tuple, String tableName) throws SQLException {
+    public Pair<List<UpdatableTuple.FieldGetFailure>, List<UpdatableTuple.FieldGetFailure>> update(UpdatableTuple tuple, String tableName) throws SQLException {
         return tuple.update(connection, tableName);
     }
 
@@ -264,14 +264,13 @@ public class Xact {
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name of desired Tuple-derived class.
-     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @param parms Parameter arguments which positionally match to '?' in the query.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
-        return database.createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms);
+    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        return database.createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms);
     }
 
     /**
@@ -280,13 +279,43 @@ public class Xact {
      * @param codeDirectory Directory in which compiled Tuple-derived source and .class will be generated.
      * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
      * @param tupleClassName Name of desired Tuple-derived class.
+     * @param query Query to be evaluated.
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        return database.createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query);
+    }
+
+    /**
+     * Use a parametric SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.
+     *
+     * @param codeDirectory Directory in which compiled UpdatableTuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Name of desired UpdatableTuple-derived class.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
+     * @param query Query to be evaluated.
+     * @param parms Parameter arguments which positionally match to '?' in the query.
+     * @return Result of code generation.
+     * @throws SQLException Error.
+     */
+    public Result createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        return database.createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms);
+    }
+
+    /**
+     * Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.
+     *
+     * @param codeDirectory Directory in which compiled UpdatableTuple-derived source and .class will be generated.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleClassName Name of desired UpdatableTuple-derived class.
      * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @param query Query to be evaluated.
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
-        return database.createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, tableName, query);
+    public Result createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        return database.createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query);
     }
 
     /**
