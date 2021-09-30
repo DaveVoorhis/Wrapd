@@ -15,7 +15,7 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+<script type="text/javascript">var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "alt-color";
 var rowColor = "row-color";
@@ -154,18 +154,30 @@ extends java.lang.Object</pre>
 <tbody>
 <tr class="alt-color" id="i0">
 <td class="col-first"><code>static void</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">createTuple</a></span>&#8203;(java.lang.String&nbsp;codeDir,
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations)">createTuple</a></span>&#8203;(java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
 java.sql.ResultSet&nbsp;results,
-<a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations,
-java.lang.String&nbsp;tableName)</code></th>
+<a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations)</code></th>
 <td class="col-last">
 <div class="block">Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
  to host the ResultSet.</div>
 </td>
 </tr>
 <tr class="row-color" id="i1">
+<td class="col-first"><code>static void</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleForUpdate(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">createTupleForUpdate</a></span>&#8203;(java.lang.String&nbsp;codeDir,
+java.lang.String&nbsp;packageSpec,
+java.lang.String&nbsp;tupleName,
+java.sql.ResultSet&nbsp;results,
+<a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations,
+java.lang.String&nbsp;tableName)</code></th>
+<td class="col-last">
+<div class="block">Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
+ generate an UpdatableTuple class to host the ResultSet.</div>
+</td>
+</tr>
+<tr class="alt-color" id="i2">
 <td class="col-first"><code>static boolean</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#destroyTuple(java.lang.String,java.lang.String,java.lang.String)">destroyTuple</a></span>&#8203;(java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
@@ -174,9 +186,18 @@ java.lang.String&nbsp;tupleName)</code></th>
 <div class="block">Eliminate the tuple with a given name.</div>
 </td>
 </tr>
-<tr class="alt-color" id="i2">
+<tr class="row-color" id="i3">
 <td class="col-first"><code>static &lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;<br>void</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#process(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">process</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#process(java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">process</a></span>&#8203;(java.sql.ResultSet&nbsp;resultSet,
+java.lang.Class&lt;T&gt;&nbsp;tupleType,
+<a href="ResultSetToTuple.TupleProcessor.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.TupleProcessor</a>&lt;T&gt;&nbsp;tupleProcessor)</code></th>
+<td class="col-last">
+<div class="block">Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.</div>
+</td>
+</tr>
+<tr class="alt-color" id="i4">
+<td class="col-first"><code>static &lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;<br>void</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#processForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">processForUpdate</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
 java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType,
 <a href="ResultSetToTuple.TupleProcessor.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.TupleProcessor</a>&lt;T&gt;&nbsp;tupleProcessor)</code></th>
@@ -184,40 +205,38 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType,
 <div class="block">Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.</div>
 </td>
 </tr>
-<tr class="row-color" id="i3">
+<tr class="row-color" id="i5">
 <td class="col-first"><code>static &lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;<br>java.util.List&lt;T&gt;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toList(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">toList</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
-java.sql.ResultSet&nbsp;resultSet,
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toList(java.sql.ResultSet,java.lang.Class)">toList</a></span>&#8203;(java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <td class="col-last">
 <div class="block">Convert a ResultSet to a List of TupleS.</div>
 </td>
 </tr>
-<tr class="alt-color" id="i4">
-<td class="col-first"><code>static &lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;<br>java.util.List&lt;T&gt;</code></td>
+<tr class="alt-color" id="i6">
+<td class="col-first"><code>static &lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;<br>java.util.List&lt;T&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toListForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">toListForUpdate</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
 java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <td class="col-last">
-<div class="block">Convert a ResultSet to a List of TupleS, each configured for a possible future update.</div>
+<div class="block">Convert a ResultSet to a List of UpdatableTupleS, each configured for a possible future update.</div>
 </td>
 </tr>
-<tr class="row-color" id="i5">
+<tr class="row-color" id="i7">
 <td class="col-first"><code>static &lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;<br>java.util.stream.Stream&lt;T&gt;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toStream(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">toStream</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
-java.sql.ResultSet&nbsp;resultSet,
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toStream(java.sql.ResultSet,java.lang.Class)">toStream</a></span>&#8203;(java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <td class="col-last">
 <div class="block">Convert a ResultSet to a Stream of TupleS.</div>
 </td>
 </tr>
-<tr class="alt-color" id="i6">
-<td class="col-first"><code>static &lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;<br>java.util.stream.Stream&lt;T&gt;</code></td>
+<tr class="alt-color" id="i8">
+<td class="col-first"><code>static &lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;<br>java.util.stream.Stream&lt;T&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#toStreamForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">toStreamForUpdate</a></span>&#8203;(<a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
 java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <td class="col-last">
-<div class="block">Convert a ResultSet to a Stream of TupleS, each configured for a possible future update.</div>
+<div class="block">Convert a ResultSet to a Stream of UpdatableTupleS, each configured for a possible future update.</div>
 </td>
 </tr>
 </tbody>
@@ -253,24 +272,24 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">
-<h3>createTuple</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">createTuple</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
+<section class="detail" id="createTupleForUpdate(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">
+<h3>createTupleForUpdate</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">createTupleForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
 java.sql.ResultSet&nbsp;results,
 <a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations,
 java.lang.String&nbsp;tableName)</span>
-                        throws <span class="exceptions">java.sql.SQLException,
+                                 throws <span class="exceptions">java.sql.SQLException,
 java.lang.ClassNotFoundException</span></div>
-<div class="block">Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
- to host the ResultSet. This will normally be invoked in a setup/build phase run</div>
+<div class="block">Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
+ generate an UpdatableTuple class to host the ResultSet. This will normally be invoked in a setup/build phase run.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>codeDir</code> - Directory where source code will be stored.</dd>
 <dd><code>packageSpec</code> - The package, in dotted notation, to which the Tuple belongs.</dd>
-<dd><code>tupleName</code> - Name of new Tuple class.</dd>
-<dd><code>results</code> - ResultSet to be used to create the new Tuple class.</dd>
+<dd><code>tupleName</code> - Name of new UpdatableTuple class.</dd>
+<dd><code>results</code> - ResultSet to be used to create the new UpdatableTuple class.</dd>
 <dd><code>customisations</code> - Customisations for specific DBMS types.</dd>
 <dd><code>tableName</code> - Name of table this Tuple maps to. Null if not mapped to a table.</dd>
 <dt>Throws:</dt>
@@ -281,10 +300,35 @@ java.lang.ClassNotFoundException</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="process(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">
+<section class="detail" id="createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations)">
+<h3>createTuple</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">createTuple</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
+java.lang.String&nbsp;packageSpec,
+java.lang.String&nbsp;tupleName,
+java.sql.ResultSet&nbsp;results,
+<a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations)</span>
+                        throws <span class="exceptions">java.sql.SQLException,
+java.lang.ClassNotFoundException</span></div>
+<div class="block">Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
+ to host the ResultSet. This will normally be invoked in a setup/build phase run.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>codeDir</code> - Directory where source code will be stored.</dd>
+<dd><code>packageSpec</code> - The package, in dotted notation, to which the Tuple belongs.</dd>
+<dd><code>tupleName</code> - Name of new Tuple class.</dd>
+<dd><code>results</code> - ResultSet to be used to create the new Tuple class.</dd>
+<dd><code>customisations</code> - Customisations for specific DBMS types.</dd>
+<dt>Throws:</dt>
+<dd><code>java.sql.SQLException</code> - thrown if there is a problem retrieving ResultSet metadata.</dd>
+<dd><code>java.lang.ClassNotFoundException</code> - thrown if a column class specified in the ResultSet metadata can't be loaded.</dd>
+<dd><code>java.lang.IllegalArgumentException</code> - thrown if an argument is null</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="process(java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">
 <h3>process</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">process</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
-java.sql.ResultSet&nbsp;resultSet,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">process</span>&#8203;(<span class="parameters">java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType,
 <a href="ResultSetToTuple.TupleProcessor.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.TupleProcessor</a>&lt;T&gt;&nbsp;tupleProcessor)</span>
                                       throws <span class="exceptions">java.lang.Throwable</span></div>
@@ -292,6 +336,36 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType,
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - Tuple type.</dd>
+<dt>Parameters:</dt>
+<dd><code>resultSet</code> - ResultSet to iterate</dd>
+<dd><code>tupleType</code> - tuple type</dd>
+<dd><code>tupleProcessor</code> - tuple processor</dd>
+<dt>Throws:</dt>
+<dd><code>java.lang.SecurityException</code> - thrown if tuple constructor is not accessible</dd>
+<dd><code>java.lang.NoSuchMethodException</code> - thrown if tuple constructor doesn't exist</dd>
+<dd><code>java.lang.reflect.InvocationTargetException</code> - thrown if unable to instantiate tuple class</dd>
+<dd><code>java.lang.IllegalArgumentException</code> - thrown if unable to instantiate tuple class, or if there is a type mismatch assigning tuple field values, or a null argument</dd>
+<dd><code>java.lang.IllegalAccessException</code> - thrown if unable to instantiate tuple class</dd>
+<dd><code>java.lang.InstantiationException</code> - thrown if unable to instantiate tuple class</dd>
+<dd><code>java.sql.SQLException</code> - thrown if accessing ResultSet fails</dd>
+<dd><code>java.lang.NoSuchFieldException</code> - thrown if a given ResultSet field name cannot be found in the Tuple</dd>
+<dd><code>java.lang.CloneNotSupportedException</code> - thrown af a Tuple cannot be cloned to create a backup</dd>
+<dd><code>java.lang.Throwable</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="processForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class,org.reldb.wrapd.sqldb.ResultSetToTuple.TupleProcessor)">
+<h3>processForUpdate</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">processForUpdate</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
+java.sql.ResultSet&nbsp;resultSet,
+java.lang.Class&lt;T&gt;&nbsp;tupleType,
+<a href="ResultSetToTuple.TupleProcessor.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.TupleProcessor</a>&lt;T&gt;&nbsp;tupleProcessor)</span>
+                                                        throws <span class="exceptions">java.lang.Throwable</span></div>
+<div class="block">Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.</div>
+<dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - UpdatableTuple type.</dd>
 <dt>Parameters:</dt>
 <dd><code>database</code> - The Database that issued the query that produced the ResultSet.</dd>
 <dd><code>resultSet</code> - ResultSet to iterate</dd>
@@ -312,10 +386,9 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType,
 </section>
 </li>
 <li>
-<section class="detail" id="toList(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">
+<section class="detail" id="toList(java.sql.ResultSet,java.lang.Class)">
 <h3>toList</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>&nbsp;<span class="return-type">java.util.List&lt;T&gt;</span>&nbsp;<span class="member-name">toList</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
-java.sql.ResultSet&nbsp;resultSet,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>&nbsp;<span class="return-type">java.util.List&lt;T&gt;</span>&nbsp;<span class="member-name">toList</span>&#8203;(<span class="parameters">java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
                                                   throws <span class="exceptions">java.lang.Throwable</span></div>
 <div class="block">Convert a ResultSet to a List of TupleS.</div>
@@ -323,7 +396,6 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - Tuple type.</dd>
 <dt>Parameters:</dt>
-<dd><code>database</code> - The Database that issued the query that produced the ResultSet.</dd>
 <dd><code>resultSet</code> - ResultSet to iterate</dd>
 <dd><code>tupleType</code> - tuple type</dd>
 <dt>Returns:</dt>
@@ -345,20 +417,21 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
 <li>
 <section class="detail" id="toListForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">
 <h3>toListForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>&nbsp;<span class="return-type">java.util.List&lt;T&gt;</span>&nbsp;<span class="member-name">toListForUpdate</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;</span>
+<span class="return-type">java.util.List&lt;T&gt;</span>&nbsp;<span class="member-name">toListForUpdate</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
 java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
-                                                           throws <span class="exceptions">java.lang.Throwable</span></div>
-<div class="block">Convert a ResultSet to a List of TupleS, each configured for a possible future update.</div>
+                           throws <span class="exceptions">java.lang.Throwable</span></div>
+<div class="block">Convert a ResultSet to a List of UpdatableTupleS, each configured for a possible future update.</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
-<dd><code>T</code> - Tuple type.</dd>
+<dd><code>T</code> - UpdatableTuple type.</dd>
 <dt>Parameters:</dt>
 <dd><code>database</code> - The Database that issued the query that produced the ResultSet.</dd>
 <dd><code>resultSet</code> - ResultSet to iterate</dd>
 <dd><code>tupleType</code> - tuple type</dd>
 <dt>Returns:</dt>
-<dd>List&lt;? extends Tuple&gt; List of tuples returned</dd>
+<dd>List&lt;? extends UpdatableTuple&gt; List of tuples returned</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.SecurityException</code> - thrown if tuple constructor is not accessible</dd>
 <dd><code>java.lang.NoSuchMethodException</code> - thrown if tuple constructor doesn't exist</dd>
@@ -374,11 +447,10 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
 </section>
 </li>
 <li>
-<section class="detail" id="toStream(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">
+<section class="detail" id="toStream(java.sql.ResultSet,java.lang.Class)">
 <h3>toStream</h3>
 <div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>
-<span class="return-type">java.util.stream.Stream&lt;T&gt;</span>&nbsp;<span class="member-name">toStream</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
-java.sql.ResultSet&nbsp;resultSet,
+<span class="return-type">java.util.stream.Stream&lt;T&gt;</span>&nbsp;<span class="member-name">toStream</span>&#8203;(<span class="parameters">java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
                              throws <span class="exceptions">java.lang.Throwable</span></div>
 <div class="block">Convert a ResultSet to a Stream of TupleS.</div>
@@ -386,7 +458,6 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - Tuple type.</dd>
 <dt>Parameters:</dt>
-<dd><code>database</code> - The Database that issued the query that produced the ResultSet.</dd>
 <dd><code>resultSet</code> - source ResultSet</dd>
 <dd><code>tupleType</code> - subclass of Tuple. Each row will be converted to a new instance of this class.</dd>
 <dt>Returns:</dt>
@@ -408,21 +479,21 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
 <li>
 <section class="detail" id="toStreamForUpdate(org.reldb.wrapd.sqldb.Database,java.sql.ResultSet,java.lang.Class)">
 <h3>toStreamForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</span>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="type-parameters">&lt;T extends <a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a>&gt;</span>
 <span class="return-type">java.util.stream.Stream&lt;T&gt;</span>&nbsp;<span class="member-name">toStreamForUpdate</span>&#8203;(<span class="parameters"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a>&nbsp;database,
 java.sql.ResultSet&nbsp;resultSet,
 java.lang.Class&lt;T&gt;&nbsp;tupleType)</span>
                                       throws <span class="exceptions">java.lang.Throwable</span></div>
-<div class="block">Convert a ResultSet to a Stream of TupleS, each configured for a possible future update.</div>
+<div class="block">Convert a ResultSet to a Stream of UpdatableTupleS, each configured for a possible future update.</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
-<dd><code>T</code> - Tuple type.</dd>
+<dd><code>T</code> - UpdatableTuple type.</dd>
 <dt>Parameters:</dt>
 <dd><code>database</code> - The Database that issued the query that produced the ResultSet.</dd>
 <dd><code>resultSet</code> - source ResultSet</dd>
-<dd><code>tupleType</code> - subclass of Tuple. Each row will be converted to a new instance of this class.</dd>
+<dd><code>tupleType</code> - subclass of UpdatableTuple. Each row will be converted to a new instance of this class.</dd>
 <dt>Returns:</dt>
-<dd>Stream&lt;? extends Tuple&gt;.</dd>
+<dd>Stream&lt;? extends UpdatableTuple&gt;.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.SecurityException</code> - thrown if tuple constructor is not accessible</dd>
 <dd><code>java.lang.NoSuchMethodException</code> - thrown if tuple constructor doesn't exist</dd>
