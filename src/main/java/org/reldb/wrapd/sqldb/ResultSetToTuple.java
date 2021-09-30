@@ -3,6 +3,7 @@ package org.reldb.wrapd.sqldb;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
@@ -80,6 +81,26 @@ public class ResultSetToTuple {
         void process(T tupleType) throws Throwable;
     }
 
+    private static <T extends Tuple> Field[] populateTuple(ResultSetMetaData metadata, ResultSet resultSet, Field[] fields, T tuple) throws SQLException, NoSuchFieldException, IllegalAccessException {
+        if (fields != null) {
+            for (var column = 1; column <= metadata.getColumnCount(); column++) {
+                var value = resultSet.getObject(column);
+                fields[column].set(tuple, value);
+            }
+        } else {
+            var columnCount = metadata.getColumnCount();
+            fields = new Field[columnCount + 1];
+            for (var column = 1; column <= columnCount; column++) {
+                var name = metadata.getColumnName(column);
+                var value = resultSet.getObject(column);
+                var field = tuple.getClass().getField(name);
+                field.set(tuple, value);
+                fields[column] = field;
+            }
+        }
+        return fields;
+    }
+
     /**
      * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
      *
@@ -106,31 +127,13 @@ public class ResultSetToTuple {
             throw new IllegalArgumentException("tupleProcessor may not be null");
         var tupleConstructor = tupleType.getConstructor();
         var metadata = resultSet.getMetaData();
-        var optimised = false;
         Field[] fields = null;
         while (resultSet.next()) {
             var tuple = tupleConstructor.newInstance();
-            if (optimised) {
-                for (var column = 1; column <= metadata.getColumnCount(); column++) {
-                    var value = resultSet.getObject(column);
-                    fields[column].set(tuple, value);
-                }
-            } else {
-                var columnCount = metadata.getColumnCount();
-                fields = new Field[columnCount + 1];
-                for (var column = 1; column <= columnCount; column++) {
-                    var name = metadata.getColumnName(column);
-                    var value = resultSet.getObject(column);
-                    var field = tuple.getClass().getField(name);
-                    field.set(tuple, value);
-                    fields[column] = field;
-                }
-                optimised = true;
-            }
+            fields = populateTuple(metadata, resultSet, fields, tuple);
             tupleProcessor.process(tuple);
         }
     }
-
 
     /**
      * Iterate a ResultSet, unmarshall each row into a Tuple, and pass it to a TupleProcessor for processing.
@@ -161,27 +164,11 @@ public class ResultSetToTuple {
             throw new IllegalArgumentException("tupleProcessor may not be null");
         var tupleConstructor = tupleType.getConstructor(Database.class);
         var metadata = resultSet.getMetaData();
-        var optimised = false;
         Field[] fields = null;
         while (resultSet.next()) {
             var tuple = tupleConstructor.newInstance(database);
-            if (optimised) {
-                for (var column = 1; column <= metadata.getColumnCount(); column++) {
-                    var value = resultSet.getObject(column);
-                    fields[column].set(tuple, value);
-                }
-            } else {
-                var columnCount = metadata.getColumnCount();
-                fields = new Field[columnCount + 1];
-                for (var column = 1; column <= columnCount; column++) {
-                    var name = metadata.getColumnName(column);
-                    var value = resultSet.getObject(column);
-                    var field = tuple.getClass().getField(name);
-                    field.set(tuple, value);
-                    fields[column] = field;
-                }
-                optimised = true;
-            }
+            fields = populateTuple(metadata, resultSet, fields, tuple);
+            tuple.backup();
             tupleProcessor.process(tuple);
         }
     }
@@ -229,10 +216,7 @@ public class ResultSetToTuple {
      */
     public static <T extends UpdatableTuple> List<T> toListForUpdate(Database database, ResultSet resultSet, Class<T> tupleType) throws Throwable {
         var rows = new LinkedList<T>();
-        processForUpdate(database, resultSet, tupleType, tuple -> {
-            tuple.backup();
-            rows.add(tuple);
-        });
+        processForUpdate(database, resultSet, tupleType, rows::add);
         return rows;
     }
 

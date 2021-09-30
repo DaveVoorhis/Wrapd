@@ -30,14 +30,14 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      *
      * @param database The Database that created this UpdatableTuple.
      */
-    public UpdatableTuple(Database database) {
+    protected UpdatableTuple(Database database) {
         this.database = database;
     }
 
     /**
      * Constructor. Not updatable.
      */
-    public UpdatableTuple() {
+    protected UpdatableTuple() {
         this.database = null;
     }
 
@@ -46,7 +46,7 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      *
      * @throws CloneNotSupportedException Thrown if creating clone() of Tuple fails.
      */
-    public void backup() throws CloneNotSupportedException {
+    void backup() throws CloneNotSupportedException {
         __backup = (UpdatableTuple) super.clone();
     }
 
@@ -55,7 +55,7 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      *
      * @return Backup Tuple.
      */
-    public UpdatableTuple getBackup() {
+    UpdatableTuple getBackup() {
         return __backup;
     }
 
@@ -92,6 +92,8 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      * @throws SQLException Failure.
      */
     public List<FieldGetFailure> insert(Connection connection, String tableName) throws SQLException {
+        if (database == null)
+            throw new InvalidValueException("Tuple is not insertable, because this Tuple was not constructed with a Database argument.");
         Supplier<Stream<Field>> dataFields = () -> TupleTypeGenerator.getDataFields(getClass());
         Supplier<Stream<String>> columns = () -> dataFields.get().map(Field::getName);
         var columnNames = columns.get().collect(Collectors.joining(", "));
@@ -118,6 +120,8 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      * @throws SQLException Failure.
      */
     public List<FieldGetFailure> insert(String tableName) throws SQLException {
+        if (database == null)
+            throw new InvalidValueException("Tuple is not insertable, because this Tuple was not constructed with a Database argument.");
         return database.useConnection(conn -> insert(conn, tableName));
     }
 
@@ -132,6 +136,8 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      * @throws SQLException Failure.
      */
     public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(Connection connection, String tableName) throws SQLException {
+        if (database == null)
+            throw new InvalidValueException("Tuple is not updatable, because this Tuple was not constructed with a Database argument.");
         var backup = getBackup();
         if (backup == null)
             throw new InvalidValueException("Tuple is not updatable. Tuples become updatable by invoking backup() after population and before mutation, usually by being obtained via Database::queryForUpdate or Database::queryAllForUpdate.");
@@ -180,6 +186,8 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      * @throws SQLException Failure.
      */
     public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(String tableName) throws SQLException {
+        if (database == null)
+            throw new InvalidValueException("Tuple is not insertable, because this Tuple was not constructed with a Database argument.");
         return database.useConnection(conn -> update(conn, tableName));
     }
 }
