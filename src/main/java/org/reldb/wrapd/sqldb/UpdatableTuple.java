@@ -196,7 +196,7 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
      */
     public Pair<List<FieldGetFailure>, List<FieldGetFailure>> update(String tableName) throws SQLException {
         if (database == null)
-            throw new InvalidValueException("Tuple is not insertable, because this Tuple was not constructed with a Database argument.");
+            throw new InvalidValueException("Tuple is not updatable, because this Tuple was not constructed with a Database argument.");
         return database.useConnection(conn -> update(conn, tableName));
     }
 
