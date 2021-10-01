@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    api 'org.reldb:Toolbox:0.0.1-SNAPSHOT'
+    api 'org.reldb:Toolbox:0.0.6-SNAPSHOT'
 }
 
 dependencies {

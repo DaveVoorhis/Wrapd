@@ -1,5 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.FatalException;
@@ -7,12 +8,11 @@ import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.io.File;
 
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateOrOpenCodeDirectory;
-
 /**
  * Generates Java code to represent an update query, which is a class that implements {@link Update}.
  */
 public class UpdateTypeGenerator {
+    private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", UpdateTypeGenerator.class);
 
     private final String dir;
     private final String packageSpec;

@@ -1,18 +1,19 @@
 package org.reldb.wrapd.generator;
 
+import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.*;
 
-import static org.reldb.wrapd.il8n.Strings.ErrSavingJavaSource;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreateResourceDir;
-import static org.reldb.wrapd.il8n.Strings.ErrUnableToCreatePackageDir;
-
 /**
  * Machinery for generating Java source code.
  */
 public class JavaGenerator {
+    private final static Msg ErrSavingJavaSource = new Msg("Unable to save Java source: {0}.", JavaGenerator.class);
+    private final static Msg ErrUnableToCreateResourceDir = new Msg("Unable to create resource directory: {0}.", JavaGenerator.class);
+    private final static Msg ErrUnableToCreatePackageDir = new Msg("Unable to create package directory: {0}.", JavaGenerator.class);
+
     private final String userSourcePath;
 
     /**

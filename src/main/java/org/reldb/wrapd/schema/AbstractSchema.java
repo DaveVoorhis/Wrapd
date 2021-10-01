@@ -1,17 +1,29 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.progress.EmptyProgressIndicator;
 import org.reldb.toolbox.progress.ProgressIndicator;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Result;
 
-import static org.reldb.wrapd.il8n.Strings.*;
-
 /**
  * An abstract schema definition that can handle updates on anything definable as a schema.
  */
 public abstract class AbstractSchema {
+    private static final Msg ErrUnableToDetermineVersion = new Msg("Unable to determine version due to: {0}", AbstractSchema.class);
+    private static final Msg ErrUnrecognisedVersionType = new Msg("Unrecognised version type: {0}", AbstractSchema.class);
+    private static final Msg ErrUnableToUpdateToVersion = new Msg("Unable to perform update to version {0}", AbstractSchema.class);
+    private static final Msg ErrUnableToSetVersion = new Msg("Unable to set version number to {0}", AbstractSchema.class);
+    private static final Msg ErrNullVersion = new Msg("Version is null.", AbstractSchema.class);
+    private static final Msg MsgCreatingSchema = new Msg("Creating schema", AbstractSchema.class);
+    private static final Msg MsgCreatingSchemaFailed = new Msg("Creating schema failed", AbstractSchema.class);
+    private static final Msg ErrFailedToRecordUpdateToVersion = new Msg("Failed to record update to version {0}", AbstractSchema.class);
+    private static final Msg MsgSchemaCreated = new Msg("Schema created", AbstractSchema.class);
+    private static final Msg MsgUpdatingToVersion = new Msg("Updating to version {0}", AbstractSchema.class);
+    private static final Msg ErrFailedToUpdateToVersionDueToException = new Msg("Failed to update to version {0} due to exception", AbstractSchema.class);
+    private static final Msg ErrFailedToUpdateToVersionDueToFalse = new Msg("Failed to update to version {0} due to false result", AbstractSchema.class);
+    private static final Msg MsgUpdatedToVersion = new Msg("Updated to version {0}", AbstractSchema.class);
 
     /**
      * Return VersionNewDatabase instance for new database.
@@ -93,18 +105,18 @@ public abstract class AbstractSchema {
         int versionNumber = 0;
         if (version instanceof VersionNewDatabase) {
             progress.initialise(updates.length + 1);
-            progress.move(0, "Creating schema");
+            progress.move(0, Str.ing(MsgCreatingSchema));
             var createResult = create();
             if (createResult.isError()) {
-                progress.move(progress.getValue(), "Creating schema failed");
+                progress.move(progress.getValue(), Str.ing(MsgCreatingSchemaFailed));
                 return createResult;
             }
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
-                progress.move(progress.getValue(), "Failed to record update to version " + 0);
+                progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
                 return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
-            progress.move(progress.getValue() + 1, "Schema created");
+            progress.move(progress.getValue() + 1, Str.ing(MsgSchemaCreated));
         } else {
             if (!(version instanceof VersionNumber))
                 return Result.ERROR(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
@@ -114,7 +126,7 @@ public abstract class AbstractSchema {
         var result = Result.OK;
         for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
             var transaction = getTransaction();
-            progress.move(progress.getValue(), "Updating to version " + update);
+            progress.move(progress.getValue(), Str.ing(MsgUpdatingToVersion, update));
             final int updateNumber = update;
             result = transaction.run(() -> {
                 var updateSpecification = updates[updateNumber - 1];
@@ -122,22 +134,22 @@ public abstract class AbstractSchema {
                 try {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
-                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to exception");
+                    progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
                     return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
-                    progress.move(progress.getValue(), "Failed to update to version " + updateNumber + " due to false result");
+                    progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
                     return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
-                    progress.move(progress.getValue(), "Failed to record update to version " + updateNumber);
+                    progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
                     return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });
             if (result.isOk())
-                progress.move(progress.getValue() + 1, "Updated to version " + update);
+                progress.move(progress.getValue() + 1, Str.ing(MsgUpdatedToVersion, update));
         }
         return result;
     }

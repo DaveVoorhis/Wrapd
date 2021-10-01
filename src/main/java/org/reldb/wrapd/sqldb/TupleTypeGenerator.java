@@ -1,5 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.generator.JavaGenerator;
@@ -14,12 +15,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.reldb.wrapd.il8n.Strings.*;
-
 /**
  * Generates Java code to represent a tuple, which is a class that implements Tuple.
  */
 public class TupleTypeGenerator {
+    private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", TupleTypeGenerator.class);
+    private static final Msg ErrAttemptToAddDuplicateAttributeName = new Msg("Attempt to add duplicate attribute {0} of type {1} to {2}.", TupleTypeGenerator.class);
 
     private static class Attribute {
         final String name;

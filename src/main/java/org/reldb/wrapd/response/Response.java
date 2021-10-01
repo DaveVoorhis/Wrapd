@@ -1,11 +1,17 @@
 package org.reldb.wrapd.response;
 
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
+
 /**
  * Effectively a union type of some value T or a (Throwable) error.
  *
  * @param <T> The type of the non-error value.
  */
 public class Response<T> {
+    private static final Msg MsgError = new Msg("Error:", Response.class);
+    private static final Msg MsgCausedBy = new Msg("Caused by:", Response.class);
+
     /** The valid value of this Response. */
     public final T value;
 
@@ -55,7 +61,7 @@ public class Response<T> {
      */
     public void printIfError() {
         if (error != null)
-            printError("Error:", error);
+            printError(Str.ing(MsgError), error);
     }
 
     /**
@@ -67,6 +73,6 @@ public class Response<T> {
     public static void printError(String prompt, Throwable error) {
         System.out.println(prompt + " " + error);
         if (error.getCause() != null)
-            printError("Caused by:", error.getCause());
+            printError(Str.ing(MsgCausedBy), error.getCause());
     }
 }

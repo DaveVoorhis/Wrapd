@@ -1,5 +1,6 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
@@ -7,13 +8,13 @@ import org.reldb.wrapd.sqldb.Database;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import static org.reldb.wrapd.il8n.Strings.ErrVersionTableIsEmpty;
-import static org.reldb.wrapd.il8n.Strings.ErrVersionTableValueIsInvalid;
-
 /**
  * A SQL schema migrator.
  */
 public abstract class SQLSchema extends AbstractSchema {
+    private static final Msg ErrVersionTableIsEmpty = new Msg("Version table {0} is empty. It needs one row.", SQLSchema.class);
+    private static final Msg ErrVersionTableValueIsInvalid = new Msg("Version table {0} contains an invalid value for {1}.", SQLSchema.class);
+
     private final Database database;
 
     private String versionTableName = "$$__version";

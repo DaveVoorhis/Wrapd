@@ -1,13 +1,9 @@
 package org.reldb.wrapd.compiler;
 
 import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-import org.reldb.toolbox.il8n.Str;
-import org.reldb.wrapd.exceptions.FatalException;
 
 import java.io.*;
 import java.util.StringTokenizer;
-
-import static org.reldb.wrapd.il8n.Strings.*;
 
 /**
  * Machinery for compiling Java code.
