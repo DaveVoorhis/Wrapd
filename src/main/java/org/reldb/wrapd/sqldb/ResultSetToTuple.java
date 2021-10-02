@@ -1,5 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -13,6 +16,14 @@ import java.util.stream.Stream;
  * Tools for creating Tuple-derived classes from ResultSetS and for turning ResultSetS into Tuple-derived instances for processing directly or as a List or Stream.
  */
 public class ResultSetToTuple {
+    private final static Msg ErrNullCodeDir = new Msg("codeDir may not be null.", ResultSetToTuple.class);
+    private final static Msg ErrNullPackageSpec = new Msg("packageSpec may not be null.", ResultSetToTuple.class);
+    private final static Msg ErrNullTupleName = new Msg("tupleName may not be null.", ResultSetToTuple.class);
+    private final static Msg ErrNullResults = new Msg("results may not be null.", ResultSetToTuple.class);
+    private final static Msg ErrNullResultSet = new Msg("resultSet may not be null", ResultSetToTuple.class);
+    private final static Msg ErrNullTupleType = new Msg("tupleType may not be null", ResultSetToTuple.class);
+    private final static Msg ErrNullTupleProcessor = new Msg("tupleProcessor may not be null", ResultSetToTuple.class);
+    private final static Msg ErrNullDatabase = new Msg("database may not be null", ResultSetToTuple.class);
 
     /**
      * Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
@@ -30,11 +41,13 @@ public class ResultSetToTuple {
      */
     public static void createTupleForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
-            throw new IllegalArgumentException("codeDir may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
+        if (packageSpec == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
         if (tupleName == null)
-            throw new IllegalArgumentException("tupleName may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
         if (results == null)
-            throw new IllegalArgumentException("results may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullResults));
         var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
         generator.setTableName(tableName);
         var metadata = results.getMetaData();
@@ -120,11 +133,11 @@ public class ResultSetToTuple {
      */
     public static <T extends Tuple> void process(ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws Throwable {
         if (resultSet == null)
-            throw new IllegalArgumentException("resultSet may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullResultSet));
         if (tupleType == null)
-            throw new IllegalArgumentException("tupleType may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleType));
         if (tupleProcessor == null)
-            throw new IllegalArgumentException("tupleProcessor may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleProcessor));
         var tupleConstructor = tupleType.getConstructor();
         var metadata = resultSet.getMetaData();
         Field[] fields = null;
@@ -155,13 +168,13 @@ public class ResultSetToTuple {
      */
     public static <T extends UpdatableTuple> void processForUpdate(Database database, ResultSet resultSet, Class<T> tupleType, TupleProcessor<T> tupleProcessor) throws Throwable {
         if (database == null)
-            throw new IllegalArgumentException("database may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullDatabase));
         if (resultSet == null)
-            throw new IllegalArgumentException("resultSet may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullDatabase));
         if (tupleType == null)
-            throw new IllegalArgumentException("tupleType may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleType));
         if (tupleProcessor == null)
-            throw new IllegalArgumentException("tupleProcessor may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleProcessor));
         var tupleConstructor = tupleType.getConstructor(Database.class);
         var metadata = resultSet.getMetaData();
         Field[] fields = null;
@@ -273,9 +286,11 @@ public class ResultSetToTuple {
      */
     public static boolean destroyTuple(String codeDir, String packageSpec, String tupleName) {
         if (codeDir == null)
-            throw new IllegalArgumentException("codeDir may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
+        if (packageSpec == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
         if (tupleName == null)
-            throw new IllegalArgumentException("tupleName may not be null");
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
         return new TupleTypeGenerator(codeDir, packageSpec, tupleName).destroy();
     }
 

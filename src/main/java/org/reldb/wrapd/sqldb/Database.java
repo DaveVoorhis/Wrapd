@@ -1,6 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.events.EventHandler;
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
@@ -15,6 +17,11 @@ import java.util.stream.Stream;
  * Database access layer.
  */
 public class Database {
+    private final static Msg ErrPrepArgCountMismatch = new Msg("Number of parameters ({0}}) doesn't match number of arguments ({1}) in {2}.", Database.class);
+    private final static Msg ErrResultSetToStreamFail1 = new Msg("ResultSet to Stream conversion failed in newResultSetToStream.", Database.class);
+    private final static Msg ErrResultSetToStreamFail2 = new Msg("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", Database.class);
+    private final static Msg ErrQueryAllFail = new Msg("Failure inside ResultSetReceiver in queryAll.", Database.class);
+    private final static Msg ErrQueryFail = new Msg("Failure inside ResultSetReceiver in query.", Database.class);
 
     private final DataSource dataSource;
     private final String dbTablenamePrefix;
@@ -287,7 +294,7 @@ public class Database {
         var argCount = parms.length;
         var parmCount = (int) sqlized.chars().filter(ch -> ch == '?').count();
         if (argCount != parmCount)
-            throw new IllegalArgumentException("ERROR: processPreparedStatement: Number of parameters (" + parmCount + ") doesn't match number of arguments (" + argCount + ") in " + sqlized);
+            throw new IllegalArgumentException(Str.ing(ErrPrepArgCountMismatch, parmCount, argCount, sqlized));
         try (var statement = connection.prepareStatement(sqlized)) {
             setupParms(statement, parms);
             try {
@@ -557,7 +564,7 @@ public class Database {
             try {
                 return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
             } catch (Throwable e) {
-                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStream.", e));
+                return new Response<>(new FatalException(Str.ing(ErrResultSetToStreamFail1), e));
             }
         };
     }
@@ -576,7 +583,7 @@ public class Database {
             try {
                 return new Response<>(ResultSetToTuple.toStreamForUpdate(this, result, tupleClass));
             } catch (Throwable e) {
-                return new Response<>(new FatalException("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", e));
+                return new Response<>(new FatalException(Str.ing(ErrResultSetToStreamFail2), e));
             }
         };
     }
@@ -598,7 +605,7 @@ public class Database {
             try (var resultSet = statement.executeQuery(sqlized)) {
                 var response = receiver.go(resultSet);
                 if (response.isError())
-                    throw new SQLException("Failure inside ResultSetReceiver in queryAll.", response.error);
+                    throw new SQLException(Str.ing(ErrQueryAllFail), response.error);
                 return response.value;
             }
         }
@@ -791,7 +798,7 @@ public class Database {
             try (var resultSet = statement.executeQuery()) {
                 var response = receiver.go(resultSet);
                 if (response.isError())
-                    throw new SQLException("Failure inside ResultSetReceiver in query.", response.error);
+                    throw new SQLException(Str.ing(ErrQueryFail), response.error);
                 return response.value;
             }
         }, connection, query, parms);
