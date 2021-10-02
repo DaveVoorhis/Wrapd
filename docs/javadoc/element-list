@@ -1,6 +1,5 @@
 org.reldb.wrapd.exceptions
 org.reldb.wrapd.generator
-org.reldb.wrapd.il8n
 org.reldb.wrapd.response
 org.reldb.wrapd.schema
 org.reldb.wrapd.sqldb
