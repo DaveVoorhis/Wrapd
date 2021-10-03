@@ -16,14 +16,15 @@ public abstract class AbstractSchema {
     private static final Msg ErrUnableToUpdateToVersion = new Msg("Unable to perform update to version {0}", AbstractSchema.class);
     private static final Msg ErrUnableToSetVersion = new Msg("Unable to set version number to {0}", AbstractSchema.class);
     private static final Msg ErrNullVersion = new Msg("Version is null.", AbstractSchema.class);
-    private static final Msg MsgCreatingSchema = new Msg("Creating schema", AbstractSchema.class);
-    private static final Msg MsgCreatingSchemaFailed = new Msg("Creating schema failed", AbstractSchema.class);
     private static final Msg ErrFailedToRecordUpdateToVersion = new Msg("Failed to record update to version {0}", AbstractSchema.class);
-    private static final Msg MsgSchemaCreated = new Msg("Schema created", AbstractSchema.class);
-    private static final Msg MsgUpdatingToVersion = new Msg("Updating to version {0}", AbstractSchema.class);
     private static final Msg ErrFailedToUpdateToVersionDueToException = new Msg("Failed to update to version {0} due to exception", AbstractSchema.class);
     private static final Msg ErrFailedToUpdateToVersionDueToFalse = new Msg("Failed to update to version {0} due to false result", AbstractSchema.class);
-    private static final Msg MsgUpdatedToVersion = new Msg("Updated to version {0}", AbstractSchema.class);
+
+    private static final Msg MsgCreatingSchema = new Msg("Creating schema");
+    private static final Msg MsgCreatingSchemaFailed = new Msg("Creating schema failed");
+    private static final Msg MsgSchemaCreated = new Msg("Schema created");
+    private static final Msg MsgUpdatingToVersion = new Msg("Updating to version {0}");
+    private static final Msg MsgUpdatedToVersion = new Msg("Updated to version {0}");
 
     /**
      * Return VersionNewDatabase instance for new database.
