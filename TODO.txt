@@ -1,3 +1,5 @@
+- Maybe factor out duplicated code in Query and Update (to SQL?)
+- Factor out duplicated code in QueryTypeGenerator and UpdateTypeGenerator (to SQLTypeGenerator?)
 - Get parameter definitions and comments from query/update defs into generated code.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
