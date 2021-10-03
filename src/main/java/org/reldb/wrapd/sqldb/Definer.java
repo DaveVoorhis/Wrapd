@@ -37,12 +37,14 @@ public class Definer {
         var tupleClassCreated = (args == null || args.length == 0)
                 ? database.createTupleFromQueryAllForUpdate(codeDirectory, packageSpec, tupleClassName, tableName, sqlText)
                 : database.createTupleFromQueryForUpdate(codeDirectory, packageSpec, tupleClassName, tableName, sqlText, args);
-        if (tupleClassCreated.isOk()) {
+        if (tupleClassCreated.isError())
+            //noinspection ConstantConditions
+            throw tupleClassCreated.error;
+        else {
             var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
             queryGenerator.setTableName(tableName);
             queryGenerator.generate();
-        } else
-            throw tupleClassCreated.error;
+        }
     }
 
     /**
