@@ -22,33 +22,6 @@ public class Definer {
     }
 
     /**
-     * Return the Database.
-     *
-     * @return Database.
-     */
-    public Database getDatabase() {
-        return database;
-    }
-
-    /**
-     * Return directory where code is stored.
-     *
-     * @return Code directory path.
-     */
-    public String getCodeDirectory() {
-        return codeDirectory;
-    }
-
-    /**
-     * Return the package for generated code.
-     *
-     * @return Package specification for generated code.
-     */
-    public String getPackageSpec() {
-        return packageSpec;
-    }
-
-    /**
      * Define a Query for future use.
      *
      * @param queryName Name of query. Should be unique.
