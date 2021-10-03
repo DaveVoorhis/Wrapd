@@ -925,7 +925,7 @@ public class Database {
      * @return Object array of parameter arguments.
      */
     public static Object[] allArguments(Object... parms) {
-        var newArgs = new Vector<Object>();
+        var newArgs = new Vector<>();
         for (var parm : parms)
             if (parm instanceof Object[])
                 Collections.addAll(newArgs, (Object[]) parm);
