@@ -1,11 +1,11 @@
 package org.reldb.wrapd.sqldb;
 
 /**
- * A SQL update (typically INSERT, UPDATE, DELETE, or stored procedure invoking) query. Normally not used directly, but inherited.
+ * An SQL update (typically INSERT, UPDATE, DELETE, or stored procedure invoking) query.
+ *
+ * Normally not used directly, but inherited.
  */
-public class Update {
-    private final String text;
-    private final Object[] arguments;
+public class Update extends SQL {
 
     /**
      * Define an update query.
@@ -14,8 +14,7 @@ public class Update {
      * @param arguments Arguments to query.
      */
     protected Update(String queryText, Object... arguments) {
-        this.text = queryText;
-        this.arguments = arguments;
+        super(queryText, arguments);
     }
 
     /**
@@ -27,21 +26,4 @@ public class Update {
         this(queryText, new Object[] {});
     }
 
-    /**
-     * Get query SQL text.
-     *
-     * @return SQL text.
-     */
-    public String getQueryText() {
-        return text;
-    }
-
-    /**
-     * Get array of arguments.
-     *
-     * @return Array of arguments.
-     */
-    protected Object[] getArguments() {
-        return arguments;
-    }
 }

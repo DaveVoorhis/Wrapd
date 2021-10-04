@@ -1,12 +1,12 @@
 package org.reldb.wrapd.sqldb;
 
 /**
- * A SQL SELECT (or equivalent RecordSet-returning) Query. Normally not used directly, but inherited.
+ * An SQL SELECT (or equivalent RecordSet-returning) Query.
+ *
+ * Normally not used directly, but inherited.
  */
-public class Query<T extends Tuple> {
-    private final String text;
+public class Query<T extends Tuple> extends SQL {
     private final Class<T> tupleClass;
-    private final Object[] arguments;
 
     /**
      * Define a Query.
@@ -16,9 +16,8 @@ public class Query<T extends Tuple> {
      * @param arguments Arguments to query.
      */
     protected Query(String queryText, Class<T> tupleClass, Object... arguments) {
-        this.text = queryText;
+        super(queryText, arguments);
         this.tupleClass = tupleClass;
-        this.arguments = arguments;
     }
 
     /**
@@ -32,29 +31,11 @@ public class Query<T extends Tuple> {
     }
 
     /**
-     * Get query SQL text.
-     *
-     * @return SQL text.
-     */
-    public String getQueryText() {
-        return text;
-    }
-
-    /**
      * Get Tuple class.
      *
      * @return Class&lt;T extends Tuple&gt;
      */
     public Class<T> getTupleClass() {
         return tupleClass;
-    }
-
-    /**
-     * Get array of arguments.
-     *
-     * @return Array of arguments.
-     */
-    protected Object[] getArguments() {
-        return arguments;
     }
 }
