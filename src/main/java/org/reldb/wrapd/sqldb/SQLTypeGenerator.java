@@ -55,26 +55,57 @@ public abstract class SQLTypeGenerator {
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
     }
 
+    /**
+     * Get SQL text.
+     *
+     * @return SQL text.
+     */
     protected String getSQLText() {
         return sqlText;
     }
 
+    /**
+     * Get query name.
+     *
+     * @return Query name.
+     */
     protected String getQueryName() {
         return queryName;
     }
 
+    /**
+     * Get raw arguments.
+     *
+     * @return Raw arguments.
+     */
     protected Object[] getRawArgs() {
         return args;
     }
 
+    /**
+     * Get package specification.
+     *
+     * @return Package specification.
+     */
     protected String getPackageSpec() {
         return packageSpec;
     }
 
+    /**
+     * Return true if arguments have been specified.
+     *
+     * @return True if arguments have been specified.
+     */
     protected boolean hasArgs() {
         return args != null && args.length > 0;
     }
 
+    /**
+     * Return a parameter list specification.
+     *
+     * @param withConnection True to include 'Connection connection' parameter.
+     * @return Parameter list string.
+     */
     protected String getParms(boolean withConnection) {
         String parmConnection = withConnection
                 ? ", Connection connection"
@@ -88,6 +119,11 @@ public abstract class SQLTypeGenerator {
         return out.toString();
     }
 
+    /**
+     * Return a parameter list.
+     *
+     * @return Parameter list.
+     */
     protected String getArgs() {
         if (!hasArgs())
             return "null";
