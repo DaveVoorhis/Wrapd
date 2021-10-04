@@ -1,24 +1,9 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.toolbox.il8n.Msg;
-import org.reldb.toolbox.il8n.Str;
-import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.exceptions.FatalException;
-import org.reldb.wrapd.generator.JavaGenerator;
-
-import java.io.File;
-
 /**
  * Generates Java code to represent an update query, which is a class that implements {@link Update}.
  */
-public class UpdateTypeGenerator {
-    private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", UpdateTypeGenerator.class);
-
-    private final String dir;
-    private final String packageSpec;
-    private final String queryName;
-    private final String sqlText;
-    private final Object[] args;
+public class UpdateTypeGenerator extends SQLTypeGenerator {
 
     /**
      * Create a generator of compiled update invokers.
@@ -30,67 +15,13 @@ public class UpdateTypeGenerator {
      * @param args Sample arguments.
      */
     public UpdateTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
-        this.packageSpec = packageSpec;
-        if (queryName.startsWith(packageSpec))
-            queryName = queryName.substring(packageSpec.length() + 1);
-        this.dir = dir;
-        this.queryName = queryName;
-        this.sqlText = sqlText;
-        this.args = args;
-        if (!Directory.chkmkdir(dir))
-            throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-    }
-
-    /**
-     * Delete this query type, given its name, before loading it.
-     *
-     * @param dir The directory containing the query definition.
-     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
-     * @param className The class name of the query definition.
-     * @return boolean true if query definition successfully deleted.
-     */
-    public static boolean destroy(String dir, String packageSpec, String className) {
-        var pathName = dir + File.separator + packageSpec.replace('.', File.separatorChar) + File.separator + className;
-        var fJava = new File(pathName + ".java");
-        var fJavaDelete = fJava.delete();
-        var fClass = new File(pathName + ".class");
-        var fClassDelete = fClass.delete();
-        return fJavaDelete && fClassDelete;
-    }
-
-    private boolean hasArgs() {
-        return args != null && args.length > 0;
-    }
-
-    private String getParms(boolean withConnection) {
-        String parmConnection = withConnection
-                ? ", Connection connection"
-                : "";
-        StringBuilder out = new StringBuilder("Database db" + parmConnection);
-        int parameterNumber = 0;
-        if (hasArgs()) {
-            for (Object arg: args)
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(parameterNumber++);
-        }
-        return out.toString();
-    }
-
-    private String getArgs() {
-        if (!hasArgs())
-            return "null";
-        var out = new StringBuilder();
-        for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
-            if (out.length() > 0)
-                out.append(", ");
-            out.append("p").append(parameterNumber);
-        }
-        return out.toString();
+        super(dir, packageSpec, queryName, sqlText, args);
     }
 
     private String getConstructor() {
         return
             "\t@SuppressWarnings(\"unchecked\")\n" +
-            "\tprotected " + queryName + "(String queryText" +
+            "\tprotected " + getQueryName() + "(String queryText" +
                 (hasArgs() ? ", Object... arguments" : "") +
             ") {\n" +
             "\t\tsuper(queryText, " +
@@ -109,61 +40,34 @@ public class UpdateTypeGenerator {
     }
 
     private String getQueryMethods() {
-        var methodName = (args == null || args.length == 0)
-                ? "updateAll"
-                : "update";
+        var methodName = hasArgs()
+                ? "update"
+                : "updateAll";
         var args = hasArgs()
                 ? ", " + getArgs()
                 : "";
-        var newQuery = "new " + queryName + "(sqlText" + args + ")";
+        var newQuery = "new " + getQueryName() + "(sqlText" + args + ")";
         return
                 buildQueryMethod(methodName, newQuery, false) +
                 "\n" +
                 buildQueryMethod(methodName, newQuery, true);
     }
 
-    /**
-     * Generate this query type as a Java class definition.
-     *
-     * @return The generated Java source file.
-     */
-    public File generate() {
-        var tupleTypeName = queryName + "Tuple";
-        var queryDef =
-                "package " + packageSpec + ";\n\n" +
-                "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
-                "import java.sql.SQLException;\n" +
-                "import java.sql.Connection;\n" +
-                "import org.reldb.wrapd.sqldb.Database;\n" +
-                "import org.reldb.wrapd.sqldb.Update;\n\n" +
-                "public class " + queryName + " extends Update {\n" +
-                "\tprivate final static String sqlText = \"" + sqlText + "\";\n\n" +
-                getConstructor() +
-                "\n" +
-                getQueryMethods() +
-                "}";
-        var generator = new JavaGenerator(dir);
-        return generator.generateJavaCode(queryName, packageSpec, queryDef);
-    }
-
-    /**
-     * Return the class name.
-     *
-     * @return The class name.
-     */
-    public String getQueryClassName() {
-        return getQueryClassName(packageSpec, queryName);
-    }
-
-    /**
-     * Given a class name, return a fully-qualified class name obtained by prepending packageSpec.
-     *
-     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
-     * @param newName The query class name.
-     * @return Fully-qualified class name.
-     */
-    public static String getQueryClassName(String packageSpec, String newName) {
-        return packageSpec + "." + newName;
+    @Override
+    protected String getQueryDef() {
+        return
+            "package " + getPackageSpec() + ";\n\n" +
+            "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +
+            "import java.sql.SQLException;\n" +
+            "import java.sql.Connection;\n" +
+            "import org.reldb.wrapd.sqldb.Database;\n" +
+            "import org.reldb.wrapd.sqldb.Update;\n\n" +
+            "public class " + getQueryName() + " extends Update {\n" +
+            "\tprivate final static String sqlText = \"" + getSQLText() + "\";\n\n" +
+            getConstructor() +
+            "\n" +
+            getQueryMethods() +
+            "}";
     }
 
 }
