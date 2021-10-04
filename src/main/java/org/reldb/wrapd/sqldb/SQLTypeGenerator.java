@@ -104,7 +104,7 @@ public abstract class SQLTypeGenerator {
      * Return a parameter list specification.
      *
      * @param withConnection True to include 'Connection connection' parameter.
-     * @return Parameter list string.
+     * @return Parameter list definition string.
      */
     protected String getParms(boolean withConnection) {
         String parmConnection = withConnection
@@ -122,7 +122,7 @@ public abstract class SQLTypeGenerator {
     /**
      * Return a parameter list.
      *
-     * @return Parameter list.
+     * @return Parameter list reference string.
      */
     protected String getArgs() {
         if (!hasArgs())
