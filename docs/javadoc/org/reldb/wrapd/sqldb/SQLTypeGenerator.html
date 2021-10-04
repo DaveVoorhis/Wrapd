@@ -15,7 +15,7 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var data = {"i0":9,"i1":10,"i2":10,"i3":10,"i4":10,"i5":6,"i6":10,"i7":10,"i8":10,"i9":10};
+<script type="text/javascript">var data = {"i0":9,"i1":10,"i2":10,"i3":6,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],8:["t4","Concrete Methods"]};
 var altColor = "alt-color";
 var rowColor = "row-color";
@@ -159,24 +159,24 @@ java.lang.String&nbsp;className)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i3">
+<td class="col-first"><code>protected abstract java.lang.String</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getDefinitionSourceCode()">getDefinitionSourceCode</a></span>()</code></th>
+<td class="col-last">
+<div class="block">Obtain the Java text for this definition.</div>
+</td>
+</tr>
+<tr class="alt-color" id="i4">
 <td class="col-first"><code>protected java.lang.String</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getPackageSpec()">getPackageSpec</a></span>()</code></th>
 <td class="col-last">
 <div class="block">Get package specification.</div>
 </td>
 </tr>
-<tr class="alt-color" id="i4">
+<tr class="row-color" id="i5">
 <td class="col-first"><code>protected java.lang.String</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getParms(boolean)">getParms</a></span>&#8203;(boolean&nbsp;withConnection)</code></th>
 <td class="col-last">
 <div class="block">Return a parameter list specification.</div>
-</td>
-</tr>
-<tr class="row-color" id="i5">
-<td class="col-first"><code>protected abstract java.lang.String</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getQueryDef()">getQueryDef</a></span>()</code></th>
-<td class="col-last">
-<div class="block">Obtain the Java text for this definition.</div>
 </td>
 </tr>
 <tr class="alt-color" id="i6">
@@ -187,20 +187,13 @@ java.lang.String&nbsp;className)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i7">
-<td class="col-first"><code>protected java.lang.Object[]</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getRawArgs()">getRawArgs</a></span>()</code></th>
-<td class="col-last">
-<div class="block">Get raw arguments.</div>
-</td>
-</tr>
-<tr class="alt-color" id="i8">
-<td class="col-first"><code>protected java.lang.String</code></td>
+<td class="col-first"><code>java.lang.String</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getSQLText()">getSQLText</a></span>()</code></th>
 <td class="col-last">
 <div class="block">Get SQL text.</div>
 </td>
 </tr>
-<tr class="row-color" id="i9">
+<tr class="alt-color" id="i8">
 <td class="col-first"><code>protected boolean</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#hasArgs()">hasArgs</a></span>()</code></th>
 <td class="col-last">
@@ -239,7 +232,10 @@ java.lang.Object[]&nbsp;args)</span></div>
 <dd><code>dir</code> - Directory into which generated class(es) will be put.</dd>
 <dd><code>packageSpec</code> - Package to which generated class(es) belong, in dotted notation.</dd>
 <dd><code>queryName</code> - Name of generated query class.</dd>
-<dd><code>sqlText</code> - SQL query text.</dd>
+<dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Sample arguments.</dd>
 </dl>
 </section>
@@ -272,7 +268,7 @@ java.lang.String&nbsp;className)</span></div>
 <li>
 <section class="detail" id="getSQLText()">
 <h3>getSQLText</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getSQLText</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getSQLText</span>()</div>
 <div class="block">Get SQL text.</div>
 <dl class="notes">
 <dt>Returns:</dt>
@@ -288,17 +284,6 @@ java.lang.String&nbsp;className)</span></div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>Query name.</dd>
-</dl>
-</section>
-</li>
-<li>
-<section class="detail" id="getRawArgs()">
-<h3>getRawArgs</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">java.lang.Object[]</span>&nbsp;<span class="member-name">getRawArgs</span>()</div>
-<div class="block">Get raw arguments.</div>
-<dl class="notes">
-<dt>Returns:</dt>
-<dd>Raw arguments.</dd>
 </dl>
 </section>
 </li>
@@ -349,9 +334,9 @@ java.lang.String&nbsp;className)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="getQueryDef()">
-<h3>getQueryDef</h3>
-<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getQueryDef</span>()</div>
+<section class="detail" id="getDefinitionSourceCode()">
+<h3>getDefinitionSourceCode</h3>
+<div class="member-signature"><span class="modifiers">protected abstract</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getDefinitionSourceCode</span>()</div>
 <div class="block">Obtain the Java text for this definition.</div>
 <dl class="notes">
 <dt>Returns:</dt>

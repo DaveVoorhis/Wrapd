@@ -329,6 +329,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Given a Class used as a tuple type, return a stream of fields suitable for data.</div>
 </dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html#getDefinitionSourceCode()">getDefinitionSourceCode()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">QueryTypeGenerator</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html#getDefinitionSourceCode()">getDefinitionSourceCode()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></dt>
+<dd>
+<div class="block">Obtain the Java text for this definition.</div>
+</dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/UpdateTypeGenerator.html#getDefinitionSourceCode()">getDefinitionSourceCode()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/UpdateTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">UpdateTypeGenerator</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#getKeyColumnNamesFor(java.lang.String)">getKeyColumnNamesFor(String)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Get primary key for a given table.</div>
@@ -349,14 +357,6 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Return a parameter list specification.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html#getQueryDef()">getQueryDef()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">QueryTypeGenerator</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html#getQueryDef()">getQueryDef()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></dt>
-<dd>
-<div class="block">Obtain the Java text for this definition.</div>
-</dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/UpdateTypeGenerator.html#getQueryDef()">getQueryDef()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/UpdateTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">UpdateTypeGenerator</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html#getQueryName()">getQueryName()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></dt>
 <dd>
 <div class="block">Get query name.</div>
@@ -364,10 +364,6 @@ loadScripts(document, 'script');</script>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQL.html#getQueryText()">getQueryText()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQL.html" title="class in org.reldb.wrapd.sqldb">SQL</a></dt>
 <dd>
 <div class="block">Get query SQL text.</div>
-</dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html#getRawArgs()">getRawArgs()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></dt>
-<dd>
-<div class="block">Get raw arguments.</div>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.Transaction.html#getResult()">getResult()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="class in org.reldb.wrapd.sqldb">Database.Transaction</a></dt>
 <dd>
@@ -755,7 +751,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generates Java code to represent a query, which is a class that implements <a href="org/reldb/wrapd/sqldb/Query.html" title="class in org.reldb.wrapd.sqldb"><code>Query</code></a>.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object%5B%5D)">QueryTypeGenerator(String, String, String, String, Object[])</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">QueryTypeGenerator</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object%5B%5D)">QueryTypeGenerator(String, String, String, String, String, Object[])</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/QueryTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">QueryTypeGenerator</a></dt>
 <dd>
 <div class="block">Create a generator of compiled query invokers.</div>
 </dd>

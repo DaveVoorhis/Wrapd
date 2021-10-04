@@ -231,7 +231,10 @@ java.lang.Object...&nbsp;args)</span>
 <dd><code>tableName</code> - Name of table the generated Tuple maps to. Null if not mapped to a table.
                   If not null, the Tuple type will have an insert(...) and an update(...)
                   for the specified table.</dd>
-<dd><code>sqlText</code> - SQL query text.</dd>
+<dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Arguments that specify parameter type(s) and allow query to succeed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.Throwable</code> - Error.</dd>
@@ -249,7 +252,10 @@ java.lang.Object...&nbsp;args)</span>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>queryName</code> - Name of query. Should be unique.</dd>
-<dd><code>sqlText</code> - SQL query text.</dd>
+<dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Arguments that specify parameter type(s) and allow query to succeed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.Throwable</code> - Error.</dd>
@@ -263,11 +269,16 @@ java.lang.Object...&nbsp;args)</span>
 java.lang.String&nbsp;sqlText,
 java.lang.Object...&nbsp;args)</span>
                   throws <span class="exceptions">java.lang.Throwable</span></div>
-<div class="block">Define an Update for future use.</div>
+<div class="block">Define an Update for future use.
+
+ WARNING: This will test the query by running it. Hope you're not doing this on a production database!</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>queryName</code> - Name of update query. Should be unique.</dd>
-<dd><code>sqlText</code> - SQL update query text.</dd>
+<dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Arguments that specify parameter type(s) and allow update query to succeed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.Throwable</code> - Error.</dd>
@@ -286,7 +297,11 @@ java.lang.Object...&nbsp;args)</span>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>tableName</code> - Name of the table, optionally including $$.</dd>
-<dd><code>whereClause</code> - The WHERE clause without the 'WHERE' keyword, and ? to indicate parameter replacement.</dd>
+<dd><code>whereClause</code> - The WHERE clause without the 'WHERE' keyword.
+                    Parameters may be specified as ? or {name}. If {name} is used, it will
+                    appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                    is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                    SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Arguments that specify parameter type(s) and allow query to succeed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.Throwable</code> - Error.</dd>

@@ -103,8 +103,9 @@ extends <a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">S
 </thead>
 <tbody>
 <tr class="alt-color">
-<th class="col-constructor-name" scope="row"><code><span class="member-name-link"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object%5B%5D)">QueryTypeGenerator</a></span>&#8203;(java.lang.String&nbsp;dir,
+<th class="col-constructor-name" scope="row"><code><span class="member-name-link"><a href="#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object%5B%5D)">QueryTypeGenerator</a></span>&#8203;(java.lang.String&nbsp;dir,
 java.lang.String&nbsp;packageSpec,
+java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;queryName,
 java.lang.String&nbsp;sqlText,
 java.lang.Object[]&nbsp;args)</code></th>
@@ -135,7 +136,7 @@ java.lang.Object[]&nbsp;args)</code></th>
 <tbody>
 <tr class="alt-color" id="i0">
 <td class="col-first"><code>protected java.lang.String</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getQueryDef()">getQueryDef</a></span>()</code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getDefinitionSourceCode()">getDefinitionSourceCode</a></span>()</code></th>
 <td class="col-last">
 <div class="block">Obtain the Java text for this definition.</div>
 </td>
@@ -153,7 +154,7 @@ java.lang.Object[]&nbsp;args)</code></th>
 </div>
 <div class="inherited-list">
 <h3 id="methods.inherited.from.class.org.reldb.wrapd.sqldb.SQLTypeGenerator">Methods inherited from class&nbsp;org.reldb.wrapd.sqldb.<a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></h3>
-<code><a href="SQLTypeGenerator.html#destroy(java.lang.String,java.lang.String,java.lang.String)">destroy</a>, <a href="SQLTypeGenerator.html#generate()">generate</a>, <a href="SQLTypeGenerator.html#getArgs()">getArgs</a>, <a href="SQLTypeGenerator.html#getPackageSpec()">getPackageSpec</a>, <a href="SQLTypeGenerator.html#getParms(boolean)">getParms</a>, <a href="SQLTypeGenerator.html#getQueryName()">getQueryName</a>, <a href="SQLTypeGenerator.html#getRawArgs()">getRawArgs</a>, <a href="SQLTypeGenerator.html#getSQLText()">getSQLText</a>, <a href="SQLTypeGenerator.html#hasArgs()">hasArgs</a></code></div>
+<code><a href="SQLTypeGenerator.html#destroy(java.lang.String,java.lang.String,java.lang.String)">destroy</a>, <a href="SQLTypeGenerator.html#generate()">generate</a>, <a href="SQLTypeGenerator.html#getArgs()">getArgs</a>, <a href="SQLTypeGenerator.html#getPackageSpec()">getPackageSpec</a>, <a href="SQLTypeGenerator.html#getParms(boolean)">getParms</a>, <a href="SQLTypeGenerator.html#getQueryName()">getQueryName</a>, <a href="SQLTypeGenerator.html#getSQLText()">getSQLText</a>, <a href="SQLTypeGenerator.html#hasArgs()">hasArgs</a></code></div>
 <div class="inherited-list">
 <h3 id="methods.inherited.from.class.java.lang.Object">Methods inherited from class&nbsp;java.lang.Object</h3>
 <code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></div>
@@ -169,10 +170,11 @@ java.lang.Object[]&nbsp;args)</code></th>
 <h2>Constructor Details</h2>
 <ul class="member-list">
 <li>
-<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object[])">
+<section class="detail" id="&lt;init&gt;(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object[])">
 <h3>QueryTypeGenerator</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="member-name">QueryTypeGenerator</span>&#8203;(<span class="parameters">java.lang.String&nbsp;dir,
 java.lang.String&nbsp;packageSpec,
+java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;queryName,
 java.lang.String&nbsp;sqlText,
 java.lang.Object[]&nbsp;args)</span></div>
@@ -182,7 +184,10 @@ java.lang.Object[]&nbsp;args)</span></div>
 <dd><code>dir</code> - Directory into which generated class(es) will be put.</dd>
 <dd><code>packageSpec</code> - Package to which generated class(es) belong, in dotted notation.</dd>
 <dd><code>queryName</code> - Name of generated query class.</dd>
-<dd><code>sqlText</code> - SQL query text.</dd>
+<dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
 <dd><code>args</code> - Sample arguments.</dd>
 </dl>
 </section>
@@ -207,14 +212,14 @@ java.lang.Object[]&nbsp;args)</span></div>
 </section>
 </li>
 <li>
-<section class="detail" id="getQueryDef()">
-<h3>getQueryDef</h3>
-<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getQueryDef</span>()</div>
-<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="SQLTypeGenerator.html#getQueryDef()">SQLTypeGenerator</a></code></span></div>
+<section class="detail" id="getDefinitionSourceCode()">
+<h3>getDefinitionSourceCode</h3>
+<div class="member-signature"><span class="modifiers">protected</span>&nbsp;<span class="return-type">java.lang.String</span>&nbsp;<span class="member-name">getDefinitionSourceCode</span>()</div>
+<div class="block"><span class="descfrm-type-label">Description copied from class:&nbsp;<code><a href="SQLTypeGenerator.html#getDefinitionSourceCode()">SQLTypeGenerator</a></code></span></div>
 <div class="block">Obtain the Java text for this definition.</div>
 <dl class="notes">
 <dt>Specified by:</dt>
-<dd><code><a href="SQLTypeGenerator.html#getQueryDef()">getQueryDef</a></code>&nbsp;in class&nbsp;<code><a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></code></dd>
+<dd><code><a href="SQLTypeGenerator.html#getDefinitionSourceCode()">getDefinitionSourceCode</a></code>&nbsp;in class&nbsp;<code><a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></code></dd>
 <dt>Returns:</dt>
 <dd>Query text.</dd>
 </dl>
