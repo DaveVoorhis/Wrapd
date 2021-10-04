@@ -1,4 +1,4 @@
-- Get parameter definitions and comments from query/update defs into generated code.
+- Make sure named parameters can't be duplicated in a given query.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
 - Add Definer::defineAllStoredProcedureInvoke(...) to wrap all stored proc invocations.

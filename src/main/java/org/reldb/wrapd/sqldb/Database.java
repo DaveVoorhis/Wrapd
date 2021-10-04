@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * Database access layer.
  */
 public class Database {
-    private final static Msg ErrPrepArgCountMismatch = new Msg("Number of parameters ({0}}) doesn't match number of arguments ({1}) in {2}.", Database.class);
+    private final static Msg ErrPrepArgCountMismatch = new Msg("Number of parameters ({0}) not matching number of arguments ({1}) in {2}.", Database.class);
     private final static Msg ErrResultSetToStreamFail1 = new Msg("ResultSet to Stream conversion failed in newResultSetToStream.", Database.class);
     private final static Msg ErrResultSetToStreamFail2 = new Msg("ResultSet to Stream conversion failed in newResultSetToStreamForUpdate.", Database.class);
     private final static Msg ErrQueryAllFail = new Msg("Failure inside ResultSetReceiver in queryAll.", Database.class);

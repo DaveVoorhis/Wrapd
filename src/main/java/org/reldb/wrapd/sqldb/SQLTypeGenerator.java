@@ -7,12 +7,14 @@ import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.io.File;
+import java.util.Vector;
 
 /**
  * Generates Java code to represent a SQL construct.
  */
 public abstract class SQLTypeGenerator {
     private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", SQLTypeGenerator.class);
+    private static final Msg ErrMissingEndBrace = new Msg("Missing end '}' in parameter def started at position {0} in {1}", SQLTypeGenerator.class);
 
     /**
      * Delete this SQL construct type.
@@ -28,11 +30,33 @@ public abstract class SQLTypeGenerator {
         return fJava.delete();
     }
 
+    private String sqlText;
+
     private final String dir;
     private final String packageSpec;
     private final String queryName;
-    private final String sqlText;
     private final Object[] args;
+
+    private final Vector<String> parameterNames = new Vector<>();
+
+    private void processParameterNames() {
+        StringBuffer sql = new StringBuffer(sqlText);
+        for (int start = 0; start < sql.length(); start++) {
+            if (sql.charAt(start) == '?') {
+                parameterNames.add("p" + parameterNames.size());
+            } else if (sql.charAt(start) == '{') {
+                var startNamePos = start + 1;
+                var endBracePos = sql.indexOf("}", startNamePos);
+                if (endBracePos == -1)
+                    throw new IllegalArgumentException(Str.ing(ErrMissingEndBrace, start, sql));
+                var parameterName = sql.substring(startNamePos, endBracePos);
+                parameterNames.add(parameterName.trim());
+                sql.replace(start, endBracePos + 1, "?");
+                start = start + 1;
+            }
+        }
+        sqlText = sql.toString();
+    }
 
     /**
      * Create a generator of compiled update invokers.
@@ -40,7 +64,10 @@ public abstract class SQLTypeGenerator {
      * @param dir Directory into which generated class(es) will be put.
      * @param packageSpec Package to which generated class(es) belong, in dotted notation.
      * @param queryName Name of generated query class.
-     * @param sqlText SQL query text.
+     * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+     *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+     *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+     *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
     public SQLTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
@@ -53,6 +80,7 @@ public abstract class SQLTypeGenerator {
         this.args = args;
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
+        processParameterNames();
     }
 
     /**
@@ -60,7 +88,7 @@ public abstract class SQLTypeGenerator {
      *
      * @return SQL text.
      */
-    protected String getSQLText() {
+    public String getSQLText() {
         return sqlText;
     }
 
@@ -71,15 +99,6 @@ public abstract class SQLTypeGenerator {
      */
     protected String getQueryName() {
         return queryName;
-    }
-
-    /**
-     * Get raw arguments.
-     *
-     * @return Raw arguments.
-     */
-    protected Object[] getRawArgs() {
-        return args;
     }
 
     /**
@@ -113,8 +132,10 @@ public abstract class SQLTypeGenerator {
         StringBuilder out = new StringBuilder("Database db" + parmConnection);
         int parameterNumber = 0;
         if (hasArgs()) {
-            for (Object arg: args)
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" p").append(parameterNumber++);
+            for (Object arg: args) {
+                out.append(", ").append(arg.getClass().getCanonicalName()).append(" ").append(parameterNames.get(parameterNumber));
+                parameterNumber++;
+            }
         }
         return out.toString();
     }
@@ -131,7 +152,7 @@ public abstract class SQLTypeGenerator {
         for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
             if (out.length() > 0)
                 out.append(", ");
-            out.append("p").append(parameterNumber);
+            out.append(parameterNames.get(parameterNumber));
         }
         return out.toString();
     }

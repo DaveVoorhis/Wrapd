@@ -13,9 +13,9 @@ public class QueryDefinitions extends Definer {
         defineTable("$$xyz", "x = ?", 22);
         defineQueryForTable("ABCWhere", "$$abc", "SELECT * FROM $$abc WHERE a = ?", 22);
         defineQuery("ABCJoinXYZ", "SELECT * FROM $$abc, $$xyz WHERE x = a");
-        defineQuery("ABCJoinXYZWhere", "SELECT * FROM $$abc, $$xyz WHERE x = a AND x > ? AND x < ?", 2, 5);
+        defineQuery("ABCJoinXYZWhere", "SELECT * FROM $$abc, $$xyz WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
         defineUpdate("ClearABC", "DELETE FROM $$abc");
         defineUpdate("ClearXYZ", "DELETE FROM $$xyz");
-        defineUpdate("ClearABCWhere", "DELETE FROM $$abc WHERE a = ?", 3);
+        defineUpdate("ClearABCWhere", "DELETE FROM $$abc WHERE a = {aValue}", 3);
     }
 }
