@@ -54,7 +54,7 @@ public class UpdateTypeGenerator extends SQLTypeGenerator {
     }
 
     @Override
-    protected String getQueryDef() {
+    protected String getDefinitionSourceCode() {
         return
             "package " + getPackageSpec() + ";\n\n" +
             "/* WARNING: Auto-generated code. DO NOT EDIT!!! */\n\n" +

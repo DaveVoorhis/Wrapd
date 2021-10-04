@@ -141,7 +141,7 @@ public abstract class SQLTypeGenerator {
      *
      * @return Query text.
      */
-    protected abstract String getQueryDef();
+    protected abstract String getDefinitionSourceCode();
 
     /**
      * Generate this query type as a Java class definition.
@@ -149,7 +149,7 @@ public abstract class SQLTypeGenerator {
      * @return The generated Java source file.
      */
     public File generate() {
-        return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getQueryDef());
+        return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getDefinitionSourceCode());
     }
 
 }

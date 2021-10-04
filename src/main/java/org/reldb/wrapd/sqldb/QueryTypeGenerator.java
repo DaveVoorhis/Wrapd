@@ -69,7 +69,7 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
     }
 
     @Override
-    protected String getQueryDef() {
+    protected String getDefinitionSourceCode() {
         var tupleTypeName = getQueryName() + "Tuple";
         return
             "package " + getPackageSpec() + ";\n\n" +
