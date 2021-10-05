@@ -10,8 +10,8 @@ public class QueryDefinitions extends Definer {
 
     public void generate() throws Throwable {
         defineTable("$$abc");
-        defineTable("$$xyz", "x = ?", 22);
-        defineQueryForTable("ABCWhere", "$$abc", "SELECT * FROM $$abc WHERE a = ?", 22);
+        defineTable("$$xyz", "x = {xValue}", 22);
+        defineQueryForTable("ABCWhere", "$$abc", "SELECT * FROM $$abc WHERE a = {aVal}", 22);
         defineQuery("ABCJoinXYZ", "SELECT * FROM $$abc, $$xyz WHERE x = a");
         defineQuery("ABCJoinXYZWhere", "SELECT * FROM $$abc, $$xyz WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
         defineUpdate("ClearABC", "DELETE FROM $$abc");
