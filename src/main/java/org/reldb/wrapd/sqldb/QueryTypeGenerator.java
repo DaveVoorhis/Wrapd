@@ -13,6 +13,7 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
      *
      * @param dir Directory into which generated class(es) will be put.
      * @param packageSpec Package to which generated class(es) belong, in dotted notation.
+     * @param tupleClassName Name of generated query result tuple class.
      * @param queryName Name of generated query class.
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
