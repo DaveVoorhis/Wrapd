@@ -20,7 +20,7 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
-    public QueryTypeGenerator(String dir, String packageSpec, String tupleClassName, String queryName, String sqlText, Object[] args) {
+    public QueryTypeGenerator(String dir, String packageSpec, String tupleClassName, String queryName, String sqlText, Object... args) {
         super(dir, packageSpec, queryName, sqlText, args);
         this.tupleClassName = tupleClassName;
     }

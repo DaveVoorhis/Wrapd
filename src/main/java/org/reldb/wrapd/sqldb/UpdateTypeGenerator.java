@@ -17,7 +17,7 @@ public class UpdateTypeGenerator extends SQLTypeGenerator {
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
-    public UpdateTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
+    public UpdateTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object... args) {
         super(dir, packageSpec, queryName, sqlText, args);
     }
 
