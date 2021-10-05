@@ -6,6 +6,7 @@ import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
+import javax.lang.model.SourceVersion;
 import java.io.File;
 import java.util.Vector;
 
@@ -14,7 +15,14 @@ import java.util.Vector;
  */
 public abstract class SQLTypeGenerator {
     private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", SQLTypeGenerator.class);
-    private static final Msg ErrMissingEndBrace = new Msg("Missing end '}' in parameter def started at position {0} in {1}", SQLTypeGenerator.class);
+    private static final Msg ErrMissingEndBrace = new Msg("Missing end ''}'' in parameter def started at position {0} in {1}", SQLTypeGenerator.class);
+    private static final Msg ErrDuplicateParameterName = new Msg("Attempt to define duplicate parameter name {0}.", SQLTypeGenerator.class);
+    private static final Msg ErrInvalidIdentifier = new Msg("Parameter name {0} is not a valid Java identifier.", SQLTypeGenerator.class);
+    private static final Msg ErrInvalidIdentifierCharacter = new Msg("Parameter name {0} must not contain ''.''.", SQLTypeGenerator.class);
+
+    private static final char ParmChar = '?';
+    private static final char ParmNameLeftDelimiter = '{';
+    private static final char ParmNameRightDelimiter = '}';
 
     /**
      * Delete this SQL construct type.
@@ -39,19 +47,33 @@ public abstract class SQLTypeGenerator {
 
     private final Vector<String> parameterNames = new Vector<>();
 
+    private void addParameterName(String rawName) {
+        var name = rawName.trim();
+        if (name.contains("."))
+            throw new IllegalArgumentException(Str.ing(ErrInvalidIdentifierCharacter, name));
+        if (!SourceVersion.isName(name))
+            throw new IllegalArgumentException(Str.ing(ErrInvalidIdentifier, name));
+        if (parameterNames.contains(name))
+            throw new IllegalArgumentException(Str.ing(ErrDuplicateParameterName, name));
+        parameterNames.add(name);
+    }
+
+    private void addAutomaticParameterName() {
+        addParameterName("p" + parameterNames.size());
+    }
+
     private void processParameterNames() {
         StringBuffer sql = new StringBuffer(sqlText);
         for (int start = 0; start < sql.length(); start++) {
-            if (sql.charAt(start) == '?') {
-                parameterNames.add("p" + parameterNames.size());
-            } else if (sql.charAt(start) == '{') {
+            if (sql.charAt(start) == ParmChar)
+                addAutomaticParameterName();
+            else if (sql.charAt(start) == ParmNameLeftDelimiter) {
                 var startNamePos = start + 1;
-                var endBracePos = sql.indexOf("}", startNamePos);
+                var endBracePos = sql.indexOf(String.valueOf(ParmNameRightDelimiter), startNamePos);
                 if (endBracePos == -1)
                     throw new IllegalArgumentException(Str.ing(ErrMissingEndBrace, start, sql));
-                var parameterName = sql.substring(startNamePos, endBracePos);
-                parameterNames.add(parameterName.trim());
-                sql.replace(start, endBracePos + 1, "?");
+                addParameterName(sql.substring(startNamePos, endBracePos));
+                sql.replace(start, endBracePos + 1, String.valueOf(ParmChar));
                 start = start + 1;
             }
         }
@@ -70,7 +92,7 @@ public abstract class SQLTypeGenerator {
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
-    public SQLTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object[] args) {
+    public SQLTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object... args) {
         this.packageSpec = packageSpec;
         if (queryName.startsWith(packageSpec))
             queryName = queryName.substring(packageSpec.length() + 1);
@@ -78,13 +100,10 @@ public abstract class SQLTypeGenerator {
         this.queryName = queryName;
         this.sqlText = sqlText;
         this.args = args;
-        if (!Directory.chkmkdir(dir))
-            throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        processParameterNames();
     }
 
     /**
-     * Get SQL text.
+     * Get SQL text. May be modified by generate().
      *
      * @return SQL text.
      */
@@ -170,6 +189,9 @@ public abstract class SQLTypeGenerator {
      * @return The generated Java source file.
      */
     public File generate() {
+        if (!Directory.chkmkdir(dir))
+            throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
+        processParameterNames();
         return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getDefinitionSourceCode());
     }
 
