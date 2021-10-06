@@ -1,3 +1,4 @@
+- Provide valueOf(...) and valueOf(...) methods with Query parameters.
 - Add Definer for valueOf queries.
 - Provide unified API for all definitions in a Definer as a single file.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
