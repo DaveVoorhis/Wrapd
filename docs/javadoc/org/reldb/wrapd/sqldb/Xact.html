@@ -15,7 +15,7 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
+<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "alt-color";
 var rowColor = "row-color";
@@ -330,20 +330,32 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i23">
-<td class="col-first"><code>java.lang.Object</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(java.lang.String,java.lang.String,java.lang.Object...)">valueOf</a></span>&#8203;(java.lang.String&nbsp;query,
-java.lang.String&nbsp;columnName,
+<td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(java.lang.String,java.lang.Object...)">valueOf</a></span>&#8203;(java.lang.String&nbsp;query,
 java.lang.Object...&nbsp;parms)</code></th>
 <td class="col-last">
-<div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name.</div>
+<div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </td>
 </tr>
 <tr class="alt-color" id="i24">
-<td class="col-first"><code>java.lang.Object</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(java.lang.String,java.lang.String)">valueOfAll</a></span>&#8203;(java.lang.String&nbsp;query,
-java.lang.String&nbsp;columnName)</code></th>
+<td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
 <td class="col-last">
-<div class="block">Issue a SELECT query and obtain a value for the first row in a specified column name.</div>
+<div class="block">Issue a parametric Query with '?' substitutions and obtain a value for the first row in the first column.</div>
+</td>
+</tr>
+<tr class="row-color" id="i25">
+<td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(java.lang.String)">valueOfAll</a></span>&#8203;(java.lang.String&nbsp;query)</code></th>
+<td class="col-last">
+<div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
+</td>
+</tr>
+<tr class="alt-color" id="i26">
+<td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
+<td class="col-last">
+<div class="block">Issue a Query and obtain a value for the first row in the first column.</div>
 </td>
 </tr>
 </tbody>
@@ -403,38 +415,74 @@ java.lang.String&nbsp;columnName)</code></th>
 </section>
 </li>
 <li>
-<section class="detail" id="valueOfAll(java.lang.String,java.lang.String)">
+<section class="detail" id="valueOfAll(java.lang.String)">
 <h3>valueOfAll</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.lang.Object</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters">java.lang.String&nbsp;query,
-java.lang.String&nbsp;columnName)</span>
-                            throws <span class="exceptions">java.sql.SQLException</span></div>
-<div class="block">Issue a SELECT query and obtain a value for the first row in a specified column name. Intended to obtain a single value.</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters">java.lang.String&nbsp;query)</span>
+                                 throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="block">Issue a SELECT query and obtain a value for the first row in the first column.
+ Intended to obtain a single value.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>query</code> - SELECT query.</dd>
-<dd><code>columnName</code> - Column name from which to retrieve first row's value.</dd>
+<dd><code>query</code> - SELECT query that returns a single column,
+              or multiple columns but only the first is used to obtain the value.</dd>
 <dt>Returns:</dt>
-<dd>Value of first row in columnName.</dd>
+<dd>Value of first column of first row in result.</dd>
 <dt>Throws:</dt>
 <dd><code>java.sql.SQLException</code> - Error.</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="valueOf(java.lang.String,java.lang.String,java.lang.Object...)">
-<h3>valueOf</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.lang.Object</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters">java.lang.String&nbsp;query,
-java.lang.String&nbsp;columnName,
-java.lang.Object...&nbsp;parms)</span>
-                         throws <span class="exceptions">java.sql.SQLException</span></div>
-<div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name. Intended to obtain a single value.</div>
+<section class="detail" id="valueOfAll(org.reldb.wrapd.sqldb.Query)">
+<h3>valueOfAll</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+                                 throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="block">Issue a Query and obtain a value for the first row in the first column.
+ Intended to obtain a single value.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>query</code> - SELECT query.</dd>
-<dd><code>columnName</code> - Column name from which to retrieve first row's value.</dd>
+<dd><code>query</code> - Query that returns a single column,
+              or multiple columns but only the first is used to obtain the value.</dd>
+<dt>Returns:</dt>
+<dd>Value of first column of first row in result.</dd>
+<dt>Throws:</dt>
+<dd><code>java.sql.SQLException</code> - Error.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="valueOf(java.lang.String,java.lang.Object...)">
+<h3>valueOf</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters">java.lang.String&nbsp;query,
+java.lang.Object...&nbsp;parms)</span>
+                              throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
+ Intended to obtain a single value.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>query</code> - SELECT query that returns a single column,
+              or multiple columns but only the first is used to obtain the value.</dd>
 <dd><code>parms</code> - Parameter arguments.</dd>
 <dt>Returns:</dt>
-<dd>Value of first row in columnName.</dd>
+<dd>Value of first column of first row in result.</dd>
+<dt>Throws:</dt>
+<dd><code>java.sql.SQLException</code> - Error.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="valueOf(org.reldb.wrapd.sqldb.Query)">
+<h3>valueOf</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+                              throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="block">Issue a parametric Query with '?' substitutions and obtain a value for the first row in the first column.
+ Intended to obtain a single value.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>query</code> - Query that returns a single column,
+              or multiple columns but only the first is used to obtain the value.</dd>
+<dt>Returns:</dt>
+<dd>Value of first column of first row in result.</dd>
 <dt>Throws:</dt>
 <dd><code>java.sql.SQLException</code> - Error.</dd>
 </dl>
