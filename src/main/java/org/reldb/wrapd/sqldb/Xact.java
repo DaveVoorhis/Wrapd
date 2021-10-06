@@ -9,6 +9,7 @@ import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -53,7 +54,20 @@ public class Xact {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Object valueOfAll(String query) throws SQLException {
+    public Optional<?> valueOfAll(String query) throws SQLException {
+        return database.valueOfAll(connection, query);
+    }
+
+    /**
+     * Issue a Query and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOfAll(Query query) throws SQLException {
         return database.valueOfAll(connection, query);
     }
 
@@ -67,8 +81,21 @@ public class Xact {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Object valueOf(String query, Object... parms) throws SQLException {
+    public Optional<?> valueOf(String query, Object... parms) throws SQLException {
         return database.valueOf(connection, query, parms);
+    }
+
+    /**
+     * Issue a parametric Query with '?' substitutions and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOf(Query query) throws SQLException {
+        return database.valueOf(connection, query);
     }
 
     /**

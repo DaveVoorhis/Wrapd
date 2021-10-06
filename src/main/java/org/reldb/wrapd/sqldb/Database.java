@@ -218,6 +218,41 @@ public class Database {
     }
 
     /**
+     * Issue a SELECT query and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
+     * @param connection Database connection.
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOfAll(Connection connection, Query query) throws SQLException {
+        return queryAll(connection, query.getQueryText(), resultSet -> {
+            try {
+                if (resultSet.next())
+                    return new Response<>(Optional.ofNullable(resultSet.getObject(1)));
+                return new Response<>(Optional.empty());
+            } catch (SQLException sqe) {
+                return new Response<>(sqe);
+            }
+        });
+    }
+
+    /**
+     * Issue a SELECT query and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOfAll(Query query) throws SQLException {
+        return useConnection(conn -> valueOfAll(conn, query));
+    }
+
+    /**
      * Represents an SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
      */
     private static class Null {
@@ -377,6 +412,20 @@ public class Database {
      * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
      * Intended to obtain a single value.
      *
+     * @param connection Database connection.
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOf(Connection connection, Query query) throws SQLException {
+        return valueOf(connection, query.getQueryText(), query.getArguments());
+    }
+
+    /**
+     * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
      * @param query SELECT query that returns a single column,
      *              or multiple columns but only the first is used to obtain the value.
      * @param parms Parameter arguments.
@@ -385,6 +434,19 @@ public class Database {
      */
     public Optional<?> valueOf(String query, Object... parms) throws SQLException {
         return useConnection(conn -> valueOf(conn, query, parms));
+    }
+
+    /**
+     * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
+     *
+     * @param query Query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
+     * @throws SQLException Error.
+     */
+    public Optional<?> valueOf(Query query) throws SQLException {
+        return useConnection(conn -> valueOf(conn, query.getQueryText(), query.getArguments()));
     }
 
     /**
