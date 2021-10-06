@@ -120,4 +120,8 @@ public class Definer {
         defineTable(tableName, null, (Object[])null);
     }
 
+    /** Define a Query for future use that returns the first column of the first row. */
+    public void defineValueOf(String query, Object... args) throws Throwable {
+        // TODO - implement this.
+    }
 }
