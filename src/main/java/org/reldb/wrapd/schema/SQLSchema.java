@@ -95,7 +95,7 @@ public abstract class SQLSchema extends AbstractSchema {
     public Version getVersion() {
         Optional<?> versionRaw;
         try {
-            versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName(), getVersionTableAttributeName());
+            versionRaw = database.valueOfAll("SELECT " + getVersionTableAttributeName() + " FROM " + getVersionTableName());
         } catch (SQLException sqe) {
             // TODO improve!
             // This (rather questionably) assumes that if attempting to get the version fails with a SQLException,

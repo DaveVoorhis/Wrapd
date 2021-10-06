@@ -45,28 +45,30 @@ public class Xact {
     }
 
     /**
-     * Issue a SELECT query and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+     * Issue a SELECT query and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
      *
-     * @param query SELECT query.
-     * @param columnName Column name from which to retrieve first row's value.
-     * @return Value of first row in columnName.
+     * @param query SELECT query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Object valueOfAll(String query, String columnName) throws SQLException {
-        return database.valueOfAll(connection, query, columnName);
+    public Object valueOfAll(String query) throws SQLException {
+        return database.valueOfAll(connection, query);
     }
 
     /**
-     * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in a specified column name. Intended to obtain a single value.
+     * Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
+     * Intended to obtain a single value.
      *
-     * @param query SELECT query.
-     * @param columnName Column name from which to retrieve first row's value.
+     * @param query SELECT query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
      * @param parms Parameter arguments.
-     * @return Value of first row in columnName.
+     * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Object valueOf(String query, String columnName, Object... parms) throws SQLException {
-        return database.valueOf(connection, query, columnName, parms);
+    public Object valueOf(String query, Object... parms) throws SQLException {
+        return database.valueOf(connection, query, parms);
     }
 
     /**
