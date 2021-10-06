@@ -1,5 +1,7 @@
 package org.reldb.wrapd.sqldb;
 
+import java.sql.SQLException;
+
 /**
  * Mechanism for defining Query and Update classes.
  */
@@ -123,5 +125,12 @@ public class Definer {
     /** Define a Query for future use that returns the first column of the first row. */
     public void defineValueOf(String query, Object... args) throws Throwable {
         // TODO - implement this.
+        var result = (args == null || args.length == 0)
+                ? database.valueOfAll(query)
+                : database.valueOf(query, args);
+        if (result.isEmpty())
+            throw new SQLException("Invalid query for valueOf");
+        var resultType = result.get().getClass();
+
     }
 }

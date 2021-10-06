@@ -228,15 +228,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public Optional<?> valueOfAll(Connection connection, Query query) throws SQLException {
-        return queryAll(connection, query.getQueryText(), resultSet -> {
-            try {
-                if (resultSet.next())
-                    return new Response<>(Optional.ofNullable(resultSet.getObject(1)));
-                return new Response<>(Optional.empty());
-            } catch (SQLException sqe) {
-                return new Response<>(sqe);
-            }
-        });
+        return valueOfAll(connection, query.getQueryText());
     }
 
     /**
