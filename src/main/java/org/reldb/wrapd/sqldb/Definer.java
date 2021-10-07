@@ -1,7 +1,5 @@
 package org.reldb.wrapd.sqldb;
 
-import java.sql.SQLException;
-
 /**
  * Mechanism for defining Query and Update classes.
  */

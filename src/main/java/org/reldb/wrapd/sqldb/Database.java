@@ -1014,7 +1014,9 @@ public class Database {
         /**
          * Encapsulate a transaction.
          *
-         * @param transactionRunner A lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
+         * @param transactionRunner A lambda defining code to run within a transaction.
+         *                          If it throws an error or returns an error Response, the transaction is rolled back.
+         *                          If it does not throw an error or return an error Response, the transaction is committed.
          * @throws SQLException Error getting connection.
          */
         public Transaction(TransactionRunner<T> transactionRunner) throws SQLException {
@@ -1024,7 +1026,7 @@ public class Database {
                     result = transactionRunner.run(connection);
                 } catch (Throwable t) {
                     connection.rollback();
-                    result = new Response<T>(t);
+                    result = new Response<>(t);
                     return;
                 }
                 if (result.isValid())

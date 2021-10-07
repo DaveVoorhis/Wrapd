@@ -5,12 +5,12 @@ import org.reldb.wrapd.response.Response;
 /**
  * Interface to define lamdbas that return a Result and require a ResultAction parameter.
  */
-public interface UpdateTransaction {
+public interface UpdateTransaction<T> {
     /**
      * Perform an Update transaction.
      *
      * @param action ResultAction.
      * @return Result of running ResultAction.
      */
-    Response run(ResultAction action);
+    Response<T> run(ResultAction<T> action);
 }
