@@ -9,7 +9,7 @@ import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.FatalException;
-import org.reldb.wrapd.response.Result;
+import org.reldb.wrapd.response.Response;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -78,7 +78,7 @@ public class QueriesHelper {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$xyz (x INTEGER, y INTEGER, z VARCHAR(20), PRIMARY KEY (x));");
 			xact.updateAll("CREATE TABLE $$abc (a INTEGER, b INTEGER, c VARCHAR(40), PRIMARY KEY (a));");
-			return Result.OK;
+			return new Response(Boolean.TRUE);
 		});
 	}
 

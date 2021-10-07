@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.reldb.toolbox.progress.ConsoleProgressIndicator;
-import org.reldb.wrapd.response.Result;
+import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
 import org.reldb.wrapd.schema.VersionNumber;
@@ -46,7 +46,7 @@ public class TestSQLSchema {
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertTrue(result.isOk());
+		assertTrue(result.isValid());
 	}
 
 	@ParameterizedTest
@@ -62,18 +62,18 @@ public class TestSQLSchema {
 				return new AbstractSchema.Update[] {
 					schema -> {
 						database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-						return Result.OK;
+						return new Response(Boolean.TRUE);
 					},
 					schema -> {
 						database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
-						return Result.OK;
+						return new Response(Boolean.TRUE);
 					}
 				};
 			}
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertTrue(result.isOk());
+		assertTrue(result.isValid());
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
@@ -90,12 +90,12 @@ public class TestSQLSchema {
 				return new AbstractSchema.Update[] {
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return Result.OK;
+							return new Response(Boolean.TRUE);
 						},
 						// intentional fail
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, deliberateNonsense");
-							return Result.OK;
+							return new Response(Boolean.TRUE);
 						}
 				};
 			}
@@ -122,7 +122,7 @@ public class TestSQLSchema {
 						// version 1
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return Result.OK;
+							return new Response(Boolean.TRUE);
 						}
 				};
 			}
@@ -133,23 +133,23 @@ public class TestSQLSchema {
 						// version 1
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return Result.OK;
+							return new Response(Boolean.TRUE);
 						},
 						// migration to version 2
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
-							return Result.OK;
+							return new Response(Boolean.TRUE);
 						}
 				};
 			}
 		};
 		var result1 = testSchema01.setup(new ConsoleProgressIndicator());
 		result1.printIfError();
-		assertTrue(result1.isOk());
+		assertTrue(result1.isValid());
 		assertEquals(1, ((VersionNumber)testSchema01.getVersion()).value);
 		var result2 = testSchema02.setup(new ConsoleProgressIndicator());
 		result2.printIfError();
-		assertTrue(result1.isOk());
+		assertTrue(result1.isValid());
 		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
 	}
 

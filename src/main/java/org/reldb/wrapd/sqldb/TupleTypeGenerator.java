@@ -22,21 +22,33 @@ public class TupleTypeGenerator {
     private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", TupleTypeGenerator.class);
     private static final Msg ErrAttemptToAddDuplicateAttributeName = new Msg("Attempt to add duplicate attribute {0} of type {1} to {2}.", TupleTypeGenerator.class);
 
-    private static class Attribute {
-        final String name;
-        final Class<?> type;
-        Attribute(String name, Class<?> type) {
-            this.name = name;
-            this.type = type;
-        }
-    }
-
     private final String dir;
     private final String tupleName;
     private final String tupleTypePackage;
     private final List<Attribute> attributes = new LinkedList<>();
 
     private String tableName = null;
+
+    /**
+     * Result of generate().
+     */
+    public static class GenerateResult {
+        /** Attributes in generated Tuple. */
+        public final List<Attribute> attributes;
+
+        /** Generated source file. */
+        public final File generatedFile;
+
+        /** Constructor.
+         *
+         * @param attributes Attributes in generated Tuple.
+         * @param generatedFile Generated source file.
+         */
+        public GenerateResult(List<Attribute> attributes, File generatedFile) {
+            this.attributes = attributes;
+            this.generatedFile = generatedFile;
+        }
+    }
 
     /**
      * Given a Class used as a tuple type, return a stream of fields suitable for data. Exclude static fields, metadata, etc.
@@ -227,9 +239,9 @@ public class TupleTypeGenerator {
     /**
      * Generate this tuple type as a Java class definition.
      *
-     * @return The generated Java source file.
+     * @return The result of the generate() process.
      */
-    public File generate() {
+    public GenerateResult generate() {
         var attributeDefs =
                 attributes
                         .stream()
@@ -250,7 +262,8 @@ public class TupleTypeGenerator {
                     getToStringCode() +
                 "}";
         var generator = new JavaGenerator(dir);
-        return generator.generateJavaCode(tupleName, tupleTypePackage, tupleDef);
+        var file = generator.generateJavaCode(tupleName, tupleTypePackage, tupleDef);
+        return new GenerateResult(attributes, file);
     }
 
     /**

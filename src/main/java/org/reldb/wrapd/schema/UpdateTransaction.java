@@ -1,6 +1,6 @@
 package org.reldb.wrapd.schema;
 
-import org.reldb.wrapd.response.Result;
+import org.reldb.wrapd.response.Response;
 
 /**
  * Interface to define lamdbas that return a Result and require a ResultAction parameter.
@@ -12,5 +12,5 @@ public interface UpdateTransaction {
      * @param action ResultAction.
      * @return Result of running ResultAction.
      */
-    Result run(ResultAction action);
+    Response run(ResultAction action);
 }

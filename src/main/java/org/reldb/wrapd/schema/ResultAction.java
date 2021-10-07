@@ -1,6 +1,6 @@
 package org.reldb.wrapd.schema;
 
-import org.reldb.wrapd.response.Result;
+import org.reldb.wrapd.response.Response;
 
 /**
  * For defining lambdas that return a Result.
@@ -11,5 +11,5 @@ public interface ResultAction {
      *
      * @return A Result.
      */
-    Result run();
+    Response run();
 }

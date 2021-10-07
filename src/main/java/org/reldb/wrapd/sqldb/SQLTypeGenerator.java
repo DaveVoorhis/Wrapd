@@ -194,5 +194,4 @@ public abstract class SQLTypeGenerator {
         processParameterNames();
         return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getDefinitionSourceCode());
     }
-
 }

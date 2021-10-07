@@ -30,10 +30,10 @@ public class TestTupleTypeGenerator {
 		generator.addAttribute("Col2", Integer.class);
 		generator.addAttribute("Col3", Boolean.class);
 		generator.addAttribute("Col4", Double.class);
-		var sourcef = generator.generate();
+		var generateResult = generator.generate();
 		var compiler = new JavaCompiler(codeDir);
 		var classpath = compiler.getDefaultClassPath();
-		var compilation = compiler.compileJavaCode(classpath, sourcef);
+		var compilation = compiler.compileJavaCode(classpath, generateResult.generatedFile);
 
 		System.out.println("[TEST] === Compilation " + ((compilation.compiled) ? "succeeded" : "failed") + " ===");
 		System.out.println("[TEST] " + compilation.compilerMessages);

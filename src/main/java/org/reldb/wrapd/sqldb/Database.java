@@ -5,7 +5,6 @@ import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
-import org.reldb.wrapd.response.Result;
 
 import javax.sql.DataSource;
 import java.sql.Date;
@@ -227,7 +226,7 @@ public class Database {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOfAll(Connection connection, Query query) throws SQLException {
+    public Optional<?> valueOfAll(Connection connection, Query<? extends Tuple> query) throws SQLException {
         return valueOfAll(connection, query.getQueryText());
     }
 
@@ -240,7 +239,7 @@ public class Database {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOfAll(Query query) throws SQLException {
+    public Optional<?> valueOfAll(Query<? extends Tuple> query) throws SQLException {
         return useConnection(conn -> valueOfAll(conn, query));
     }
 
@@ -410,7 +409,7 @@ public class Database {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOf(Connection connection, Query query) throws SQLException {
+    public Optional<?> valueOf(Connection connection, Query<? extends Tuple> query) throws SQLException {
         return valueOf(connection, query.getQueryText(), query.getArguments());
     }
 
@@ -437,7 +436,7 @@ public class Database {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOf(Query query) throws SQLException {
+    public Optional<?> valueOf(Query<? extends Tuple> query) throws SQLException {
         return useConnection(conn -> valueOf(conn, query.getQueryText(), query.getArguments()));
     }
 
@@ -450,14 +449,13 @@ public class Database {
      * @param customisations Customisations for specific DBMS types.
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
+    public static ResultSetReceiver<TupleTypeGenerator.GenerateResult> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             try {
-                ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations);
+                return new Response<>(ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations));
             } catch (Throwable e) {
-                return new Response<>(Result.ERROR(e));
+                return new Response<>(e);
             }
-            return new Response<>(Result.OK);
         };
     }
 
@@ -471,14 +469,13 @@ public class Database {
      * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
      * @return - lambda which will generate the class given a ResultSet.
      */
-    public static ResultSetReceiver<Result> newResultSetGeneratesTupleClassForUpdate(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations, String tableName) {
+    public static ResultSetReceiver<TupleTypeGenerator.GenerateResult> newResultSetGeneratesTupleClassForUpdate(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations, String tableName) {
         return resultSet -> {
             try {
-                ResultSetToTuple.createTupleForUpdate(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName);
+                return new Response<>(ResultSetToTuple.createTupleForUpdate(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName));
             } catch (Throwable e) {
-                return new Response<>(Result.ERROR(e));
+                return new Response<>(e);
             }
-            return new Response<>(Result.OK);
         };
     }
 
@@ -493,7 +490,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryAll(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
         var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return queryAll(connection, query, resultSetReceiver);
     }
@@ -510,7 +507,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAllForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryAllForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
         var resultSetReceiver = newResultSetGeneratesTupleClassForUpdate(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return queryAll(connection, query, resultSetReceiver);
     }
@@ -525,8 +522,8 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query))).getResult();
+    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query)))).getResult();
     }
 
     /**
@@ -540,8 +537,8 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query))).getResult();
+    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query)))).getResult();
     }
 
     /**
@@ -556,7 +553,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQuery(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
         var resultSetReceiver = newResultSetGeneratesTupleClass(codeDirectory, packageSpec, tupleClassName, customisations);
         return query(connection, query, resultSetReceiver, parms);
     }
@@ -574,7 +571,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object[] parms) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryForUpdate(Connection connection, String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object[] parms) throws SQLException {
         var resultSetReceiver = newResultSetGeneratesTupleClassForUpdate(codeDirectory, packageSpec, tupleClassName, customisations, tableName);
         return query(connection, query, resultSetReceiver, parms);
     }
@@ -590,8 +587,8 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms))).getResult();
+    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+        return (new Transaction<>(connection -> new Response<>(createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms)))).getResult();
     }
 
     /**
@@ -606,8 +603,8 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
-        return (new Transaction(connection -> createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms))).getResult();
+    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms)))).getResult();
     }
 
     /**
@@ -996,7 +993,7 @@ public class Database {
      * Used to define lambda expressions for transactional processing.
      */
     @FunctionalInterface
-    public interface TransactionRunner {
+    public interface TransactionRunner<T> {
         /**
          * Run an operation in a Transaction.
          *
@@ -1004,15 +1001,15 @@ public class Database {
          * @return Result of operation.
          * @throws SQLException thrown if operation fails.
          */
-        Result run(Connection connection) throws SQLException;
+        Response<T> run(Connection connection) throws SQLException;
     }
 
     /**
      * Encapsulates a transaction.
      */
-    public class Transaction {
+    public class Transaction<T> {
 
-        private Result result;
+        private Response<T> result;
 
         /**
          * Encapsulate a transaction.
@@ -1020,17 +1017,17 @@ public class Database {
          * @param transactionRunner A lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.
          * @throws SQLException Error getting connection.
          */
-        public Transaction(TransactionRunner transactionRunner) throws SQLException {
+        public Transaction(TransactionRunner<T> transactionRunner) throws SQLException {
             try (var connection = dataSource.getConnection()) {
                 connection.setAutoCommit(false);
                 try {
                     result = transactionRunner.run(connection);
                 } catch (Throwable t) {
                     connection.rollback();
-                    result = Result.ERROR(t);
+                    result = new Response<T>(t);
                     return;
                 }
-                if (result.isOk())
+                if (result.isValid())
                     connection.commit();
                 else
                     connection.rollback();
@@ -1042,7 +1039,7 @@ public class Database {
          *
          * @return Result of transaction execution.
          */
-        public Result getResult() {
+        public Response<T> getResult() {
             return result;
         }
     }
@@ -1054,8 +1051,8 @@ public class Database {
      * @return The transaction execution result.
      * @throws SQLException Error.
      */
-    public Result processTransaction(TransactionRunner transactionRunner) throws SQLException {
-        var transaction = new Transaction(transactionRunner);
+    public <T> Response<T> processTransaction(TransactionRunner<T> transactionRunner) throws SQLException {
+        var transaction = new Transaction<>(transactionRunner);
         return transaction.getResult();
     }
 
@@ -1066,7 +1063,7 @@ public class Database {
      * @return Result.
      * @throws SQLException Error.
      */
-    public Result useTransaction(TransactionRunner transactionRunner) throws SQLException {
+    public <T> Response<T> useTransaction(TransactionRunner<T> transactionRunner) throws SQLException {
         return processTransaction(transactionRunner);
     }
 
@@ -1074,7 +1071,7 @@ public class Database {
      * Used to define lambda expressions for more ergonomic transaction processing.
      */
     @FunctionalInterface
-    public interface XactGo {
+    public interface XactGo<T> {
         /**
          * Run the transaction
          *
@@ -1082,7 +1079,7 @@ public class Database {
          * @return Result of transaction.
          * @throws SQLException thrown if operation fails.
          */
-        Result go(Xact tcw) throws SQLException;
+        Response<T> go(Xact tcw) throws SQLException;
     }
 
     /**
@@ -1092,7 +1089,7 @@ public class Database {
      * @return Result.
      * @throws SQLException Error.
      */
-    public Result transact(XactGo transactionRunner) throws SQLException {
+    public <T> Response<T> transact(XactGo<T> transactionRunner) throws SQLException {
         return useTransaction(conn -> transactionRunner.go(new Xact(Database.this, conn)));
     }
 

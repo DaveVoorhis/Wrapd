@@ -35,11 +35,12 @@ public class ResultSetToTuple {
      * @param results ResultSet to be used to create the new UpdatableTuple class.
      * @param customisations Customisations for specific DBMS types.
      * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
+     * @return Result of Tuple generation.
      * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
      * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException thrown if an argument is null
      */
-    public static void createTupleForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
+    public static TupleTypeGenerator.GenerateResult createTupleForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
         if (codeDir == null)
             throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
         if (packageSpec == null)
@@ -60,7 +61,7 @@ public class ResultSetToTuple {
             var type = Class.forName(columnClassName);
             generator.addAttribute(name, type);
         }
-        generator.generate();
+        return generator.generate();
     }
 
     /**
@@ -72,12 +73,13 @@ public class ResultSetToTuple {
      * @param tupleName Name of new Tuple class.
      * @param results ResultSet to be used to create the new Tuple class.
      * @param customisations Customisations for specific DBMS types.
+     * @return Result of Tuple generation.
      * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
      * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
      * @throws IllegalArgumentException thrown if an argument is null
      */
-    public static void createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
-        createTupleForUpdate(codeDir, packageSpec, tupleName, results, customisations, null);
+    public static TupleTypeGenerator.GenerateResult createTuple(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations) throws SQLException, ClassNotFoundException {
+        return createTupleForUpdate(codeDir, packageSpec, tupleName, results, customisations, null);
     }
 
     /**

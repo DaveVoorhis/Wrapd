@@ -35,9 +35,10 @@ public class Definer {
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @return Result of tuple generation.
      * @throws Throwable Error.
      */
-    public void defineQueryForTable(String queryName, String tableName, String sqlText, Object... args) throws Throwable {
+    public TupleTypeGenerator.GenerateResult defineQueryForTable(String queryName, String tableName, String sqlText, Object... args) throws Throwable {
         var tupleClassName = queryName + "Tuple";
         var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, tupleClassName, queryName, sqlText, args);
         queryGenerator.setTableName(tableName);
@@ -49,6 +50,7 @@ public class Definer {
         if (tupleClassCreated.isError())
             //noinspection ConstantConditions
             throw tupleClassCreated.error;
+        return tupleClassCreated.value;
     }
 
     /**
@@ -60,10 +62,11 @@ public class Definer {
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @return Result of tuple generation.
      * @throws Throwable Error.
      */
-    public void defineQuery(String queryName, String sqlText, Object... args) throws Throwable {
-        defineQueryForTable(queryName, null, sqlText, args);
+    public TupleTypeGenerator.GenerateResult defineQuery(String queryName, String sqlText, Object... args) throws Throwable {
+        return defineQueryForTable(queryName, null, sqlText, args);
     }
 
     /**
@@ -99,16 +102,17 @@ public class Definer {
      *                    is a unique number in the given definition. Use getSQLText() after generate() to obtain final
      *                    SQL text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @return Result of tuple generation.
      * @throws Throwable Error.
      */
-    public void defineTable(String tableName, String whereClause, Object... args) throws Throwable {
+    public TupleTypeGenerator.GenerateResult defineTable(String tableName, String whereClause, Object... args) throws Throwable {
         var queryName = tableName.replaceAll("\\$\\$", "");
         var realTableName = database.replaceTableNames(tableName);
         var query = "SELECT * FROM " + realTableName +
                 (whereClause != null && !whereClause.isEmpty()
                         ? " WHERE " + whereClause
                         : "");
-        defineQueryForTable(queryName, realTableName, query, args);
+        return defineQueryForTable(queryName, realTableName, query, args);
     }
 
     /**
@@ -116,21 +120,19 @@ public class Definer {
      * for the specified table. The Query is SELECT * FROM tableName.
      *
      * @param tableName Name of the table, optionally including $$.
+     * @return Result of tuple generation.
      * @throws Throwable Error.
      */
-    public void defineTable(String tableName) throws Throwable {
-        defineTable(tableName, null, (Object[])null);
+    public TupleTypeGenerator.GenerateResult defineTable(String tableName) throws Throwable {
+        return defineTable(tableName, null, (Object[])null);
     }
 
     /** Define a Query for future use that returns the first column of the first row. */
-    public void defineValueOf(String query, Object... args) throws Throwable {
-        // TODO - implement this.
-        var result = (args == null || args.length == 0)
-                ? database.valueOfAll(query)
-                : database.valueOf(query, args);
-        if (result.isEmpty())
-            throw new SQLException("Invalid query for valueOf");
-        var resultType = result.get().getClass();
-
+    public void defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
+        var result = defineQuery(queryName, sqlText, args);
+        if (result.attributes.isEmpty())
+            System.out.println(">>>>> query " + sqlText + " result has no columns.");
+        else
+            System.out.println(">>>>> query " + sqlText + " type of first column is " + result.attributes.get(0).type);
     }
 }

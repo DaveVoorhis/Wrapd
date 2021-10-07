@@ -2,7 +2,6 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.types.Pair;
 import org.reldb.wrapd.response.Response;
-import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database.PreparedStatementUser;
 import org.reldb.wrapd.sqldb.Database.ResultSetReceiver;
 
@@ -67,7 +66,7 @@ public class Xact {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOfAll(Query query) throws SQLException {
+    public Optional<?> valueOfAll(Query<? extends Tuple> query) throws SQLException {
         return database.valueOfAll(connection, query);
     }
 
@@ -94,7 +93,7 @@ public class Xact {
      * @return Value of first column of first row in result.
      * @throws SQLException Error.
      */
-    public Optional<?> valueOf(Query query) throws SQLException {
+    public Optional<?> valueOf(Query<? extends Tuple> query) throws SQLException {
         return database.valueOf(connection, query);
     }
 
@@ -298,7 +297,7 @@ public class Xact {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
         return database.createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms);
     }
 
@@ -312,7 +311,7 @@ public class Xact {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
         return database.createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query);
     }
 
@@ -328,7 +327,7 @@ public class Xact {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
         return database.createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms);
     }
 
@@ -343,7 +342,7 @@ public class Xact {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public Result createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+    public TupleTypeGenerator.GenerateResult createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
         return database.createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query);
     }
 
