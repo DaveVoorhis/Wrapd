@@ -2,7 +2,7 @@ package org.reldb.wrapd.schema;
 
 import org.junit.jupiter.api.Test;
 import org.reldb.toolbox.progress.ConsoleProgressIndicator;
-import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -18,12 +18,12 @@ public class TestAbstractSchema {
             }
 
             @Override
-            protected Response setVersion(VersionNumber number) {
+            protected Result setVersion(VersionNumber number) {
                 return null;
             }
 
             @Override
-            protected Response create() {
+            protected Result create() {
                 return null;
             }
 
@@ -47,14 +47,14 @@ public class TestAbstractSchema {
             }
 
             @Override
-            protected Response setVersion(VersionNumber number) {
+            protected Result setVersion(VersionNumber number) {
                 version = number;
-                return new Response(Boolean.TRUE);
+                return Result.OK;
             }
 
             @Override
-            protected Response create() {
-                return new Response(Boolean.TRUE);
+            protected Result create() {
+                return Result.OK;
             }
 
             @Override
@@ -63,7 +63,7 @@ public class TestAbstractSchema {
             }
         };
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaNewDatabase: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(0, ((VersionNumber)schema.getVersion()).value);
     }
 
@@ -78,14 +78,14 @@ public class TestAbstractSchema {
             }
 
             @Override
-            protected Response setVersion(VersionNumber number) {
+            protected Result setVersion(VersionNumber number) {
                 version = number;
-                return new Response(Boolean.TRUE);
+                return Result.OK;
             }
 
             @Override
-            protected Response create() {
-                return new Response(Boolean.TRUE);
+            protected Result create() {
+                return Result.OK;
             }
 
             int updateCounter = 0;
@@ -100,16 +100,16 @@ public class TestAbstractSchema {
                         // v1
                         new Update() {
                             @Override
-                            public Response apply(AbstractSchema schema) {
+                            public Result apply(AbstractSchema schema) {
                                 updateCounter = updateCounter + 1;
-                                return new Response(Boolean.TRUE);
+                                return Result.OK;
                             }
                         },
                 };
             }
         };
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaNewDatabaseAnd1Update: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(1, schema.getUpdateCounter());
         assertEquals(1, ((VersionNumber)schema.getVersion()).value);
     }
@@ -128,14 +128,14 @@ public class TestAbstractSchema {
         }
 
         @Override
-        protected Response setVersion(VersionNumber number) {
+        protected Result setVersion(VersionNumber number) {
             version = number;
-            return new Response(Boolean.TRUE);
+            return Result.OK;
         }
 
         @Override
-        protected Response create() {
-            return new Response(Boolean.TRUE);
+        protected Result create() {
+            return Result.OK;
         }
 
         public int getUpdateCounter() {
@@ -143,38 +143,38 @@ public class TestAbstractSchema {
         }
 
         @Override
-        protected AbstractSchema.Update[] getUpdates() {
-            return new AbstractSchema.Update[] {
+        protected Update[] getUpdates() {
+            return new Update[] {
                     // v1
-                    new AbstractSchema.Update() {
+                    new Update() {
                         @Override
-                        public Response apply(AbstractSchema schema) {
+                        public Result apply(AbstractSchema schema) {
                             updateCounter = updateCounter + 1;
-                            return new Response(Boolean.TRUE);
+                            return Result.OK;
                         }
                     },
                     // v2
-                    new AbstractSchema.Update() {
+                    new Update() {
                         @Override
-                        public Response apply(AbstractSchema schema) {
+                        public Result apply(AbstractSchema schema) {
                             updateCounter = updateCounter + 10;
-                            return new Response(Boolean.TRUE);
+                            return Result.OK;
                         }
                     },
                     // v3
-                    new AbstractSchema.Update() {
+                    new Update() {
                         @Override
-                        public Response apply(AbstractSchema schema) {
+                        public Result apply(AbstractSchema schema) {
                             updateCounter = updateCounter + 100;
-                            return new Response(Boolean.TRUE);
+                            return Result.OK;
                         }
                     },
                     // v4
-                    new AbstractSchema.Update() {
+                    new Update() {
                         @Override
-                        public Response apply(AbstractSchema schema) {
+                        public Result apply(AbstractSchema schema) {
                             updateCounter = updateCounter + 1000;
-                            return new Response(Boolean.TRUE);
+                            return Result.OK;
                         }
                     }
             };
@@ -185,7 +185,7 @@ public class TestAbstractSchema {
     public void testAbstractSchemaNewDatabaseAnd4Updates() {
         TestSchema01 schema = new TestSchema01(new VersionNewDatabase());
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaNewDatabaseAnd4Updates: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(1111, schema.getUpdateCounter());
         assertEquals(4, ((VersionNumber)schema.getVersion()).value);
     }
@@ -194,7 +194,7 @@ public class TestAbstractSchema {
     public void testAbstractSchemaExistingDatabaseAnd4UpdatesFrom1() {
         var schema = new TestSchema01(new VersionNumber(1));
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaExistingDatabaseAnd4UpdatesFrom1: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(1110, schema.getUpdateCounter());
         assertEquals(4, ((VersionNumber)schema.getVersion()).value);
     }
@@ -203,7 +203,7 @@ public class TestAbstractSchema {
     public void testAbstractSchemaExistingDatabaseAnd4UpdatesFrom2() {
         var schema = new TestSchema01(new VersionNumber(2));
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaExistingDatabaseAnd4UpdatesFrom2: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(1100, schema.getUpdateCounter());
         assertEquals(4, ((VersionNumber)schema.getVersion()).value);
     }
@@ -212,7 +212,7 @@ public class TestAbstractSchema {
     public void testAbstractSchemaExistingDatabaseAnd4UpdatesFrom3() {
         var schema = new TestSchema01(new VersionNumber(3));
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaExistingDatabaseAnd4UpdatesFrom3: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(1000, schema.getUpdateCounter());
         assertEquals(4, ((VersionNumber)schema.getVersion()).value);
     }
@@ -221,7 +221,7 @@ public class TestAbstractSchema {
     public void testAbstractSchemaExistingDatabaseNoUpdateNeeded() {
         var schema = new TestSchema01(new VersionNumber(4));
         var result = schema.setup(new ConsoleProgressIndicator("testAbstractSchemaExistingDatabaseNoUpdateNeeded: "));
-        assertTrue(result.isValid());
+        assertTrue(result.isOk());
         assertEquals(0, schema.getUpdateCounter());
         assertEquals(4, ((VersionNumber)schema.getVersion()).value);
     }
