@@ -522,7 +522,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
+    public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
         return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query)))).getResult();
     }
 
@@ -537,7 +537,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
+    public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
         return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query)))).getResult();
     }
 
@@ -587,7 +587,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
+    public Response<TupleTypeGenerator.GenerateResult> createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
         return (new Transaction<>(connection -> new Response<>(createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms)))).getResult();
     }
 
@@ -603,7 +603,7 @@ public class Database {
      * @return Result of code generation.
      * @throws SQLException Error.
      */
-    public <T> Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
+    public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
         return (new Transaction<>(connection -> new Response<>(createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms)))).getResult();
     }
 
