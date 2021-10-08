@@ -1,7 +1,7 @@
 package org.reldb.wrapd.sqldb;
 
 /**
- * Represents an attribute of a Tuplee.
+ * Represents an attribute of a Tuple.
  */
 public class Attribute {
     /** Name of attribute. */
