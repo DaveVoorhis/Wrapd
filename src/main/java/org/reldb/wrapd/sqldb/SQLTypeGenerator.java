@@ -6,23 +6,13 @@ import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
-import javax.lang.model.SourceVersion;
 import java.io.File;
-import java.util.Vector;
 
 /**
  * Generates Java code to represent a SQL construct.
  */
 public abstract class SQLTypeGenerator {
     private static final Msg ErrUnableToCreateOrOpenCodeDirectory = new Msg("Unable to create or open code directory {0}.", SQLTypeGenerator.class);
-    private static final Msg ErrMissingEndBrace = new Msg("Missing end ''}'' in parameter def started at position {0} in {1}", SQLTypeGenerator.class);
-    private static final Msg ErrDuplicateParameterName = new Msg("Attempt to define duplicate parameter name {0}.", SQLTypeGenerator.class);
-    private static final Msg ErrInvalidIdentifier = new Msg("Parameter name {0} is not a valid Java identifier.", SQLTypeGenerator.class);
-    private static final Msg ErrInvalidIdentifierCharacter = new Msg("Parameter name {0} must not contain ''.''.", SQLTypeGenerator.class);
-
-    private static final char ParmChar = '?';
-    private static final char ParmNameLeftDelimiter = '{';
-    private static final char ParmNameRightDelimiter = '}';
 
     /**
      * Delete this SQL construct type.
@@ -38,47 +28,12 @@ public abstract class SQLTypeGenerator {
         return fJava.delete();
     }
 
-    private String sqlText;
-
     private final String dir;
     private final String packageSpec;
     private final String queryName;
     private final Object[] args;
 
-    private final Vector<String> parameterNames = new Vector<>();
-
-    private void addParameterName(String rawName) {
-        var name = rawName.trim();
-        if (name.contains("."))
-            throw new IllegalArgumentException(Str.ing(ErrInvalidIdentifierCharacter, name));
-        if (!SourceVersion.isName(name))
-            throw new IllegalArgumentException(Str.ing(ErrInvalidIdentifier, name));
-        if (parameterNames.contains(name))
-            throw new IllegalArgumentException(Str.ing(ErrDuplicateParameterName, name));
-        parameterNames.add(name);
-    }
-
-    private void addAutomaticParameterName() {
-        addParameterName("p" + parameterNames.size());
-    }
-
-    private void processParameterNames() {
-        StringBuffer sql = new StringBuffer(sqlText);
-        for (int start = 0; start < sql.length(); start++) {
-            if (sql.charAt(start) == ParmChar)
-                addAutomaticParameterName();
-            else if (sql.charAt(start) == ParmNameLeftDelimiter) {
-                var startNamePos = start + 1;
-                var endBracePos = sql.indexOf(String.valueOf(ParmNameRightDelimiter), startNamePos);
-                if (endBracePos == -1)
-                    throw new IllegalArgumentException(Str.ing(ErrMissingEndBrace, start, sql));
-                addParameterName(sql.substring(startNamePos, endBracePos));
-                sql.replace(start, endBracePos + 1, String.valueOf(ParmChar));
-                start = start + 1;
-            }
-        }
-        sqlText = sql.toString();
-    }
+    private final SQLParametriser parametriser;
 
     /**
      * Create a generator of compiled update invokers.
@@ -98,8 +53,8 @@ public abstract class SQLTypeGenerator {
             queryName = queryName.substring(packageSpec.length() + 1);
         this.dir = dir;
         this.queryName = queryName;
-        this.sqlText = sqlText;
         this.args = args;
+        parametriser = new SQLParametriser(sqlText);
     }
 
     /**
@@ -108,7 +63,7 @@ public abstract class SQLTypeGenerator {
      * @return SQL text.
      */
     public String getSQLText() {
-        return sqlText;
+        return parametriser.getSQLText();
     }
 
     /**
@@ -152,7 +107,7 @@ public abstract class SQLTypeGenerator {
         int parameterNumber = 0;
         if (hasArgs()) {
             for (Object arg: args) {
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" ").append(parameterNames.get(parameterNumber));
+                out.append(", ").append(arg.getClass().getCanonicalName()).append(" ").append(parametriser.getParameterNames().get(parameterNumber));
                 parameterNumber++;
             }
         }
@@ -171,7 +126,7 @@ public abstract class SQLTypeGenerator {
         for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
             if (out.length() > 0)
                 out.append(", ");
-            out.append(parameterNames.get(parameterNumber));
+            out.append(parametriser.getParameterNames().get(parameterNumber));
         }
         return out.toString();
     }
@@ -191,7 +146,7 @@ public abstract class SQLTypeGenerator {
     public File generate() {
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        processParameterNames();
+        parametriser.process();
         return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getDefinitionSourceCode());
     }
 }

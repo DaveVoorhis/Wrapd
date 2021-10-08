@@ -51,9 +51,9 @@ public class TestSQLTypeGenerator {
 	public void testSQLGenerator05() {
 		var generator = new QueryTypeGenerator(getCodeDirectory(), tuplePackage, "TestTuple05", "TestQuery05",
 				"select * from sometable where x = {testparm", 7);
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> generator.generate());
+		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLTypeGenerator: Missing end '}' in parameter def started at position 34 in select * from sometable where x = {testparm";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Missing end '}' in parameter def started at position 34 in select * from sometable where x = {testparm";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -63,9 +63,9 @@ public class TestSQLTypeGenerator {
 	public void testSQLGenerator06() {
 		var generator = new QueryTypeGenerator(getCodeDirectory(), tuplePackage, "TestTuple06", "TestQuery06",
 				"select * from sometable where x = {testparm} and y = {testparm}", 5, 6);
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> generator.generate());
+		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLTypeGenerator: Attempt to define duplicate parameter name testparm.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Attempt to define duplicate parameter name testparm.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -75,9 +75,9 @@ public class TestSQLTypeGenerator {
 	public void testSQLGenerator07() {
 		var generator = new QueryTypeGenerator(getCodeDirectory(), tuplePackage, "TestTuple07", "TestQuery07",
 				"select * from sometable where x = {123testparm}", 6);
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> generator.generate());
+		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLTypeGenerator: Parameter name 123testparm is not a valid Java identifier.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Parameter name 123testparm is not a valid Java identifier.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -87,9 +87,9 @@ public class TestSQLTypeGenerator {
 	public void testSQLGenerator08() {
 		var generator = new QueryTypeGenerator(getCodeDirectory(), tuplePackage, "TestTuple08", "TestQuery08",
 				"select * from sometable where x = {test.parm}", 6);
-		Exception exception = assertThrows(IllegalArgumentException.class, () -> generator.generate());
+		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLTypeGenerator: Parameter name test.parm must not contain '.'.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Parameter name test.parm must not contain '.'.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);

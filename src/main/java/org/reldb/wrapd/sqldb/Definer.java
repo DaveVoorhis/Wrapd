@@ -1,9 +1,15 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
+import org.reldb.wrapd.exceptions.FatalException;
+
 /**
  * Mechanism for defining Query and Update classes.
  */
 public class Definer {
+    private static final Msg ErrNoColumnsInResult = new Msg("There are no result columns in query {0}.", Definer.class);
+
     private final Database database;
     private final String codeDirectory;
     private final String packageSpec;
@@ -125,22 +131,16 @@ public class Definer {
         return defineTable(tableName, null, (Object[])null);
     }
 
-    /**
-     *  Define a Query for future use that returns the first column of the first row.
-     *
-     * @param queryName Name of query. Should be unique.
-     * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
-     *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
-     *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
-     * @param args Arguments that specify parameter type(s) and allow query to succeed.
-     * @throws Throwable Error.
-     */
-    public void defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
-        var result = defineQuery(queryName, sqlText, args);
+    /** Define a Query for future use that returns the first column of the first row. */
+    public TupleTypeGenerator.GenerateResult defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
+        var sourceQueryName = queryName + "ValueOf";
+        var result = defineQuery(sourceQueryName, sqlText, args);
         if (result.attributes.isEmpty())
-            System.out.println(">>>>> query " + sqlText + " result has no columns.");
-        else
-            System.out.println(">>>>> query " + sqlText + " type of first column is " + result.attributes.get(0).type);
+            throw new FatalException(Str.ing(ErrNoColumnsInResult, sqlText));
+        else {
+            var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, sourceQueryName, queryName, result.attributes.get(0).type);
+            valueOfGenerator.generate();
+            return result;
+        }
     }
 }
