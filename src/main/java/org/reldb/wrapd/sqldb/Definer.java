@@ -125,7 +125,17 @@ public class Definer {
         return defineTable(tableName, null, (Object[])null);
     }
 
-    /** Define a Query for future use that returns the first column of the first row. */
+    /**
+     *  Define a Query for future use that returns the first column of the first row.
+     *
+     * @param queryName Name of query. Should be unique.
+     * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+     *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+     *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @throws Throwable Error.
+     */
     public void defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
         var result = defineQuery(queryName, sqlText, args);
         if (result.attributes.isEmpty())

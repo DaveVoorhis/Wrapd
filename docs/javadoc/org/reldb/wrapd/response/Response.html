@@ -15,7 +15,7 @@
 <script type="text/javascript" src="../../../../script-dir/jquery-ui.min.js"></script>
 </head>
 <body class="class-declaration-page">
-<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":9,"i3":10};
+<script type="text/javascript">var data = {"i0":10,"i1":10,"i2":9,"i3":9,"i4":10};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "alt-color";
 var rowColor = "row-color";
@@ -198,6 +198,13 @@ java.lang.Throwable&nbsp;error)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i3">
+<td class="col-first"><code>static void</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#printError(java.lang.Throwable)">printError</a></span>&#8203;(java.lang.Throwable&nbsp;error)</code></th>
+<td class="col-last">
+<div class="block">Dump an error's description, and its cause(s).</div>
+</td>
+</tr>
+<tr class="alt-color" id="i4">
 <td class="col-first"><code>void</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#printIfError()">printIfError</a></span>()</code></th>
 <td class="col-last">
@@ -312,6 +319,17 @@ java.lang.Throwable&nbsp;error)</span></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>prompt</code> - Text to precede error message.</dd>
+<dd><code>error</code> - Throwable error.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="printError(java.lang.Throwable)">
+<h3>printError</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">printError</span>&#8203;(<span class="parameters">java.lang.Throwable&nbsp;error)</span></div>
+<div class="block">Dump an error's description, and its cause(s).</div>
+<dl class="notes">
+<dt>Parameters:</dt>
 <dd><code>error</code> - Throwable error.</dd>
 </dl>
 </section>

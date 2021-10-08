@@ -73,7 +73,7 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">org.reldb.wrapd.sqldb</a></div>
-<h1 title="Interface Database.XactGo" class="title">Interface Database.XactGo</h1>
+<h1 title="Interface Database.XactGo" class="title">Interface Database.XactGo&lt;T&gt;</h1>
 </div>
 <section class="description">
 <dl class="notes">
@@ -86,7 +86,7 @@ loadScripts(document, 'script');</script>
 </dl>
 <hr>
 <pre>@FunctionalInterface
-public static interface <span class="type-name-label">Database.XactGo</span></pre>
+public static interface <span class="type-name-label">Database.XactGo&lt;T&gt;</span></pre>
 <div class="block">Used to define lambda expressions for more ergonomic transaction processing.</div>
 </section>
 <section class="summary">
@@ -108,7 +108,7 @@ public static interface <span class="type-name-label">Database.XactGo</span></pr
 </thead>
 <tbody>
 <tr class="alt-color" id="i0">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="Database.XactGo.html" title="type parameter in Database.XactGo">T</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#go(org.reldb.wrapd.sqldb.Xact)">go</a></span>&#8203;(<a href="Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a>&nbsp;tcw)</code></th>
 <td class="col-last">
 <div class="block">Run the transaction</div>
@@ -132,8 +132,8 @@ public static interface <span class="type-name-label">Database.XactGo</span></pr
 <li>
 <section class="detail" id="go(org.reldb.wrapd.sqldb.Xact)">
 <h3>go</h3>
-<div class="member-signature"><span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">go</span>&#8203;(<span class="parameters"><a href="Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a>&nbsp;tcw)</span>
-   throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="member-signature"><span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="Database.XactGo.html" title="type parameter in Database.XactGo">T</a>&gt;</span>&nbsp;<span class="member-name">go</span>&#8203;(<span class="parameters"><a href="Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a>&nbsp;tcw)</span>
+        throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Run the transaction</div>
 <dl class="notes">
 <dt>Parameters:</dt>

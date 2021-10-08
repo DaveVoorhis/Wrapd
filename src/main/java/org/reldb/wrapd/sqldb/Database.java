@@ -1049,6 +1049,7 @@ public class Database {
     /**
      * Execute some code in a transaction.
      *
+     * @param <T> Response type parameter
      * @param transactionRunner The lambda specifying code to be run.
      * @return The transaction execution result.
      * @throws SQLException Error.
@@ -1061,6 +1062,7 @@ public class Database {
     /**
      * Execute some code in a transaction.
      *
+     * @param <T> Response type parameter
      * @param transactionRunner The lambda specifying code to be run.
      * @return Result.
      * @throws SQLException Error.
@@ -1087,6 +1089,7 @@ public class Database {
     /**
      * Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.
      *
+     * @param <T> Response type parameter
      * @param transactionRunner The lambda defining one or more database operations
      * @return Result.
      * @throws SQLException Error.

@@ -93,13 +93,13 @@ loadScripts(document, 'script');</script>
 </td>
 </tr>
 <tr class="alt-color">
-<th class="col-first" scope="row"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a></th>
+<th class="col-first" scope="row"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;T&gt;</th>
 <td class="col-last">
 <div class="block">Used to define lambda expressions for transactional processing.</div>
 </td>
 </tr>
 <tr class="row-color">
-<th class="col-first" scope="row"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a></th>
+<th class="col-first" scope="row"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&lt;T&gt;</th>
 <td class="col-last">
 <div class="block">Used to define lambda expressions for more ergonomic transaction processing.</div>
 </td>
@@ -126,63 +126,75 @@ loadScripts(document, 'script');</script>
 </thead>
 <tbody>
 <tr class="alt-color">
+<th class="col-first" scope="row"><a href="Attribute.html" title="class in org.reldb.wrapd.sqldb">Attribute</a></th>
+<td class="col-last">
+<div class="block">Represents an attribute of a Tuple.</div>
+</td>
+</tr>
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></th>
 <td class="col-last">
 <div class="block">Database access layer.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="Database.SQLEvent.html" title="class in org.reldb.wrapd.sqldb">Database.SQLEvent</a></th>
 <td class="col-last">
 <div class="block">An instance of an SQL query, for monitoring queries processed by a Database.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="Definer.html" title="class in org.reldb.wrapd.sqldb">Definer</a></th>
 <td class="col-last">
 <div class="block">Mechanism for defining Query and Update classes.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</th>
 <td class="col-last">
 <div class="block">An SQL SELECT (or equivalent RecordSet-returning) Query.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="QueryTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">QueryTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent a query, which is a class that implements <a href="Query.html" title="class in org.reldb.wrapd.sqldb"><code>Query</code></a>.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="ResultSetToTuple.html" title="class in org.reldb.wrapd.sqldb">ResultSetToTuple</a></th>
 <td class="col-last">
 <div class="block">Tools for creating Tuple-derived classes from ResultSetS and for turning ResultSetS into Tuple-derived instances for processing directly or as a List or Stream.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="SQL.html" title="class in org.reldb.wrapd.sqldb">SQL</a></th>
 <td class="col-last">
 <div class="block">Abstract base class for (possibly parametric) SQL definitions.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent a SQL construct.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a></th>
 <td class="col-last">
 <div class="block">The base class for all tuples.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="TupleTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent a tuple, which is a class that implements Tuple.</div>
+</td>
+</tr>
+<tr class="row-color">
+<th class="col-first" scope="row"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></th>
+<td class="col-last">
+<div class="block">Result of generate().</div>
 </td>
 </tr>
 <tr class="alt-color">

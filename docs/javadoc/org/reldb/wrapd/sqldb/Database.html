@@ -131,21 +131,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr class="alt-color">
 <td class="col-first"><code>class&nbsp;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.Transaction.html" title="class in org.reldb.wrapd.sqldb">Database.Transaction</a></span></code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.Transaction.html" title="class in org.reldb.wrapd.sqldb">Database.Transaction</a>&lt;<a href="Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt;</span></code></th>
 <td class="col-last">
 <div class="block">Encapsulates a transaction.</div>
 </td>
 </tr>
 <tr class="row-color">
 <td class="col-first"><code>static interface&nbsp;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a></span></code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;<a href="Database.TransactionRunner.html" title="type parameter in Database.TransactionRunner">T</a>&gt;</span></code></th>
 <td class="col-last">
 <div class="block">Used to define lambda expressions for transactional processing.</div>
 </td>
 </tr>
 <tr class="alt-color">
 <td class="col-first"><code>static interface&nbsp;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a></span></code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&lt;<a href="Database.XactGo.html" title="type parameter in Database.XactGo">T</a>&gt;</span></code></th>
 <td class="col-last">
 <div class="block">Used to define lambda expressions for more ergonomic transaction processing.</div>
 </td>
@@ -233,7 +233,7 @@ java.lang.String&nbsp;dbTablenamePrefix,
 </td>
 </tr>
 <tr class="row-color" id="i1">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQuery(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">createTupleFromQuery</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -244,7 +244,7 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="alt-color" id="i2">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQuery(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">createTupleFromQuery</a></span>&#8203;(java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
@@ -256,7 +256,7 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i3">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryAll(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">createTupleFromQueryAll</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -266,7 +266,7 @@ java.lang.String&nbsp;query)</code></th>
 </td>
 </tr>
 <tr class="alt-color" id="i4">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryAll(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">createTupleFromQueryAll</a></span>&#8203;(java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
@@ -277,7 +277,7 @@ java.lang.String&nbsp;query)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i5">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryAllForUpdate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">createTupleFromQueryAllForUpdate</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -288,7 +288,7 @@ java.lang.String&nbsp;query)</code></th>
 </td>
 </tr>
 <tr class="alt-color" id="i6">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryAllForUpdate(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">createTupleFromQueryAllForUpdate</a></span>&#8203;(java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
@@ -300,7 +300,7 @@ java.lang.String&nbsp;query)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i7">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryForUpdate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">createTupleFromQueryForUpdate</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -312,7 +312,7 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="alt-color" id="i8">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleFromQueryForUpdate(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object%5B%5D)">createTupleFromQueryForUpdate</a></span>&#8203;(java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
@@ -355,7 +355,7 @@ java.lang.String&nbsp;tableName)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i13">
-<td class="col-first"><code>static <a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a>&gt;</code></td>
+<td class="col-first"><code>static <a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#newResultSetGeneratesTupleClass(java.lang.String,java.lang.String,java.lang.String,org.reldb.wrapd.sqldb.Customisations)">newResultSetGeneratesTupleClass</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -365,7 +365,7 @@ java.lang.String&nbsp;tupleClassName,
 </td>
 </tr>
 <tr class="alt-color" id="i14">
-<td class="col-first"><code>static <a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a>&gt;</code></td>
+<td class="col-first"><code>static <a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#newResultSetGeneratesTupleClassForUpdate(java.lang.String,java.lang.String,java.lang.String,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">newResultSetGeneratesTupleClassForUpdate</a></span>&#8203;(java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
@@ -423,8 +423,8 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i21">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#processTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">processTransaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</code></th>
+<td class="col-first"><code>&lt;T&gt;&nbsp;<a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#processTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">processTransaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;T&gt;&nbsp;transactionRunner)</code></th>
 <td class="col-last">
 <div class="block">Execute some code in a transaction.</div>
 </td>
@@ -610,8 +610,8 @@ java.lang.Object...&nbsp;parms)</code></th>
 <td class="col-last">&nbsp;</td>
 </tr>
 <tr class="alt-color" id="i44">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#transact(org.reldb.wrapd.sqldb.Database.XactGo)">transact</a></span>&#8203;(<a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&nbsp;transactionRunner)</code></th>
+<td class="col-first"><code>&lt;T&gt;&nbsp;<a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#transact(org.reldb.wrapd.sqldb.Database.XactGo)">transact</a></span>&#8203;(<a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&lt;T&gt;&nbsp;transactionRunner)</code></th>
 <td class="col-last">
 <div class="block">Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.</div>
 </td>
@@ -696,8 +696,8 @@ java.lang.Object...&nbsp;parms)</code></th>
 </td>
 </tr>
 <tr class="row-color" id="i55">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#useTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">useTransaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</code></th>
+<td class="col-first"><code>&lt;T&gt;&nbsp;<a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</code></td>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#useTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">useTransaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;T&gt;&nbsp;transactionRunner)</code></th>
 <td class="col-last">
 <div class="block">Execute some code in a transaction.</div>
 </td>
@@ -722,14 +722,14 @@ java.lang.Object...&nbsp;parms)</code></th>
 <tr class="alt-color" id="i58">
 <td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOf</a></span>&#8203;(java.sql.Connection&nbsp;connection,
-<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
+<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</code></th>
 <td class="col-last">
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </td>
 </tr>
 <tr class="row-color" id="i59">
 <td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</code></th>
 <td class="col-last">
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </td>
@@ -752,14 +752,14 @@ java.lang.String&nbsp;query)</code></th>
 <tr class="alt-color" id="i62">
 <td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOfAll</a></span>&#8203;(java.sql.Connection&nbsp;connection,
-<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
+<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</code></th>
 <td class="col-last">
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
 </td>
 </tr>
 <tr class="row-color" id="i63">
 <td class="col-first"><code>java.util.Optional&lt;?&gt;</code></td>
-<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</code></th>
+<th class="col-second" scope="row"><code><span class="member-name-link"><a href="#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll</a></span>&#8203;(<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</code></th>
 <td class="col-last">
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
 </td>
@@ -968,7 +968,7 @@ java.lang.String&nbsp;query)</span>
 <section class="detail" id="valueOfAll(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">
 <h3>valueOfAll</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
-<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</span>
                                  throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.
  Intended to obtain a single value.</div>
@@ -987,7 +987,7 @@ java.lang.String&nbsp;query)</span>
 <li>
 <section class="detail" id="valueOfAll(org.reldb.wrapd.sqldb.Query)">
 <h3>valueOfAll</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOfAll</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</span>
                                  throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.
  Intended to obtain a single value.</div>
@@ -1114,7 +1114,7 @@ java.lang.Object...&nbsp;parms)</span>
 <section class="detail" id="valueOf(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">
 <h3>valueOf</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
-<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+<a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</span>
                               throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
  Intended to obtain a single value.</div>
@@ -1153,7 +1153,7 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="valueOf(org.reldb.wrapd.sqldb.Query)">
 <h3>valueOf</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&nbsp;query)</span>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">java.util.Optional&lt;?&gt;</span>&nbsp;<span class="member-name">valueOf</span>&#8203;(<span class="parameters"><a href="Query.html" title="class in org.reldb.wrapd.sqldb">Query</a>&lt;? extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;&nbsp;query)</span>
                               throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.
  Intended to obtain a single value.</div>
@@ -1171,7 +1171,7 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="newResultSetGeneratesTupleClass(java.lang.String,java.lang.String,java.lang.String,org.reldb.wrapd.sqldb.Customisations)">
 <h3>newResultSetGeneratesTupleClass</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a>&gt;</span>&nbsp;<span class="member-name">newResultSetGeneratesTupleClass</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">newResultSetGeneratesTupleClass</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 <a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations)</span></div>
@@ -1190,7 +1190,7 @@ java.lang.String&nbsp;tupleClassName,
 <li>
 <section class="detail" id="newResultSetGeneratesTupleClassForUpdate(java.lang.String,java.lang.String,java.lang.String,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">
 <h3>newResultSetGeneratesTupleClassForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a>&gt;</span>&nbsp;<span class="member-name">newResultSetGeneratesTupleClassForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="Database.ResultSetReceiver.html" title="interface in org.reldb.wrapd.sqldb">Database.ResultSetReceiver</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">newResultSetGeneratesTupleClassForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 <a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations,
@@ -1211,12 +1211,12 @@ java.lang.String&nbsp;tableName)</span></div>
 <li>
 <section class="detail" id="createTupleFromQueryAll(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <h3>createTupleFromQueryAll</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryAll</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTupleFromQueryAll</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;query)</span>
-                               throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                          throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1235,13 +1235,13 @@ java.lang.String&nbsp;query)</span>
 <li>
 <section class="detail" id="createTupleFromQueryAllForUpdate(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <h3>createTupleFromQueryAllForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryAllForUpdate</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTupleFromQueryAllForUpdate</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;tableName,
 java.lang.String&nbsp;query)</span>
-                                        throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                   throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1261,11 +1261,11 @@ java.lang.String&nbsp;query)</span>
 <li>
 <section class="detail" id="createTupleFromQueryAll(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <h3>createTupleFromQueryAll</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryAll</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">createTupleFromQueryAll</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;query)</span>
-                               throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                    throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1283,12 +1283,12 @@ java.lang.String&nbsp;query)</span>
 <li>
 <section class="detail" id="createTupleFromQueryAllForUpdate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
 <h3>createTupleFromQueryAllForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryAllForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">createTupleFromQueryAllForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;tableName,
 java.lang.String&nbsp;query)</span>
-                                        throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                             throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1307,13 +1307,13 @@ java.lang.String&nbsp;query)</span>
 <li>
 <section class="detail" id="createTupleFromQuery(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">
 <h3>createTupleFromQuery</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQuery</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTupleFromQuery</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;query,
 java.lang.Object...&nbsp;parms)</span>
-                            throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                       throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1333,14 +1333,14 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="createTupleFromQueryForUpdate(java.sql.Connection,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object[])">
 <h3>createTupleFromQueryForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryForUpdate</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTupleFromQueryForUpdate</span>&#8203;(<span class="parameters">java.sql.Connection&nbsp;connection,
 java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;tableName,
 java.lang.String&nbsp;query,
 java.lang.Object[]&nbsp;parms)</span>
-                                     throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a parametric SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1361,12 +1361,12 @@ java.lang.Object[]&nbsp;parms)</span>
 <li>
 <section class="detail" id="createTupleFromQuery(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">
 <h3>createTupleFromQuery</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQuery</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">createTupleFromQuery</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;query,
 java.lang.Object...&nbsp;parms)</span>
-                            throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                 throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding Tuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1385,13 +1385,13 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="createTupleFromQueryForUpdate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.Object...)">
 <h3>createTupleFromQueryForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">createTupleFromQueryForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a>&gt;</span>&nbsp;<span class="member-name">createTupleFromQueryForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDirectory,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleClassName,
 java.lang.String&nbsp;tableName,
 java.lang.String&nbsp;query,
 java.lang.Object...&nbsp;parms)</span>
-                                     throws <span class="exceptions">java.sql.SQLException</span></div>
+                                                                          throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Use a SELECT query to generate a corresponding UpdatableTuple-derived class to represent future evaluations of the same query or similar queries.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
@@ -1950,10 +1950,12 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="processTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">
 <h3>processTransaction</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">processTransaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</span>
-                          throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</span>&nbsp;<span class="member-name">processTransaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;T&gt;&nbsp;transactionRunner)</span>
+                                   throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Execute some code in a transaction.</div>
 <dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - Response type parameter</dd>
 <dt>Parameters:</dt>
 <dd><code>transactionRunner</code> - The lambda specifying code to be run.</dd>
 <dt>Returns:</dt>
@@ -1966,10 +1968,12 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="useTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">
 <h3>useTransaction</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">useTransaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</span>
-                      throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</span>&nbsp;<span class="member-name">useTransaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;T&gt;&nbsp;transactionRunner)</span>
+                               throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Execute some code in a transaction.</div>
 <dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - Response type parameter</dd>
 <dt>Parameters:</dt>
 <dd><code>transactionRunner</code> - The lambda specifying code to be run.</dd>
 <dt>Returns:</dt>
@@ -1982,10 +1986,12 @@ java.lang.Object...&nbsp;parms)</span>
 <li>
 <section class="detail" id="transact(org.reldb.wrapd.sqldb.Database.XactGo)">
 <h3>transact</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">transact</span>&#8203;(<span class="parameters"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&nbsp;transactionRunner)</span>
-                throws <span class="exceptions">java.sql.SQLException</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;T&gt;</span>&nbsp;<span class="member-name">transact</span>&#8203;(<span class="parameters"><a href="Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb">Database.XactGo</a>&lt;T&gt;&nbsp;transactionRunner)</span>
+                         throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.</div>
 <dl class="notes">
+<dt>Type Parameters:</dt>
+<dd><code>T</code> - Response type parameter</dd>
 <dt>Parameters:</dt>
 <dd><code>transactionRunner</code> - The lambda defining one or more database operations</dd>
 <dt>Returns:</dt>

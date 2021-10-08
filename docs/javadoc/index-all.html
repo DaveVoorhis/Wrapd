@@ -77,6 +77,14 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Apply an schema update.</div>
 </dd>
+<dt><a href="org/reldb/wrapd/sqldb/Attribute.html" title="class in org.reldb.wrapd.sqldb"><span class="type-name-link">Attribute</span></a> - Class in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
+<dd>
+<div class="block">Represents an attribute of a Tuple.</div>
+</dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html#attributes">attributes</a></span> - Variable in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></dt>
+<dd>
+<div class="block">Attributes in generated Tuple.</div>
+</dd>
 </dl>
 <h2 class="title" id="I:B">B</h2>
 <dl class="index">
@@ -194,15 +202,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">An instance of an SQL query, for monitoring queries processed by a Database.</div>
 </dd>
-<dt><a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="class in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.Transaction</span></a> - Class in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
+<dt><a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="class in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.Transaction</span></a>&lt;<a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt; - Class in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
 <dd>
 <div class="block">Encapsulates a transaction.</div>
 </dd>
-<dt><a href="org/reldb/wrapd/sqldb/Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.TransactionRunner</span></a> - Interface in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
+<dt><a href="org/reldb/wrapd/sqldb/Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.TransactionRunner</span></a>&lt;<a href="org/reldb/wrapd/sqldb/Database.TransactionRunner.html" title="type parameter in Database.TransactionRunner">T</a>&gt; - Interface in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
 <dd>
 <div class="block">Used to define lambda expressions for transactional processing.</div>
 </dd>
-<dt><a href="org/reldb/wrapd/sqldb/Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.XactGo</span></a> - Interface in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
+<dt><a href="org/reldb/wrapd/sqldb/Database.XactGo.html" title="interface in org.reldb.wrapd.sqldb"><span class="type-name-link">Database.XactGo</span></a>&lt;<a href="org/reldb/wrapd/sqldb/Database.XactGo.html" title="type parameter in Database.XactGo">T</a>&gt; - Interface in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
 <dd>
 <div class="block">Used to define lambda expressions for more ergonomic transaction processing.</div>
 </dd>
@@ -235,6 +243,10 @@ loadScripts(document, 'script');</script>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Definer.html#defineUpdate(java.lang.String,java.lang.String,java.lang.Object...)">defineUpdate(String, String, Object...)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Definer.html" title="class in org.reldb.wrapd.sqldb">Definer</a></dt>
 <dd>
 <div class="block">Define an Update for future use.</div>
+</dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Definer.html#defineValueOf(java.lang.String,java.lang.String,java.lang.Object...)">defineValueOf(String, String, Object...)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Definer.html" title="class in org.reldb.wrapd.sqldb">Definer</a></dt>
+<dd>
+<div class="block">Define a Query for future use that returns the first column of the first row.</div>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html#destroy()">destroy()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator</a></dt>
 <dd>
@@ -309,9 +321,17 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Generate this tuple type as a Java class definition.</div>
 </dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html#generatedFile">generatedFile</a></span> - Variable in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></dt>
+<dd>
+<div class="block">Generated source file.</div>
+</dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/generator/JavaGenerator.html#generateJavaCode(java.lang.String,java.lang.String,java.lang.String)">generateJavaCode(String, String, String)</a></span> - Method in class org.reldb.wrapd.generator.<a href="org/reldb/wrapd/generator/JavaGenerator.html" title="class in org.reldb.wrapd.generator">JavaGenerator</a></dt>
 <dd>
 <div class="block">Generate compilable Java code.</div>
+</dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html#%3Cinit%3E(java.util.List,java.io.File)">GenerateResult(List&lt;Attribute&gt;, File)</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></dt>
+<dd>
+<div class="block">Constructor.</div>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html#getArgs()">getArgs()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></dt>
 <dd>
@@ -486,7 +506,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/UpdatableTuple.html#isOk(org.reldb.toolbox.types.Pair)">isOk(Pair&lt;List&lt;UpdatableTuple.FieldGetFailure&gt;, List&lt;UpdatableTuple.FieldGetFailure&gt;&gt;)</a></span> - Static method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a></dt>
 <dd>
-<div class="block">Return true if the result of an update(...) contains no field failurees.</div>
+<div class="block">Return true if the result of an update(...) contains no field failures.</div>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/response/Response.html#isValid()">isValid()</a></span> - Method in class org.reldb.wrapd.response.<a href="org/reldb/wrapd/response/Response.html" title="class in org.reldb.wrapd.response">Response</a></dt>
 <dd>
@@ -580,6 +600,10 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Dump an error's description, and its cause(s).</div>
 </dd>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/response/Response.html#printError(java.lang.Throwable)">printError(Throwable)</a></span> - Static method in class org.reldb.wrapd.response.<a href="org/reldb/wrapd/response/Response.html" title="class in org.reldb.wrapd.response">Response</a></dt>
+<dd>
+<div class="block">Dump an error's description, and its cause(s).</div>
+</dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/response/Response.html#printIfError()">printIfError()</a></span> - Method in class org.reldb.wrapd.response.<a href="org/reldb/wrapd/response/Response.html" title="class in org.reldb.wrapd.response">Response</a></dt>
 <dd>
 <div class="block">If this Response isError() == true, dump the error.</div>
@@ -608,7 +632,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Use a prepared statement.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#processTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">processTransaction(Database.TransactionRunner)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#processTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">processTransaction(Database.TransactionRunner&lt;T&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Execute some code in a transaction.</div>
 </dd>
@@ -922,11 +946,11 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#toString()">toString()</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#transact(org.reldb.wrapd.sqldb.Database.XactGo)">transact(Database.XactGo)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#transact(org.reldb.wrapd.sqldb.Database.XactGo)">transact(Database.XactGo&lt;T&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Run one or more database operations in a transaction wrapped with Xact for syntactic convenience.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.Transaction.html#%3Cinit%3E(org.reldb.wrapd.sqldb.Database.TransactionRunner)">Transaction(Database.TransactionRunner)</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="class in org.reldb.wrapd.sqldb">Database.Transaction</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.Transaction.html#%3Cinit%3E(org.reldb.wrapd.sqldb.Database.TransactionRunner)">Transaction(Database.TransactionRunner&lt;T&gt;)</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.Transaction.html" title="class in org.reldb.wrapd.sqldb">Database.Transaction</a></dt>
 <dd>
 <div class="block">Encapsulate a transaction.</div>
 </dd>
@@ -943,6 +967,10 @@ loadScripts(document, 'script');</script>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html#%3Cinit%3E(java.lang.String,java.lang.String,java.lang.String)">TupleTypeGenerator(String, String, String)</a></span> - Constructor for class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator</a></dt>
 <dd>
 <div class="block">Create a generator of compiled Tuple-derived classes, which can be used to conveniently receive SELECT query results and generate INSERT and UPDATE queries.</div>
+</dd>
+<dt><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb"><span class="type-name-link">TupleTypeGenerator.GenerateResult</span></a> - Class in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
+<dd>
+<div class="block">Result of generate().</div>
 </dd>
 <dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html#typeOf(java.lang.String)">typeOf(String)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/TupleTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator</a></dt>
 <dd>
@@ -1041,7 +1069,7 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="org/reldb/wrapd/schema/UpdateTransaction.html" title="interface in org.reldb.wrapd.schema"><span class="type-name-link">UpdateTransaction</span></a> - Interface in <a href="org/reldb/wrapd/schema/package-summary.html">org.reldb.wrapd.schema</a></dt>
 <dd>
-<div class="block">Interface to define lamdbas that return a Result and require a ResultAction parameter.</div>
+<div class="block">Interface to define a lambda that returns a Result and requires a ResultAction parameter.</div>
 </dd>
 <dt><a href="org/reldb/wrapd/sqldb/UpdateTypeGenerator.html" title="class in org.reldb.wrapd.sqldb"><span class="type-name-link">UpdateTypeGenerator</span></a> - Class in <a href="org/reldb/wrapd/sqldb/package-summary.html">org.reldb.wrapd.sqldb</a></dt>
 <dd>
@@ -1063,7 +1091,7 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Use a prepared statement.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#useTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">useTransaction(Database.TransactionRunner)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#useTransaction(org.reldb.wrapd.sqldb.Database.TransactionRunner)">useTransaction(Database.TransactionRunner&lt;T&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Execute some code in a transaction.</div>
 </dd>
@@ -1090,15 +1118,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOf(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOf(Connection, Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOf(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOf(Connection, Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf(Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf(Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Issue a parametric SELECT query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Xact.html#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf(Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Xact.html#valueOf(org.reldb.wrapd.sqldb.Query)">valueOf(Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a></dt>
 <dd>
 <div class="block">Issue a parametric Query with '?' substitutions and obtain a value for the first row in the first column.</div>
 </dd>
@@ -1114,15 +1142,15 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOfAll(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOfAll(Connection, Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOfAll(java.sql.Connection,org.reldb.wrapd.sqldb.Query)">valueOfAll(Connection, Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll(Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Database.html#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll(Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dt>
 <dd>
 <div class="block">Issue a SELECT query and obtain a value for the first row in the first column.</div>
 </dd>
-<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Xact.html#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll(Query)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a></dt>
+<dt><span class="member-name-link"><a href="org/reldb/wrapd/sqldb/Xact.html#valueOfAll(org.reldb.wrapd.sqldb.Query)">valueOfAll(Query&lt;? extends Tuple&gt;)</a></span> - Method in class org.reldb.wrapd.sqldb.<a href="org/reldb/wrapd/sqldb/Xact.html" title="class in org.reldb.wrapd.sqldb">Xact</a></dt>
 <dd>
 <div class="block">Issue a Query and obtain a value for the first row in the first column.</div>
 </dd>

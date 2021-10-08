@@ -153,7 +153,7 @@ extends java.lang.Object</pre>
 </thead>
 <tbody>
 <tr class="alt-color" id="i0">
-<td class="col-first"><code>static void</code></td>
+<td class="col-first"><code>static <a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations)">createTuple</a></span>&#8203;(java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
@@ -165,7 +165,7 @@ java.sql.ResultSet&nbsp;results,
 </td>
 </tr>
 <tr class="row-color" id="i1">
-<td class="col-first"><code>static void</code></td>
+<td class="col-first"><code>static <a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#createTupleForUpdate(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">createTupleForUpdate</a></span>&#8203;(java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
@@ -274,13 +274,13 @@ java.lang.Class&lt;T&gt;&nbsp;tupleType)</code></th>
 <li>
 <section class="detail" id="createTupleForUpdate(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations,java.lang.String)">
 <h3>createTupleForUpdate</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">createTupleForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTupleForUpdate</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
 java.sql.ResultSet&nbsp;results,
 <a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations,
 java.lang.String&nbsp;tableName)</span>
-                                 throws <span class="exceptions">java.sql.SQLException,
+                                                              throws <span class="exceptions">java.sql.SQLException,
 java.lang.ClassNotFoundException</span></div>
 <div class="block">Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
  generate an UpdatableTuple class to host the ResultSet. This will normally be invoked in a setup/build phase run.</div>
@@ -292,6 +292,8 @@ java.lang.ClassNotFoundException</span></div>
 <dd><code>results</code> - ResultSet to be used to create the new UpdatableTuple class.</dd>
 <dd><code>customisations</code> - Customisations for specific DBMS types.</dd>
 <dd><code>tableName</code> - Name of table this Tuple maps to. Null if not mapped to a table.</dd>
+<dt>Returns:</dt>
+<dd>Result of Tuple generation.</dd>
 <dt>Throws:</dt>
 <dd><code>java.sql.SQLException</code> - thrown if there is a problem retrieving ResultSet metadata.</dd>
 <dd><code>java.lang.ClassNotFoundException</code> - thrown if a column class specified in the ResultSet metadata can't be loaded.</dd>
@@ -302,12 +304,12 @@ java.lang.ClassNotFoundException</span></div>
 <li>
 <section class="detail" id="createTuple(java.lang.String,java.lang.String,java.lang.String,java.sql.ResultSet,org.reldb.wrapd.sqldb.Customisations)">
 <h3>createTuple</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">createTuple</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></span>&nbsp;<span class="member-name">createTuple</span>&#8203;(<span class="parameters">java.lang.String&nbsp;codeDir,
 java.lang.String&nbsp;packageSpec,
 java.lang.String&nbsp;tupleName,
 java.sql.ResultSet&nbsp;results,
 <a href="Customisations.html" title="interface in org.reldb.wrapd.sqldb">Customisations</a>&nbsp;customisations)</span>
-                        throws <span class="exceptions">java.sql.SQLException,
+                                                     throws <span class="exceptions">java.sql.SQLException,
 java.lang.ClassNotFoundException</span></div>
 <div class="block">Given a target code directory and a desired Tuple class name, and a ResultSet, generate a Tuple class
  to host the ResultSet. This will normally be invoked in a setup/build phase run.</div>
@@ -318,6 +320,8 @@ java.lang.ClassNotFoundException</span></div>
 <dd><code>tupleName</code> - Name of new Tuple class.</dd>
 <dd><code>results</code> - ResultSet to be used to create the new Tuple class.</dd>
 <dd><code>customisations</code> - Customisations for specific DBMS types.</dd>
+<dt>Returns:</dt>
+<dd>Result of Tuple generation.</dd>
 <dt>Throws:</dt>
 <dd><code>java.sql.SQLException</code> - thrown if there is a problem retrieving ResultSet metadata.</dd>
 <dd><code>java.lang.ClassNotFoundException</code> - thrown if a column class specified in the ResultSet metadata can't be loaded.</dd>

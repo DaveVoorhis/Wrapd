@@ -73,10 +73,10 @@ loadScripts(document, 'script');</script>
 <!-- ======== START OF CLASS DATA ======== -->
 <div class="header">
 <div class="sub-title"><span class="package-label-in-type">Package</span>&nbsp;<a href="package-summary.html">org.reldb.wrapd.sqldb</a></div>
-<h1 title="Class Database.Transaction" class="title">Class Database.Transaction</h1>
+<h1 title="Class Database.Transaction" class="title">Class Database.Transaction&lt;T&gt;</h1>
 </div>
 <div class="inheritance" title="Inheritance Tree">java.lang.Object
-<div class="inheritance">org.reldb.wrapd.sqldb.Database.Transaction</div>
+<div class="inheritance">org.reldb.wrapd.sqldb.Database.Transaction&lt;T&gt;</div>
 </div>
 <section class="description">
 <dl class="notes">
@@ -84,7 +84,7 @@ loadScripts(document, 'script');</script>
 <dd><a href="Database.html" title="class in org.reldb.wrapd.sqldb">Database</a></dd>
 </dl>
 <hr>
-<pre>public class <span class="type-name-label">Database.Transaction</span>
+<pre>public class <span class="type-name-label">Database.Transaction&lt;T&gt;</span>
 extends java.lang.Object</pre>
 <div class="block">Encapsulates a transaction.</div>
 </section>
@@ -105,7 +105,7 @@ extends java.lang.Object</pre>
 </thead>
 <tbody>
 <tr class="alt-color">
-<th class="col-constructor-name" scope="row"><code><span class="member-name-link"><a href="#%3Cinit%3E(org.reldb.wrapd.sqldb.Database.TransactionRunner)">Transaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</code></th>
+<th class="col-constructor-name" scope="row"><code><span class="member-name-link"><a href="#%3Cinit%3E(org.reldb.wrapd.sqldb.Database.TransactionRunner)">Transaction</a></span>&#8203;(<a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;<a href="Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt;&nbsp;transactionRunner)</code></th>
 <td class="col-last">
 <div class="block">Encapsulate a transaction.</div>
 </td>
@@ -132,7 +132,7 @@ extends java.lang.Object</pre>
 </thead>
 <tbody>
 <tr class="alt-color" id="i0">
-<td class="col-first"><code><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></code></td>
+<td class="col-first"><code><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt;</code></td>
 <th class="col-second" scope="row"><code><span class="member-name-link"><a href="#getResult()">getResult</a></span>()</code></th>
 <td class="col-last">
 <div class="block">Obtain transaction execution result.</div>
@@ -159,12 +159,14 @@ extends java.lang.Object</pre>
 <li>
 <section class="detail" id="&lt;init&gt;(org.reldb.wrapd.sqldb.Database.TransactionRunner)">
 <h3>Transaction</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="member-name">Transaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&nbsp;transactionRunner)</span>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="member-name">Transaction</span>&#8203;(<span class="parameters"><a href="Database.TransactionRunner.html" title="interface in org.reldb.wrapd.sqldb">Database.TransactionRunner</a>&lt;<a href="Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt;&nbsp;transactionRunner)</span>
             throws <span class="exceptions">java.sql.SQLException</span></div>
 <div class="block">Encapsulate a transaction.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>transactionRunner</code> - A lambda defining code to run within a transaction. If it throws an error or returns false, the transaction is rolled back.</dd>
+<dd><code>transactionRunner</code> - A lambda defining code to run within a transaction.
+                          If it throws an error or returns an error Response, the transaction is rolled back.
+                          If it does not throw an error or return an error Response, the transaction is committed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.sql.SQLException</code> - Error getting connection.</dd>
 </dl>
@@ -181,7 +183,7 @@ extends java.lang.Object</pre>
 <li>
 <section class="detail" id="getResult()">
 <h3>getResult</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Result.html" title="class in org.reldb.wrapd.response">Result</a></span>&nbsp;<span class="member-name">getResult</span>()</div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="../response/Response.html" title="class in org.reldb.wrapd.response">Response</a>&lt;<a href="Database.Transaction.html" title="type parameter in Database.Transaction">T</a>&gt;</span>&nbsp;<span class="member-name">getResult</span>()</div>
 <div class="block">Obtain transaction execution result.</div>
 <dl class="notes">
 <dt>Returns:</dt>
