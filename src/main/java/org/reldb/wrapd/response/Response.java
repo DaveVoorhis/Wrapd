@@ -72,9 +72,9 @@ public class Response<T> {
      */
     public static void printError(String prompt, Throwable error) {
         System.out.println(
-                prompt != null
+                (prompt != null
                     ? prompt + " "
-                    : ""
+                    : "")
                 + error);
         if (error.getCause() != null)
             printError(Str.ing(MsgCausedBy), error.getCause());
