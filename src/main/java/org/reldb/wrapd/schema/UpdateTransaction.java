@@ -3,7 +3,7 @@ package org.reldb.wrapd.schema;
 import org.reldb.wrapd.response.Result;
 
 /**
- * Interface to define lamdbas that return a Result and require a ResultAction parameter.
+ * Interface to define a lambda that returns a Result and requires a ResultAction parameter.
  */
 public interface UpdateTransaction {
     /**
