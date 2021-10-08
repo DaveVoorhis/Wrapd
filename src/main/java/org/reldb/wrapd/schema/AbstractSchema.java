@@ -5,7 +5,6 @@ import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.progress.EmptyProgressIndicator;
 import org.reldb.toolbox.progress.ProgressIndicator;
 import org.reldb.wrapd.exceptions.FatalException;
-import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 
 /**
@@ -51,7 +50,7 @@ public abstract class AbstractSchema {
      *
      * @return Result
      */
-    protected abstract Response<Boolean> create();
+    protected abstract Result create();
 
     /**
      * Definition of a schema update.
@@ -95,10 +94,10 @@ public abstract class AbstractSchema {
     public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version == null)
-            return Result.Error(new FatalException(Str.ing(ErrNullVersion)));
+            return Result.ERROR(new FatalException(Str.ing(ErrNullVersion)));
         if (version instanceof VersionIndeterminate) {
             var noVersion = (VersionIndeterminate)version;
-            return Result.Error(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
+            return Result.ERROR(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
         }
         final ProgressIndicator progress = (progressIndicator != null)
             ? progressIndicator
@@ -116,17 +115,17 @@ public abstract class AbstractSchema {
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
                 progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
-                return Result.Error(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
+                return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
             progress.move(progress.getValue() + 1, Str.ing(MsgSchemaCreated));
         } else {
             if (!(version instanceof VersionNumber))
-                return Result.Error(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
+                return Result.ERROR(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             versionNumber = ((VersionNumber)version).value;
             progress.initialise(updates.length - versionNumber);
         }
-        var result = Result.True;
-        for (int update = versionNumber + 1; update <= updates.length && result.isValid(); update++) {
+        var result = Result.OK;
+        for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
             var transaction = getTransaction();
             progress.move(progress.getValue(), Str.ing(MsgUpdatingToVersion, update));
             final int updateNumber = update;
@@ -137,20 +136,20 @@ public abstract class AbstractSchema {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
-                    return Result.Error(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
-                    return Result.Error(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
-                    return Result.Error(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
+                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });
-            if (result.isValid())
+            if (result.isOk())
                 progress.move(progress.getValue() + 1, Str.ing(MsgUpdatedToVersion, update));
         }
         return result;

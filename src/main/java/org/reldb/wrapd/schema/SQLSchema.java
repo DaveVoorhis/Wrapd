@@ -121,9 +121,9 @@ public abstract class SQLSchema extends AbstractSchema {
     protected UpdateTransaction getTransaction() {
         return action -> {
             try {
-                return database.processTransaction(transaction -> action.run());
+                return database.processTransaction(transaction -> new Response<Result>(action.run())).value;
             } catch (SQLException sqe) {
-                return Result.Error(sqe);
+                return Result.ERROR(sqe);
             }
         };
     }
@@ -132,22 +132,22 @@ public abstract class SQLSchema extends AbstractSchema {
     protected Result setVersion(VersionNumber number) {
         try {
             database.update("UPDATE " + getVersionTableName() + " SET " + getVersionTableAttributeName() + " = ?", number.value);
-            return Result.True;
+            return Result.OK;
         } catch (SQLException sqe) {
-            return Result.Error(sqe);
+            return Result.ERROR(sqe);
         }
     }
 
     @Override
-    protected Response<Boolean> create() {
+    protected Result create() {
         try {
             return database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");
                 xact.updateAll("INSERT INTO " + getVersionTableName() + "(" + getVersionTableAttributeName() + ") VALUES (0)");
-                return Result.Ok(true);
-            });
+                return new Response<Result>(Result.OK);
+            }).value;
         } catch (SQLException sqe) {
-            return Result.Error(sqe);
+            return Result.ERROR(sqe);
         }
     }
 
