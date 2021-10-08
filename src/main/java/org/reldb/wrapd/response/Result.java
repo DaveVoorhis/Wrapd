@@ -31,7 +31,7 @@ public class Result extends Response<Boolean> {
      * @return A Result instance.
      */
     public static Result BOOLEAN(boolean value) {
-        return new Result(value);
+        return value ? OK : FAIL;
     }
 
     /**
