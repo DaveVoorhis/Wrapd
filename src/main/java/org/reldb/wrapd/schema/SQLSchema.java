@@ -3,6 +3,7 @@ package org.reldb.wrapd.schema;
 import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
@@ -122,31 +123,31 @@ public abstract class SQLSchema extends AbstractSchema {
             try {
                 return database.processTransaction(transaction -> action.run());
             } catch (SQLException sqe) {
-                return new Response(sqe);
+                return Result.Error(sqe);
             }
         };
     }
 
     @Override
-    protected Response setVersion(VersionNumber number) {
+    protected Result setVersion(VersionNumber number) {
         try {
             database.update("UPDATE " + getVersionTableName() + " SET " + getVersionTableAttributeName() + " = ?", number.value);
-            return new Response(Boolean.TRUE);
+            return Result.True;
         } catch (SQLException sqe) {
-            return new Response(sqe);
+            return Result.Error(sqe);
         }
     }
 
     @Override
-    protected Response create() {
+    protected Response<Boolean> create() {
         try {
             return database.transact(xact -> {
                 xact.updateAll("CREATE TABLE " + getVersionTableName() + "(" + getVersionTableAttributeName() + " " + getVersionTableAttributeTypeName() + ")");
                 xact.updateAll("INSERT INTO " + getVersionTableName() + "(" + getVersionTableAttributeName() + ") VALUES (0)");
-                return new Response(Boolean.TRUE);
+                return Result.Ok(true);
             });
         } catch (SQLException sqe) {
-            return new Response(sqe);
+            return Result.Error(sqe);
         }
     }
 

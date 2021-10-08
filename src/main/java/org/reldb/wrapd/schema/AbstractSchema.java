@@ -6,6 +6,7 @@ import org.reldb.toolbox.progress.EmptyProgressIndicator;
 import org.reldb.toolbox.progress.ProgressIndicator;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 
 /**
  * An abstract schema definition that can handle updates on anything definable as a schema.
@@ -42,7 +43,7 @@ public abstract class AbstractSchema {
      * @param number - version number
      * @return Result
      */
-    protected abstract Response setVersion(VersionNumber number);
+    protected abstract Result setVersion(VersionNumber number);
 
     /**
      * Create and initialise a new schema. Typically only contains version store,
@@ -50,7 +51,7 @@ public abstract class AbstractSchema {
      *
      * @return Result
      */
-    protected abstract Response create();
+    protected abstract Response<Boolean> create();
 
     /**
      * Definition of a schema update.
@@ -63,7 +64,7 @@ public abstract class AbstractSchema {
          * @return Result of application of update.
          * @throws Throwable Thrown if failure.
          */
-        Response apply(AbstractSchema schema) throws Throwable;
+        Result apply(AbstractSchema schema) throws Throwable;
     }
 
     /**
@@ -91,13 +92,13 @@ public abstract class AbstractSchema {
      * @param progressIndicator ProgressIndicator
      * @return Result
      */
-    public Response setup(ProgressIndicator progressIndicator) {
+    public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version == null)
-            return new Response(new FatalException(Str.ing(ErrNullVersion)));
+            return Result.Error(new FatalException(Str.ing(ErrNullVersion)));
         if (version instanceof VersionIndeterminate) {
             var noVersion = (VersionIndeterminate)version;
-            return new Response(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
+            return Result.Error(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
         }
         final ProgressIndicator progress = (progressIndicator != null)
             ? progressIndicator
@@ -115,37 +116,37 @@ public abstract class AbstractSchema {
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
                 progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
-                return new Response(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
+                return Result.Error(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
             progress.move(progress.getValue() + 1, Str.ing(MsgSchemaCreated));
         } else {
             if (!(version instanceof VersionNumber))
-                return new Response(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
+                return Result.Error(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             versionNumber = ((VersionNumber)version).value;
             progress.initialise(updates.length - versionNumber);
         }
-        var result = new Response(Boolean.TRUE);
+        var result = Result.True;
         for (int update = versionNumber + 1; update <= updates.length && result.isValid(); update++) {
             var transaction = getTransaction();
             progress.move(progress.getValue(), Str.ing(MsgUpdatingToVersion, update));
             final int updateNumber = update;
             result = transaction.run(() -> {
                 var updateSpecification = updates[updateNumber - 1];
-                Response updateResult;
+                Result updateResult;
                 try {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
-                    return new Response(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
+                    return Result.Error(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
-                    return new Response(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
+                    return Result.Error(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
-                    return new Response(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
+                    return Result.Error(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });
@@ -160,7 +161,7 @@ public abstract class AbstractSchema {
      *
      * @return Result
      */
-    public Response setup() {
+    public Result setup() {
         return setup(null);
     }
 
