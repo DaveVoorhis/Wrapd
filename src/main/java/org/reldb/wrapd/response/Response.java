@@ -71,8 +71,21 @@ public class Response<T> {
      * @param error Throwable error.
      */
     public static void printError(String prompt, Throwable error) {
-        System.out.println(prompt + " " + error);
+        System.out.println(
+                prompt != null
+                    ? prompt + " "
+                    : ""
+                + error);
         if (error.getCause() != null)
             printError(Str.ing(MsgCausedBy), error.getCause());
+    }
+
+    /**
+     * Dump an error's description, and its cause(s).
+     *
+     * @param error Throwable error.
+     */
+    public static void printError(Throwable error) {
+        printError(null, error);
     }
 }
