@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.reldb.toolbox.progress.ConsoleProgressIndicator;
-import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
 import org.reldb.wrapd.schema.VersionNumber;
@@ -46,7 +46,7 @@ public class TestSQLSchema {
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertTrue(result.isValid());
+		assertTrue(result.isOk());
 	}
 
 	@ParameterizedTest
@@ -58,22 +58,22 @@ public class TestSQLSchema {
 				"$$tester02"
 		});
 		var testSchema = new SQLSchema(database) {
-			protected AbstractSchema.Update[] getUpdates() {
-				return new AbstractSchema.Update[] {
+			protected Update[] getUpdates() {
+				return new Update[] {
 					schema -> {
 						database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-						return new Response(Boolean.TRUE);
+						return Result.OK;
 					},
 					schema -> {
 						database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
-						return new Response(Boolean.TRUE);
+						return Result.OK;
 					}
 				};
 			}
 		};
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
-		assertTrue(result.isValid());
+		assertTrue(result.isOk());
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
@@ -86,16 +86,16 @@ public class TestSQLSchema {
 				"$$tester02"
 		});
 		var testSchema = new SQLSchema(database) {
-			protected AbstractSchema.Update[] getUpdates() {
-				return new AbstractSchema.Update[] {
+			protected Update[] getUpdates() {
+				return new Update[] {
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return new Response(Boolean.TRUE);
+							return Result.OK;
 						},
 						// intentional fail
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, deliberateNonsense");
-							return new Response(Boolean.TRUE);
+							return Result.OK;
 						}
 				};
 			}
@@ -107,7 +107,6 @@ public class TestSQLSchema {
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
-
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void versionUpdatesWork(final Database database) {
@@ -117,39 +116,39 @@ public class TestSQLSchema {
 				"$$tester02"
 		});
 		var testSchema01 = new SQLSchema(database) {
-			protected AbstractSchema.Update[] getUpdates() {
-				return new AbstractSchema.Update[] {
+			protected Update[] getUpdates() {
+				return new Update[] {
 						// version 1
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return new Response(Boolean.TRUE);
+							return Result.OK;
 						}
 				};
 			}
 		};
 		var testSchema02 = new SQLSchema(database) {
-			protected AbstractSchema.Update[] getUpdates() {
-				return new AbstractSchema.Update[] {
+			protected Update[] getUpdates() {
+				return new Update[] {
 						// version 1
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
-							return new Response(Boolean.TRUE);
+							return Result.OK;
 						},
 						// migration to version 2
 						schema -> {
 							database.updateAll("CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)");
-							return new Response(Boolean.TRUE);
+							return Result.OK;
 						}
 				};
 			}
 		};
 		var result1 = testSchema01.setup(new ConsoleProgressIndicator());
 		result1.printIfError();
-		assertTrue(result1.isValid());
+		assertTrue(result1.isOk());
 		assertEquals(1, ((VersionNumber)testSchema01.getVersion()).value);
 		var result2 = testSchema02.setup(new ConsoleProgressIndicator());
 		result2.printIfError();
-		assertTrue(result1.isValid());
+		assertTrue(result1.isOk());
 		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
 	}
 
