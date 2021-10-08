@@ -10,6 +10,7 @@ import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -36,7 +37,6 @@ public class QueriesHelper {
 	}
 
 	private final String tuplePackage;
-	private final String tupleClassName;
 	private final String testTargetName;
 	private final Replacement[] replacements;
 	private final DbHelper dbHelper;
@@ -51,7 +51,6 @@ public class QueriesHelper {
 				new QueriesHelper.Replacement("<tuplepackage>", tuplePackage)
 		};
 		var testName = "Test" + dbname;
-		tupleClassName = testName + "Tuple";
 		testTargetName = "Test" + dbname + "_Source01";
 		codeDir = dbHelper.getBaseDir() + "/code";
 		ensureTestDirectoryExists();
@@ -78,7 +77,7 @@ public class QueriesHelper {
 		database.transact(xact -> {
 			xact.updateAll("CREATE TABLE $$xyz (x INTEGER, y INTEGER, z VARCHAR(20), PRIMARY KEY (x));");
 			xact.updateAll("CREATE TABLE $$abc (a INTEGER, b INTEGER, c VARCHAR(40), PRIMARY KEY (a));");
-			return new Response(Boolean.TRUE);
+			return Result.OK;
 		});
 	}
 
