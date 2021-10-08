@@ -206,7 +206,7 @@ public abstract class UpdatableTuple extends Tuple implements Cloneable {
     }
 
     /**
-     * Return true if the result of an update(...) contains no field failurees.
+     * Return true if the result of an update(...) contains no field failures.
      *
      * @param updateResult Result of an update(...)
      * @return true if updateResult contains no field failures.
