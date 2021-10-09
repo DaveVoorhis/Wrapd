@@ -1,11 +1,9 @@
 package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.il8n.Msg;
-import org.reldb.toolbox.il8n.Str;
-import org.reldb.wrapd.exceptions.FatalException;
 
 /**
- * Mechanism for defining Query and Update classes.
+ * Mechanism for defining Query, Update and valueOf classes.
  */
 public class Definer {
     private static final Msg ErrNoColumnsInResult = new Msg("There are no result columns in query {0}.", Definer.class);
@@ -131,16 +129,12 @@ public class Definer {
         return defineTable(tableName, null, (Object[])null);
     }
 
-    /** Define a Query for future use that returns the first column of the first row. */
-    public TupleTypeGenerator.GenerateResult defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
-        var sourceQueryName = queryName + "ValueOf";
-        var result = defineQuery(sourceQueryName, sqlText, args);
-        if (result.attributes.isEmpty())
-            throw new FatalException(Str.ing(ErrNoColumnsInResult, sqlText));
-        else {
-            var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, sourceQueryName, queryName, result.attributes.get(0).type);
-            valueOfGenerator.generate();
-            return result;
-        }
+    /** Define a ValueOf for future use that returns the first column of the first row. */
+    public void defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
+        var parameterConverter = new SQLParameterConverter(sqlText);
+        parameterConverter.process();
+        var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
+        var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
+        valueOfGenerator.generate();
     }
 }

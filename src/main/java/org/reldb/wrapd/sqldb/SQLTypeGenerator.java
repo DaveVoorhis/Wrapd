@@ -33,7 +33,7 @@ public abstract class SQLTypeGenerator {
     private final String queryName;
     private final Object[] args;
 
-    private final SQLParametriser parametriser;
+    private final SQLParameterConverter parametriser;
 
     /**
      * Create a generator of compiled update invokers.
@@ -54,7 +54,7 @@ public abstract class SQLTypeGenerator {
         this.dir = dir;
         this.queryName = queryName;
         this.args = args;
-        parametriser = new SQLParametriser(sqlText);
+        parametriser = new SQLParameterConverter(sqlText);
     }
 
     /**
