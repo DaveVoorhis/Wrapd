@@ -106,7 +106,7 @@ public class TupleTypeGenerator {
     }
 
     /**
-     * Add the specified attribute of specified type. NOTE: Will not take effect until generatee() has been invoked.
+     * Add the specified attribute of specified type. NOTE: Will not take effect until generate() has been invoked.
      *
      * @param name Name of new attribute.
      * @param type Type (class) of new attribute.
