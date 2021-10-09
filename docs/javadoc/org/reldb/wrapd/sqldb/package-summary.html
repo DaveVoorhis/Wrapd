@@ -105,6 +105,13 @@ loadScripts(document, 'script');</script>
 </td>
 </tr>
 <tr class="alt-color">
+<th class="col-first" scope="row"><a href="ResultSetToTuple.AttributeReceiver.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.AttributeReceiver</a></th>
+<td class="col-last">
+<div class="block">A functional interface for defining lambda expressions that handle an
+ attribute name and an attribute type.</div>
+</td>
+</tr>
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="ResultSetToTuple.TupleProcessor.html" title="interface in org.reldb.wrapd.sqldb">ResultSetToTuple.TupleProcessor</a>&lt;T extends <a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a>&gt;</th>
 <td class="col-last">
 <div class="block">FunctionalInterface to define lambdas for processing each Tuple in a ResultSet.</div>
@@ -146,7 +153,7 @@ loadScripts(document, 'script');</script>
 <tr class="row-color">
 <th class="col-first" scope="row"><a href="Definer.html" title="class in org.reldb.wrapd.sqldb">Definer</a></th>
 <td class="col-last">
-<div class="block">Mechanism for defining Query and Update classes.</div>
+<div class="block">Mechanism for defining Query, Update and valueOf classes.</div>
 </td>
 </tr>
 <tr class="alt-color">
@@ -174,51 +181,66 @@ loadScripts(document, 'script');</script>
 </td>
 </tr>
 <tr class="alt-color">
+<th class="col-first" scope="row"><a href="SQLParameterConverter.html" title="class in org.reldb.wrapd.sqldb">SQLParameterConverter</a></th>
+<td class="col-last">
+<div class="block">Convert SQL text with optional parameters specified as ? or {name} to
+ SQL text with only ? parameters, and obtain a list of parameter names,
+ where a generated parameter name will correspond to each ?, and the specified
+ name will be for each {name}.</div>
+</td>
+</tr>
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="SQLTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">SQLTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent a SQL construct.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="Tuple.html" title="class in org.reldb.wrapd.sqldb">Tuple</a></th>
 <td class="col-last">
 <div class="block">The base class for all tuples.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="TupleTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent a tuple, which is a class that implements Tuple.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="TupleTypeGenerator.GenerateResult.html" title="class in org.reldb.wrapd.sqldb">TupleTypeGenerator.GenerateResult</a></th>
 <td class="col-last">
 <div class="block">Result of generate().</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="UpdatableTuple.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple</a></th>
 <td class="col-last">
 <div class="block">The base class for all updatable tuples.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="UpdatableTuple.FieldGetFailure.html" title="class in org.reldb.wrapd.sqldb">UpdatableTuple.FieldGetFailure</a></th>
 <td class="col-last">
 <div class="block">Failure to retrieve a Field.</div>
 </td>
 </tr>
-<tr class="alt-color">
+<tr class="row-color">
 <th class="col-first" scope="row"><a href="Update.html" title="class in org.reldb.wrapd.sqldb">Update</a></th>
 <td class="col-last">
 <div class="block">An SQL update (typically INSERT, UPDATE, DELETE, or stored procedure invoking) query.</div>
 </td>
 </tr>
-<tr class="row-color">
+<tr class="alt-color">
 <th class="col-first" scope="row"><a href="UpdateTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">UpdateTypeGenerator</a></th>
 <td class="col-last">
 <div class="block">Generates Java code to represent an update query, which is a class that implements <a href="Update.html" title="class in org.reldb.wrapd.sqldb"><code>Update</code></a>.</div>
+</td>
+</tr>
+<tr class="row-color">
+<th class="col-first" scope="row"><a href="ValueOfTypeGenerator.html" title="class in org.reldb.wrapd.sqldb">ValueOfTypeGenerator</a></th>
+<td class="col-last">
+<div class="block">Generates Java code to ergonomically represent valueOf(...) queries.</div>
 </td>
 </tr>
 <tr class="alt-color">

@@ -1,8 +1,24 @@
 package org.reldb.wrapd.sqldb;
 
+/**
+ * Generates Java code to ergonomically represent valueOf(...) queries.
+ */
 public class ValueOfTypeGenerator extends SQLTypeGenerator {
     private final Class<?> type;
 
+    /**
+     * Create a generator of compiled update invokers.
+     *
+     * @param codeDirectory Directory into which generated class(es) will be put.
+     * @param packageSpec Package to which generated class(es) belong, in dotted notation.
+     * @param valueOfClassName Name of generated class.
+     * @param type The type returned by valueOf*(...) in the generated class.
+     * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
+     *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
+     *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
+     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     * @param args Sample arguments.
+     */
     public ValueOfTypeGenerator(String codeDirectory, String packageSpec, String valueOfClassName, Class<?> type, String sqlText, Object... args) {
         super(codeDirectory, packageSpec, valueOfClassName, sqlText, args);
         this.type = type;

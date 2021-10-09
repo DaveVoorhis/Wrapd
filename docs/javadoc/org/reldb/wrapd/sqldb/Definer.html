@@ -82,7 +82,7 @@ loadScripts(document, 'script');</script>
 <hr>
 <pre>public class <span class="type-name-label">Definer</span>
 extends java.lang.Object</pre>
-<div class="block">Mechanism for defining Query and Update classes.</div>
+<div class="block">Mechanism for defining Query, Update and valueOf classes.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -181,7 +181,7 @@ java.lang.Object...&nbsp;args)</code></th>
 java.lang.String&nbsp;sqlText,
 java.lang.Object...&nbsp;args)</code></th>
 <td class="col-last">
-<div class="block">Define a Query for future use that returns the first column of the first row.</div>
+<div class="block">Define a ValueOf for future use that returns the first column of the first row.</div>
 </td>
 </tr>
 </tbody>
@@ -347,14 +347,15 @@ java.lang.Object...&nbsp;args)</span>
 java.lang.String&nbsp;sqlText,
 java.lang.Object...&nbsp;args)</span>
                    throws <span class="exceptions">java.lang.Throwable</span></div>
-<div class="block">Define a Query for future use that returns the first column of the first row.</div>
+<div class="block">Define a ValueOf for future use that returns the first column of the first row.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>queryName</code> - Name of query. Should be unique.</dd>
+<dd><code>queryName</code> - Name of valueOf query. Should be unique.</dd>
 <dd><code>sqlText</code> - SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
                 appear as a corresponding Java method name. If ? is used, it will be named pn, where n
                 is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-                SQL text with all {name} converted to ? for subsequent evaluation.</dd>
+                SQL text with all {name} converted to ? for subsequent evaluation.
+                For optimum performance, should have one and only one column and return one row.</dd>
 <dd><code>args</code> - Arguments that specify parameter type(s) and allow query to succeed.</dd>
 <dt>Throws:</dt>
 <dd><code>java.lang.Throwable</code> - Error.</dd>
