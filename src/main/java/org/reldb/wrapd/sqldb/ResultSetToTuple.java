@@ -2,6 +2,7 @@ package org.reldb.wrapd.sqldb;
 
 import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
+import org.reldb.wrapd.response.Response;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +25,96 @@ public class ResultSetToTuple {
     private final static Msg ErrNullTupleType = new Msg("tupleType may not be null", ResultSetToTuple.class);
     private final static Msg ErrNullTupleProcessor = new Msg("tupleProcessor may not be null", ResultSetToTuple.class);
     private final static Msg ErrNullDatabase = new Msg("database may not be null", ResultSetToTuple.class);
+    private final static Msg ErrFailedToLoadClass = new Msg("Unable to load column class", ResultSetToTuple.class);
+    private final static Msg ErrNoColumnsInResultSet = new Msg("ResultSet contains no columns.", ResultSetToTuple.class);
+
+    /**
+     * A functional interface for defining lambda expressions that handle an
+     * attribute name and an attribute type.
+     */
+    @FunctionalInterface
+    public interface AttributeReceiver {
+        /**
+         * Process an attribute.
+         *
+         * @param name Name of attribute.
+         * @param type Type of attribute.
+         */
+        void process(String name, Class<?> type);
+    }
+
+    /**
+     * Do something with each attribute (i.e., name/class pair) of a ResultSet.
+     *
+     * @param results A ResultSet.
+     * @param customisations Customisations for specific DBMS types.
+     * @param receiver The lambda that will receive each attribute.
+     * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
+     * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
+     */
+    public static void processResultSetAttributes(ResultSet results, Customisations customisations, AttributeReceiver receiver) throws SQLException, ClassNotFoundException {
+        var metadata = results.getMetaData();
+        for (var column = 1; column <= metadata.getColumnCount(); column++) {
+            var name = metadata.getColumnName(column);
+            var sqlTypeName = metadata.getColumnTypeName(column);
+            var columnClassName = metadata.getColumnClassName(column);
+            if (customisations != null)
+                columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
+            var type = Class.forName(columnClassName);
+            receiver.process(name, type);
+        }
+    }
+
+    /**
+     * Obtain the type of the first column of a ResultSet. Used in ValueOf.
+     *
+     * @param results A ResultSet.
+     * @param customisations Customisations for specific DBMS types.
+     * @return The type of the first column of the ResultSet, or an error, wrapped in a Response.
+     */
+    public static Response<Class<?>> obtainTypeOfFirstColumnOfResultSet(ResultSet results, Customisations customisations) {
+        var types = new LinkedList<Class<?>>();
+        try {
+            processResultSetAttributes(results, customisations, (name, type) -> types.add(type));
+        } catch (Throwable e) {
+            return new Response<>(new SQLException(Str.ing(ErrFailedToLoadClass), e));
+        }
+        if (types.size() > 0)
+            return new Response<>(types.get(0));
+        return new Response<>(new SQLException(Str.ing(ErrNoColumnsInResultSet)));
+    }
+
+    /**
+     * Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
+     * Obtain a TupleTypeGenerator that can generate a Tuple class.
+     *
+     * This will normally be invoked in a setup/build phase run.
+     *
+     * @param codeDir Directory where source code will be stored.
+     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
+     * @param tupleName Name of new UpdatableTuple class.
+     * @param results ResultSet to be used to create the new UpdatableTuple class.
+     * @param customisations Customisations for specific DBMS types.
+     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
+     * @return A TupleTypeGenerator.
+     * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
+     * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
+     * @throws IllegalArgumentException thrown if an argument is null
+     */
+    public static TupleTypeGenerator obtainTupleTypeGeneratorForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
+        if (codeDir == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
+        if (packageSpec == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
+        if (tupleName == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
+        if (results == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullResults));
+        var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
+        generator.setTableName(tableName);
+        processResultSetAttributes(results, customisations, generator::addAttribute);
+        return generator;
+    }
 
     /**
      * Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
@@ -41,26 +132,7 @@ public class ResultSetToTuple {
      * @throws IllegalArgumentException thrown if an argument is null
      */
     public static TupleTypeGenerator.GenerateResult createTupleForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
-        if (codeDir == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
-        if (packageSpec == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
-        if (tupleName == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
-        if (results == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullResults));
-        var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
-        generator.setTableName(tableName);
-        var metadata = results.getMetaData();
-        for (var column = 1; column <= metadata.getColumnCount(); column++) {
-            var name = metadata.getColumnName(column);
-            var sqlTypeName = metadata.getColumnTypeName(column);
-            var columnClassName = metadata.getColumnClassName(column);
-            if (customisations != null)
-                columnClassName = customisations.getSpecificColumnClass(sqlTypeName);
-            var type = Class.forName(columnClassName);
-            generator.addAttribute(name, type);
-        }
+        var generator = obtainTupleTypeGeneratorForUpdate(codeDir, packageSpec, tupleName, results, customisations, tableName);
         return generator.generate();
     }
 

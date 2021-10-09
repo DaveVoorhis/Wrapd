@@ -139,7 +139,8 @@ public class Database {
     }
 
     /**
-     * Used to define lambda expressions that receive a ResultSet for processing. T specifies the type of the return value from processing the ResultSet.
+     * Used to define lambda expressions that receive a ResultSet for processing.
+     * T specifies the type of the return value from processing the ResultSet.
      *
      * @param <T> Return type of go(...)
      */
@@ -179,6 +180,37 @@ public class Database {
      */
     public boolean updateAll(String sqlStatement) throws SQLException {
         return useConnection(conn -> updateAll(conn, sqlStatement));
+    }
+
+    /**
+     * Obtain the type of the first column of a query. Used for ValueOf.
+     *
+     * @param connection Database connection.
+     * @param query SELECT query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @throws SQLException Error.
+     * @param args Optional parameter arguments.
+     * @return Type of first column of result.
+     * @throws SQLException Error.
+     */
+    public Class<?> getTypeOfFirstColumn(Connection connection, String query, Object[] args) throws SQLException {
+        return args != null && args.length > 0
+            ? query(connection, query, resultSet -> ResultSetToTuple.obtainTypeOfFirstColumnOfResultSet(resultSet, customisations), args)
+            : queryAll(connection, query, resultSet -> ResultSetToTuple.obtainTypeOfFirstColumnOfResultSet(resultSet, customisations));
+    }
+
+    /**
+     * Obtain the type of the first column of a query. Used for ValueOf.
+     *
+     * @param query SELECT query that returns a single column,
+     *              or multiple columns but only the first is used to obtain the value.
+     * @throws SQLException Error.
+     * @param args Optional parameter arguments.
+     * @return Type of first column of result.
+     * @throws SQLException Error.
+     */
+    public Class<?> getTypeOfFirstColumn(String query, Object[] args) throws SQLException {
+        return useConnection(conn -> getTypeOfFirstColumn(conn, query, args));
     }
 
     /**

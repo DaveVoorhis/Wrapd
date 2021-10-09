@@ -13,11 +13,11 @@ import java.util.Vector;
  * where a generated parameter name will correspond to each ?, and the specified
  * name will be for each {name}.
  */
-public class SQLParametriser {
-    private static final Msg ErrMissingEndBrace = new Msg("Missing end ''}'' in parameter def started at position {0} in {1}", SQLParametriser.class);
-    private static final Msg ErrDuplicateParameterName = new Msg("Attempt to define duplicate parameter name {0}.", SQLParametriser.class);
-    private static final Msg ErrInvalidIdentifier = new Msg("Parameter name {0} is not a valid Java identifier.", SQLParametriser.class);
-    private static final Msg ErrInvalidIdentifierCharacter = new Msg("Parameter name {0} must not contain ''.''.", SQLParametriser.class);
+public class SQLParameterConverter {
+    private static final Msg ErrMissingEndBrace = new Msg("Missing end ''}'' in parameter def started at position {0} in {1}", SQLParameterConverter.class);
+    private static final Msg ErrDuplicateParameterName = new Msg("Attempt to define duplicate parameter name {0}.", SQLParameterConverter.class);
+    private static final Msg ErrInvalidIdentifier = new Msg("Parameter name {0} is not a valid Java identifier.", SQLParameterConverter.class);
+    private static final Msg ErrInvalidIdentifierCharacter = new Msg("Parameter name {0} must not contain ''.''.", SQLParameterConverter.class);
 
     private static final char ParmChar = '?';
     private static final char ParmNameLeftDelimiter = '{';
@@ -49,7 +49,7 @@ public class SQLParametriser {
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
      *                SQL text with all {name} converted to ? for subsequent evaluation.
      */
-    public SQLParametriser(String sqlText) {
+    public SQLParameterConverter(String sqlText) {
         this.sqlText = sqlText;
     }
 
