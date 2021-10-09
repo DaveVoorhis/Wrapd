@@ -3,10 +3,13 @@ package <tuplepackage>;
 /* NOTE: This is a template. Content will be replaced at runtime. See <db>, <dbpackage>, and <tuplepackage>. */
 
 import org.junit.jupiter.api.Test;
-import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.<dbpackage>.GetDatabase;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.sql.SQLException;
+
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.<dbpackage>.GetDatabase;
 
 public class Test<db>_Source01 {
 
@@ -99,6 +102,28 @@ public class Test<db>_Source01 {
         ABCJoinXYZWhere.query(database, 1002, 1008)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
                         " x = " + row.x + " y = " + row.y + " z = " + row.z));
+    }
+
+    @Test
+    public void testValueOf01() throws Exception {
+        System.out.println("== ValueOfABCb ==");
+        var database = GetDatabase.getDatabase();
+        ClearABC.update(database);
+        populateABC(database);
+        var result = ValueOfABCb.valueOfAll(database);
+        System.out.println("Result is " + result.get());
+        assertEquals(2000, result.get());
+    }
+
+    @Test
+    public void testValueOf02() throws Exception {
+        System.out.println("== ValueOfXYZz ==");
+        var database = GetDatabase.getDatabase();
+        ClearXYZ.update(database);
+        populateXYZ(database);
+        var result = ValueOfXYZz.valueOf(database, 1007);
+        System.out.println("Result is " + result.get());
+        assertEquals("100700", result.get());
     }
 
 }

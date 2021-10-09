@@ -53,7 +53,7 @@ public class TestSQLTypeGenerator {
 				"select * from sometable where x = {testparm", 7);
 		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Missing end '}' in parameter def started at position 34 in select * from sometable where x = {testparm";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParameterConverter: Missing end '}' in parameter def started at position 34 in select * from sometable where x = {testparm";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -65,7 +65,7 @@ public class TestSQLTypeGenerator {
 				"select * from sometable where x = {testparm} and y = {testparm}", 5, 6);
 		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Attempt to define duplicate parameter name testparm.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParameterConverter: Attempt to define duplicate parameter name testparm.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -77,7 +77,7 @@ public class TestSQLTypeGenerator {
 				"select * from sometable where x = {123testparm}", 6);
 		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Parameter name 123testparm is not a valid Java identifier.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParameterConverter: Parameter name 123testparm is not a valid Java identifier.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);
@@ -89,7 +89,7 @@ public class TestSQLTypeGenerator {
 				"select * from sometable where x = {test.parm}", 6);
 		Exception exception = assertThrows(IllegalArgumentException.class, generator::generate);
 
-		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParametriser: Parameter name test.parm must not contain '.'.";
+		String expectedMessage = "class org.reldb.wrapd.sqldb.SQLParameterConverter: Parameter name test.parm must not contain '.'.";
 		String actualMessage = exception.getMessage();
 
 		assertEquals(expectedMessage, actualMessage);

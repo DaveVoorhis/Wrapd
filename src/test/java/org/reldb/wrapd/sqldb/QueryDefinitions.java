@@ -17,6 +17,7 @@ public class QueryDefinitions extends Definer {
         defineUpdate("ClearABC", "DELETE FROM $$abc");
         defineUpdate("ClearXYZ", "DELETE FROM $$xyz");
         defineUpdate("ClearABCWhere", "DELETE FROM $$abc WHERE a = {aValue}", 3);
-        defineValueOf("ValueOfABCx", "SELECT y FROM $$xyz WHERE x = {xValue}", 33);
+        defineValueOf("ValueOfABCb", "SELECT b FROM $$abc");
+        defineValueOf("ValueOfXYZz", "SELECT z FROM $$xyz WHERE x = {xValue}", 33);
     }
 }
