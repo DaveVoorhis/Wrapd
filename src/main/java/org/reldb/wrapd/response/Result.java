@@ -18,7 +18,7 @@ public class Result extends Response<Boolean> {
      * Create a valid response.
      *
      * @param value boolean true/false.
-     * @return A Result instance.
+     * @return A Result.
      */
     public static Result is(boolean value) {
         return value ? OK : FAIL;
@@ -28,7 +28,7 @@ public class Result extends Response<Boolean> {
      * Create an invalid, error response.
      *
      * @param error The Throwable error.
-     * @return A Result instance.
+     * @return A Result.
      */
     public static Result is(Throwable error) {
         return new Result(error);

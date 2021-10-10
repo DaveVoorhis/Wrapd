@@ -12,10 +12,24 @@ public class Response<T> {
     private static final Msg MsgError = new Msg("Error:", Response.class);
     private static final Msg MsgCausedBy = new Msg("Caused by:", Response.class);
 
+    /**
+     * Create a valid, non-error response.
+     *
+     * @param <T> The value type.
+     * @param value The non-error, valid value.
+     * @return A Response.
+     */
     public static <T> Response<T> set(T value) {
         return new Response<>(value);
     }
 
+    /**
+     * Create an error response.
+     *
+     * @param <T> The value type.
+     * @param error The Throwable error.
+     * @return A Response.
+     */
     public static <T> Response<T> set(Throwable error) {
         return new Response<>(error);
     }
