@@ -116,9 +116,9 @@ public class Database {
     public <T> Response<T> processConnection(ConnectionUser<T> connectionUser) throws SQLException {
         try (var connection = dataSource.getConnection()) {
             try {
-                return new Response<>(connectionUser.go(connection));
+                return Response.set(connectionUser.go(connection));
             } catch (SQLException t) {
-                return new Response<>(t);
+                return Response.set(t);
             }
         }
     }
@@ -227,10 +227,10 @@ public class Database {
         return queryAll(connection, query, resultSet -> {
             try {
                 if (resultSet.next())
-                    return new Response<>(Optional.ofNullable(resultSet.getObject(1)));
-                return new Response<>(Optional.empty());
+                    return Response.set(Optional.ofNullable(resultSet.getObject(1)));
+                return Response.set(Optional.empty());
             } catch (SQLException sqe) {
-                return new Response<>(sqe);
+                return Response.set(sqe);
             }
         });
     }
@@ -276,7 +276,7 @@ public class Database {
     }
 
     /**
-     * Represents an SQL NULL on behalf of a specified SQL type from the {@link java.sql.Types} enum.
+     * Represents an SQL NULL on behalf of the corresponding SQL type from the {@link java.sql.Types} enum.
      */
     private static class Null {
         /** The {@link java.sql.Types} enum value for this Null. */
@@ -358,9 +358,9 @@ public class Database {
         try (var statement = connection.prepareStatement(sqlized)) {
             setupParms(statement, parms);
             try {
-                return new Response<>(preparedStatementUser.go(statement));
+                return Response.set(preparedStatementUser.go(statement));
             } catch (SQLException t) {
-                return new Response<>(t);
+                return Response.set(t);
             }
         }
     }
@@ -423,10 +423,10 @@ public class Database {
         return query(connection, query, resultSet -> {
             try {
                 if (resultSet.next())
-                    return new Response<>(Optional.ofNullable(resultSet.getObject(1)));
-                return new Response<>(Optional.empty());
+                    return Response.set(Optional.ofNullable(resultSet.getObject(1)));
+                return Response.set(Optional.empty());
             } catch (SQLException sqe) {
-                return new Response<>(sqe);
+                return Response.set(sqe);
             }
         }, parms);
     }
@@ -484,9 +484,9 @@ public class Database {
     public static ResultSetReceiver<TupleTypeGenerator.GenerateResult> newResultSetGeneratesTupleClass(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations) {
         return resultSet -> {
             try {
-                return new Response<>(ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations));
+                return Response.set(ResultSetToTuple.createTuple(codeDirectory, packageSpec, tupleClassName, resultSet, customisations));
             } catch (Throwable e) {
-                return new Response<>(e);
+                return Response.set(e);
             }
         };
     }
@@ -504,9 +504,9 @@ public class Database {
     public static ResultSetReceiver<TupleTypeGenerator.GenerateResult> newResultSetGeneratesTupleClassForUpdate(String codeDirectory, String packageSpec, String tupleClassName, Customisations customisations, String tableName) {
         return resultSet -> {
             try {
-                return new Response<>(ResultSetToTuple.createTupleForUpdate(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName));
+                return Response.set(ResultSetToTuple.createTupleForUpdate(codeDirectory, packageSpec, tupleClassName, resultSet, customisations, tableName));
             } catch (Throwable e) {
-                return new Response<>(e);
+                return Response.set(e);
             }
         };
     }
@@ -555,7 +555,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAll(String codeDirectory, String packageSpec, String tupleClassName, String query) throws SQLException {
-        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query)))).getResult();
+        return (new Transaction<>(connection -> Response.set(createTupleFromQueryAll(connection, codeDirectory, packageSpec, tupleClassName, query)))).getResult();
     }
 
     /**
@@ -570,7 +570,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryAllForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query) throws SQLException {
-        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query)))).getResult();
+        return (new Transaction<>(connection -> Response.set(createTupleFromQueryAllForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query)))).getResult();
     }
 
     /**
@@ -620,7 +620,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public Response<TupleTypeGenerator.GenerateResult> createTupleFromQuery(String codeDirectory, String packageSpec, String tupleClassName, String query, Object... parms) throws SQLException {
-        return (new Transaction<>(connection -> new Response<>(createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms)))).getResult();
+        return (new Transaction<>(connection -> Response.set(createTupleFromQuery(connection, codeDirectory, packageSpec, tupleClassName, query, parms)))).getResult();
     }
 
     /**
@@ -636,7 +636,7 @@ public class Database {
      * @throws SQLException Error.
      */
     public Response<TupleTypeGenerator.GenerateResult> createTupleFromQueryForUpdate(String codeDirectory, String packageSpec, String tupleClassName, String tableName, String query, Object... parms) throws SQLException {
-        return (new Transaction<>(connection -> new Response<>(createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms)))).getResult();
+        return (new Transaction<>(connection -> Response.set(createTupleFromQueryForUpdate(connection, codeDirectory, packageSpec, tupleClassName, tableName, query, parms)))).getResult();
     }
 
     /**
@@ -649,9 +649,9 @@ public class Database {
     public <T extends Tuple> ResultSetReceiver<Stream<T>> newResultSetToStream(Class<T> tupleClass) {
         return result -> {
             try {
-                return new Response<>(ResultSetToTuple.toStream(result, tupleClass));
+                return Response.set(ResultSetToTuple.toStream(result, tupleClass));
             } catch (Throwable e) {
-                return new Response<>(new FatalException(Str.ing(ErrResultSetToStreamFail1), e));
+                return Response.set(new FatalException(Str.ing(ErrResultSetToStreamFail1), e));
             }
         };
     }
@@ -668,9 +668,9 @@ public class Database {
     public <T extends UpdatableTuple> ResultSetReceiver<Stream<T>> newResultSetToStreamForUpdate(Class<T> tupleClass) {
         return result -> {
             try {
-                return new Response<>(ResultSetToTuple.toStreamForUpdate(this, result, tupleClass));
+                return Response.set(ResultSetToTuple.toStreamForUpdate(this, result, tupleClass));
             } catch (Throwable e) {
-                return new Response<>(new FatalException(Str.ing(ErrResultSetToStreamFail2), e));
+                return Response.set(new FatalException(Str.ing(ErrResultSetToStreamFail2), e));
             }
         };
     }
@@ -1058,7 +1058,7 @@ public class Database {
                     result = transactionRunner.run(connection);
                 } catch (Throwable t) {
                     connection.rollback();
-                    result = new Response<>(t);
+                    result = Response.set(t);
                     return;
                 }
                 if (result.isValid())

@@ -15,23 +15,23 @@ public class Result extends Response<Boolean> {
     public static final Result FAIL = new Result(false);
 
     /**
-     * Create an invalid, error response.
-     *
-     * @param error The Throwable error.
-     * @return A Result instance.
-     */
-    public static Result ERROR(Throwable error) {
-        return new Result(error);
-    }
-
-    /**
      * Create a valid response.
      *
      * @param value boolean true/false.
      * @return A Result instance.
      */
-    public static Result BOOLEAN(boolean value) {
+    public static Result is(boolean value) {
         return value ? OK : FAIL;
+    }
+
+    /**
+     * Create an invalid, error response.
+     *
+     * @param error The Throwable error.
+     * @return A Result instance.
+     */
+    public static Result is(Throwable error) {
+        return new Result(error);
     }
 
     /**

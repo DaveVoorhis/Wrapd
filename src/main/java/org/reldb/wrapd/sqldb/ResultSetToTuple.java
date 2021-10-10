@@ -29,7 +29,7 @@ public class ResultSetToTuple {
     private final static Msg ErrNoColumnsInResultSet = new Msg("ResultSet contains no columns.", ResultSetToTuple.class);
 
     /**
-     * A functional interface for defining lambda expressions that handle an
+     * A functional interface for defining lambda expressions that do something with an
      * attribute name and an attribute type.
      */
     @FunctionalInterface
@@ -77,43 +77,11 @@ public class ResultSetToTuple {
         try {
             processResultSetAttributes(results, customisations, (name, type) -> types.add(type));
         } catch (Throwable e) {
-            return new Response<>(new SQLException(Str.ing(ErrFailedToLoadClass), e));
+            return Response.set(new SQLException(Str.ing(ErrFailedToLoadClass), e));
         }
         if (types.size() > 0)
-            return new Response<>(types.get(0));
-        return new Response<>(new SQLException(Str.ing(ErrNoColumnsInResultSet)));
-    }
-
-    /**
-     * Given a target code directory and a desired UpdatableTuple class name, and a ResultSet,
-     * Obtain a TupleTypeGenerator that can generate a Tuple class.
-     *
-     * This will normally be invoked in a setup/build phase run.
-     *
-     * @param codeDir Directory where source code will be stored.
-     * @param packageSpec The package, in dotted notation, to which the Tuple belongs.
-     * @param tupleName Name of new UpdatableTuple class.
-     * @param results ResultSet to be used to create the new UpdatableTuple class.
-     * @param customisations Customisations for specific DBMS types.
-     * @param tableName Name of table this Tuple maps to. Null if not mapped to a table.
-     * @return A TupleTypeGenerator.
-     * @throws SQLException thrown if there is a problem retrieving ResultSet metadata.
-     * @throws ClassNotFoundException thrown if a column class specified in the ResultSet metadata can't be loaded.
-     * @throws IllegalArgumentException thrown if an argument is null
-     */
-    public static TupleTypeGenerator obtainTupleTypeGeneratorForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
-        if (codeDir == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
-        if (packageSpec == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
-        if (tupleName == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
-        if (results == null)
-            throw new IllegalArgumentException(Str.ing(ErrNullResults));
-        var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
-        generator.setTableName(tableName);
-        processResultSetAttributes(results, customisations, generator::addAttribute);
-        return generator;
+            return Response.set(types.get(0));
+        return Response.set(new SQLException(Str.ing(ErrNoColumnsInResultSet)));
     }
 
     /**
@@ -132,7 +100,17 @@ public class ResultSetToTuple {
      * @throws IllegalArgumentException thrown if an argument is null
      */
     public static TupleTypeGenerator.GenerateResult createTupleForUpdate(String codeDir, String packageSpec, String tupleName, ResultSet results, Customisations customisations, String tableName) throws SQLException, ClassNotFoundException {
-        var generator = obtainTupleTypeGeneratorForUpdate(codeDir, packageSpec, tupleName, results, customisations, tableName);
+        if (codeDir == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullCodeDir));
+        if (packageSpec == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullPackageSpec));
+        if (tupleName == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullTupleName));
+        if (results == null)
+            throw new IllegalArgumentException(Str.ing(ErrNullResults));
+        var generator = new TupleTypeGenerator(codeDir, packageSpec, tupleName);
+        generator.setTableName(tableName);
+        processResultSetAttributes(results, customisations, generator::addAttribute);
         return generator.generate();
     }
 

@@ -12,6 +12,14 @@ public class Response<T> {
     private static final Msg MsgError = new Msg("Error:", Response.class);
     private static final Msg MsgCausedBy = new Msg("Caused by:", Response.class);
 
+    public static <T> Response<T> set(T value) {
+        return new Response<>(value);
+    }
+
+    public static <T> Response<T> set(Throwable error) {
+        return new Response<>(error);
+    }
+
     /** The valid value of this Response. */
     public final T value;
 
@@ -23,7 +31,7 @@ public class Response<T> {
      *
      * @param value The non-error, valid value.
      */
-    public Response(T value) {
+    protected Response(T value) {
         this.value = value;
         this.error = null;
     }
@@ -33,7 +41,7 @@ public class Response<T> {
      *
      * @param error The Throwable error.
      */
-    public Response(Throwable error) {
+    protected Response(Throwable error) {
         this.value = null;
         this.error = error;
     }

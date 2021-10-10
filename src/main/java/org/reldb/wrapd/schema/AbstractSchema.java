@@ -45,7 +45,7 @@ public abstract class AbstractSchema {
     protected abstract Result setVersion(VersionNumber number);
 
     /**
-     * Create and initialise a new schema. Typically only contains version store,
+     * Create and initialise a new schema, which usually only contains version store,
      * because it is assumed that updates will be run to create other content.
      *
      * @return Result
@@ -57,7 +57,7 @@ public abstract class AbstractSchema {
      */
     public interface Update {
         /**
-         * Apply an schema update.
+         * Apply a schema update.
          *
          * @param schema The schema to which the update applies.
          * @return Result of application of update.
@@ -94,10 +94,10 @@ public abstract class AbstractSchema {
     public Result setup(ProgressIndicator progressIndicator) {
         var version = getVersion();
         if (version == null)
-            return Result.ERROR(new FatalException(Str.ing(ErrNullVersion)));
+            return Result.is(new FatalException(Str.ing(ErrNullVersion)));
         if (version instanceof VersionIndeterminate) {
             var noVersion = (VersionIndeterminate)version;
-            return Result.ERROR(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
+            return Result.is(new FatalException(Str.ing(ErrUnableToDetermineVersion, noVersion.reason), noVersion.error));
         }
         final ProgressIndicator progress = (progressIndicator != null)
             ? progressIndicator
@@ -115,12 +115,12 @@ public abstract class AbstractSchema {
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
                 progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
-                return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
+                return Result.is(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
             progress.move(progress.getValue() + 1, Str.ing(MsgSchemaCreated));
         } else {
             if (!(version instanceof VersionNumber))
-                return Result.ERROR(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
+                return Result.is(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
             versionNumber = ((VersionNumber)version).value;
             progress.initialise(updates.length - versionNumber);
         }
@@ -136,16 +136,16 @@ public abstract class AbstractSchema {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
-                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
+                    return Result.is(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
-                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
+                    return Result.is(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
                     progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
-                    return Result.ERROR(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
+                    return Result.is(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });
