@@ -1,4 +1,5 @@
 - Test Definer-generated valueOf with queries that return no rows.
+- Test Definer-generated valueOf with queries that return no columns.
 - Provide unified API for all definitions in a Definer as a single file.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
