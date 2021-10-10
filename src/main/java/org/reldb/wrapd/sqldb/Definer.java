@@ -1,13 +1,9 @@
 package org.reldb.wrapd.sqldb;
 
-import org.reldb.toolbox.il8n.Msg;
-
 /**
  * Mechanism for defining Query, Update and valueOf classes.
  */
 public class Definer {
-    private static final Msg ErrNoColumnsInResult = new Msg("There are no result columns in query {0}.", Definer.class);
-
     private final Database database;
     private final String codeDirectory;
     private final String packageSpec;
@@ -26,7 +22,7 @@ public class Definer {
     }
 
     /**
-     * Define a Query for future use.
+     * Define a Tuple type, and a Query class with query methods.
      *
      * @param queryName Name of query. Should be unique.
      * @param tableName Name of table the generated Tuple maps to. Null if not mapped to a table.
@@ -35,7 +31,7 @@ public class Definer {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
      * @return Result of tuple generation.
      * @throws Throwable Error.
@@ -56,13 +52,13 @@ public class Definer {
     }
 
     /**
-     * Define a Query for future use.
+     * Define a Tuple type, and a Query class with query methods.
      *
      * @param queryName Name of query. Should be unique.
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
      * @return Result of tuple generation.
      * @throws Throwable Error.
@@ -72,7 +68,7 @@ public class Definer {
     }
 
     /**
-     * Define an Update for future use.
+     * Define an Update class with update(...) methods.
      *
      * WARNING: This will test the query by running it. Hope you're not doing this on a production database!
      *
@@ -80,7 +76,7 @@ public class Definer {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow update query to succeed.
      * @throws Throwable Error.
      */
@@ -94,7 +90,7 @@ public class Definer {
     }
 
     /**
-     * Define a Query for future use, with a Tuple type that has an insert(...) and an update(...)
+     * Define a Tuple type, and a Query class with insert(...) and update(...) methods
      * for the specified table. The Query is SELECT * FROM tableName WHERE whereClause.
      *
      * @param tableName Name of the table, optionally including $$.
@@ -102,7 +98,7 @@ public class Definer {
      *                    Parameters may be specified as ? or {name}. If {name} is used, it will
      *                    appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                    is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                    SQL text with all {name} converted to ? for subsequent evaluation.
+     *                    SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
      * @return Result of tuple generation.
      * @throws Throwable Error.
@@ -118,7 +114,7 @@ public class Definer {
     }
 
     /**
-     * Define a Query for future use, with a Tuple type that has an insert(...) and an update(...)
+     * Define a Tuple type, and Query class that has an insert(...) and an update(...)
      * for the specified table. The Query is SELECT * FROM tableName.
      *
      * @param tableName Name of the table, optionally including $$.
@@ -130,22 +126,24 @@ public class Definer {
     }
 
     /**
-     * Define a ValueOf for future use that returns the first column of the first row.
+     * Define a ValueOf class with methods that return the first column of the first row.
      *
      * @param queryName Name of valueOf query. Should be unique.
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      *                For optimum performance, should have one and only one column and return one row.
      * @param args Arguments that specify parameter type(s) and allow query to succeed.
+     * @return Type of first column.
      * @throws Throwable Error.
      */
-    public void defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
+    public Class<?> defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
         var parameterConverter = new SQLParameterConverter(sqlText);
         parameterConverter.process();
         var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
         var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
         valueOfGenerator.generate();
+        return type;
     }
 }
