@@ -31,7 +31,8 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
         var typeName = type.getName();
         return
             "\tpublic static Optional<" + typeName + "> " + methodName + "(" + getParms(withConnection) + ") throws SQLException {\n" +
-            "\t\treturn Optional.ofNullable((" + typeName + ")db." + methodName + "(" + argConnection + newQuery + ").get());\n" +
+            "\t\tvar result = db." + methodName + "(" + argConnection + newQuery + ");\n" +
+            "\t\treturn result.isPresent() ? Optional.ofNullable((" + typeName + ")result.get()) : Optional.empty();\n" +
             "\t}\n";
     }
 
