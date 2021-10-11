@@ -9,17 +9,24 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class TestQueryDefinitions {
 
     private static class TestParms {
-        public final String pkg;
+        private final String pkg;
+
         public final String name;
         public final Database db;
+        public final String tuplePkg;
+        public final String definerPkg;
 
         public TestParms(String pkg, String name, Database db) {
             this.pkg = pkg;
             this.name = name;
             this.db = db;
+            this.tuplePkg = "org.reldb.wrapd.test.tuples." + pkg + ".generated";
+            this.definerPkg = "org.reldb.wrapd.test.definer." + pkg + ".generated";
         }
 
         public String toString() {
@@ -55,7 +62,25 @@ public class TestQueryDefinitions {
     @ParameterizedTest
     @MethodSource("dbProvider")
     public void testCodeThatUsesGeneratedTuple(TestParms parms) throws Throwable {
-        var tuplePackage = "org.reldb.wrapd.test.tuples." + parms.pkg + ".generated";
-        new QueriesHelper(parms.pkg, parms.name, tuplePackage).test(parms.db);
+        new QueriesHelper(parms.pkg, parms.name, parms.tuplePkg).test(parms.db);
     }
+
+    @ParameterizedTest
+    @MethodSource("dbProvider")
+    public void testQueryDefinerFailsWhenQueryReturnsNoRows(TestParms parms) throws Throwable {
+        var definer = new Definer(parms.db, TestConfiguration.Directory, parms.definerPkg);
+        assertThrows(SQLException.class,
+                () -> definer.defineQuery("QueryOfTestUpdateABC",
+                        "UPDATE $$abc SET c = 'blah' WHERE a = {aValue}", 2));
+    }
+
+    @ParameterizedTest
+    @MethodSource("dbProvider")
+    public void testQueryDefinerFailsWhenValueOfReturnsNoRows(TestParms parms) throws Throwable {
+        var definer = new Definer(parms.db, TestConfiguration.Directory, parms.definerPkg);
+        assertThrows(SQLException.class,
+                () -> definer.defineValueOf("ValueOfTestUpdateABC",
+                        "UPDATE $$abc SET c = 'blah' WHERE a = {aValue}", 2));
+    }
+
 }
