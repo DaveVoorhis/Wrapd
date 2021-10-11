@@ -131,6 +131,7 @@ public class QueriesHelper {
 
 		var testExecutionSummary = runTestsInClass(clazz);
 		testExecutionSummary.printTo(new PrintWriter(System.out));
+		testExecutionSummary.printFailuresTo(new PrintWriter(System.err));
 		assertEquals(0, testExecutionSummary.getTotalFailureCount());
 	}
 
