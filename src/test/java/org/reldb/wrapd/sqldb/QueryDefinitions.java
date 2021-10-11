@@ -1,5 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
+/**
+ * These query definitions should be valid, as they will be run to test them.
+ */
 public class QueryDefinitions extends Definer {
 
     private String queryName;
