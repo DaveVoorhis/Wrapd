@@ -126,4 +126,14 @@ public class Test<db>_Source01 {
         assertEquals("100700", result.get());
     }
 
+    @Test
+    public void testValueOf03() throws Exception {
+        System.out.println("== ValueOfXYZz (no rows) ==");
+        var database = GetDatabase.getDatabase();
+        ClearXYZ.update(database);
+        populateXYZ(database);
+        var result = ValueOfXYZz.valueOf(database, 99999);
+        assertEquals(true, !result.isPresent());
+    }
+
 }
