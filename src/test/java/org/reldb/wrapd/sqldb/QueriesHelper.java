@@ -119,7 +119,22 @@ public class QueriesHelper {
 		return compiler.compileJavaCode(classpath, sourcef);
 	}
 
+	private void banner(String prompt, String character) {
+		var repetition = 132 - (prompt.length() + 2);
+		var barSide = character.repeat(repetition / 2);
+		System.out.println(barSide + ' ' + prompt + ' ' + barSide);
+	}
+
+	private void banner(String prompt) {
+		banner(prompt, "-");
+	}
+
+	private void banner() {
+		banner("", "=");
+	}
+
 	private void run() throws IOException, ClassNotFoundException {
+		banner("Compiling Test Code");
 		var result = compileTestCode();
 		if (!result.compiled) {
 			System.out.println(result.compilerMessages);
@@ -129,15 +144,22 @@ public class QueriesHelper {
 		var clazz = obtainTestCodeClass();
 		assertNotNull(clazz);
 
+		banner("Running Tests");
 		var testExecutionSummary = runTestsInClass(clazz);
-		testExecutionSummary.printTo(new PrintWriter(System.out));
+		banner("Test Errors");
 		testExecutionSummary.printFailuresTo(new PrintWriter(System.err));
-		assertEquals(0, testExecutionSummary.getTotalFailureCount());
+		banner("Test Summary");
+		testExecutionSummary.printTo(new PrintWriter(System.out));
+		banner("Test Conclusion");
+		assertEquals(0, testExecutionSummary.getTotalFailureCount(), "Failures");
 	}
 
 	public void test(Database database) throws Throwable {
+		banner("Setup", "=");
 		setup(database);
+		banner("Run", "=");
 		run();
+		banner("ALL TESTS PASS", "!");
 	}
 
 }
