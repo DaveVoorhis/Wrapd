@@ -5,7 +5,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.reldb.wrapd.TestConfiguration;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -67,7 +66,7 @@ public class TestQueryDefinitions {
 
     @ParameterizedTest
     @MethodSource("dbProvider")
-    public void testQueryDefinerFailsWhenQueryReturnsNoRows(TestParms parms) throws Throwable {
+    public void testQueryDefinerFailsWhenQueryReturnsNoRows(TestParms parms) {
         var definer = new Definer(parms.db, TestConfiguration.Directory, parms.definerPkg);
         assertThrows(SQLException.class,
                 () -> definer.defineQuery("QueryOfTestUpdateABC",
@@ -76,7 +75,7 @@ public class TestQueryDefinitions {
 
     @ParameterizedTest
     @MethodSource("dbProvider")
-    public void testQueryDefinerFailsWhenValueOfReturnsNoRows(TestParms parms) throws Throwable {
+    public void testQueryDefinerFailsWhenValueOfReturnsNoRows(TestParms parms) {
         var definer = new Definer(parms.db, TestConfiguration.Directory, parms.definerPkg);
         assertThrows(SQLException.class,
                 () -> definer.defineValueOf("ValueOfTestUpdateABC",
