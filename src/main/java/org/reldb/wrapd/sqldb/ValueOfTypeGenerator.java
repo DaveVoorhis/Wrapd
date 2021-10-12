@@ -4,7 +4,7 @@ package org.reldb.wrapd.sqldb;
  * Generates Java code to ergonomically represent valueOf(...) queries.
  */
 public class ValueOfTypeGenerator extends SQLTypeGenerator {
-    private final Class<?> type;
+    private final String typeName;
 
     /**
      * Create a generator of compiled update invokers.
@@ -21,14 +21,13 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
      */
     public ValueOfTypeGenerator(String codeDirectory, String packageSpec, String valueOfClassName, Class<?> type, String sqlText, Object... args) {
         super(codeDirectory, packageSpec, valueOfClassName, sqlText, args);
-        this.type = type;
+        this.typeName = type.getName();
     }
 
     private String buildQueryMethod(String methodName, String newQuery, boolean withConnection) {
         var argConnection = withConnection
             ? "connection, "
             : "";
-        var typeName = type.getName();
         return
             "\tpublic static Optional<" + typeName + "> " + methodName + "(" + getParms(withConnection) + ") throws SQLException {\n" +
             "\t\treturn (Optional<" + typeName + ">)db." + methodName + "(" + argConnection + newQuery + ");\n" +
