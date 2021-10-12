@@ -1,4 +1,6 @@
 - Provide unified API for all definitions in a Definer as a single file.
+  - Use SQLTypeGenerator's addMethod() in QueryTypeGenerator, UpdateTypeGenerator and ValueOfTypeGenerator.
+  - Use SQLTypeGenerator's getMethods() in Definer to produce wrapper around all Definer's definitions.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
 - Add Definer::defineAllStoredProcedureInvoke(...) to wrap all stored proc invocations.

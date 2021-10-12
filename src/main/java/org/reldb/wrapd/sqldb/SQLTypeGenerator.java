@@ -7,6 +7,9 @@ import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Generates Java code to represent a SQL construct.
@@ -137,6 +140,51 @@ public abstract class SQLTypeGenerator {
      * @return Query text.
      */
     protected abstract String getDefinitionSourceCode();
+
+    /** A method definition for a generated method. */
+    public static class Method {
+        /** Method name. */
+        public final String name;
+
+        /** Method parameter list. */
+        public final Attribute[] parameters;
+
+        /** Return type. Null if void. */
+        public final Class<?> returns;
+
+        /** Constructor.
+         *
+         * @param name Method name.
+         * @param parameters Method parameter list.
+         * @param returns Return type. Null if void.
+         */
+        public Method(String name, Attribute[] parameters, Class<?> returns) {
+            this.name = name;
+            this.parameters = parameters;
+            this.returns = returns;
+        }
+    }
+
+    private Set<Method> methods = new HashSet<>();
+
+    /**
+     * Add a method to the list of methods defined in the generated Java and that may be
+     * used by external mechanisms.
+     *
+     * @param method Method being added.
+     */
+    protected void addMethod(Method method) {
+        methods.add(method);
+    }
+
+    /**
+     * Get a collection of methods defined in the generated Java that may be used by external mechanisms.
+     *
+     * @return Collection of methods.
+     */
+    public Collection<Method> getMethods() {
+        return methods;
+    }
 
     /**
      * Generate this query type as a Java class definition.
