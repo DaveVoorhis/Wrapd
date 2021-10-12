@@ -1,19 +1,20 @@
 package org.reldb.wrapd.sqldb;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+
 import org.reldb.toolbox.progress.ConsoleProgressIndicator;
 import org.reldb.wrapd.response.Result;
-import org.reldb.wrapd.schema.AbstractSchema;
 import org.reldb.wrapd.schema.SQLSchema;
 import org.reldb.wrapd.schema.VersionNumber;
 
 import java.sql.SQLException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.reldb.wrapd.sqldb.DbHelper.clearDb;
 
 public class TestSQLSchema {
