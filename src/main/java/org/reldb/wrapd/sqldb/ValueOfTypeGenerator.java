@@ -28,10 +28,11 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
         var argConnection = withConnection
             ? "connection, "
             : "";
+        var newMethodName = "valueOf";
         var returnType = "Optional<" + typeName + ">";
         addMethod(new Method(methodName, "", getParameterList(true, withConnection), returnType));
         return
-            "\tpublic static " + returnType + " " + methodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
+            "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
             "\t\treturn (" + returnType + ")db." + methodName + "(" + argConnection + newQuery + ");\n" +
             "\t}\n";
     }

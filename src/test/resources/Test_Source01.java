@@ -110,7 +110,7 @@ public class Test<db>_Source01 {
         var database = GetDatabase.getDatabase();
         ClearABC.update(database);
         populateABC(database);
-        var result = ValueOfABCb.valueOfAll(database);
+        var result = ValueOfABCb.valueOf(database);
         System.out.println("Result is " + result.get());
         assertEquals(2000, result.get());
     }
