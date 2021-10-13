@@ -1,3 +1,4 @@
+- Probably don't need to expose methods with 'All' in name in ValueOf... classes.
 - Provide unified API for all definitions in a Definer as a single file.
   - Work on SQLTypeGenerator's addMethod 'qualifier' invocation from QueryTypeGenerator,
     UpdateTypeGenerator and ValueOfTypeGenerator.
