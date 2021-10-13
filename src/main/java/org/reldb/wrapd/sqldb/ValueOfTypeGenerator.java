@@ -28,9 +28,11 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
         var argConnection = withConnection
             ? "connection, "
             : "";
+        var returnType = "Optional<" + typeName + ">";
+        addMethod(new Method(methodName, "", getParameterList(true, withConnection), returnType));
         return
-            "\tpublic static Optional<" + typeName + "> " + methodName + "(" + getParms(withConnection) + ") throws SQLException {\n" +
-            "\t\treturn (Optional<" + typeName + ">)db." + methodName + "(" + argConnection + newQuery + ");\n" +
+            "\tpublic static " + returnType + " " + methodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
+            "\t\treturn (" + returnType + ")db." + methodName + "(" + argConnection + newQuery + ");\n" +
             "\t}\n";
     }
 
@@ -39,7 +41,7 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
             ? "valueOf"
             : "valueOfAll";
         var args = hasArgs()
-            ? ", " + getArgs()
+            ? ", " + getDeclaredQueryParameterNameListString()
             : "";
         var arguments = "sqlText" + args;
         return

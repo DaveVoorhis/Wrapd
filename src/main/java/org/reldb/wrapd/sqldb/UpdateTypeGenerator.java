@@ -37,7 +37,10 @@ public class UpdateTypeGenerator extends SQLTypeGenerator {
         var argConnection = withConnection
                 ? "connection, "
                 : "";
-        return "\tpublic static boolean update(" + getParms(withConnection) + ") throws SQLException {\n" +
+        var newMethodName = "update";
+        var returnType = "boolean";
+        addMethod(new Method(newMethodName, "", getParameterList(true, withConnection), returnType));
+        return "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
     }
@@ -47,7 +50,7 @@ public class UpdateTypeGenerator extends SQLTypeGenerator {
                 ? "update"
                 : "updateAll";
         var args = hasArgs()
-                ? ", " + getArgs()
+                ? ", " + getDeclaredQueryParameterNameListString()
                 : "";
         var newQuery = "new " + getQueryName() + "(sqlText" + args + ")";
         return

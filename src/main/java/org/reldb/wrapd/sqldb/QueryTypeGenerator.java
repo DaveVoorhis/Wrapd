@@ -47,7 +47,10 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
         var argConnection = withConnection
             ? "connection, "
             : "";
-        return "\tpublic static Stream<" + tupleClassName + "> query" + methodNameSuffix + "(" + getParms(withConnection) + ") throws SQLException {\n" +
+        var newMethodName = "query" + methodNameSuffix;
+        var returnType = "Stream<" + tupleClassName + ">";
+        addMethod(new Method(newMethodName, "", getParameterList(true, withConnection), returnType));
+        return "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
     }
@@ -57,7 +60,7 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
             ? ("query" + methodNameSuffix)
             : ("queryAll" + methodNameSuffix);
         var args = hasArgs()
-            ? ", " + getArgs()
+            ? ", " + getDeclaredQueryParameterNameListString()
             : "";
         var newQuery = "new " + getQueryName() + "<>(sqlText, " + tupleClassName + ".class" + args + ")";
         return

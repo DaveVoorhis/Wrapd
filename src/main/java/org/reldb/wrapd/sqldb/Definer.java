@@ -73,6 +73,7 @@ public class Definer {
         if (tupleClassCreated.isError())
             //noinspection ConstantConditions
             throw tupleClassCreated.error;
+        dump(queryName, queryGenerator.getMethods());
         return new DefineQueryResult(tupleClassCreated.value, queryGenerator.getMethods());
     }
 
@@ -113,6 +114,7 @@ public class Definer {
             database.updateAll(updateGenerator.getSQLText());
         else
             database.update(updateGenerator.getSQLText(), args);
+        dump(queryName, updateGenerator.getMethods());
         return updateGenerator.getMethods();
     }
 
@@ -192,6 +194,13 @@ public class Definer {
         var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
         var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
         valueOfGenerator.generate();
+        dump(queryName, valueOfGenerator.getMethods());
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
+    }
+
+    private void dump(String queryName, Collection<SQLTypeGenerator.Method> methods) {
+        for (SQLTypeGenerator.Method method: methods) {
+            System.out.println(">>> " + queryName + " " + method.toString());
+        }
     }
 }

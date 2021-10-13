@@ -7,9 +7,8 @@ import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.Connection;
+import java.util.*;
 
 /**
  * Generates Java code to represent a SQL construct.
@@ -36,7 +35,8 @@ public abstract class SQLTypeGenerator {
     private final String queryName;
     private final Object[] args;
 
-    private final SQLParameterConverter parametriser;
+    private final SQLParameterConverter parameterConverter;
+    private final Set<Method> methods = new HashSet<>();
 
     /**
      * Create a generator of compiled update invokers.
@@ -47,7 +47,7 @@ public abstract class SQLTypeGenerator {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
     public SQLTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object... args) {
@@ -57,7 +57,7 @@ public abstract class SQLTypeGenerator {
         this.dir = dir;
         this.queryName = queryName;
         this.args = args;
-        parametriser = new SQLParameterConverter(sqlText);
+        parameterConverter = new SQLParameterConverter(sqlText);
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class SQLTypeGenerator {
      * @return SQL text.
      */
     public String getSQLText() {
-        return parametriser.getSQLText();
+        return parameterConverter.getSQLText();
     }
 
     /**
@@ -97,39 +97,64 @@ public abstract class SQLTypeGenerator {
     }
 
     /**
-     * Return a parameter list specification.
+     * Obtain the declared parameter list, with optional additional
+     * Database and Connection parameters.
      *
-     * @param withConnection True to include 'Connection connection' parameter.
+     * @param withDatabase If true, include 'Database database' before the declared parameters.
+     * @param withConnection If true, include 'Connection connection' before the declared parameters.
+     * @return The parameters.
+     */
+    protected List<Attribute> getParameterList(boolean withDatabase, boolean withConnection) {
+        var attributes = new LinkedList<Attribute>();
+        if (withDatabase)
+            attributes.add(new Attribute("db", Database.class));
+        if (withConnection)
+            attributes.add(new Attribute("connection", Connection.class));
+        int parameterNumber = 0;
+        if (hasArgs())
+            for (Object arg: args) {
+                var type = arg.getClass();
+                var name = parameterConverter.getParameterNames().get(parameterNumber++);
+                var attribute = new Attribute(name, type);
+                attributes.add(attribute);
+            }
+        return attributes;
+    }
+
+    /**
+     * Return a parameter list specification string.
+     *
+     * @param withConnection True to include "Connection connection" parameter.
      * @return Parameter list definition string.
      */
-    protected String getParms(boolean withConnection) {
-        String parmConnection = withConnection
-                ? ", Connection connection"
-                : "";
-        StringBuilder out = new StringBuilder("Database db" + parmConnection);
-        int parameterNumber = 0;
-        if (hasArgs()) {
-            for (Object arg: args) {
-                out.append(", ").append(arg.getClass().getCanonicalName()).append(" ").append(parametriser.getParameterNames().get(parameterNumber));
-                parameterNumber++;
-            }
+    protected String getParameterDefinitionListString(boolean withConnection) {
+        var out = new StringBuffer();
+        for (Attribute attribute: getParameterList(true, withConnection)) {
+            if (out.length() > 0)
+                out.append(", ");
+            out.append(attribute.type.getCanonicalName()).append(" ").append(attribute.name);
         }
         return out.toString();
     }
 
     /**
-     * Return a parameter list.
+     * Return a parameter list reference string.
+     * E.g., if the parameter definition string is "int x, String y", the parameter list reference string
+     * is "x, y".
+     *
+     * This is just the declared query parameters, <b>not</b> additional parameters like Database or
+     * Connection.
      *
      * @return Parameter list reference string.
      */
-    protected String getArgs() {
+    protected String getDeclaredQueryParameterNameListString() {
         if (!hasArgs())
             return "null";
         var out = new StringBuilder();
-        for (var parameterNumber = 0; parameterNumber < args.length; parameterNumber++) {
+        for (Attribute attribute: getParameterList(false, false)) {
             if (out.length() > 0)
                 out.append(", ");
-            out.append(parametriser.getParameterNames().get(parameterNumber));
+            out.append(attribute.name);
         }
         return out.toString();
     }
@@ -143,29 +168,50 @@ public abstract class SQLTypeGenerator {
 
     /** A method definition for a generated method. */
     public static class Method {
-        /** Method name. */
+        /** Base method name. */
         public final String name;
 
-        /** Method parameter list. */
-        public final Attribute[] parameters;
+        /** Qualifier to method name. */
+        public final String qualifier;
 
-        /** Return type. Null if void. */
-        public final Class<?> returns;
+        /** Method parameter list. */
+        public final List<Attribute> parameters;
+
+        /** Return type name or specification. Null if void. */
+        public final String returns;
 
         /** Constructor.
          *
-         * @param name Method name.
+         * @param name Base method name -- query, update, valueOf, etc.
+         * @param qualifier Extension to method name -- ForUpdate, All, etc.
          * @param parameters Method parameter list.
-         * @param returns Return type. Null if void.
+         * @param returns Return type name or specification. Null if void.
          */
-        public Method(String name, Attribute[] parameters, Class<?> returns) {
+        public Method(String name, String qualifier, List<Attribute> parameters, String returns) {
             this.name = name;
+            this.qualifier = qualifier;
             this.parameters = parameters;
             this.returns = returns;
         }
-    }
 
-    private Set<Method> methods = new HashSet<>();
+        public String toString() {
+            var outBuffer = new StringBuilder();
+            if (returns == null)
+                outBuffer.append("void ");
+            else
+                outBuffer.append(returns).append(" ");
+            outBuffer.append(name).append(qualifier).append("(");
+            var parmList = new StringBuilder();
+            for (Attribute parameter: parameters) {
+                if (parmList.length() > 0)
+                    parmList.append(", ");
+                parmList.append(parameter.type.getCanonicalName()).append(" ").append(parameter.name);
+            }
+            outBuffer.append(parmList);
+            outBuffer.append(")");
+            return outBuffer.toString();
+        }
+    }
 
     /**
      * Add a method to the list of methods defined in the generated Java and that may be
@@ -194,7 +240,7 @@ public abstract class SQLTypeGenerator {
     public File generate() {
         if (!Directory.chkmkdir(dir))
             throw new FatalException(Str.ing(ErrUnableToCreateOrOpenCodeDirectory, dir));
-        parametriser.process();
+        parameterConverter.process();
         return new JavaGenerator(dir).generateJavaCode(queryName, packageSpec, getDefinitionSourceCode());
     }
 }
