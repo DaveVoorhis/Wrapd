@@ -128,7 +128,7 @@ public abstract class SQLTypeGenerator {
      * @return Parameter list definition string.
      */
     protected String getParameterDefinitionListString(boolean withConnection) {
-        var out = new StringBuffer();
+        var out = new StringBuilder();
         for (Attribute attribute: getParameterList(true, withConnection)) {
             if (out.length() > 0)
                 out.append(", ");
@@ -183,7 +183,7 @@ public abstract class SQLTypeGenerator {
         /** Constructor.
          *
          * @param name Base method name -- query, update, valueOf, etc.
-         * @param qualifier Extension to method name -- ForUpdate, All, etc.
+         * @param qualifier Extension to method name -- ForUpdate, etc.
          * @param parameters Method parameter list.
          * @param returns Return type name or specification. Null if void.
          */
@@ -200,7 +200,7 @@ public abstract class SQLTypeGenerator {
                 outBuffer.append("void ");
             else
                 outBuffer.append(returns).append(" ");
-            outBuffer.append(name).append(qualifier).append("(");
+            outBuffer.append(name).append(":").append(qualifier).append("(");
             var parmList = new StringBuilder();
             for (Attribute parameter: parameters) {
                 if (parmList.length() > 0)
