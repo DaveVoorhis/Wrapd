@@ -14,7 +14,7 @@ public class UpdateTypeGenerator extends SQLTypeGenerator {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
     public UpdateTypeGenerator(String dir, String packageSpec, String queryName, String sqlText, Object... args) {
