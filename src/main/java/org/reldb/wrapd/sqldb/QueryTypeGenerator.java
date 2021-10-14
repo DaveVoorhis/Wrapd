@@ -18,7 +18,7 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
     public QueryTypeGenerator(String dir, String packageSpec, String tupleClassName, String queryName, String sqlText, Object... args) {
@@ -47,9 +47,10 @@ public class QueryTypeGenerator extends SQLTypeGenerator {
         var argConnection = withConnection
             ? "connection, "
             : "";
-        var newMethodName = "query" + methodNameSuffix;
+        var baseName = "query";
+        var newMethodName = baseName + methodNameSuffix;
         var returnType = "Stream<" + tupleClassName + ">";
-        addMethod(new Method(newMethodName, "", getParameterList(true, withConnection), returnType));
+        addMethod(new Method(baseName, methodNameSuffix, getParameterList(true, withConnection), returnType));
         return "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
                 "\t\treturn db." + methodName + "(" + argConnection + newQuery + ");\n" +
                 "\t}\n";
