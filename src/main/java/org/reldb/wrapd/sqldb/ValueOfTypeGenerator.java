@@ -16,7 +16,7 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
      * @param sqlText SQL query text. Parameters may be specified as ? or {name}. If {name} is used, it will
      *                appear as a corresponding Java method name. If ? is used, it will be named pn, where n
      *                is a unique number in the given definition. Use getSQLText() after generate() to obtain final
-     *                SQL text with all {name} converted to ? for subsequent evaluation.
+     *                SQL query text with all {name} converted to ? for subsequent evaluation.
      * @param args Sample arguments.
      */
     public ValueOfTypeGenerator(String codeDirectory, String packageSpec, String valueOfClassName, Class<?> type, String sqlText, Object... args) {
@@ -30,7 +30,7 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
             : "";
         var newMethodName = "valueOf";
         var returnType = "Optional<" + typeName + ">";
-        addMethod(new Method(methodName, "", getParameterList(true, withConnection), returnType));
+        addMethod(new Method(newMethodName, "", getParameterList(true, withConnection), returnType));
         return
             "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
             "\t\treturn (" + returnType + ")db." + methodName + "(" + argConnection + newQuery + ");\n" +
