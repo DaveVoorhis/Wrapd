@@ -1,7 +1,6 @@
 package org.reldb.wrapd.sqldb;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Mechanism for defining Query, Update and valueOf classes.
