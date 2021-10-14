@@ -5,8 +5,6 @@ package org.reldb.wrapd.sqldb;
  */
 public class QueryDefinitions extends Definer {
 
-    private String queryName;
-
     public QueryDefinitions(Database database, String codeDirectory, String pkg) {
         super(database, codeDirectory, pkg);
     }
@@ -22,5 +20,7 @@ public class QueryDefinitions extends Definer {
         defineUpdate("ClearABCWhere", "DELETE FROM $$abc WHERE a = {aValue}", 3);
         defineValueOf("ValueOfABCb", "SELECT b FROM $$abc");
         defineValueOf("ValueOfXYZz", "SELECT z FROM $$xyz WHERE x = {xValue}", 33);
+
+        emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
     }
 }

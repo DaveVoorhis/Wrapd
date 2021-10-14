@@ -136,4 +136,14 @@ public class Test<db>_Source01 {
         assertEquals(true, !result.isPresent());
     }
 
+    @Test
+    public void testDAL_abc01() throws Exception {
+        var database = GetDatabase.getDatabase();
+        var dal = new DatabaseAbstractionLayer(database);
+        dal.clearABC();
+        populateABC(database);
+        System.out.println("== ABC ==");
+        dal.abc()
+            .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+    }
 }
