@@ -1,6 +1,10 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.wrapd.generator.JavaGenerator;
+
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mechanism for defining Query, Update and valueOf classes.
@@ -9,6 +13,11 @@ public class Definer {
     private final Database database;
     private final String codeDirectory;
     private final String packageSpec;
+    private final Map<String, Collection<SQLTypeGenerator.Method>> methods = new HashMap<>();
+
+    private void addMethods(String queryName, Collection<SQLTypeGenerator.Method> queryMethods) {
+        methods.put(queryName, queryMethods);
+    }
 
     /**
      * Create a Definer, given a Database, the directory where generated class definitions will be stored, and their package.
@@ -21,6 +30,58 @@ public class Definer {
         this.database = database;
         this.codeDirectory = codeDirectory;
         this.packageSpec = packageSpec;
+    }
+
+    /**
+     * Get all the classes and their methods defined by using this Definer.
+     *
+     * @return Collection of method definitions for each defined class.
+     */
+    public Map<String, Collection<SQLTypeGenerator.Method>> getMethods() {
+        return methods;
+    }
+
+    private static String lowerFirstCharacter(String s) {
+        return s.substring(0, 1).toLowerCase() + s.substring(1);
+    }
+
+    /**
+     * Create a new class that provides to invoke all the methods defined using this Definer.
+     *
+     * @param newClassName Name of the generated database abstraction layer class definition.
+     */
+    public void emitDatabaseAbstractionLayer(String newClassName) {
+        var source = new StringBuilder("package " + packageSpec + ";\n\n");
+        source.append("import java.util.stream.*;\n");
+        source.append("import java.sql.SQLException;\n");
+        source.append("import java.util.Optional;\n");
+        source.append("import org.reldb.wrapd.sqldb.Database;\n\n");
+        source.append("public class ").append(newClassName).append(" {\n\n");
+        source.append("\tprivate Database database;\n\n");
+        source.append("\tpublic ").append(newClassName).append("(Database database) {\n");
+        source.append("\t\tthis.database = database;\n");
+        source.append("\t}\n\n");
+        getMethods().forEach((className, classMethods) -> classMethods.forEach(method -> {
+            var returns = (method.returns == null) ? "void" : method.returns;
+            var parmDefs = new StringBuilder();
+            var parmNames = new StringBuilder("database");
+            var parameters = method.parameters;
+            for (int index = 1; index < parameters.size(); index++) {
+                if (parmDefs.length() > 0)
+                    parmDefs.append(", ");
+                var parm = parameters.get(index);
+                parmDefs.append(parm.type.getName()).append(" ").append(parm.name);
+                parmNames.append(", ").append(parm.name);
+            }
+            var newMethodName = lowerFirstCharacter(className);
+            source.append("\tpublic ").append(returns).append(" ").append(newMethodName).append(method.qualifier).append("(").append(parmDefs).append(") throws SQLException {\n");
+            var returner = (method.returns == null) ? "" : "return ";
+            source.append("\t\t").append(returner).append(className).append(".").append(method.name).append(method.qualifier).append("(").append(parmNames).append(");\n");
+            source.append("\t}\n\n");
+        }));
+        source.append("}\n");
+        var generator = new JavaGenerator(codeDirectory);
+        generator.generateJavaCode(newClassName, packageSpec, source.toString());
     }
 
     /**
@@ -72,7 +133,7 @@ public class Definer {
         if (tupleClassCreated.isError())
             //noinspection ConstantConditions
             throw tupleClassCreated.error;
-        dump(queryName, queryGenerator.getMethods());
+        addMethods(queryName, queryGenerator.getMethods());
         return new DefineQueryResult(tupleClassCreated.value, queryGenerator.getMethods());
     }
 
@@ -113,7 +174,7 @@ public class Definer {
             database.updateAll(updateGenerator.getSQLText());
         else
             database.update(updateGenerator.getSQLText(), args);
-        dump(queryName, updateGenerator.getMethods());
+        addMethods(queryName, updateGenerator.getMethods());
         return updateGenerator.getMethods();
     }
 
@@ -193,13 +254,7 @@ public class Definer {
         var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
         var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
         valueOfGenerator.generate();
-        dump(queryName, valueOfGenerator.getMethods());
+        addMethods(queryName, valueOfGenerator.getMethods());
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
-    }
-
-    private void dump(String queryName, Collection<SQLTypeGenerator.Method> methods) {
-        for (SQLTypeGenerator.Method method: methods) {
-            System.out.println(">>> " + queryName + " " + method.toString());
-        }
     }
 }
