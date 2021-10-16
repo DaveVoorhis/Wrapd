@@ -90,17 +90,19 @@ public class Definer {
     }
 
     /**
-     * Prior to generating new code, purge <b>everything</b> in the code directory.
+     * Prior to generating new code, purge <b>everything</b> in the package-specified
+     * subdirectory of the code directory.
      *
-     * This avoids possible build errors that may result from your build pipeline attempting
-     * to compile outdated code. It's an optional operation in case your target directory
-     * contains content you need to keep!
+     * This avoids possible build errors that may result from the build pipeline attempting
+     * to compile outdated code. It's an optional operation in case the target
+     * contains content that needs to be kept, though arguably it shouldn't be used that way.
      */
-    public void purgeCodeDirectory() {
-        if (Directory.rmAll(codeDirectory))
-            System.out.println(Str.ing(MsgCodeDirectoryPurged, codeDirectory));
+    public void purgeTarget() {
+        var target = JavaGenerator.obtainDirectoryFromSourcePathAndPackage(codeDirectory, packageSpec);
+        if (Directory.rmAll(target))
+            System.out.println(Str.ing(MsgCodeDirectoryPurged, target));
         else
-            System.err.println(Str.ing(ErrCodeDirectoryPurgeFailed, codeDirectory));
+            System.err.println(Str.ing(ErrCodeDirectoryPurgeFailed, target));
     }
 
     /**
