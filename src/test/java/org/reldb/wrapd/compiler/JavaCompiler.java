@@ -85,7 +85,7 @@ public class JavaCompiler {
                 + "unusedPrivate," + "unusedThrown";
 
         // Start compilation using JDT
-        var commandLine = "-14 -source 14 -warn:" +
+        var commandLine = "-11 -source 11 -warn:" +
                 warningSetting + " " +
                 "-cp " + classpath + " \"" + sourcef + "\"";
         var compiled = BatchCompiler.compile(
