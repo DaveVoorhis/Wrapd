@@ -1,5 +1,8 @@
 package org.reldb.wrapd.sqldb;
 
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
+import org.reldb.toolbox.utilities.Directory;
 import org.reldb.wrapd.generator.JavaGenerator;
 
 import java.util.Collection;
@@ -14,6 +17,8 @@ public class Definer {
     private final String codeDirectory;
     private final String packageSpec;
     private final Map<String, Collection<SQLTypeGenerator.Method>> methods = new HashMap<>();
+    private final Msg MsgCodeDirectoryPurged = new Msg("Code directory {0} has been purged.");
+    private final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge code directory {0}.");
 
     private void addMethods(String queryName, Collection<SQLTypeGenerator.Method> queryMethods) {
         methods.put(queryName, queryMethods);
@@ -82,6 +87,20 @@ public class Definer {
         source.append("}\n");
         var generator = new JavaGenerator(codeDirectory);
         generator.generateJavaCode(newClassName, packageSpec, source.toString());
+    }
+
+    /**
+     * Prior to generating new code, purge <b>everything</b> in the code directory.
+     *
+     * This avoids possible build errors that may result from your build pipeline attempting
+     * to compile outdated code. It's an optional operation in case your target directory
+     * contains content you need to keep!
+     */
+    public void purgeCodeDirectory() {
+        if (Directory.rmAll(codeDirectory))
+            System.out.println(Str.ing(MsgCodeDirectoryPurged, codeDirectory));
+        else
+            System.err.println(Str.ing(ErrCodeDirectoryPurgeFailed, codeDirectory));
     }
 
     /**
