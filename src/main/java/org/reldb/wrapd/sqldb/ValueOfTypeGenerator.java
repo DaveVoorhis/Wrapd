@@ -32,6 +32,7 @@ public class ValueOfTypeGenerator extends SQLTypeGenerator {
         var returnType = "Optional<" + typeName + ">";
         addMethod(new Method(newMethodName, "", getParameterList(true, withConnection), returnType));
         return
+            "\t@SuppressWarnings(\"unchecked\")\n" +
             "\tpublic static " + returnType + " " + newMethodName + "(" + getParameterDefinitionListString(withConnection) + ") throws SQLException {\n" +
             "\t\treturn (" + returnType + ")db." + methodName + "(" + argConnection + newQuery + ");\n" +
             "\t}\n";
