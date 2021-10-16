@@ -63,7 +63,7 @@ public class Definer {
         source.append("import java.util.Optional;\n");
         source.append("import org.reldb.wrapd.sqldb.Database;\n\n");
         source.append("public class ").append(newClassName).append(" {\n\n");
-        source.append("\tprivate Database database;\n\n");
+        source.append("\tprivate final Database database;\n\n");
         source.append("\tpublic ").append(newClassName).append("(Database database) {\n");
         source.append("\t\tthis.database = database;\n");
         source.append("\t}\n\n");
