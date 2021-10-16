@@ -25,6 +25,18 @@ public class JavaGenerator {
         this.userSourcePath = userSourcePath;
     }
 
+
+    /**
+     * Given a source code directory and a package specification, get the directory they specify.
+     *
+     * @param sourcePath Source path.
+     * @param packageSpec Package specification.
+     * @return Target directory specification.
+     */
+    public static String obtainDirectoryFromSourcePathAndPackage(String sourcePath, String packageSpec) {
+        return sourcePath + "/" + packageSpec.replace('.', '/');
+    }
+
     /**
      * Generate compilable Java code.
      *
@@ -42,7 +54,7 @@ public class JavaGenerator {
         File sourcef;
         try {
             // Convert package to directories
-            var packageDir = userSourcePath + "/" + packageSpec.replace('.', '/');
+            var packageDir = obtainDirectoryFromSourcePathAndPackage(userSourcePath, packageSpec);
             var packageDirFile = new File(packageDir);
             if (!packageDirFile.exists())
                 if (!packageDirFile.mkdirs())
