@@ -1,5 +1,3 @@
-- Make sure definer converts class names to first char uppercase, just as method
-  names are converted to first char lower case.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
 - Add Definer::defineAllStoredProcedureInvoke(...) to wrap all stored proc invocations.

@@ -51,6 +51,10 @@ public class Definer {
         return s.substring(0, 1).toLowerCase() + s.substring(1);
     }
 
+    private static String upperFirstCharacter(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
     /**
      * Create a new class that provides to invoke all the methods defined using this Definer.
      *
@@ -147,8 +151,9 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineQueryResult defineQueryForTable(String queryName, String tableName, String sqlText, Object... args) throws Throwable {
-        var tupleClassName = queryName + "Tuple";
-        var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, tupleClassName, queryName, sqlText, args);
+        var className = upperFirstCharacter(queryName);
+        var tupleClassName = className + "Tuple";
+        var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, tupleClassName, className, sqlText, args);
         queryGenerator.setTableName(tableName);
         queryGenerator.generate();
         var regeneratedSqlText = queryGenerator.getSQLText();
@@ -158,7 +163,7 @@ public class Definer {
         if (tupleClassCreated.isError())
             //noinspection ConstantConditions
             throw tupleClassCreated.error;
-        addMethods(queryName, queryGenerator.getMethods());
+        addMethods(className, queryGenerator.getMethods());
         return new DefineQueryResult(tupleClassCreated.value, queryGenerator.getMethods());
     }
 
@@ -193,13 +198,14 @@ public class Definer {
      * @throws Throwable Error.
      */
     public Collection<SQLTypeGenerator.Method> defineUpdate(String queryName, String sqlText, Object... args) throws Throwable {
-        var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
+        var className = upperFirstCharacter(queryName);
+        var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, className, sqlText, args);
         updateGenerator.generate();
         if (args == null || args.length == 0)
             database.updateAll(updateGenerator.getSQLText());
         else
             database.update(updateGenerator.getSQLText(), args);
-        addMethods(queryName, updateGenerator.getMethods());
+        addMethods(className, updateGenerator.getMethods());
         return updateGenerator.getMethods();
     }
 
@@ -218,12 +224,12 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineQueryResult defineTable(String tableName, String whereClause, Object... args) throws Throwable {
-        var queryName = tableName.replaceAll("\\$\\$", "");
         var realTableName = database.replaceTableNames(tableName);
         var query = "SELECT * FROM " + realTableName +
                 (whereClause != null && !whereClause.isEmpty()
                         ? " WHERE " + whereClause
                         : "");
+        var queryName = tableName.replaceAll("\\$\\$", "");
         return defineQueryForTable(queryName, realTableName, query, args);
     }
 
@@ -274,12 +280,13 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineValueOfResult defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
+        var className = upperFirstCharacter(queryName);
         var parameterConverter = new SQLParameterConverter(sqlText);
         parameterConverter.process();
         var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
-        var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
+        var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, className, type, sqlText, args);
         valueOfGenerator.generate();
-        addMethods(queryName, valueOfGenerator.getMethods());
+        addMethods(className, valueOfGenerator.getMethods());
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
     }
 }

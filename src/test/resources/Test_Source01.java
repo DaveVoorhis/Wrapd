@@ -15,7 +15,7 @@ public class Test<db>_Source01 {
 
     private static void populateABC(Database database) throws Exception {
         for (var i = 1000; i < 1010; i++) {
-            var tuple = new abcTuple(database);
+            var tuple = new AbcTuple(database);
             tuple.a = i;
             tuple.b = i * 2;
             tuple.c = Integer.toString(i * 10);
@@ -25,7 +25,7 @@ public class Test<db>_Source01 {
 
     private static void populateXYZ(Database database) throws Exception {
         for (var i = 1005; i < 1015; i++) {
-            var tuple = new xyzTuple(database);
+            var tuple = new XyzTuple(database);
             tuple.x = i;
             tuple.y = i * 2;
             tuple.z = Integer.toString(i * 100);
@@ -39,7 +39,7 @@ public class Test<db>_Source01 {
         ClearABC.update(database);
         populateABC(database);
         System.out.println("== ABC ==");
-        abc.query(database)
+        Abc.query(database)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
     }
 
@@ -49,7 +49,7 @@ public class Test<db>_Source01 {
         ClearXYZ.update(database);
         populateXYZ(database);
         System.out.println("== XYZ (1007) ==");
-        xyz.query(database, 1007)
+        Xyz.query(database, 1007)
                 .forEach(row -> System.out.println("Row: x = " + row.x + " y = " + row.y + " z = " + row.z));
     }
 
@@ -60,7 +60,7 @@ public class Test<db>_Source01 {
         populateABC(database);
         ClearABCWhere.update(database, 1007);
         System.out.println("== ABC ==");
-        abc.query(database)
+        Abc.query(database)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
     }
 
@@ -71,9 +71,9 @@ public class Test<db>_Source01 {
         populateABC(database);
         ClearABCWhere.update(database, 1007);
         System.out.println("== ABC with 1007 removed ==");
-        abc.query(database)
+        Abc.query(database)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
-        abc.queryForUpdate(database)
+        Abc.queryForUpdate(database)
                 .forEach(row -> {
                     row.b += 100;
                     try {
@@ -83,7 +83,7 @@ public class Test<db>_Source01 {
                     }
                 });
         System.out.println("== ABC updated with b += 100 ==");
-        abc.query(database)
+        Abc.query(database)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
     }
 
