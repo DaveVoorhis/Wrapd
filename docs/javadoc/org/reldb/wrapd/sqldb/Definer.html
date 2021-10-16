@@ -296,7 +296,11 @@ java.lang.String&nbsp;packageSpec)</span></div>
 <section class="detail" id="emitDatabaseAbstractionLayer(java.lang.String)">
 <h3>emitDatabaseAbstractionLayer</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="member-name">emitDatabaseAbstractionLayer</span>&#8203;(<span class="parameters">java.lang.String&nbsp;newClassName)</span></div>
-<div class="block">Create a new class that provides to invoke all the methods defined using this Definer.</div>
+<div class="block">Create a new class that provides to invoke all the methods defined using this Definer.
+
+ Note that generated methods will always have (at least) a lower-case first character, in
+ keeping with Java convention. That means query names with an upper-case first character,
+ e.g., ClearABC, will emit a method called clearABC.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>newClassName</code> - Name of the generated database abstraction layer class definition.</dd>

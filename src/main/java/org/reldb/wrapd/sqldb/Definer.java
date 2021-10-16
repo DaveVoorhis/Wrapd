@@ -58,6 +58,10 @@ public class Definer {
     /**
      * Create a new class that provides to invoke all the methods defined using this Definer.
      *
+     * Note that generated methods will always have (at least) a lower-case first character, in
+     * keeping with Java convention. That means query names with an upper-case first character,
+     * e.g., ClearABC, will emit a method called clearABC.
+     *
      * @param newClassName Name of the generated database abstraction layer class definition.
      */
     public void emitDatabaseAbstractionLayer(String newClassName) {
