@@ -67,6 +67,9 @@ public class Definer {
         source.append("\tpublic ").append(newClassName).append("(Database database) {\n");
         source.append("\t\tthis.database = database;\n");
         source.append("\t}\n\n");
+        source.append("\tpublic Database getDatabase() {\n");
+        source.append("\t\treturn database;\n");
+        source.append("\t}\n\n");
         getMethods().forEach((className, classMethods) -> classMethods.forEach(method -> {
             var returns = (method.returns == null) ? "void" : method.returns;
             var parmDefs = new StringBuilder();
