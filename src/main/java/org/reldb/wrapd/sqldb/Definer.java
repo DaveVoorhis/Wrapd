@@ -17,8 +17,8 @@ public class Definer {
     private final String codeDirectory;
     private final String packageSpec;
     private final Map<String, Collection<SQLTypeGenerator.Method>> methods = new HashMap<>();
-    private final Msg MsgCodeDirectoryPurged = new Msg("Code directory {0} has been purged.");
-    private final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge code directory {0}.");
+    private final Msg MsgCodeDirectoryPurged = new Msg("Target {0} has been purged.");
+    private final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge target {0}.");
 
     private void addMethods(String queryName, Collection<SQLTypeGenerator.Method> queryMethods) {
         methods.put(queryName, queryMethods);
