@@ -151,9 +151,8 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineQueryResult defineQueryForTable(String queryName, String tableName, String sqlText, Object... args) throws Throwable {
-        var className = upperFirstCharacter(queryName);
-        var tupleClassName = className + "Tuple";
-        var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, tupleClassName, className, sqlText, args);
+        var tupleClassName = queryName + "Tuple";
+        var queryGenerator = new QueryTypeGenerator(codeDirectory, packageSpec, tupleClassName, queryName, sqlText, args);
         queryGenerator.setTableName(tableName);
         queryGenerator.generate();
         var regeneratedSqlText = queryGenerator.getSQLText();
@@ -163,7 +162,7 @@ public class Definer {
         if (tupleClassCreated.isError())
             //noinspection ConstantConditions
             throw tupleClassCreated.error;
-        addMethods(className, queryGenerator.getMethods());
+        addMethods(queryName, queryGenerator.getMethods());
         return new DefineQueryResult(tupleClassCreated.value, queryGenerator.getMethods());
     }
 
@@ -198,14 +197,13 @@ public class Definer {
      * @throws Throwable Error.
      */
     public Collection<SQLTypeGenerator.Method> defineUpdate(String queryName, String sqlText, Object... args) throws Throwable {
-        var className = upperFirstCharacter(queryName);
-        var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, className, sqlText, args);
+        var updateGenerator = new UpdateTypeGenerator(codeDirectory, packageSpec, queryName, sqlText, args);
         updateGenerator.generate();
         if (args == null || args.length == 0)
             database.updateAll(updateGenerator.getSQLText());
         else
             database.update(updateGenerator.getSQLText(), args);
-        addMethods(className, updateGenerator.getMethods());
+        addMethods(queryName, updateGenerator.getMethods());
         return updateGenerator.getMethods();
     }
 
@@ -213,7 +211,10 @@ public class Definer {
      * Define a Tuple type, and a Query class with insert(...) and update(...) methods
      * for the specified table. The Query is SELECT * FROM tableName WHERE whereClause.
      *
-     * @param tableName Name of the table, optionally including $$.
+     * @param tableName Name of the table, optionally including $$. Note that the generated class
+     *                  will have the same name as the table without $$ and with the first
+     *                  character converted to upper case. E.g., a table name of $$blah will be
+     *                  represented by a class named Blah.
      * @param whereClause The WHERE clause without the 'WHERE' keyword.
      *                    Parameters may be specified as ? or {name}. If {name} is used, it will
      *                    appear as a corresponding Java method name. If ? is used, it will be named pn, where n
@@ -224,12 +225,12 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineQueryResult defineTable(String tableName, String whereClause, Object... args) throws Throwable {
+        var queryName = upperFirstCharacter(tableName.replaceAll("\\$\\$", ""));
         var realTableName = database.replaceTableNames(tableName);
         var query = "SELECT * FROM " + realTableName +
                 (whereClause != null && !whereClause.isEmpty()
                         ? " WHERE " + whereClause
                         : "");
-        var queryName = tableName.replaceAll("\\$\\$", "");
         return defineQueryForTable(queryName, realTableName, query, args);
     }
 
@@ -280,13 +281,12 @@ public class Definer {
      * @throws Throwable Error.
      */
     public DefineValueOfResult defineValueOf(String queryName, String sqlText, Object... args) throws Throwable {
-        var className = upperFirstCharacter(queryName);
         var parameterConverter = new SQLParameterConverter(sqlText);
         parameterConverter.process();
         var type = database.getTypeOfFirstColumn(parameterConverter.getSQLText(), args);
-        var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, className, type, sqlText, args);
+        var valueOfGenerator = new ValueOfTypeGenerator(codeDirectory, packageSpec, queryName, type, sqlText, args);
         valueOfGenerator.generate();
-        addMethods(className, valueOfGenerator.getMethods());
+        addMethods(queryName, valueOfGenerator.getMethods());
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
     }
 }
