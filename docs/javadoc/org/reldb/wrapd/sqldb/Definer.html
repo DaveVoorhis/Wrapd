@@ -256,9 +256,10 @@ java.lang.Object...&nbsp;args)</code></th>
 </tr>
 <tr class="altColor" id="i8">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#purgeCodeDirectory()">purgeCodeDirectory</a></span>()</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#purgeTarget()">purgeTarget</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Prior to generating new code, purge <b>everything</b> in the code directory.</div>
+<div class="block">Prior to generating new code, purge <b>everything</b> in the package-specified
+ subdirectory of the code directory.</div>
 </td>
 </tr>
 </tbody>
@@ -332,13 +333,14 @@ java.lang.String&nbsp;packageSpec)</span></div>
 </li>
 <li class="blockList">
 <section class="detail">
-<h3><a id="purgeCodeDirectory()">purgeCodeDirectory</a></h3>
-<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">purgeCodeDirectory</span>()</div>
-<div class="block">Prior to generating new code, purge <b>everything</b> in the code directory.
+<h3><a id="purgeTarget()">purgeTarget</a></h3>
+<div class="memberSignature"><span class="modifiers">public</span>&nbsp;<span class="returnType">void</span>&nbsp;<span class="memberName">purgeTarget</span>()</div>
+<div class="block">Prior to generating new code, purge <b>everything</b> in the package-specified
+ subdirectory of the code directory.
 
- This avoids possible build errors that may result from your build pipeline attempting
- to compile outdated code. It's an optional operation in case your target directory
- contains content you need to keep!</div>
+ This avoids possible build errors that may result from the build pipeline attempting
+ to compile outdated code. It's an optional operation in case the target
+ contains content that needs to be kept, though arguably it shouldn't be used that way.</div>
 </section>
 </li>
 <li class="blockList">
