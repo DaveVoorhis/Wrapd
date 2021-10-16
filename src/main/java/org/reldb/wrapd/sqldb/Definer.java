@@ -13,12 +13,13 @@ import java.util.Map;
  * Mechanism for defining Query, Update and valueOf classes.
  */
 public class Definer {
+    private static final Msg MsgCodeDirectoryPurged = new Msg("Target {0} has been purged.");
+    private static final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge target {0}.");
+
     private final Database database;
     private final String codeDirectory;
     private final String packageSpec;
     private final Map<String, Collection<SQLTypeGenerator.Method>> methods = new HashMap<>();
-    private final Msg MsgCodeDirectoryPurged = new Msg("Target {0} has been purged.");
-    private final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge target {0}.");
 
     private void addMethods(String queryName, Collection<SQLTypeGenerator.Method> queryMethods) {
         methods.put(queryName, queryMethods);
