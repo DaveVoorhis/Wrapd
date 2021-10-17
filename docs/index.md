@@ -205,9 +205,9 @@ public class Application {
 
 #### Code generation is part of the Wrapd library and integrates into your build pipeline. ####
 
-Code generation steps are invoked with conventional Java, and can be easily integrated into your build pipeline with no external tools or special plugins.
+Code generation steps are invoked with conventional Java, and can be easily integrated into your build pipeline without external tools or special plugins.
 
-In your project Java source:
+In your project Java source, code like this runs the SQL query definitions to test them and generate Java code to invoke them:
 ```java
  // Generate SQL-invocation methods
  public static void main(String[] args) throws Throwable {
@@ -220,12 +220,8 @@ In your project Java source:
  }
 ```
 
-In your project build.gradle (assuming Gradle build pipeline):
+In your project build.gradle (assuming Gradle build pipeline), this runs the above:
 ```groovy
-plugins {
-    id 'org.reldb.wrapd.demo.repositories_and_dependencies_with_database'
-}
-
 task runQueryBuild(type: JavaExec) {
     group = "Wrapd"
     description = "Generate code from query definitions."
