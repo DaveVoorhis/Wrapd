@@ -116,47 +116,46 @@ package org.reldb.wrapd.demo;
 
 import org.reldb.wrapd.demo.generated.*;
 import org.reldb.wrapd.demo.mysql.GetDatabase;
-import org.reldb.wrapd.sqldb.Database;
 
 import java.sql.SQLException;
 
 public class Application {
 
-    public static void populateABC(Database database) throws Exception {
-        for (var i = 1000; i < 1010; i++) {
-            var tuple = new ABCTuple(database);
-            tuple.a = i;
-            tuple.b = i * 2;
-            tuple.c = Integer.toString(i * 10);
-            tuple.insert();
-        }
-    }
+    private static class Demo extends DatabaseAbstractionLayer {
 
-    public static void populateXYZ(Database database) throws Exception {
-        for (var i = 1005; i < 1015; i++) {
-            var tuple = new XYZTuple(database);
-            tuple.x = i;
-            tuple.y = i * 2;
-            tuple.z = Integer.toString(i * 100);
-            tuple.insert();
-        }
-    }
-
-    private static class Demo3 extends DatabaseAbstractionLayer {
-
-        public Demo3(Database database) {
-            super(database);
+        public Demo() throws Exception {
+            super(GetDatabase.getDatabase());
         }
 
-        public void run() throws Exception {
+        void populateABC() throws SQLException {
+            for (var i = 1000; i < 1010; i++) {
+                var tuple = new ABCTuple(getDatabase());
+                tuple.a = i;
+                tuple.b = i * 2;
+                tuple.c = Integer.toString(i * 10);
+                tuple.insert();
+            }
+        }
+
+        void populateXYZ() throws SQLException {
+            for (var i = 1005; i < 1015; i++) {
+                var tuple = new XYZTuple(getDatabase());
+                tuple.x = i;
+                tuple.y = i * 2;
+                tuple.z = Integer.toString(i * 100);
+                tuple.insert();
+            }
+        }
+
+        void run() throws Exception {
             System.out.println("== ClearABC ==");
             clearABC();
             System.out.println("== ClearXYZ ==");
             clearXYZ();
             System.out.println("== populateABC ==");
-            populateABC(getDatabase());
+            populateABC();
             System.out.println("== populateXYZ ==");
-            populateXYZ(getDatabase());
+            populateXYZ();
             System.out.println("== ABC ==");
             aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
             System.out.println("== XYZ (1007) ==");
@@ -180,11 +179,13 @@ public class Application {
             aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
             System.out.println("== JoinABCXYZ ==");
             joinABCXYZ()
-                    .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+                    .forEach(row -> System.out.println("Row:" +
+                            " a = " + row.a + " b = " + row.b + " c = " + row.c +
                             " x = " + row.x + " y = " + row.y + " z = " + row.z));
             System.out.println("== JoinABCXYZWhere (1002, 1008) ==");
             joinABCXYZWhere(1002, 1008)
-                    .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+                    .forEach(row -> System.out.println("Row:" +
+                            " a = " + row.a + " b = " + row.b + " c = " + row.c +
                             " x = " + row.x + " y = " + row.y + " z = " + row.z));
             System.out.println("== ValueOfABCb ==");
             var valueOfABCb = valueOfABCb();
@@ -195,13 +196,12 @@ public class Application {
     }
 
     public static void main(String[] args) throws Exception {
-        var database = GetDatabase.getDatabase();
-        new Demo3(database).run();
+        if (args.length == 1 && args[0].equals("test"))
+            return;
+        new Demo().run();
     }
 }
 ```
-
-In short, Wrapd creates a simple, type-checked, statically-compiled bridge between JDBC and Java Streams.
 
 #### Code generation is part of the Wrapd library ####
 
@@ -252,9 +252,9 @@ emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
 Invoke them like this:
 
 ```java
- private static class Demo3 extends DatabaseAbstractionLayer {
+ private static class Demo extends DatabaseAbstractionLayer {
 
-     public Demo3(Database database) {
+     public Demo(Database database) {
          super(database);
      }
 
