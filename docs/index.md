@@ -406,7 +406,7 @@ In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
 ### How to Use Wrapd -- Overview ##
 
-1. Create your database. Wrapd is a "SQL first" library, so the assumption is that the database exists, either via Wrapd's schema migration mechanisms or externally defined.
+1. Create your database. Wrapd is an "SQL first" library, so the assumption is that the database exists, either via Wrapd's schema migration mechanisms or externally defined.
 
 2. Define your SQL queries in your project. A collection of query definitions specifies a database abstraction layer.
 
