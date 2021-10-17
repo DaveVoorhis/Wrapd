@@ -192,20 +192,20 @@ In short, Wrapd creates a simple, type-checked, statically-compiled bridge betwe
 
 Code generation steps are invoked with conventional Java and integrates easily into your build pipeline and requires no external tools.
 
-In your Java source:
+In your project Java source:
 ```java
-    // Generate SQL-invocation methods
-    public static void main(String[] args) throws Throwable {
-        var db = GetDatabase.getDatabase();
-        var codeDirectory = "src/main/java";
-        var codePackage = "org.reldb.wrapd.demo.generated";
-        var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
-        sqlDefinitions.generate();
-        System.out.println("OK: Queries are ready.");
-    }
+ // Generate SQL-invocation methods
+ public static void main(String[] args) throws Throwable {
+     var db = GetDatabase.getDatabase();
+     var codeDirectory = "src/main/java";
+     var codePackage = "org.reldb.wrapd.demo.generated";
+     var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+     sqlDefinitions.generate();
+     System.out.println("OK: Queries are ready.");
+ }
 ```
 
-In your build.gradle (assuming Gradle build pipeline):
+In your project build.gradle (assuming Gradle build pipeline):
 ```groovy
 plugins {
     id 'org.reldb.wrapd.demo.repositories_and_dependencies_with_database'
@@ -226,30 +226,30 @@ That exposes a Gradle task called _runQueryBuild_. Run it to turn the SQL query 
 The _emitDatabaseAbstractionLayer_ method emits a class definition that includes
 all the previously-defined queries as methods.
 ```java
-        ...
-        defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
-        defineValueOf("ValueOfXYZz", "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
+...
+defineQuery("JoinABCXYZWhere", 
+   "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+defineValueOf("ValueOfXYZz", "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
 
-        emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
 ```
 
 Invoke them like this:
 
 ```java
-    private static class Demo3 extends DatabaseAbstractionLayer {
+ private static class Demo3 extends DatabaseAbstractionLayer {
 
-        public Demo3(Database database) {
-            super(database);
-        }
+     public Demo3(Database database) {
+         super(database);
+     }
 
-        public void run() throws Exception {
-            joinABCXYZWhere(1002, 1008)
-                    .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-                            " x = " + row.x + " y = " + row.y + " z = " + row.z));
-            System.out.println(valueOfXYZz(1007).orElse("?"));
-        }
-    }
-
+     public void run() throws Exception {
+         joinABCXYZWhere(1002, 1008)
+            .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+                                               " x = " + row.x + " y = " + row.y + " z = " + row.z));
+         System.out.println(valueOfXYZz(1007).orElse("?"));
+     }
+ }
 ```
 
 That promotes cohesion between related queries whilst 
@@ -262,15 +262,15 @@ At run-time, queries are safe from inadvertent modification and safe from SQL in
 What you define is:
 
 ```java
-  defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
 What you run is:
 
 ```java
-  joinABCXYZWhere(1002, 1008)
-          .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-                  " x = " + row.x + " y = " + row.y + " z = " + row.z));
+joinABCXYZWhere(1002, 1008)
+       .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+               " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
 SQL text is confined to definitions, not exposed in invocations, tested and statically type-safe. 
@@ -281,9 +281,9 @@ Internally, parametric queries are implemented as prepared statements. SQL text 
 Result columns are referenced as native instance variables.
 
 ```java
-  joinABCXYZWhere(1002, 1008)
-          .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-                  " x = " + row.x + " y = " + row.y + " z = " + row.z));
+joinABCXYZWhere(1002, 1008)
+       .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
+               " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
 Note how attributes of the result set are accessed as native Java instance variables 
