@@ -205,7 +205,7 @@ public class Application {
 
 #### Code generation is part of the Wrapd library and integrates into your build pipeline. ####
 
-Code generation steps are invoked with conventional Java and integrates easily into your build pipeline and requires no external tools.
+Code generation steps are invoked with conventional Java, and can be easily integrated into your build pipeline with no external tools or special plugins.
 
 In your project Java source:
 ```java
@@ -404,7 +404,7 @@ This means you can:
 
 In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
-### How to Use Wrapd ##
+## How to Use Wrapd #
 
 ### Overview ###
 
