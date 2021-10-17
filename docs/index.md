@@ -22,14 +22,14 @@ An annotation-free, pure Java library that:
 1. Lets you define SQL queries in your Java code, tests them, and generates Java code to invoke them as conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
 2. Makes it easy to manage and migrate schema changes from your Java applications.
 
-It turns this one-time SQL query definition:
+It turns one-time SQL query definitions like this:
 
 ```java
 defineQuery("JoinABCXYZWhere", 
   "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
-Into a tested, re-usable, type-safe, Streams-compatible Java method invocation:
+Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java method invocations like this:
 
 ```java
 joinABCXYZWhere(1002, 1008)
@@ -41,7 +41,22 @@ Whilst keeping your code simple, straightforward, and the database schema in syn
 
 ## Why Wrapd? ##
 
-#### Easily and quickly define and test SQL queries in your DBMS's SQL syntax from within Java, and invoke them via conventional Java methods. #### 
+### Features ###
+
+1. Tested SQL queries in Java are invoked with conventional Java methods.
+2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
+3. Database access is in database abstraction layers to increase cohesion, reduce coupling, and promote separation of concerns.
+4. SQL text is exposed in the query definitions but hidden in the query invocations, making them safe, secure, and SQL-injection-free.
+5. SELECT queries generate Streams-friendly results. Java integration is easy and clean.
+6. Inserting and updating table rows is easy.
+7. If needed, table names can be automatically prefixed. Avoid table name collisions in shared databases.
+8. Easy, automatic schema migration keeps your code in sync with your database schema and vice versa.
+
+Wrapd SQL is _amplified_, not obscured!
+
+### Details ###
+
+#### Easily and quickly define and test SQL queries in your DBMS's SQL syntax from within Java and invoke them via conventional Java methods. #### 
 
 Each SQL query definition in Wrapd acts as:
    - A unit test to run the query and verify that it works; and
@@ -252,8 +267,8 @@ Invoke them like this:
  }
 ```
 
-That promotes cohesion between related queries whilst 
-reducing coupling between Java application code and SQL text.
+That increases cohesion between related queries whilst 
+reducing coupling between Java application code and SQL text, and promotes separation of concerns.
 
 #### SQL text is exposed in the query definitions, but hidden in the query invocations. ####
 
