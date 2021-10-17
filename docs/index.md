@@ -96,7 +96,7 @@ public class Definitions extends Definer {
 
     public static void main(String[] args) throws Throwable {
         var db = GetDatabase.getDatabase();
-        var codeDirectory = "src/main/java";
+        var codeDirectory = "../application/src/main/java";
         var codePackage = "org.reldb.wrapd.demo.generated";
         if (!Directory.chkmkdir(codeDirectory)) {
             System.out.println("ERROR creating code directory " + codeDirectory);
@@ -212,7 +212,7 @@ In your project Java source, code like this runs the SQL query definitions to te
  // Generate SQL-invocation methods
  public static void main(String[] args) throws Throwable {
      var db = GetDatabase.getDatabase();
-     var codeDirectory = "src/main/java";
+     var codeDirectory = "../application/src/main/java";
      var codePackage = "org.reldb.wrapd.demo.generated";
      var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
      sqlDefinitions.generate();
