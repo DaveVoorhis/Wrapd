@@ -43,7 +43,7 @@ Whilst keeping your code simple, straightforward, and the database schema in syn
 
 ### Features ###
 
-1. Tested SQL queries in Java are invoked with conventional Java methods.
+1. SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods.
 2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
 3. Database access is in database abstraction layers to increase cohesion, reduce coupling, and promote separation of concerns.
 4. SQL text is exposed in the query definitions but hidden in the query invocations, making them safe, secure, and SQL-injection-free.
