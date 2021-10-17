@@ -49,7 +49,7 @@ Whilst keeping your code simple, straightforward, and the database schema in syn
 4. SQL text is exposed in the query definitions but hidden in the query invocations, making them safe, secure, and SQL-injection-free.
 5. SELECT queries generate Streams-friendly results. Java integration is easy and clean.
 6. Inserting and updating table rows is easy.
-7. If needed, table names can be automatically prefixed. Avoid table name collisions in shared databases.
+7. If needed, table names can be automatically prefixed to avoid table name collisions in shared databases.
 8. Easy, automatic schema migration keeps your code in sync with your database schema and vice versa.
 
 Wrapd SQL is _amplified_, not obscured!
