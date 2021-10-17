@@ -417,7 +417,7 @@ In short, Wrapd makes it easy to deploy database creation and database upgrades.
 It is recommended to organise your Wrapd project into (at least) three main subprojects:
 
 1. A *schema* subproject to create/update the SQL schema. (If schema migration is managed elsewhere, you can skip this subproject.)
-2. A *queries* subproject to convert SQL query definitions into Java methods, organised as one or more database abstraction layers.
+2. A *queries* subproject to convert SQL query definitions into Java methods in the *application* subproject. Larger projects may wish to generate the Java methods in their own subproject, which the application(s) will reference as a dependency.
 3. An *application* subproject to host the application.
 
 You may want a fourth *database* subproject to manage database connectivity, as it will be shared by the three main subprojects above.
@@ -439,7 +439,7 @@ It's generally _much_ easier to divide the project into subprojects as described
 The [Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) 
 demonstration application has been built according the above structure. It consists of three main subprojects...
 1. *schema* - to create/update the SQL schema.
-2. *queries* - to convert SQL query definitions into Java methods and one or more database abstraction layers.
+2. *queries* - to convert SQL query definitions into Java methods in the *application* subproject.
 3. *application* - the application.
 
 ...plus two additional subprojects:
