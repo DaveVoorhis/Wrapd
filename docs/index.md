@@ -41,7 +41,7 @@ Whilst keeping your code simple, straightforward, and the database schema in syn
 
 ## Why Wrapd? ##
 
-### Features ###
+### Features and Benefits ###
 
 1. SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods.
 2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
@@ -348,7 +348,7 @@ defineQuery("JoinABCXYZWhere",
 
 #### Easy automatic schema migration. ####
 
-Integrate schema migration into your application or deploy stand-alone a schema migrator.
+Integrate schema migration into your application or deploy a stand-alone schema migrator.
 
 Create a new 'version 1' database:
 ```java
@@ -418,22 +418,22 @@ In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
 ### Creating a Wrapd Project ###
 
-It is recommended to organise your Wrapd project as at least three main subprojects:
+It is recommended to organise your Wrapd project into (at least) three main subprojects:
 
-1. A *schema* subproject to create/update the SQL schema. This is optional.
+1. A *schema* subproject to create/update the SQL schema. (If schema migration is managed elsewhere, you can skip this subproject.)
 2. A *queries* subproject to convert SQL query definitions into Java methods, organised as one or more database abstraction layers.
 3. An *application* subproject to host the application.
 
 You may want a fourth *database* subproject to manage database connectivity, as it will be shared by the three main subprojects above.
 
 Dividing a Wrapd project into (at least) these three main subprojects makes it possible to:
-1. Convert SQL query definitions into Java methods without being blocked by compilation failures in the application(s).
+1. Reliably convert SQL query definitions into Java methods without being blocked by compilation failures in the application(s).
 2. Avoid deploying the SQL query definitions, as they're not needed in production.
 3. Deploy schema updates independently of the application(s), if desired.
 
 You _can_ integrate them all into one project without subprojects, but you will almost certainly
 encounter difficulties with compilation failures as you migrate schemas and change queries, unless you are careful
-to delete the Java code for obsolete query definitions and (possibly) comment out the application 
+to delete the generated Java code for obsolete query definitions and (possibly) comment out the application 
 code that uses them.
 
 It's generally _much_ easier to divide the project into subprojects as described above.
