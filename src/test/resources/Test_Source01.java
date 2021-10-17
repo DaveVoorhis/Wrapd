@@ -95,11 +95,11 @@ public class Test<db>_Source01 {
         populateABC(database);
         populateXYZ(database);
         System.out.println("== ABCJoinXYZ ==");
-        ABCJoinXYZ.query(database)
+        JoinABCXYZ.query(database)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
                         " x = " + row.x + " y = " + row.y + " z = " + row.z));
         System.out.println("== ABCJoinXYZWhere (1002, 1008) ==");
-        ABCJoinXYZWhere.query(database, 1002, 1008)
+        JoinABCXYZWhere.query(database, 1002, 1008)
                 .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
                         " x = " + row.x + " y = " + row.y + " z = " + row.z));
     }
