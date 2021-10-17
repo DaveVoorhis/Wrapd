@@ -408,10 +408,10 @@ In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
 1. Create your database. Wrapd is a "SQL first" library, so the assumption is that the database exists, either via Wrapd's schema migration mechanisms or externally defined.
 
-2. Define your SQL queries inside Java. Collectively, your query definitions form a database abstraction layer. All the SQL lives within the database abstraction layer. Normally, no SQL is found outside it, because all queries will be invoked by regular type-safe Java methods.
+2. Define your SQL queries in your project. A collection of query definitions specifies a database abstraction layer.
 
-3. Run the code generator to test the query definitions and generate Java source code from them and compile the source code to binary .class files.
+3. Run the code generator to test the query definitions and generate Java source code to invoke them.
 
-4. Use the generated methods to invoke your previously-defined SQL queries with type-checked parameters and no visible SQL. SELECT queries emit Java Streams with native, statically type-checked attributes.
+4. Use the generated methods to run your previously-defined SQL queries with type-checked parameters and no visible SQL. SELECT queries emit Java Streams with native, statically type-checked attributes.
 
 ### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
