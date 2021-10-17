@@ -443,7 +443,7 @@ It's generally _much_ easier to divide the project into subprojects as described
 The [Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) 
 demonstration application has been built according the above structure. It consists of three main subprojects...
 1. *schema* - to create/update the SQL schema.
-2. *queries* - to convert SQL query definitions into Java methods, organised as a database abstraction layer.
+2. *queries* - to convert SQL query definitions into Java methods and one or more database abstraction layers.
 3. *application* - the application.
 
 ...plus two additional subprojects:
