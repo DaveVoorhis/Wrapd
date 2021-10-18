@@ -44,7 +44,7 @@ Whilst keeping your code simple, straightforward, and the database schema in syn
 
 ### Features and Benefits ###
 
-1. SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods. Database access is just Java and straightforward SQL; no need for complex ORMs or frameworks.
+1. SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods. Database access is just Java, defined with straightforward SQL; no need for complex ORMs or frameworks.
 2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
 3. Database access is kept in database abstraction layers to increase cohesion, reduce coupling, and promote separation of concerns.
 4. SQL text is exposed in query definitions but hidden in query invocations, making them safe, secure, and SQL-injection-free.
