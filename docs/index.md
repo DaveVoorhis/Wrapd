@@ -33,8 +33,9 @@ Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java m
 
 ```java
 joinABCXYZWhere(1002, 1008)
-        .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-                " x = " + row.x + " y = " + row.y + " z = " + row.z));
+        .forEach(row -> System.out.println("Row:" + 
+          " a = " + row.a + " b = " + row.b + " c = " + row.c +
+          " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
 Whilst keeping your code simple, straightforward, and the database schema in sync.
