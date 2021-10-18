@@ -139,10 +139,10 @@ In your project Java source, code like this runs the SQL query definitions to te
 ```java
  // Generate SQL-invocation methods
  public static void main(String[] args) throws Throwable {
-     var db = GetDatabase.getDatabase();
+     var database = GetDatabase.getDatabase();
      var codeDirectory = "../application/src/main/java";
      var codePackage = "org.reldb.wrapd.demo.generated";
-     var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+     var sqlDefinitions = new Definitions(database, codeDirectory, codePackage);
      sqlDefinitions.generate();
      System.out.println("OK: Queries are ready.");
  }
@@ -184,8 +184,9 @@ Invoke them like this:
 
      public void run() throws Exception {
          joinABCXYZWhere(1002, 1008)
-            .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-                                               " x = " + row.x + " y = " + row.y + " z = " + row.z));
+            .forEach(row -> System.out.println("Row:" + 
+                " a = " + row.a + " b = " + row.b + " c = " + row.c +
+                " x = " + row.x + " y = " + row.y + " z = " + row.z));
          System.out.println(valueOfXYZz(1007).orElse("?"));
      }
  }
@@ -201,15 +202,17 @@ At run-time, queries are safe from inadvertent modification and safe from SQL in
 What you define is:
 
 ```java
-defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+defineQuery("JoinABCXYZWhere", 
+  "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
 What you run is:
 
 ```java
 joinABCXYZWhere(1002, 1008)
-       .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-               " x = " + row.x + " y = " + row.y + " z = " + row.z));
+       .forEach(row -> System.out.println("Row:" +
+          " a = " + row.a + " b = " + row.b + " c = " + row.c +
+          " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
 SQL text is confined to definitions, not exposed in invocations, tested and statically type-safe. 
@@ -221,8 +224,9 @@ Result columns are referenced as native instance variables.
 
 ```java
 joinABCXYZWhere(1002, 1008)
-       .forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c +
-               " x = " + row.x + " y = " + row.y + " z = " + row.z));
+       .forEach(row -> System.out.println("Row:" + 
+          " a = " + row.a + " b = " + row.b + " c = " + row.c +
+          " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
 Note how attributes of the result set are accessed as native Java instance variables 
