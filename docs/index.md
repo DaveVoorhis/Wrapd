@@ -111,7 +111,8 @@ public class Application {
 
         void run() throws Exception {
             System.out.println("== ABC ==");
-            aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
+            aBC().forEach(row -> System.out.println("Row:" + 
+                    " a = " + row.a + " b = " + row.b + " c = " + row.c));
             System.out.println("== JoinABCXYZWhere (1002, 1008) ==");
             joinABCXYZWhere(1002, 1008)
                     .forEach(row -> System.out.println("Row:" +
