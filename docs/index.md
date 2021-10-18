@@ -76,8 +76,10 @@ public class Definitions extends Definer {
         purgeTarget();
 
         defineTable("$$ABC");
-        defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
-        defineValueOf("ValueOfXYZz", "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
+        defineQuery("JoinABCXYZWhere", 
+          "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+        defineValueOf("ValueOfXYZz", 
+          "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
 
         emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
     }
@@ -113,11 +115,13 @@ public class Application {
             System.out.println("== ABC ==");
             aBC().forEach(row -> System.out.println("Row:" + 
                     " a = " + row.a + " b = " + row.b + " c = " + row.c));
+                    
             System.out.println("== JoinABCXYZWhere (1002, 1008) ==");
             joinABCXYZWhere(1002, 1008)
                     .forEach(row -> System.out.println("Row:" +
                             " a = " + row.a + " b = " + row.b + " c = " + row.c +
                             " x = " + row.x + " y = " + row.y + " z = " + row.z));
+                            
             System.out.println("== ValueOfXYZz ==");
             System.out.println(valueOfXYZz(1007).orElse("?"));
         }
