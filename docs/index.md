@@ -64,12 +64,7 @@ Each SQL query definition in Wrapd acts as:
 
 Predefine SQL queries like this, which tests the queries and automatically generates a database access layer:
 ```java
-package org.reldb.wrapd.demo;
-
-import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.demo.mysql.GetDatabase;
-import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.Definer;
+...
 
 public class Definitions extends Definer {
 
@@ -81,28 +76,15 @@ public class Definitions extends Definer {
         purgeTarget();
 
         defineTable("$$ABC");
-        defineTable("$$XYZ", "x = {xValue}", 22);
-        defineQueryForTable("SelectABCWhere", "$$ABC", "SELECT * FROM $$ABC WHERE a = {aValue}", 22);
-        defineQuery("JoinABCXYZ", "SELECT * FROM $$ABC, $$XYZ WHERE x = a");
         defineQuery("JoinABCXYZWhere", "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
-        defineUpdate("ClearABC", "DELETE FROM $$ABC");
-        defineUpdate("ClearXYZ", "DELETE FROM $$XYZ");
-        defineUpdate("ClearABCWhere", "DELETE FROM $$ABC WHERE a = {aValue}", 3);
-        defineValueOf("ValueOfABCb", "SELECT b FROM $$ABC");
         defineValueOf("ValueOfXYZz", "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
 
         emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
     }
 
     public static void main(String[] args) throws Throwable {
-        var db = GetDatabase.getDatabase();
-        var codeDirectory = "../application/src/main/java";
-        var codePackage = "org.reldb.wrapd.demo.generated";
-        if (!Directory.chkmkdir(codeDirectory)) {
-            System.out.println("ERROR creating code directory " + codeDirectory);
-            return;
-        }
-        var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+        ...
+        var sqlDefinitions = new Definitions(database, codeDirectory, codePackage);
         sqlDefinitions.generate();
         System.out.println("OK: Queries are ready.");
     }
@@ -127,69 +109,14 @@ public class Application {
             super(GetDatabase.getDatabase());
         }
 
-        void populateABC() throws SQLException {
-            for (var i = 1000; i < 1010; i++) {
-                var tuple = new ABCTuple(getDatabase());
-                tuple.a = i;
-                tuple.b = i * 2;
-                tuple.c = Integer.toString(i * 10);
-                tuple.insert();
-            }
-        }
-
-        void populateXYZ() throws SQLException {
-            for (var i = 1005; i < 1015; i++) {
-                var tuple = new XYZTuple(getDatabase());
-                tuple.x = i;
-                tuple.y = i * 2;
-                tuple.z = Integer.toString(i * 100);
-                tuple.insert();
-            }
-        }
-
         void run() throws Exception {
-            System.out.println("== ClearABC ==");
-            clearABC();
-            System.out.println("== ClearXYZ ==");
-            clearXYZ();
-            System.out.println("== populateABC ==");
-            populateABC();
-            System.out.println("== populateXYZ ==");
-            populateXYZ();
             System.out.println("== ABC ==");
             aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
-            System.out.println("== XYZ (1007) ==");
-            xYZ(1007)
-                    .forEach(row -> System.out.println("Row: x = " + row.x + " y = " + row.y + " z = " + row.z));
-            System.out.println("== ClearABCWhere (1007) ==");
-            clearABCWhere(1007);
-            System.out.println("== ABC ==");
-            aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
-            System.out.println("== ABC - queryForUpdate row.b += 100 ==");
-            aBCForUpdate()
-                    .forEach(row -> {
-                        row.b += 100;
-                        try {
-                            row.update();
-                        } catch (SQLException e) {
-                            System.out.println("Row update failed due to: " + e);
-                        }
-                    });
-            System.out.println("== ABC ==");
-            aBC().forEach(row -> System.out.println("Row: a = " + row.a + " b = " + row.b + " c = " + row.c));
-            System.out.println("== JoinABCXYZ ==");
-            joinABCXYZ()
-                    .forEach(row -> System.out.println("Row:" +
-                            " a = " + row.a + " b = " + row.b + " c = " + row.c +
-                            " x = " + row.x + " y = " + row.y + " z = " + row.z));
             System.out.println("== JoinABCXYZWhere (1002, 1008) ==");
             joinABCXYZWhere(1002, 1008)
                     .forEach(row -> System.out.println("Row:" +
                             " a = " + row.a + " b = " + row.b + " c = " + row.c +
                             " x = " + row.x + " y = " + row.y + " z = " + row.z));
-            System.out.println("== ValueOfABCb ==");
-            var valueOfABCb = valueOfABCb();
-            System.out.println(valueOfABCb.isPresent() ? valueOfABCb.get() : "?");
             System.out.println("== ValueOfXYZz ==");
             System.out.println(valueOfXYZz(1007).orElse("?"));
         }
