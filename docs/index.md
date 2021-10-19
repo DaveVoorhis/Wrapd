@@ -93,7 +93,7 @@ public class Definitions extends Definer {
     }
 }
 ```
-Note the example arguments, which are used to test parametric queries and determine its parameter and result types.
+Note the example arguments, which are used to test parametric queries and determine their parameter and result types.
 
 Wrapd will generate classes and type-checked methods to conveniently invoke your queries. Run the queries defined above like this:
 ```java
