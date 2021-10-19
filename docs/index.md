@@ -13,6 +13,17 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 * SQL access is helpfully *wrapped*, not awkwardly hidden.
 * SQL-in-Java development is *rapid*.
 * SQL focus can be *rapt*.
+
+## Table of contents ##
+
+- [What is Wrapd?](#what-is-wrapd)
+- [Why Wrapd?](#why-wrapd)
+  - [Features and Benefits](#features-and-benefits)
+  - [Details](#details)
+- [How to Use Wrapd](#how-to-use-wrapd)
+  - [Overview](#overview)
+  - [Creating a Wrapd Project](#creating-a-wrapd-project)
+  - [The Wrapd-demo Project](#the-wrapd-demo-project)
   
 Advanced User? See [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"}
 
