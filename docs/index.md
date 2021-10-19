@@ -16,13 +16,14 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
   
 Advanced User? See [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"}
 
+____
 ## What is Wrapd? ##
 
 An annotation-free, pure Java library that:
 1. Lets you define SQL queries in your Java code, tests them, and generates Java code to invoke them as conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
 2. Makes it easy to manage and migrate schema changes from your Java applications.
 
-It turns SQL query definitions like this:
+It turns simple, straightforward, readable SQL query definitions like this:
 
 ```java
 defineQuery("JoinABCXYZWhere", 
@@ -40,6 +41,7 @@ joinABCXYZWhere(1002, 1008)
 
 Whilst keeping your code simple, straightforward, and the database schema in sync.
 
+____
 ## Why Wrapd? ##
 
 ### Features and Benefits ###
@@ -337,6 +339,7 @@ This means you can:
 
 In short, Wrapd makes it easy to deploy database creation and database upgrades.
 
+____
 ## How to Use Wrapd #
 
 ### Overview ###
@@ -387,4 +390,5 @@ Perhaps the easiest way to build a new Wrapd application is to simply copy the W
 
 That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
 
+____
 ### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
