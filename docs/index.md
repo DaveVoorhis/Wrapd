@@ -356,9 +356,12 @@ ____
 
 It is recommended to organise your Wrapd project into (at least) three main subprojects:
 
-1. A *schema* subproject to create/update the SQL schema. (If schema migration is managed elsewhere, you can skip this subproject.)
-2. A *queries* subproject to convert SQL query definitions into Java methods in the *application* subproject. Larger projects may wish to generate the Java methods in their own subproject, which the application(s) will reference as a dependency.
+1. A *schema* subproject to create/update the SQL schema. 
+    >If schema migration is managed elsewhere, you can skip this subproject.
+2. A *queries* subproject to turn SQL query definitions into Java methods in the *application* subproject.
+   >Larger projects may wish to generate the Java methods in their own subproject, which the application(s) will reference as a dependency.
 3. An *application* subproject to host the application.
+   >Wrapd uses the *queries* subproject to write the database access layer(s) for you.
 
 You may want a fourth *database* subproject to manage database connectivity, as it will be shared by the three main subprojects above.
 
@@ -378,12 +381,12 @@ It's generally _much_ easier to divide the project into subprojects as described
 
 The [Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) 
 demonstration application has been built according the above structure. It consists of three main subprojects...
-1. *schema* - to create/update the SQL schema.
-2. *queries* - to convert SQL query definitions into Java methods in the *application* subproject.
+1. *schema* - creates/updates the SQL schema.
+2. *queries* - turns SQL query definitions into Java methods in the *application* subproject.
 3. *application* - the application.
 
 ...plus two additional subprojects:
-1. *database* - database connectivity shared by the above, including a demonstration of connection pooling because most real-world applications will need it.
+1. *database* - database connectivity, including a demonstration of connection pooling because most real-world applications will need it. It's used by all three of the above subprojects.
 2. *buildSrc* - Gradle project settings.
 
 Perhaps the easiest way to build a new Wrapd application is to simply copy the Wrapd-demo demonstration application and modify it to suit your requirements.
