@@ -24,7 +24,4 @@ gradle publishToMavenLocal
 docker-compose down -v
 ```
 
-Note: If building locally, you need the RelDB.org Toolbox dependency in your
-local Maven repository. See https://github.com/DaveVoorhis/Toolbox
-
 ### Documentation and examples are a work-in-progress. Available on Maven Central. See https://search.maven.org/artifact/org.reldb/Wrapd ###
