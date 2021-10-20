@@ -14,7 +14,9 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 * SQL-in-Java development is *rapid*.
 * SQL focus can be *rapt*.
 
-#### Get Wrapd on Maven Central. See https://search.maven.org/artifact/org.reldb/Wrapd ####
+### Get Wrapd on Maven Central ###
+
+https://search.maven.org/artifact/org.reldb/Wrapd
 
 ## Table of contents ##
 
@@ -407,4 +409,5 @@ Perhaps the easiest way to build a new Wrapd application is to simply copy the W
 That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
 
 ____
-### Documentation and examples are a work-in-progress. Available on Maven Central. See https://search.maven.org/artifact/org.reldb/Wrapd ###
+### Documentation and examples are a work-in-progress. Available on Maven Central. ###
+See https://search.maven.org/artifact/org.reldb/Wrapd
