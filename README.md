@@ -24,4 +24,4 @@ gradle publishToMavenLocal
 docker-compose down -v
 ```
 
-### Documentation and examples are a work-in-progress. Available on Maven Central. See https://search.maven.org/artifact/org.reldb/Wrapd ###
+### Documentation and examples are a work-in-progress. Available on Maven Central. See [https://search.maven.org/artifact/org.reldb/Wrapd]() ###

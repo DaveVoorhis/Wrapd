@@ -16,7 +16,7 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 
 ### Get Wrapd on Maven Central ###
 
-https://search.maven.org/artifact/org.reldb/Wrapd
+[https://search.maven.org/artifact/org.reldb/Wrapd]()
 
 ## Table of contents ##
 
@@ -410,4 +410,4 @@ That said, a step-by-step tutorial for building a Wrapd project will soon be com
 
 ____
 ### Documentation and examples are a work-in-progress. Available on Maven Central. ###
-See https://search.maven.org/artifact/org.reldb/Wrapd
+See [https://search.maven.org/artifact/org.reldb/Wrapd]()
