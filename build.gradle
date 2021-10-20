@@ -2,12 +2,37 @@ plugins {
     id 'java'
     id 'java-library'
     id 'maven-publish'
+    id 'signing'
 }
 
 group = 'org.reldb'
-version = '0.0.55-SNAPSHOT'
+version = '1.0.0'
 description = 'Wrapd SQL Amplifier'
 java.sourceCompatibility = JavaVersion.VERSION_11
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+}
+
+signing {
+    sign publishing.publications
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
 
 repositories {
     mavenLocal()
@@ -15,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    api 'org.reldb:Toolbox:0.0.9-SNAPSHOT'
+    api 'org.reldb:Toolbox:1.0.0'
 }
 
 dependencies {
@@ -55,6 +80,29 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            pom {
+                name = "Wrapd"
+                description = "Wrapd is a SQL amplifier, a lightweight database abstraction layer generator and schema migrator that helpfully exposes SQL in Java rather than hiding it."
+                url = "https://wrapd.org"
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "DaveVoorhis"
+                        name = "Dave Voorhis"
+                        email = "voorhis@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/DaveVoorhis/Wrapd.git"
+                    developerConnection = "scm:git:https://github.com/DaveVoorhis/Wrapd.git"
+                    url = "https://wrapd.org"
+                }
+            }
         }
     }
     repositories {
