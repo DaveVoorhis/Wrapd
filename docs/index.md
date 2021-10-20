@@ -405,4 +405,4 @@ Perhaps the easiest way to build a new Wrapd application is to simply copy the W
 That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
 
 ____
-### Documentation and examples are a work-in-progress. Wrapd will soon be available on Maven Central. Watch this space! ###
+### Documentation and examples are a work-in-progress. Available on Maven Central. See https://search.maven.org/artifact/org.reldb/Toolbox ###
