@@ -414,4 +414,5 @@ ____
 ### Documentation and examples are a work-in-progress. ###
 
 Wrapd on Maven Central: [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
+
 Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
