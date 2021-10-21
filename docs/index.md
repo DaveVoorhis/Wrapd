@@ -6,8 +6,6 @@ Wrapd is for Java 11 and above.
 
 See [https://github.com/DaveVoorhis/Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) for a Wrapd-ly written demo application.
 
-The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
-
 *"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
 
 * SQL access is helpfully *wrapped*, not awkwardly hidden.
@@ -17,6 +15,10 @@ The Wrapd library is hosted at [https://github.com/DaveVoorhis/Wrapd](https://gi
 ### Get Wrapd on Maven Central ###
 
 [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
+
+### Get Wrapd on GitHub ###
+
+[https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
 
 ## Table of contents ##
 
@@ -409,5 +411,7 @@ Perhaps the easiest way to build a new Wrapd application is to simply copy the W
 That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
 
 ____
-### Documentation and examples are a work-in-progress. Available on Maven Central. ###
-See [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
+### Documentation and examples are a work-in-progress. ###
+
+Wrapd on Maven Central: [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
+Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
