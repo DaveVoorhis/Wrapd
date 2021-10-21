@@ -1,16 +1,16 @@
-Wrapd is a _SQL amplifier_ that makes SQL more powerful in Java. 
+> Wrapd is a _SQL amplifier_ that makes SQL more powerful in Java. 
 
 Rather than hiding SQL behind complexity or difficulty, it exposes SQL where it helps, hides SQL where it should, and makes SQL fast, safe and easy to integrate into Java while staying light, lean, and loveable.
 
-Wrapd is for Java 11 and above.
-
 See [https://github.com/DaveVoorhis/Wrapd-demo](https://github.com/DaveVoorhis/Wrapd-demo) for a Wrapd-ly written demo application.
 
-*"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
+> *"Wrapd" is pronounced "wrapped", "rapid" and "rapt."*
+> 
+> * SQL access is helpfully *wrapped*, not awkwardly hidden.
+> * SQL-in-Java development is *rapid*.
+> * SQL focus can be *rapt*.
 
-* SQL access is helpfully *wrapped*, not awkwardly hidden.
-* SQL-in-Java development is *rapid*.
-* SQL focus can be *rapt*.
+Wrapd is for **Java 11** and above.
 
 ### Get Wrapd on Maven Central ###
 
@@ -72,7 +72,7 @@ ____
 7. If needed, table names can be automatically prefixed to avoid table name collisions in shared databases.
 8. Easy, automatic schema migration keeps your code in sync with your database schema and vice versa.
 
-Wrapd is SQL _amplified_, not obscured!
+> Wrapd is SQL _amplified_, not obscured!
 
 ### Details ###
 
