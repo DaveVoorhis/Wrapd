@@ -1,18 +1,15 @@
 plugins {
     id 'java'
-    id 'java-library'
     id 'maven-publish'
+    id 'java-library'
+    id 'signing'
 }
 
 group = 'org.reldb'
 version = '1.0.1-SNAPSHOT'
 description = 'Wrapd SQL Amplifier'
-java.sourceCompatibility = JavaVersion.VERSION_11
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     api 'org.reldb:Toolbox:1.0.0'
@@ -33,10 +30,6 @@ test {
     useJUnitPlatform()
 }
 
-clean {
-    delete '_TestData'
-}
-
 task createProperties(dependsOn: processResources) {
     doLast {
         new File("$buildDir/resources/main/wrapd.version.properties").withWriter { w ->
@@ -51,17 +44,6 @@ classes {
     dependsOn createProperties
 }
 
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-    repositories {
-        mavenLocal()
-    }
-}
-
 javadoc {
     options.overview = "src/javadoc/overview.html"
 
@@ -70,6 +52,89 @@ javadoc {
         copy {
             from "build/docs/"
             into "docs/"
+        }
+    }
+}
+
+clean {
+    delete '_TestData'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+/**
+ * This build.gradle will publish to the oss Nexus repository manager
+ * at https://s01.oss.sonatype.org for staging to Maven Central.
+ *
+ * For that to work, you need a .gradle/gradle.properties file
+ * with appropriate values for:
+ *
+ *   mavenCentralUsername= ...
+ *   mavenCentralPassword= ...
+ *   signing.keyId= ...
+ *   signing.password= ...
+ *   signing.secretKeyRingFile= ...
+ *
+ * The mavenCentral* values are used by publishing.
+ * The signing.* values are used by signing.
+ */
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+
+signing {
+    sign publishing.publications
+}
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom {
+                name = "Wrapd"
+                description = "Wrapd is a SQL amplifier, a lightweight database abstraction layer generator and schema migrator that helpfully exposes SQL in Java rather than hiding it."
+                url = "https://wrapd.org"
+                licenses {
+                    license {
+                        name = "The Apache License, Version 2.0"
+                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
+                    }
+                }
+                developers {
+                    developer {
+                        id = "DaveVoorhis"
+                        name = "Dave Voorhis"
+                        email = "voorhis@gmail.com"
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/DaveVoorhis/Wrapd.git"
+                    developerConnection = "scm:git:https://github.com/DaveVoorhis/Wrapd.git"
+                    url = "https://wrapd.org"
+                }
+            }
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo : snapshotRepo
+            credentials {
+                username = mavenCentralUsername
+                password = mavenCentralPassword
+            }
         }
     }
 }
