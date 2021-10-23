@@ -8,7 +8,7 @@ This is the source project for the Wrapd library. If you want to use Wrapd, go [
 
 ### Use Wrapd ###
 
-Wrapd document is at https://wrapd.org
+Wrapd documentation is at https://wrapd.org
 
 Get a Wrapd-ly written demo application at https://github.com/DaveVoorhis/Wrapd-demo
 
