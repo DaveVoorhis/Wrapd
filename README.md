@@ -12,14 +12,12 @@ Wrapd document is at https://wrapd.org
 
 Get a Wrapd-ly written demo application at https://github.com/DaveVoorhis/Wrapd-demo
 
-----
 ### Get Wrapd ###
 
 Wrapd on Maven Central: [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
 
 Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
 
-----
 ### Build Wrapd ###
 
 You need Docker installed on your system, because Docker images of popular DBMSs are used to perform end-to-end tests.
