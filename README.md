@@ -20,6 +20,8 @@ Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveV
 
 ### Extend Wrapd ###
 
+To extend, modify, customise or improve Wrapd, you'll need to download the source from GitHub and meet the following requirements:
+
 #### Requirements ####
 - Docker. (Docker images of popular DBMSs are used to run end-to-end tests.)
 - Java JDK 11+ 
@@ -38,6 +40,8 @@ Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveV
     gradle clean build publishToMavenLocal
     docker-compose down -v
     ```
+
+Once you've done something good, please submit a pull request!
 
 ____
 ### Documentation and examples are a work-in-progress. ###
