@@ -35,7 +35,7 @@ Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveV
     ```
     docker-compose up -d
     sleep 10   # give DBMSs time to spool up
-    gradle clean build javadoc publishToMavenLocal
+    gradle clean build publishToMavenLocal
     docker-compose down -v
     ```
 
