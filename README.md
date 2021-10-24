@@ -20,7 +20,7 @@ Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveV
 
 ### Extend Wrapd ###
 
-To extend, modify, customise or improve Wrapd, you'll need to download the source from GitHub and meet the following requirements:
+To extend, modify, customise or improve Wrapd, you'll need to download the source from GitHub and have the following tools on hand:
 
 #### Requirements ####
 - Docker. (Docker images of popular DBMSs are used to run end-to-end tests.)

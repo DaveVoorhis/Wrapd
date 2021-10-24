@@ -82,7 +82,58 @@ loadScripts(document, 'script');</script>
 <hr>
 <pre>public class <span class="type-name-label">Definer</span>
 extends java.lang.Object</pre>
-<div class="block">Mechanism for defining Query, Update and valueOf classes.</div>
+<div class="block"><p>Mechanism for defining Query, Update and valueOf classes.</p>
+
+ <p>This is the main class you'll use to interact with Wrapd, at least to start with.</p>
+
+ <p>This class turns SQL query definitions into Java methods, like having an assistant who
+ writes code for you.</p>
+
+ <p>Use it like this:</p>
+
+ <pre>
+ public class Definitions extends Definer {
+
+     public Definitions(Database database, String codeDirectory, String packageSpec) {
+         super(database, codeDirectory, packageSpec);
+     }
+
+     void generate() throws Throwable {
+         // Delete everything in the target directory.
+         purgeTarget();
+
+         // Generate definition for table ABC.
+         defineTable("$$ABC");
+
+         // Generate definition for a query called JoinABCXYZWhere.
+         defineQuery("JoinABCXYZWhere",
+           "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x &gt; {lower} AND x &lt; {higher}", 2, 5);
+
+         // Generate a definition for a query called ValueOfXYZz that returns the value of the first
+         // column of the first row of the result. (If there isn't one, the returned Option type is empty.)
+         defineValueOf("ValueOfXYZz",
+           "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
+
+         // Emit the above definitions in a single class called DatabaseAbstractionLayer, with
+         // methods for each definition above.
+         emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+     }
+
+     // Run the above queries; generate code to run them again via Java methods.
+     public static void main(String[] args) throws Throwable {
+         var database = new Database(...);
+         var codeDirectory = "../path/to/code/in/project";
+         var codePackage = "pkg.code.the";
+         var sqlDefinitions = new Definitions(database, codeDirectory, codePackage);
+         sqlDefinitions.generate();
+         System.out.println("OK: Queries are ready.");
+     }
+ }
+ </pre>
+
+ Then take a look in the "../path/to/code/in/project" directory to see what it's generated. In particular,
+ in this example you'll want to look at DatabaseAbstractionLayer.java. You'll see that it contains method
+ definitions corresponding to the generated queries.</div>
 </section>
 <section class="summary">
 <ul class="summary-list">
