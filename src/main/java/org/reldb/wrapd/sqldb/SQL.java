@@ -3,7 +3,7 @@ package org.reldb.wrapd.sqldb;
 /**
  * Abstract base class for (possibly parametric) SQL definitions.
  *
- * Normally not used directly, but inherited.
+ * Not used directly; must be inherited.
  */
 public abstract class SQL {
     private final String text;
