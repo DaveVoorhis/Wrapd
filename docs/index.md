@@ -412,7 +412,11 @@ GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wr
 ----
 ## Know Wrapd ##
 
-Javadocs: [https://www.javadoc.io/doc/org.reldb/Wrapd](https://www.javadoc.io/doc/org.reldb/Wrapd){:target="_wrapd_javadoc"}
+Javadocs: 
+
+[https://www.javadoc.io/doc/org.reldb/Wrapd](https://www.javadoc.io/doc/org.reldb/Wrapd){:target="_wrapd_javadoc"}
+
+[https://www.javadoc.io/doc/org.reldb/Toolbox](https://www.javadoc.io/doc/org.reldb/Toolbox){:target="_wrapd_javadoc"}
 
 ____
 ### Documentation and examples are a work-in-progress. Watch this space! ###
