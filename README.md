@@ -10,7 +10,9 @@ This is the source project for the Wrapd library. If you want to use Wrapd, read
 
 Wrapd documentation is at https://wrapd.org
 
-Get a Wrapd-ly written demo application at https://github.com/DaveVoorhis/Wrapd-demo
+Javadocs are at https://www.javadoc.io/doc/org.reldb/Wrapd
+
+Get a Wrapd-ly written demo application from https://github.com/DaveVoorhis/Wrapd-demo
 
 ### Get Wrapd ###
 

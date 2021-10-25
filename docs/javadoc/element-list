@@ -1,7 +1,0 @@
-org.reldb.wrapd.exceptions
-org.reldb.wrapd.generator
-org.reldb.wrapd.response
-org.reldb.wrapd.schema
-org.reldb.wrapd.sqldb
-org.reldb.wrapd.sqldb.sqlite
-org.reldb.wrapd.version

@@ -12,14 +12,6 @@ See [https://github.com/DaveVoorhis/Wrapd-demo](https://github.com/DaveVoorhis/W
 
 Wrapd is for **Java 11** and above.
 
-### Get Wrapd on Maven Central ###
-
-[https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
-
-### Get Wrapd on GitHub ###
-
-[https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
-
 ## Table of contents ##
 
 - [What is Wrapd?](#what-is-wrapd)
@@ -30,8 +22,8 @@ Wrapd is for **Java 11** and above.
   - [Overview](#overview)
   - [Creating a Wrapd Project](#creating-a-wrapd-project)
   - [The Wrapd-demo Project](#the-wrapd-demo-project)
-  
-Advanced User? See [JavaDoc](javadoc/index.html){:target="_wrapd_javadoc"}
+- [Get Wrapd](#get-wrapd)
+- [Know Wrapd](#know-wrapd)
 
 ____
 ## What is Wrapd? ##
@@ -410,9 +402,17 @@ Perhaps the easiest way to build a new Wrapd application is to simply copy the W
 
 That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
 
+----
+## Get Wrapd ##
+
+Maven Central: [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd){:target="_wrapd_maven"}
+
+GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd){:target="_wrapd_github"}
+
+----
+## Know Wrapd ##
+
+Javadocs: [https://www.javadoc.io/doc/org.reldb/Wrapd](https://www.javadoc.io/doc/org.reldb/Wrapd){:target="_wrapd_javadoc"}
+
 ____
-### Documentation and examples are a work-in-progress. ###
-
-Wrapd on Maven Central: [https://search.maven.org/artifact/org.reldb/Wrapd](https://search.maven.org/artifact/org.reldb/Wrapd)
-
-Wrapd on GitHub: [https://github.com/DaveVoorhis/Wrapd](https://github.com/DaveVoorhis/Wrapd)
+### Documentation and examples are a work-in-progress. Watch this space! ###
