@@ -106,9 +106,10 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
 
 
 2. Put the following in *database/src/main/java/org/reldb/myproject/GetDatabase.java*, to define the GetDatabase class with a getDatabase() method for obtaining Database instances.
+
    ```java
    package org.reldb.myproject.database;
-   
+
    import com.mysql.cj.jdbc.MysqlDataSource;
    import org.reldb.wrapd.sqldb.Database;
    
@@ -139,16 +140,19 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
        }
    }```
 
-3. Put the following in *database/src/main/resources/db.properties* to define the database settings. 
+3. Put the following in *database/src/main/resources/db.properties* to define the database settings.
+
    ```
    db.tablename_prefix=wrapd_myproject
    db.url=jdbc:mysql://localhost/wrapd_myproject
    db.user=user
    db.password=password
    ```
+   
    These values work with the Docker MySQL database defined in the docker-compose.yml from [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo). If you're using your own MySQL DBMS, change as appropriate. If you're using a MySQL DBMS other than the Docker instance, you may need to create the database beforehand.
 
 4. Put the following in *database/src/test/java/org/reldb/myproject/TestGetDatabase.java* to test your database connection.
+
    ```java
    package org.reldb.myproject.database;
    
