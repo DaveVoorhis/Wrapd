@@ -138,7 +138,8 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
                );
            }
        }
-   }```
+   }
+   ```
 
 3. Put the following in *database/src/main/resources/db.properties* to define the database settings.
 
