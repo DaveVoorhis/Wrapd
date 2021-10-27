@@ -85,13 +85,16 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
 ## Step 4 - Configure the Database Subproject ##
 
 1. In *database/build.gradle*, replace the following...
-   ```
+
+   ```groovy
    dependencies {
        api project(':list')
    }
    ```
+   
    ...with...
-   ```
+
+   ```groovy
    dependencies {
        implementation 'org.reldb:Wrapd:1.0.0'
        implementation 'mysql:mysql-connector-java:8.0.27'
@@ -99,6 +102,7 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
        testImplementation 'org.junit.platform:junit-platform-runner:1.7.2'
    }
    ```
+   
    This declares that the database subproject depends on:
    - Wrapd 1.0.0
    - MySQL Connector 8.0.27
@@ -143,7 +147,7 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
 
 3. Put the following in *database/src/main/resources/db.properties* to define the database settings.
 
-   ```
+   ```properties
    db.tablename_prefix=wrapd_myproject
    db.url=jdbc:mysql://localhost/wrapd_myproject
    db.user=user
