@@ -1,4 +1,4 @@
-# Creating a Wrapd Project - With Gradle #
+# Creating a Wrapd Project - With Gradle
 
 ## Step 1 - Get the Tools ##
 
