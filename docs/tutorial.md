@@ -182,4 +182,4 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
 
 6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL. This not only verifies that the project builds, it verifies database connectivity too.
 
-
+## Step 5 - Create a Schema Subproject ##
