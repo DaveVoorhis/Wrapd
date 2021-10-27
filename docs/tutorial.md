@@ -65,19 +65,23 @@ to a SQL DBMS, and will be used by the other subprojects.
 3. Rename *database/src/main/java/org/reldb/myproject/utilities* to *database/src/main/java/org/reldb/myproject/database*. This renames the formerly-*utilities* directory to a more appropriate *database*.
 4. Delete the sample auto-generated files in *database/src/main/java/org/reldb/myproject/database*.
 5. Edit app/build.gradle and change "utilities" in the following to "database":
-   ```
+
+   ```groovy
    dependencies {
        implementation 'org.apache.commons:commons-text'
        implementation project(':utilities')
    }
    ```
+   
    It should now be:
-   ```
+
+   ```groovy
    dependencies {
        implementation 'org.apache.commons:commons-text'
        implementation project(':database') 
    }
    ```
+
    This tells the *app* subproject to reference the *database* subproject. The 'org.apache.commons:commons-text' dependency won't be used in this tutorial.
 
 Now try ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
