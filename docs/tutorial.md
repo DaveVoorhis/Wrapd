@@ -1,4 +1,5 @@
-# Creating a Wrapd Project - With Gradle
+Creating a Wrapd Project - With Gradle
+======================================
 
 ## Step 1 - Get the Tools ##
 
@@ -6,7 +7,8 @@ Make sure you have the required tools for this tutorial:
 
 1. Java JDK 11+
 2. Gradle 7.1+
-3. MySQL 5+. A Docker container running a MySQL instance is ideal; see the docker-compose.yml file in the [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo) project. Wrapd can work with any JDBC-compatible SQL DBMS and its test suite is configured for at least MySQL, PostgreSQL and SQLite. For tutorial purposes, we'll use MySQL here.
+3. MySQL 5+.
+   A Docker container running a MySQL instance is ideal; see the *docker-compose.yml* file in the [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo) project. Wrapd can work with any JDBC-compatible SQL DBMS and its test suite is configured for at least MySQL, PostgreSQL and SQLite. For tutorial purposes, we'll use MySQL here.
 
 ## Step 2 - Start a Gradle Project ##
 
@@ -101,6 +103,7 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
    - Wrapd 1.0.0
    - MySQL Connector 8.0.27
    - The JUnit test framework (but only for testing)
+
 
 2. Put the following in *database/src/main/java/org/reldb/myproject/GetDatabase.java*, to define the GetDatabase class with a getDatabase() method for obtaining Database instances.
    ```java
