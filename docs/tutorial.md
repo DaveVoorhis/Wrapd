@@ -7,8 +7,48 @@ Make sure you have the required tools for this tutorial:
 
 1. Java JDK 11+
 2. Gradle 7.1+
-3. MySQL 5+.
-   A Docker container running a MySQL instance is ideal; see the *docker-compose.yml* file in the [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo) project. Wrapd can work with any JDBC-compatible SQL DBMS and its test suite is configured for at least MySQL, PostgreSQL and SQLite. For tutorial purposes, we'll use MySQL here.
+3. MySQL 5+. For tutorial purposes we'll use MySQL, though Wrapd can work with any JDBC-compatible DBMS and has automated tests that for (at least -- more will be added) PostgreSQL, SQLite, and MySQL.
+
+### (Optional) Use Docker to Run a MySQL DBMS ###
+
+Install Docker and create a Docker Compose file:
+1. Install Docker from https://docker.com
+2. Create a suitable directory and create a file called docker-compose.yml with the following content:
+
+```yaml
+version: '3.9'
+
+services:
+  mysql-db:
+    image: mysql:8.0.25
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - db-data-wrapd_mysql_myproject:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wrapd_myproject
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+volumes:
+  db-data-wrapd_mysql_myproject:
+    driver: local
+```
+
+To launch the Docker MySQL instance:
+1. Change to the directory containing docker-compose.yml
+2. Run: ```docker-compose up -d```
+   
+To shut down the Docker MySQL instance and retain the database for next time:
+1. Change to the directory containing docker-compose.yml
+2. Run: ```docker-compose down```
+
+To shut down the Docker MySQL instance and delete the database:
+1. Change to the directory containing docker-compose.yml
+2. Run: ```docker-compose down -v```
 
 ## Step 2 - Start a Gradle Project ##
 
@@ -41,6 +81,8 @@ drwxr-xr-x   4 dave  staff   128 26 Oct 21:40 list
 drwxr-xr-x   4 dave  staff   128 26 Oct 21:40 utilities
 ```
 
+If you created a docker-compose.yml file above, you may want to move it to this project directory.
+
 Some things to note:
 - As a "multiple subprojects" project, Gradle has created *utilities* and *list* as examples of library subprojects and *app* as the application subproject. We'll rename them shortly. 
 - The *buildSrc* subproject, which often contains imperative custom build logic, can also contain settings common to some of or all the other subprojects. 
@@ -51,11 +93,9 @@ Some things to note:
 ## Step 3 - Create a Database Subproject ##
 
 Connecting to a database, even an empty one, is fundamental to Wrapd's way of working. 
-You need to start with a (possibly empty) database!
-
-For development purposes, you may wish to launch a Docker container that hosts your
-target DBMS. The [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo) project provides a 
-good illustration of this, along with a sample docker-compose.yml file to launch an appropriate container.
+You need to start with a (possibly empty) database. You can use your own or the Docker-based MySQL DBMS instance
+described above, but the remainder of this tutorial assumes you're using the Docker-based MySQL DBMS instance, or at least equivalent
+settings and credentials with your own database.
 
 First, let's turn the *utilities* subproject into a *database* subproject. It will provide connectivity
 to a SQL DBMS, and will be used by the other subprojects.
@@ -64,7 +104,7 @@ to a SQL DBMS, and will be used by the other subprojects.
 2. Edit *settings.gradle* and change *utilities* to *database*. This tells Gradle to build the *database* subproject.
 3. Rename *database/src/main/java/org/reldb/myproject/utilities* to *database/src/main/java/org/reldb/myproject/database*. This renames the formerly-*utilities* directory to a more appropriate *database*.
 4. Delete the sample auto-generated files in *database/src/main/java/org/reldb/myproject/database*.
-5. Edit app/build.gradle and change "utilities" in the following to "database":
+5. Edit *app/build.gradle* and change "utilities" in the following to "database":
 
    ```groovy
    dependencies {
@@ -158,7 +198,7 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
    db.password=password
    ```
    
-   These values work with the Docker MySQL database defined in the docker-compose.yml from [Wrapd demo](https://github.com/DaveVoorhis/Wrapd-demo). If you're using your own MySQL DBMS, change as appropriate. If you're using a MySQL DBMS other than the Docker instance, you may need to create the database beforehand.
+   These values work with the Docker MySQL database defined in the *docker-compose.yml* file at the start of this document. If you're using your own MySQL DBMS, change as appropriate. If you're using a MySQL DBMS other than the Docker instance, you will need to create the database beforehand.
 
 4. Put the following in *database/src/test/java/org/reldb/myproject/TestGetDatabase.java* to test your database connection.
 
@@ -188,6 +228,216 @@ Now try ```gradle clean build``` to verify that the build works so far. You shou
 
    This is example code that was auto-generated by Gradle and is no longer needed.
 
-6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL. This not only verifies that the project builds, it verifies database connectivity too.
+6. Launch the Docker MySQL DBMS container, as described at the top of this document.
+
+7. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
 
 ## Step 5 - Create a Schema Subproject ##
+
+Wrapd contains a simple but effective schema migrator that can be used to automate schema initialisation and upgrades on multiple target databases. This avoids the error-prone complexity of manually managing schema updates.
+
+Well turn the *list* subproject into a *schema* subproject. It will create the initial schema for this tutorial,
+and demonstrate how schema changes can be migrated. Later, we'll copy it to a *queries* subproject to become the basis for the main feature
+of Wrapd: turning tested SQL queries into Java methods to invoke them.
+
+1. Rename *list* to *schema*. This renames the subproject directory.
+2. Edit *settings.gradle* and change *list* to *schema*. This tells Gradle to build the *schema* subproject.
+3. Rename *schema/src/main/java/org/reldb/myproject/list* to *database/src/main/java/org/reldb/myproject/schema*. This renames the formerly-*utilities* directory to a more appropriate *database*.
+4. Delete the sample auto-generated files in *schema/src/main/java/org/reldb/myproject/database*.
+5. Delete the directory *schema/src/test*. We won't need it for now.
+6. Edit *schema/build.gradle* and add the following after the *plugins* block:
+   
+   ```groovy
+   dependencies {
+     implementation project(':database')
+     implementation 'org.reldb:Wrapd:1.0.0'
+   }
+   ```
+
+   This tells the *schema* subproject to reference the *database* subproject because it will need to connect to the database. It's also dependent on Wrapd.
+
+Now try ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+
+## Step 6 - Configure the Schema Subproject ##
+
+In *schema/src/main/java/org/reldb/myproject/schema* create a file called Schema.java with the following content:
+
+```java
+package org.reldb.myproject.schema;
+
+import org.reldb.toolbox.progress.ConsoleProgressIndicator;
+import org.reldb.wrapd.response.Response;
+import org.reldb.wrapd.response.Result;
+import org.reldb.wrapd.schema.SQLSchema;
+import org.reldb.wrapd.sqldb.Database;
+
+import org.reldb.myproject.database.GetDatabase;
+
+public class Schema extends SQLSchema {
+    public Schema(Database database) {
+        super(database);
+    }
+
+    @Override
+    protected Update[] getUpdates() {
+        return new Update[] {
+             schema -> {
+                 getDatabase().updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+                 return Result.OK;
+             },
+        };
+    }
+
+    public static void main(String[] args) throws Exception {
+        var schema = new Schema(GetDatabase.getDatabase());
+        var result = schema.setup(new ConsoleProgressIndicator());
+        if (result.isOk())
+            System.out.println("OK: Schema has been set up.");
+        else
+            Response.printError("ERROR in Schema: Schema creation:", result.error);
+    }
+}
+```
+
+Now add the following to the end of *schema/gradle.build*:
+
+```groovy
+task runSchemaSetup(type: JavaExec) {
+    group = "Wrapd"
+    description "Ensure that the schema is up-to-date."
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.reldb.myproject.Schema"
+}
+```
+
+That adds a Gradle task called 'runSchemaSetup' that will run the Schema main(...) method to generate the schema. It can be run as often as you like, as it will only build a new schema if needed.
+
+Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+
+Now make sure your MySQL DBMS instance is running and run ```gradle runSchemaSetup``` to generate the initial schema. You should see something like:
+
+```
+...
+> Task :schema:runSchemaSetup
+Creating schema: 0.0% complete.
+Schema created: 50.0% complete.
+Updating to version 1: 50.0% complete.
+Updated to version 1: 100.0% complete.
+OK: Schema has been set up.
+
+BUILD SUCCESSFUL in 1s
+...
+```
+
+If you run the ```gradle runSchemaSetup``` task again, you should see something like:
+
+```
+...
+> Task :schema:runSchemaSetup
+OK: Schema has been set up.
+...
+```
+
+This indicates that it recognised the schema was up-to-date, and didn't need to perform any updates.
+
+Later, we'll add to the schema definition to see how Wrapd automates schema migration. For now, we have a database with 
+a table named *wrapd_myprojecttester01* with integer columns *x* and *y*.
+
+## Step 7 - Create the Query Generator ##
+
+The main purpose of Wrapd is to turn straightforward SQL query definitions into invocable Java methods. We'll make a copy of
+the *schema* subproject for that purpose.
+
+Simply copy everything in *schema* to a new subproject called *query*. Then:
+
+1. Edit *settings.gradle* to reference the new *query* subproject. It should look like this:
+   ```groovy
+   rootProject.name = 'MyProject'
+   include('app', 'schema', 'database', 'query')
+   ```
+2. Rename *query/main/java/org/reldb/myproject/schema* to *query/main/java/org/reldb/myproject/query*.
+3. Delete any files in *query/main/java/org/reldb/myproject/query*. We're going to replace them.
+4. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
+
+```java
+package org.reldb.myproject.query;
+
+import org.reldb.toolbox.utilities.Directory;
+import org.reldb.wrapd.sqldb.Database;
+import org.reldb.wrapd.sqldb.Definer;
+
+import org.reldb.myproject.database.GetDatabase;
+
+public class Definitions extends Definer {
+
+    public Definitions(Database database, String codeDirectory, String packageSpec) {
+        super(database, codeDirectory, packageSpec);
+    }
+
+    void generate() throws Throwable {
+        purgeTarget();
+
+        defineTable("$$tester01");
+        define
+
+        emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+    }
+
+    public static void main(String[] args) throws Throwable {
+        var db = GetDatabase.getDatabase();
+        var codeDirectory = "../app/src/main/java";
+        var codePackage = "org.reldb.myproject.app.generated";
+        if (!Directory.chkmkdir(codeDirectory)) {
+            System.out.println("ERROR creating code directory " + codeDirectory);
+            return;
+        }
+        var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+        sqlDefinitions.generate();
+        System.out.println("OK: Queries are ready.");
+    }
+}
+```
+
+5. Edit *query/gradle.build* to change this:
+
+```groovy
+task runSchemaSetup(type: JavaExec) {
+    group = "Wrapd"
+    description "Ensure that the schema is up-to-date."
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.reldb.myproject.schema.Schema"
+}
+```
+
+...to this, which will create a *runQueryGenerate* Gradle task to generate Java code from the SQL query definitions:
+
+```groovy
+task runQueryGenerate(type: JavaExec) {
+    group = "Wrapd"
+    description "Generate database abstraction layer."
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = "org.reldb.myproject.query.Definitions"
+}
+```
+
+6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+7. Run ```gradle runQueryGenerate``` task to generate Java code.
+
+You should see output similar to the following:
+
+```
+...
+> Task :query:runQueryGenerate
+Target ../app/src/main/java/org/reldb/myproject/app/generated has been purged.
+OK: Queries are ready.
+...
+```
+
+Now take a look in the *app/src/main/java/org/reldb/myproject/app/generated* directory to see the code generated by Wrapd and the runQueryGenerate task.
+
+## Step 8 - Create the Application ##
+
+In Step 7, we created a Query subproject that converts your query definitions into Java code to execute them.
+We ran it to verify that it works.
+The result is that generated code is now in your *app* subproject, waiting to be used. Let's use it.
+
