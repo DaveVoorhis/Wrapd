@@ -7,7 +7,7 @@ Make sure you have the required tools for this tutorial:
 
 1. Java JDK 11+
 2. Gradle 7.1+
-3. MySQL 5+. For tutorial purposes we'll use MySQL, though Wrapd can work with any JDBC-compatible DBMS and has automated tests that for (at least -- more will be added) PostgreSQL, SQLite, and MySQL.
+3. MySQL 5+. For tutorial purposes we'll use MySQL, though Wrapd can work with any JDBC-compatible DBMS and has automated tests that for (at least -- more will be added) PostgreSQL, SQLite, and MySQL. If this is your first time through this tutorial, it may be easiest to set up a MySQL DBMS using Docker as described below.
 
 ### (Optional) Use Docker to Run a MySQL DBMS ###
 
