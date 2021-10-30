@@ -357,47 +357,47 @@ Simply copy everything in *schema* to a new subproject called *query*. Then:
    ```
 2. Rename *query/main/java/org/reldb/myproject/schema* to *query/main/java/org/reldb/myproject/query*.
 3. Delete any files in *query/main/java/org/reldb/myproject/query*. We're going to replace them.
-   1. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
-      ```java
-      package org.reldb.myproject.query;
+4. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
+   ```java
+   package org.reldb.myproject.query;
    
-      import org.reldb.toolbox.utilities.Directory;
-      import org.reldb.wrapd.sqldb.Database;
-      import org.reldb.wrapd.sqldb.Definer;
+   import org.reldb.toolbox.utilities.Directory;
+   import org.reldb.wrapd.sqldb.Database;
+   import org.reldb.wrapd.sqldb.Definer;
    
-      import org.reldb.myproject.database.GetDatabase;
+   import org.reldb.myproject.database.GetDatabase;
    
-      public class Definitions extends Definer {
+   public class Definitions extends Definer {
    
-          public Definitions(Database database, String codeDirectory, String packageSpec) {
-              super(database, codeDirectory, packageSpec);
-          }
+       public Definitions(Database database, String codeDirectory, String packageSpec) {
+           super(database, codeDirectory, packageSpec);
+       }
    
-          void generate() throws Throwable {
-              purgeTarget();
+       void generate() throws Throwable {
+           purgeTarget();
    
-              defineTable("$$tester01");
-              defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);
-              defineUpdate("ClearTester", "DELETE FROM $$tester01");
+           defineTable("$$tester01");
+           defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);
+           defineUpdate("ClearTester", "DELETE FROM $$tester01");
    
-              emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
-          }
+           emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+       }
    
-          public static void main(String[] args) throws Throwable {
-              var db = GetDatabase.getDatabase();
-              var codeDirectory = "../app/src/main/java";
-              var codePackage = "org.reldb.myproject.app.generated";
-              if (!Directory.chkmkdir(codeDirectory)) {
-                  System.out.println("ERROR creating code directory " + codeDirectory);
-                  return;
-              }
-              var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
-              sqlDefinitions.generate();
-              System.out.println("OK: Queries are ready.");
-          }
-      }
-      ```
-4. Edit *query/gradle.build* to change this:
+       public static void main(String[] args) throws Throwable {
+           var db = GetDatabase.getDatabase();
+           var codeDirectory = "../app/src/main/java";
+           var codePackage = "org.reldb.myproject.app.generated";
+           if (!Directory.chkmkdir(codeDirectory)) {
+               System.out.println("ERROR creating code directory " + codeDirectory);
+               return;
+           }
+           var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+           sqlDefinitions.generate();
+           System.out.println("OK: Queries are ready.");
+       }
+   }
+   ```
+5. Edit *query/gradle.build* to change this:
    ```groovy
    task runSchemaSetup(type: JavaExec) {
        group = "Wrapd"
@@ -415,8 +415,8 @@ Simply copy everything in *schema* to a new subproject called *query*. Then:
        mainClass = "org.reldb.myproject.query.Definitions"
    }
    ```
-5. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
-6. Run ```gradle runQueryGenerate``` task to generate Java code. You should see output similar to the following:
+6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+7. Run ```gradle runQueryGenerate``` task to generate Java code. You should see output similar to the following:
    ```
    ...
    > Task :query:runQueryGenerate
