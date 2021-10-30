@@ -358,80 +358,71 @@ Simply copy everything in *schema* to a new subproject called *query*. Then:
 2. Rename *query/main/java/org/reldb/myproject/schema* to *query/main/java/org/reldb/myproject/query*.
 3. Delete any files in *query/main/java/org/reldb/myproject/query*. We're going to replace them.
 4. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
-
-```java
-package org.reldb.myproject.query;
-
-import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.Definer;
-
-import org.reldb.myproject.database.GetDatabase;
-
-public class Definitions extends Definer {
-
-    public Definitions(Database database, String codeDirectory, String packageSpec) {
-        super(database, codeDirectory, packageSpec);
-    }
-
-    void generate() throws Throwable {
-        purgeTarget();
-
-        defineTable("$$tester01");
-        define
-
-        emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
-    }
-
-    public static void main(String[] args) throws Throwable {
-        var db = GetDatabase.getDatabase();
-        var codeDirectory = "../app/src/main/java";
-        var codePackage = "org.reldb.myproject.app.generated";
-        if (!Directory.chkmkdir(codeDirectory)) {
-            System.out.println("ERROR creating code directory " + codeDirectory);
-            return;
-        }
-        var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
-        sqlDefinitions.generate();
-        System.out.println("OK: Queries are ready.");
-    }
-}
-```
-
+   ```java
+   package org.reldb.myproject.query;
+   
+   import org.reldb.toolbox.utilities.Directory;
+   import org.reldb.wrapd.sqldb.Database;
+   import org.reldb.wrapd.sqldb.Definer;
+   
+   import org.reldb.myproject.database.GetDatabase;
+   
+   public class Definitions extends Definer {
+   
+       public Definitions(Database database, String codeDirectory, String packageSpec) {
+           super(database, codeDirectory, packageSpec);
+       }
+   
+       void generate() throws Throwable {
+           purgeTarget();
+   
+           defineTable("$$tester01");
+           define
+   
+           emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+       }
+   
+       public static void main(String[] args) throws Throwable {
+           var db = GetDatabase.getDatabase();
+           var codeDirectory = "../app/src/main/java";
+           var codePackage = "org.reldb.myproject.app.generated";
+           if (!Directory.chkmkdir(codeDirectory)) {
+               System.out.println("ERROR creating code directory " + codeDirectory);
+               return;
+           }
+           var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+           sqlDefinitions.generate();
+           System.out.println("OK: Queries are ready.");
+       }
+   }
+   ```
 5. Edit *query/gradle.build* to change this:
-
-```groovy
-task runSchemaSetup(type: JavaExec) {
-    group = "Wrapd"
-    description "Ensure that the schema is up-to-date."
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = "org.reldb.myproject.schema.Schema"
-}
-```
-
-...to this, which will create a *runQueryGenerate* Gradle task to generate Java code from the SQL query definitions:
-
-```groovy
-task runQueryGenerate(type: JavaExec) {
-    group = "Wrapd"
-    description "Generate database abstraction layer."
-    classpath = sourceSets.main.runtimeClasspath
-    mainClass = "org.reldb.myproject.query.Definitions"
-}
-```
-
+   ```groovy
+   task runSchemaSetup(type: JavaExec) {
+       group = "Wrapd"
+       description "Ensure that the schema is up-to-date."
+       classpath = sourceSets.main.runtimeClasspath
+       mainClass = "org.reldb.myproject.schema.Schema"
+   }
+   ```
+   ...to this, which will create a *runQueryGenerate* Gradle task to generate Java code from the SQL query definitions:
+   ```groovy
+   task runQueryGenerate(type: JavaExec) {
+       group = "Wrapd"
+       description "Generate database abstraction layer."
+       classpath = sourceSets.main.runtimeClasspath
+       mainClass = "org.reldb.myproject.query.Definitions"
+   }
+   ```
 6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
-7. Run ```gradle runQueryGenerate``` task to generate Java code.
-
-You should see output similar to the following:
-
-```
-...
-> Task :query:runQueryGenerate
-Target ../app/src/main/java/org/reldb/myproject/app/generated has been purged.
-OK: Queries are ready.
-...
-```
+7. Run ```gradle runQueryGenerate``` task to generate Java code. You should see output similar to the following:
+   ```
+   ...
+   > Task :query:runQueryGenerate
+   Target ../app/src/main/java/org/reldb/myproject/app/generated has been purged.
+   OK: Queries are ready.
+   ...
+   ```
 
 Now take a look in the *app/src/main/java/org/reldb/myproject/app/generated* directory to see the code generated by Wrapd and the runQueryGenerate task.
 
