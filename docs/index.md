@@ -22,6 +22,7 @@ Wrapd is for **Java 11** and above.
   - [Overview](#overview)
   - [Creating a Wrapd Project](#creating-a-wrapd-project)
   - [The Wrapd-demo Project](#the-wrapd-demo-project)
+  - [The Wrapd Tutorial](#the-wrapd-tutorial)
 - [Get Wrapd](#get-wrapd)
 - [Know Wrapd](#know-wrapd)
 
@@ -398,9 +399,11 @@ demonstration application has been built according the above structure. It consi
 1. *database* - database connectivity, including a demonstration of connection pooling because most real-world applications will need it. It's used by all three of the above subprojects.
 2. *buildSrc* - Gradle project settings.
 
-Perhaps the easiest way to build a new Wrapd application is to simply copy the Wrapd-demo demonstration application and modify it to suit your requirements.
+Perhaps the easiest way to build a new Wrapd application is to simply copy the Wrapd-demo demonstration application and modify it to suit your requirements, or you can follow the step-by-step tutorial below.
 
-That said, a step-by-step tutorial for building a Wrapd project will soon be coming to this space.
+### The Wrapd Tutorial ###
+
+See the [Wrapd Tutorial](tutorial.md) for a step-by-step intro to setting up a Wrapd project using Gradle.
 
 ----
 ## Get Wrapd ##

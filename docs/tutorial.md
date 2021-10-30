@@ -357,46 +357,47 @@ Simply copy everything in *schema* to a new subproject called *query*. Then:
    ```
 2. Rename *query/main/java/org/reldb/myproject/schema* to *query/main/java/org/reldb/myproject/query*.
 3. Delete any files in *query/main/java/org/reldb/myproject/query*. We're going to replace them.
-4. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
-   ```java
-   package org.reldb.myproject.query;
+   1. Create a file called *Definitions.java* in *query/main/java/org/reldb/myproject/query* with the following content:
+      ```java
+      package org.reldb.myproject.query;
    
-   import org.reldb.toolbox.utilities.Directory;
-   import org.reldb.wrapd.sqldb.Database;
-   import org.reldb.wrapd.sqldb.Definer;
+      import org.reldb.toolbox.utilities.Directory;
+      import org.reldb.wrapd.sqldb.Database;
+      import org.reldb.wrapd.sqldb.Definer;
    
-   import org.reldb.myproject.database.GetDatabase;
+      import org.reldb.myproject.database.GetDatabase;
    
-   public class Definitions extends Definer {
+      public class Definitions extends Definer {
    
-       public Definitions(Database database, String codeDirectory, String packageSpec) {
-           super(database, codeDirectory, packageSpec);
-       }
+          public Definitions(Database database, String codeDirectory, String packageSpec) {
+              super(database, codeDirectory, packageSpec);
+          }
    
-       void generate() throws Throwable {
-           purgeTarget();
+          void generate() throws Throwable {
+              purgeTarget();
    
-           defineTable("$$tester01");
-           define
+              defineTable("$$tester01");
+              defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);
+              defineUpdate("ClearTester", "DELETE FROM $$tester01");
    
-           emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
-       }
+              emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+          }
    
-       public static void main(String[] args) throws Throwable {
-           var db = GetDatabase.getDatabase();
-           var codeDirectory = "../app/src/main/java";
-           var codePackage = "org.reldb.myproject.app.generated";
-           if (!Directory.chkmkdir(codeDirectory)) {
-               System.out.println("ERROR creating code directory " + codeDirectory);
-               return;
-           }
-           var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
-           sqlDefinitions.generate();
-           System.out.println("OK: Queries are ready.");
-       }
-   }
-   ```
-5. Edit *query/gradle.build* to change this:
+          public static void main(String[] args) throws Throwable {
+              var db = GetDatabase.getDatabase();
+              var codeDirectory = "../app/src/main/java";
+              var codePackage = "org.reldb.myproject.app.generated";
+              if (!Directory.chkmkdir(codeDirectory)) {
+                  System.out.println("ERROR creating code directory " + codeDirectory);
+                  return;
+              }
+              var sqlDefinitions = new Definitions(db, codeDirectory, codePackage);
+              sqlDefinitions.generate();
+              System.out.println("OK: Queries are ready.");
+          }
+      }
+      ```
+4. Edit *query/gradle.build* to change this:
    ```groovy
    task runSchemaSetup(type: JavaExec) {
        group = "Wrapd"
@@ -414,8 +415,8 @@ Simply copy everything in *schema* to a new subproject called *query*. Then:
        mainClass = "org.reldb.myproject.query.Definitions"
    }
    ```
-6. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
-7. Run ```gradle runQueryGenerate``` task to generate Java code. You should see output similar to the following:
+5. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+6. Run ```gradle runQueryGenerate``` task to generate Java code. You should see output similar to the following:
    ```
    ...
    > Task :query:runQueryGenerate
@@ -430,5 +431,40 @@ Now take a look in the *app/src/main/java/org/reldb/myproject/app/generated* dir
 
 In Step 7, we created a Query subproject that converts your query definitions into Java code to execute them.
 We ran it to verify that it works.
-The result is that generated code is now in your *app* subproject, waiting to be used. Let's use it.
+The result is the generated code now available in your *app* subproject, waiting to be used. Let's use it.
 
+1. In *app/build.gradle* replace *implementation 'org.apache.commons:commons-text'* with *implementation 'org.reldb:Wrapd:1.0.0'* to use Wrapd instead of Apache commons-text.
+2. In *app/src/main/java/org/reldb/myproject/app* create a file called *App.java* with the following contents:
+   ```java
+   package org.reldb.myproject.app;
+   
+   import org.reldb.myproject.app.generated.*;
+   import org.reldb.myproject.database.GetDatabase;
+   
+   public class App {
+      public static void main(String args[]) throws Exception {
+         var database = GetDatabase.getDatabase();
+         var dbAbstraction = new DatabaseAbstractionLayer(database);
+
+         // Clear table
+         dbAbstraction.clearTester();
+         // Populate table
+         for (int x = 0; x < 100; x++) {
+            var row = new Tester01Tuple(database);
+            row.x = x;
+            row.y = x * 10 + 2;
+            row.insert();
+         }
+         // Show table
+         dbAbstraction.tester01().forEach(System.out::println);
+         // Show a row
+         dbAbstraction.selectTester(2).forEach(System.out::println);
+      }
+   }
+   ```
+3. Run ```gradle clean build``` to verify that the build works so far. You should see BUILD SUCCESSFUL.
+4. Run ```gradle run``` to run the demonstration application. You should see it emit the query results.
+
+This demonstrates the basic process for creating a Wrapd application. In the following steps, we'll handle schema migration and demonstrate more queries.
+
+### Work in Progress ###
