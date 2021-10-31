@@ -107,6 +107,8 @@ public class Definitions extends Definer {
 ```
 Note the example arguments, which are used to test parametric queries and determine their parameter and result types.
 
+Note the '$$' prefixes on table names, which are used to automatically prefix table names with a specified string. This is an optional feature used to avoid table name collisions in environments where multiple disjoint applications need to share a database.
+
 Wrapd will generate classes and type-checked methods to conveniently invoke your queries. Run the queries defined above like this:
 ```java
 package org.reldb.wrapd.demo;
