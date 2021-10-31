@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'maven-publish'
     id 'java-library'
+    id 'maven-publish'
     id 'signing'
 }
 
@@ -13,9 +13,6 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     api 'org.reldb:Toolbox:1.0.0'
-}
-
-dependencies {
     testImplementation 'org.eclipse.jdt:ecj:3.27.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     testImplementation 'org.junit.platform:junit-platform-runner:1.8.1'
