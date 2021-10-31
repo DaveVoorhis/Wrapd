@@ -253,11 +253,11 @@ in a statically-compiled, type-safe, Streams-compatible manner.
 
 Insert a row:
 ```java
-var tuple = new XYZTuple(database);
-tuple.x = i;
-tuple.y = i * 2;
-tuple.z = Integer.toString(i * 100);
-tuple.insert();
+var row = new XYZTuple(database);
+row.x = i;
+row.y = i * 2;
+row.z = Integer.toString(i * 100);
+row.insert();
 ```
 
 Update rows:
@@ -271,6 +271,8 @@ aBCForUpdate().forEach(row -> {
     }
 });
 ```
+
+The latter example updates rows on an iterative, row-by-row basis. You can also write update queries.
 
 #### If needed, table names can be automatically prefixed. ####
 
