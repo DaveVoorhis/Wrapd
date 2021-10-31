@@ -1,4 +1,4 @@
-Wrapd is a _SQL amplifier_ that makes SQL easier to use and more powerful in Java. 
+**Wrapd is a _SQL amplifier_ that makes SQL easier to use and more powerful in Java.**
 
 Rather than hiding SQL behind complexity or difficulty, it exposes SQL where it helps, hides SQL where it should, and makes SQL fast, safe and easy to integrate into Java while staying light, lean, and loveable.
 
