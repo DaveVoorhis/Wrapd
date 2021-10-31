@@ -37,7 +37,7 @@ It turns simple, straightforward, readable SQL query definitions like this:
 
 ```java
 defineQuery("JoinABCXYZWhere", 
-  "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+  "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
 Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java method invocations like this:
