@@ -143,8 +143,6 @@ public class Application {
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 1 && args[0].equals("test"))
-            return;
         new Demo().run();
     }
 }
@@ -186,7 +184,7 @@ all the previously-defined queries as methods.
 ```java
 ...
 defineQuery("JoinABCXYZWhere", 
-   "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+   "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 defineValueOf("ValueOfXYZz", "SELECT z FROM $$XYZ WHERE x = {xValue}", 33);
 
 emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
@@ -222,7 +220,7 @@ What you define is:
 
 ```java
 defineQuery("JoinABCXYZWhere", 
-  "SELECT * FROM $$ABC, $$XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+  "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
 What you run is:
@@ -387,7 +385,7 @@ encounter difficulties with compilation failures as you migrate schemas and chan
 to delete the generated Java code for obsolete query definitions and (possibly) comment out the application 
 code that uses them.
 
-It's generally _much_ easier to divide the project into subprojects as described above.
+It's generally _much_ easier to develop and maintain a Wrapd project if you divide it into subprojects as described above.
 
 ### The Wrapd-demo Project ###
 
