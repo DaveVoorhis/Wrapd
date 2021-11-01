@@ -22,6 +22,7 @@ public class TestSQLSchema {
 	private static List<Database> dbProvider() throws SQLException {
 		var db = new Database[] {
 				org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase(),
+				org.reldb.wrapd.sqldb.mssql.GetDatabase.getDatabase(),
 				org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase(),
 				org.reldb.wrapd.sqldb.sqlite.GetDatabase.getDatabase()
 		};
@@ -31,6 +32,7 @@ public class TestSQLSchema {
 	@BeforeAll
 	public static void setupTestDirectories() {
 		new DbHelper(org.reldb.wrapd.sqldb.mysql.Configuration.dbName);
+		new DbHelper(org.reldb.wrapd.sqldb.mssql.Configuration.dbName);
 		new DbHelper(org.reldb.wrapd.sqldb.postgresql.Configuration.dbName);
 		new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
 	}

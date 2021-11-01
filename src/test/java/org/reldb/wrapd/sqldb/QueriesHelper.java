@@ -9,7 +9,6 @@ import org.reldb.wrapd.compiler.DirClassLoader;
 import org.reldb.wrapd.generator.JavaGenerator;
 import org.reldb.wrapd.compiler.JavaCompiler;
 import org.reldb.wrapd.exceptions.FatalException;
-import org.reldb.wrapd.response.Response;
 import org.reldb.wrapd.response.Result;
 
 import java.io.IOException;

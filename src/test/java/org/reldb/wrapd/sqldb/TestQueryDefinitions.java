@@ -40,6 +40,10 @@ public class TestQueryDefinitions {
                         org.reldb.wrapd.sqldb.mysql.Configuration.dbName,
                         org.reldb.wrapd.sqldb.mysql.GetDatabase.getDatabase()),
                 new TestParms(
+                        org.reldb.wrapd.sqldb.mssql.Configuration.dbPackage,
+                        org.reldb.wrapd.sqldb.mssql.Configuration.dbName,
+                        org.reldb.wrapd.sqldb.mssql.GetDatabase.getDatabase()),
+                new TestParms(
                         org.reldb.wrapd.sqldb.postgresql.Configuration.dbPackage,
                         org.reldb.wrapd.sqldb.postgresql.Configuration.dbName,
                         org.reldb.wrapd.sqldb.postgresql.GetDatabase.getDatabase()),
@@ -54,6 +58,7 @@ public class TestQueryDefinitions {
     @BeforeAll
     public static void setupTestDirectories() {
         new DbHelper(org.reldb.wrapd.sqldb.mysql.Configuration.dbName);
+        new DbHelper(org.reldb.wrapd.sqldb.mssql.Configuration.dbName);
         new DbHelper(org.reldb.wrapd.sqldb.postgresql.Configuration.dbName);
         new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
     }

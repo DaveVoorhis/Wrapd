@@ -21,6 +21,7 @@ dependencies {
     testRuntimeOnly 'org.postgresql:postgresql:42.2.24'
     testRuntimeOnly 'org.xerial:sqlite-jdbc:3.36.0.2'
     testRuntimeOnly 'mysql:mysql-connector-java:8.0.25'
+    testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc:9.4.0.jre11'
 }
 
 test {
