@@ -10,7 +10,9 @@ See [https://github.com/DaveVoorhis/Wrapd-demo](https://github.com/DaveVoorhis/W
 > * SQL-in-Java development is *rapid*.
 > * SQL focus can be *rapt*.
 
-Wrapd is for **Java 11** and above.
+Wrapd is for **Java 11** and above. 
+
+The project integration tests explicitly verify that Wrapd works with MySQL, MS SQL Server, PostgreSQL and SQLite, but it should work with almost any JDBC-compliant SQL DBMS.
 
 ## Table of contents ##
 
