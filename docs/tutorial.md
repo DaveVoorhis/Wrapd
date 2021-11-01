@@ -467,4 +467,4 @@ The result is the generated code now available in your *app* subproject, waiting
 
 This demonstrates the basic process for creating a Wrapd application. In the following steps, we'll handle schema migration and demonstrate more queries.
 
-### Work in Progress ###
+### ...to be continued... ###
