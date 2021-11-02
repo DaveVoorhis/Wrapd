@@ -498,7 +498,7 @@ So, for example, if we want to add another table we can change the above to this
              return Result.OK;
          },
          schema -> {
-             getDatabase().updateAll("CREATE TABLE $$tester02 (p VARCHAR(20) NOT NULL PRIMARY KEY, q FLOAT NOT NULL)");
+             getDatabase().updateAll("CREATE TABLE $$tester02 (p VARCHAR(20) NOT NULL PRIMARY KEY, q FLOAT NOT NULL, r INT)");
              return Result.OK;
          },
      };
