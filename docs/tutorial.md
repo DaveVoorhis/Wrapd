@@ -7,7 +7,7 @@ Make sure you have the required tools for this tutorial:
 
 1. Java JDK 11+
 2. Gradle 7.1+
-3. MySQL 5+. For tutorial purposes we'll use MySQL, though Wrapd can work with any JDBC-compatible DBMS and has automated tests that for (at least -- more will be added) PostgreSQL, SQLite, MS SQL Server, and MySQL. If this is your first time through this tutorial, it may be easiest to set up a MySQL DBMS using Docker as described below.
+3. MySQL 5+. For tutorial purposes we'll use MySQL, though Wrapd can work with almost any JDBC-compatible DBMS and has automated tests for PostgreSQL, SQLite, MS SQL Server, and MySQL. If this is your first time through this tutorial, it may be easiest to set up a MySQL DBMS using Docker as described below.
 
 ### (Optional) Use Docker to Run a MySQL DBMS ###
 
@@ -466,5 +466,67 @@ The result is the generated code now available in your *app* subproject, waiting
 4. Run ```gradle run``` to run the demonstration application. You should see it emit the query results.
 
 This demonstrates the basic process for creating a Wrapd application. In the following steps, we'll handle schema migration and demonstrate more queries.
+
+## Step 9 - Make a Schema Change ##
+
+Now we'll make a schema change, to demonstrate how schema migration is handled.
+
+Remember that we defined the initial database schema in *schema/src/main/java/org/reldb/myproject/schema/Schema* in Step 5 and Step 6. Now we'll modify it.
+
+The schema is currently defined by:
+```java
+ @Override
+ protected Update[] getUpdates() {
+     return new Update[] {
+         schema -> {
+             getDatabase().updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+             return Result.OK;
+         },
+     };
+ }
+```
+
+The getUpdates() method returns an array of Update, where each Update defines a schema migration. The first array entry defines the initial database schema. We add migrations by simply adding them to the array.
+
+So, for example, if we want to add another table we can change the above to this:
+```java
+ @Override
+ protected Update[] getUpdates() {
+     return new Update[] {
+         schema -> {
+             getDatabase().updateAll("CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)");
+             return Result.OK;
+         },
+         schema -> {
+             getDatabase().updateAll("CREATE TABLE $$tester02 (p VARCHAR(20) NOT NULL PRIMARY KEY, q FLOAT NOT NULL)");
+             return Result.OK;
+         },
+     };
+ }
+```
+
+Then run ```gradle clean build``` and verify that it emits BUILD SUCCESSFUL.
+
+Now run ```gradle runSchemaSetup```. You should see the following output:
+```
+...
+> Task :schema:runSchemaSetup
+Updating to version 2: 0.0% complete.
+Updated to version 2: 100.0% complete.
+OK: Schema has been set up.
+
+BUILD SUCCESSFUL in 1s
+...
+```
+
+This shows that the schema has been successfully migrated. The current version is maintained within the database, so it will work on any connectable database, correctly migrating it to the latest version.
+
+The migration can either be invoked by the application, to ensure that any database to which it connects is automatically migrated, or the migration can be deployed as a separate application to migrate databases outside the application.
+
+Being able to revert migrations with specified regression steps will be a feature of a future Wrapd release.
+
+Note that schema migrations must always -- and only -- be added as a new array entry to be returned by getUpdates(). Adding update queries to previous array entries or performing schema migrations outside of this mechanism will end in chaos. 
+
+## Step 9 - More Queries ##
 
 ### ...to be continued... ###
