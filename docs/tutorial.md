@@ -527,6 +527,6 @@ Being able to revert migrations with specified regression steps will be a featur
 
 Note that schema migrations must always -- and only -- be added as a new array entry to be returned by getUpdates(). Adding update queries to previous array entries or performing schema migrations outside of this mechanism will end in chaos. 
 
-## Step 9 - More Queries ##
+## Step 10 - More Queries ##
 
 ### ...to be continued... ###
