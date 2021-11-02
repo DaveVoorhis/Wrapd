@@ -523,9 +523,36 @@ This shows that the schema has been successfully migrated. The current version i
 
 Migration can either be invoked within the application (such as on every startup) to ensure that any database to which it connects is automatically migrated, or the migration can be deployed as a separate application to migrate databases outside the application.
 
+In this tutorial it's invoked as a main method, to be run as a standalone application:
+```java
+ public static void main(String[] args) throws Exception {
+     var schema = new Schema(GetDatabase.getDatabase());
+     var result = schema.setup(new ConsoleProgressIndicator());
+     if (result.isOk())
+         System.out.println("OK: Schema has been set up.");
+     else
+         Response.printError("ERROR in Schema: Schema creation:", result.error);
+ }
+```
+
+It can just as easily be invoked as a method to be run from an application startup:
+```java
+ public static Result migrate throws Exception {
+     var schema = new Schema(GetDatabase.getDatabase());
+     return schema.setup(new ConsoleProgressIndicator());
+ }
+...
+ var migrationResult = migrate();
+ if (result.isOk())
+    // ...proceed with startup...
+ else
+    // ...fail with notification of result.error...
+...
+```
+
 Being able to revert migrations with specified regression steps will be a feature of a future Wrapd release.
 
-Note that schema migrations must always -- and only -- be added as a new array entry to be returned by getUpdates(). Adding update queries to previous array entries or performing schema migrations outside of this mechanism will end in chaos. 
+Note that schema migrations must always -- and only -- be added as a new array entry to be returned by *getUpdates()*. Update queries must never be added to previous array entries and schema migrations must never be done outside of this mechanism or chaos will ensue. 
 
 ## Step 10 - More Queries ##
 
