@@ -521,7 +521,7 @@ BUILD SUCCESSFUL in 1s
 
 This shows that the schema has been successfully migrated. The current version is maintained within the database, so it will work on any connectable database to correctly migrating it from its current state or version (including empty) to the latest version.
 
-Migration can either be invoked within the application (such as on every startup) to ensure that any database to which it connects is automatically migrated, or the migration can be deployed as a separate application to migrate databases outside the application.
+Migration can either be invoked within the application (such as on every startup) to ensure that any database to which it connects is automatically migrated, or migration can be deployed as a separate application to migrate databases outside the application.
 
 In this tutorial it's invoked as a main method, to be run as a standalone application:
 ```java
