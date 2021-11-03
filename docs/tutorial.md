@@ -556,8 +556,9 @@ Note that schema migrations must always -- and only -- be added as a new array e
 
 ## Step 10 - More (on) Queries ##
 
-In the query definitions shown in Step 7, we saw three kinds of query definition:
+In the query definitions shown in Step 7 (see *query/src/main/java/org/reldb/myproject/query/Definitions.java*), we saw three kinds of query definition:
 ```java
+...
  void generate() throws Throwable {
      purgeTarget();
 
@@ -567,6 +568,7 @@ In the query definitions shown in Step 7, we saw three kinds of query definition
 
      emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
  }
+...
 ```
 
 ### defineTable("$tester01"); ###
@@ -632,5 +634,57 @@ public boolean clearTester() throws SQLException {
 These methods are wrappers around static methods in a generated class called ClearTester, the name specified in the first parameter of *defineQuery(...)*. If you choose not to invoke *emitDatabaseAbstractionLayer(...)*, the ClearTester class can be referenced directly.
 
 The methods invoke the definition's DELETE query, and return boolean _true_ if the query returns a result set, and false otherwise. Under normal circumstances, the query method should always return _false_. In typical use, the return value is ignored; query failure is indicated by throwing an exception.
+
+### Running Queries in a Transaction ###
+
+The generated query methods can be invoked within a database transaction.
+
+For example, the tutorial application invokes the following in *app/src/main/java/org/reldb/myproject/app/App.java*:
+
+```java
+// Clear table
+dbAbstraction.clearTester();
+// Populate table
+for (int x = 0; x < 100; x++) {
+   var row = new Tester01Tuple(database);
+   row.x = x;
+   row.y = x * 10 + 2;
+   row.insert();
+}
+// Show table
+dbAbstraction.tester01().forEach(System.out::println);
+// Show a row
+dbAbstraction.selectTester(2).forEach(System.out::println);
+```
+
+We can invoke them in a database transaction as follows:
+
+```java
+// Do the above in a transaction...
+database.processTransaction(connection -> {
+   dbAbstraction.clearTester(connection);
+   for (int x = 0; x < 100; x++) {
+       var row = new Tester01Tuple(database);
+       row.x = x;
+       row.y = x * 10 + 2;
+       row.insert(connection);
+   }
+   dbAbstraction.tester01(connection).forEach(System.out::println);
+   dbAbstraction.selectTester(connection,2).forEach(System.out::println);
+   return Result.OK;
+});
+```
+
+The transaction only commits if the lambda returns any successful Response, such as *Result.OK* or *Response.set(0)*, etc. Anything else -- an error Response or an exception thrown -- causes the transaction to be aborted, i.e., rolled back.
+
+The result of *processTransaction* is whatever is passed back as a return value from the transaction lambda.
+
+### defineTable(String tableName, String whereClause, Object... args) ###
+
+...documentation work in progress...
+
+### defineValueOf(String queryName, String sqlText, Object... args) ###
+
+...documentation work in progress...
 
 ### ...to be continued... ###
