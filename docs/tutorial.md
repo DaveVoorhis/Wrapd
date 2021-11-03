@@ -639,7 +639,7 @@ The methods invoke the definition's DELETE query, and return boolean _true_ if t
 
 The generated query methods can be invoked within a database transaction.
 
-For example, the tutorial application invokes the following in *app/src/main/java/org/reldb/myproject/app/App.java*:
+For example, the tutorial application invokes the following methods, in *app/src/main/java/org/reldb/myproject/app/App.java*:
 
 ```java
 // Clear table
@@ -657,7 +657,7 @@ dbAbstraction.tester01().forEach(System.out::println);
 dbAbstraction.selectTester(2).forEach(System.out::println);
 ```
 
-We can invoke them in a database transaction as follows:
+We can also invoke them in a database transaction as follows:
 
 ```java
 // Do the above in a transaction...
