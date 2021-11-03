@@ -670,16 +670,16 @@ We can also invoke them in a database transaction as follows:
 
 ```java
 // Do the above in a transaction...
-database.processTransaction(connection -> {
-   dbAbstraction.clearTester(connection);
+database.processTransaction(xact -> {
+   dbAbstraction.clearTester(xact);
    for (int x = 0; x < 100; x++) {
        var row = new Tester01Tuple(database);
        row.x = x;
        row.y = x * 10 + 2;
-       row.insert(connection);
+       row.insert(xact);
    }
-   dbAbstraction.tester01(connection).forEach(System.out::println);
-   dbAbstraction.selectTester(connection,2).forEach(System.out::println);
+   dbAbstraction.tester01(xact).forEach(System.out::println);
+   dbAbstraction.selectTester(xact, 2).forEach(System.out::println);
    return Result.OK;
 });
 ```
