@@ -677,7 +677,7 @@ database.processTransaction(connection -> {
 
 The transaction only commits if the lambda returns any successful Response, such as *Result.OK* or *Response.set(0)*, etc. Anything else -- an error Response or an exception thrown -- causes the transaction to be aborted, i.e., rolled back.
 
-The result of *processTransaction* is whatever is passed back as a return value from the transaction lambda.
+The result of *processTransaction* is whatever _Response_ is passed back as a return value from the transaction lambda.
 
 ### defineTable(String tableName, String whereClause, Object... args) ###
 
