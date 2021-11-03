@@ -1,3 +1,6 @@
+- Provide 'safety' lock against inadvertent execution of Definer::defineUpdate(...)
+  queries against prod dbs.
+- Be able to revert migrations with specified regression steps.
 - Add auto-generated code warning to generated database abstraction layer.
 - Add Definer::defineAllTables(boolean includingSystem) to wrap all db tables.
 - Add Definer::defineStoredProcedureInvoke(...) to wrap a stored procedure invocation.
