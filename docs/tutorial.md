@@ -554,6 +554,83 @@ Being able to revert migrations with specified regression steps will be a featur
 
 Note that schema migrations must always -- and only -- be added as a new array entry to be returned by *getUpdates()*. Update queries must never be added to previous array entries and schema migrations must never be done outside of this mechanism or chaos will ensue. 
 
-## Step 10 - More Queries ##
+## Step 10 - More (on) Queries ##
+
+In the query definitions shown in Step 7, we saw three kinds of query definition:
+```java
+ void generate() throws Throwable {
+     purgeTarget();
+
+     defineTable("$$tester01");
+     defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);
+     defineUpdate("ClearTester", "DELETE FROM $$tester01");
+
+     emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
+ }
+```
+
+### ```defineTable("$tester01");``` ###
+
+This is the simplest definition, which generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
+
+```java
+public Stream<Tester01Tuple> tester01() throws SQLException {
+  return Tester01.query(database);
+}
+
+public Stream<Tester01Tuple> tester01(java.sql.Connection connection) throws SQLException {
+  return Tester01.query(database, connection);
+}
+
+public Stream<Tester01Tuple> tester01ForUpdate(java.sql.Connection connection) throws SQLException {
+  return Tester01.queryForUpdate(database, connection);
+}
+
+public Stream<Tester01Tuple> tester01ForUpdate() throws SQLException {
+  return Tester01.queryForUpdate(database);
+}
+```
+
+Note that these methods are wrappers around static methods in a generated class called Tester01, the same name as the database table. If you choose not to invoke *emitDatabaseAbstractionLayer(...)*, the Tester01 class can be referenced directly.
+
+The first two *tester01(...)* methods return all rows and columns in the table -- by invoking "SELECT * FROM *table*" -- and return a Stream of Tester01Tuple. Tester01Tuple is automatically generated. The second method accepts a parameter of type Connection, typically used when wrapped by a transaction.
+
+The last two *tester01ForUpdate(...)* methods also return all rows and columns in the table, but each Tester01Tuple instance has been prepared for subsequent invocation of its *update(...)* method. If *update(...)* is invoked on the results of a non-Update *tester01(...)* method, an exception will be thrown.
+
+### ```defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);```###
+
+The definition above generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
+
+```java
+public Stream<SelectTesterTuple> selectTester(java.sql.Connection connection, java.lang.Integer xValue) throws SQLException {
+  return SelectTester.query(database, connection, xValue);
+}
+
+public Stream<SelectTesterTuple> selectTester(java.lang.Integer xValue) throws SQLException {
+  return SelectTester.query(database, xValue);
+}
+```
+
+These methods are wrappers around static methods in a generated class called SelectTester, the name specified in the first parameter of *defineQuery(...)*. If you choose not to invoke *emitDatabaseAbstractionLayer(...)*, the SelectTester class can be referenced directly.
+
+Note that the definition specifies a parameter {xValue} and a corresponding argument 1. The argument value doesn't matter -- the query doesn't have to return results. Only its _type_ matters, and is used to specify the corresponding Java parameter type of the generated methods, and will have the same name as the parameter specified in the query.
+
+### ```defineUpdate("ClearTester", "DELETE FROM $$tester01");``` ###
+
+This definition generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
+
+```java
+public boolean clearTester(java.sql.Connection connection) throws SQLException {
+  return ClearTester.update(database, connection);
+}
+
+public boolean clearTester() throws SQLException {
+  return ClearTester.update(database);
+}
+```
+
+These methods are wrappers around static methods in a generated class called ClearTester, the name specified in the first parameter of *defineQuery(...)*. If you choose not to invoke *emitDatabaseAbstractionLayer(...)*, the ClearTester class can be referenced directly.
+
+The methods invoke the definition's DELETE query, and return boolean _true_ if the query returns a result set, and false otherwise. Under normal circumstances, the query method should always return _false_. In typical use, the return value is ignored; query failure is indicated by throwing an exception.
 
 ### ...to be continued... ###
