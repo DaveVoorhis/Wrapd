@@ -679,12 +679,27 @@ The transaction only commits if the lambda returns any successful Response, such
 
 The result of *processTransaction* is whatever _Response_ is passed back as a return value from the transaction lambda.
 
-### defineTable(String tableName, String whereClause, Object... args) ###
+### Other Query Definitions ###
 
-...documentation work in progress...
+There are other query definitions we haven't seen yet.
 
-### defineValueOf(String queryName, String sqlText, Object... args) ###
+#### defineTable(String tableName, String whereClause, Object... args) ####
 
-...documentation work in progress...
+This is a variation on the *defineTable(...)* method used above. The method used above is designed to return all rows in the table. This method defines a query method that returns
+a set of rows specified by a SQL *WHERE* clause. For example:
+
+```java
+  defineTable("$$MyTable", "a >= {minLimit} AND a < {maxLimit}", 1, 2);
+```
+
+It generates a method called myTable that returns the rows specified by the SQL expression passed as the second argument.
+
+This example is parametric, so it will generate methods with two parameters, *minLimit* and *maxLimit*.
+
+#### defineValueOf(String queryName, String sqlText, Object... args) ####
+
+This is a variation on the *defineQuery(...)* method used above.
+
+This method returns the value in the first column of the first row of the query result. It returns that value as an Optional<T> type, where T is the type of the result. That way, if the query returns no results, the return value is set to isEmpty() == true.
 
 ### ...to be continued... ###
