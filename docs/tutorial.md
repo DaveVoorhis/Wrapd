@@ -569,7 +569,7 @@ In the query definitions shown in Step 7, we saw three kinds of query definition
  }
 ```
 
-### ```defineTable("$tester01");``` ###
+### defineTable("$tester01"); ###
 
 This is the simplest definition, which generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
 
@@ -597,7 +597,7 @@ The first two *tester01(...)* methods return all rows and columns in the table -
 
 The last two *tester01ForUpdate(...)* methods also return all rows and columns in the table, but each Tester01Tuple instance has been prepared for subsequent invocation of its *update(...)* method. If *update(...)* is invoked on the results of a non-Update *tester01(...)* method, an exception will be thrown.
 
-### ```defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1);```###
+### defineQuery("SelectTester", "SELECT * FROM $$tester01 WHERE x = {xValue}", 1); ###
 
 The definition above generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
 
@@ -615,7 +615,7 @@ These methods are wrappers around static methods in a generated class called Sel
 
 Note that the definition specifies a parameter {xValue} and a corresponding argument 1. The argument value doesn't matter -- the query doesn't have to return results. Only its _type_ matters, and is used to specify the corresponding Java parameter type of the generated methods, and will have the same name as the parameter specified in the query.
 
-### ```defineUpdate("ClearTester", "DELETE FROM $$tester01");``` ###
+### defineUpdate("ClearTester", "DELETE FROM $$tester01"); ###
 
 This definition generates the following methods in the file specified by *emitDatabaseAbstractionLayer(...)*:
 
