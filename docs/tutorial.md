@@ -635,6 +635,15 @@ These methods are wrappers around static methods in a generated class called Cle
 
 The methods invoke the definition's DELETE query, and return boolean _true_ if the query returns a result set, and false otherwise. Under normal circumstances, the query method should always return _false_. In typical use, the return value is ignored; query failure is indicated by throwing an exception.
 
+---
+***WARNING*** ***WARNING*** ***WARNING*** ***WARNING*** ***WARNING*** ***WARNING***
+
+*defineUpdate(...)* will execute the specified query during code generation! ***DO NOT USE THIS ON A PRODUCTION DATABASE!!!*** A future Wrapd update will provide a 'safety' switch to prevent inadvertent execution of such update queries.
+
+***WARNING*** ***WARNING*** ***WARNING*** ***WARNING*** ***WARNING*** ***WARNING***
+
+----
+
 ### Running Queries in a Transaction ###
 
 The generated query methods can be invoked within a database transaction.
