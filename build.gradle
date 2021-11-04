@@ -122,8 +122,8 @@ publishing {
             def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             url = isReleaseVersion ? releaseRepo : snapshotRepo
             credentials {
-                username = hasProperty('mavenCentralUsername') ? mavenCentralUsername : "no_user"
-                password = hasProperty('mavenCentralPassword') ? mavenCentralPassword : "no_password"
+                username = project.hasProperty('mavenCentralUsername') ? mavenCentralUsername : "no_user"
+                password = project.hasProperty('mavenCentralPassword') ? mavenCentralPassword : "no_password"
             }
         }
     }
