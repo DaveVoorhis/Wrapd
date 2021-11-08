@@ -46,7 +46,7 @@ defineQuery("JoinABCXYZWhere",
 Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java methods you can invoke like this:
 
 ```java
-// Invoke joinABCXYZWhere query.
+// Invoke 'JoinABCXYZWhere' query via joinABCXYZWhere(...) method.
 joinABCXYZWhere(1002, 1008)
         .forEach(row -> System.out.println("Row:" + 
           " a = " + row.a + " b = " + row.b + " c = " + row.c +
