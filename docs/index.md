@@ -53,7 +53,7 @@ joinABCXYZWhere(1002, 1008)
           " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
-...whilst keeping your code simple, straightforward, and the database schema in sync.
+...whilst keeping your code clean and the database schema in sync.
 
 ____
 ## Why Wrapd? ##
