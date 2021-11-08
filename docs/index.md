@@ -35,16 +35,18 @@ An annotation-free, pure Java library that:
 1. Lets you define SQL queries in your Java code, tests them, and generates Java code to invoke them as conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
 2. Makes it easy to manage and migrate schema changes from your Java applications.
 
-It turns simple, straightforward, readable SQL query definitions like this:
+It turns simple, straightforward, readable SQL query definitions your write like this:
 
 ```java
+// Define a query called 'JoinABCXYZWhere'.
 defineQuery("JoinABCXYZWhere", 
   "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
-Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java method invocations like this:
+Into tested, re-usable, type-safe, SQL-injection-free, Streams-compatible Java methods you can invoke like this:
 
 ```java
+// Invoke joinABCXYZWhere query.
 joinABCXYZWhere(1002, 1008)
         .forEach(row -> System.out.println("Row:" + 
           " a = " + row.a + " b = " + row.b + " c = " + row.c +
