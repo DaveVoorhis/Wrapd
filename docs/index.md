@@ -43,7 +43,7 @@ defineQuery("JoinABCXYZWhere",
   "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
 ```
 
-...into re-usable, testable, type-safe, SQL-injection-free, Streams-compatible Java methods you can invoke like this:
+...into re-usable, testable, type-safe, SQL-injection-free, Streams-compatible Java methods you can invoke like this...
 
 ```java
 // Invoke 'JoinABCXYZWhere' query via joinABCXYZWhere(...) method.
@@ -53,7 +53,7 @@ joinABCXYZWhere(1002, 1008)
           " x = " + row.x + " y = " + row.y + " z = " + row.z));
 ```
 
-Whilst keeping your code simple, straightforward, and the database schema in sync.
+...whilst keeping your code simple, straightforward, and the database schema in sync.
 
 ____
 ## Why Wrapd? ##
