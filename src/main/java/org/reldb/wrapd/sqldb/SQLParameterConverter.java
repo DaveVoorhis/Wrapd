@@ -70,7 +70,7 @@ public class SQLParameterConverter {
                     throw new IllegalArgumentException(Str.ing(ErrMissingEndBrace, start, sql));
                 addParameterName(sql.substring(startNamePos, endBracePos));
                 sql.replace(start, endBracePos + 1, String.valueOf(ParmChar));
-                start = start + 1;
+                start++;
             }
         }
         sqlText = sql.toString();
