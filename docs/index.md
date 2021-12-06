@@ -64,7 +64,7 @@ ____
 2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
 3. Database access is kept in database abstraction layers to increase cohesion, reduce coupling, and promote separation of concerns.
 4. SQL text is exposed in query definitions but hidden in query invocations, making them safe, secure, and SQL-injection-free.
-5. SELECT queries generate Streams-friendly results. Java integration is easy and straightforward.
+5. SELECT queries generate Streams-friendly results. Java integration is easy and straightforward and eliminates the classic "object-relational impedance mismatch."
 6. Inserting and updating table rows is easy.
 7. If needed, table names can be automatically prefixed to avoid table name collisions in shared databases.
 8. Easy, automatic schema migration keeps your code in sync with your database schema and vice versa.
