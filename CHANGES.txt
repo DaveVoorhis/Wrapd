@@ -1,4 +1,5 @@
-1.0.1
+1.0.1 (January 3, 2022)
+ - Update test dependencies.
 
 1.0.0 (October 20, 2021)
  - Initial release.
