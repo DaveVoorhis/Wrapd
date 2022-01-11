@@ -21,6 +21,8 @@ public class QueryDefinitions extends Definer {
         defineValueOf("ValueOfABCb", "SELECT b FROM $$abc");
         defineValueOf("ValueOfXYZz", "SELECT z FROM $$xyz WHERE x = {xValue}", 33);
 
+        define("testqueries.yaml");
+
         emitDatabaseAbstractionLayer("DatabaseAbstractionLayer");
     }
 }

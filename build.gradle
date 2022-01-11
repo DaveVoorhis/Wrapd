@@ -13,6 +13,7 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     api 'org.reldb:Toolbox:1.0.0'
+    implementation 'org.yaml:snakeyaml:1.30'
     testImplementation 'org.eclipse.jdt:ecj:3.28.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.platform:junit-platform-runner:1.8.2'

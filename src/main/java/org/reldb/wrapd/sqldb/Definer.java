@@ -3,8 +3,12 @@ package org.reldb.wrapd.sqldb;
 import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
+import org.reldb.wrapd.exceptions.InvalidValueException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
+import org.yaml.snakeyaml.Yaml;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -343,5 +347,34 @@ public class Definer {
         valueOfGenerator.generate();
         addMethods(queryName, valueOfGenerator.getMethods());
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
+    }
+
+    /**
+     * Given the filespec of a YAML query definition file -- which actually specifies invocations of any
+     * Definer methods (including define) -- run it to define queries.
+     *
+     * @param yamlFileName YAML query definition file.
+     */
+    public void define(String yamlFileName) {
+        var inputStream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(yamlFileName);
+        var yaml = new Yaml();
+        ArrayList<ArrayList<String>> queryDefs = yaml.load(inputStream);
+        System.out.println("Type of queryDefs = " + queryDefs.getClass().getName());
+        System.out.println("Value of queryDefs = " + queryDefs);
+        for (int defIndex = 0; defIndex < queryDefs.size(); defIndex++) {
+            Object def = queryDefs.get(defIndex);
+            System.out.println("Def " + defIndex + " is a " + def.getClass().getName());
+            if (!(def instanceof ArrayList))
+                throw new InvalidValueException("Invalid definition in " + yamlFileName + ": " + def);
+            ArrayList<String> nameAndArgs = (ArrayList<String>)def;
+            if (nameAndArgs.size() < 2) {
+                throw new InvalidValueException("Invalid definition in " + yamlFileName + ": " + nameAndArgs);
+            }
+            System.out.println("Method name: " + nameAndArgs.get(0));
+            for (int index = 1; index < nameAndArgs.size(); index++)
+               System.out.println("Arg " + index + ": " + nameAndArgs.get(index));
+        }
     }
 }
