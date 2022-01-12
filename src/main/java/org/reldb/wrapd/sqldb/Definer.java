@@ -8,10 +8,8 @@ import org.reldb.wrapd.generator.JavaGenerator;
 
 import org.yaml.snakeyaml.Yaml;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * <p>Mechanism for defining Query, Update and valueOf classes.</p>
@@ -354,13 +352,54 @@ public class Definer {
      * Definer methods (including define) -- run it to define queries.
      *
      * @param yamlFileName YAML query definition file.
+     * @throws Throwable Error.
      */
-    public void define(String yamlFileName) {
-        var inputStream = this.getClass()
+    public void define(String yamlFileName) throws Throwable {
+        var inputStream = getClass()
                 .getClassLoader()
                 .getResourceAsStream(yamlFileName);
-        var yaml = new Yaml();
-        ArrayList<ArrayList<String>> queryDefs = yaml.load(inputStream);
+        Map<String, Map<String, List<?>>> queryDefs = new Yaml().load(inputStream);
+        for (var queryDefinitionGroup: queryDefs.entrySet()) {
+            String methodName = queryDefinitionGroup.getKey();
+            System.out.println("Query definition method name = " + methodName);
+            var queryDefinitions = queryDefinitionGroup.getValue();
+            for (var queryDefinition: queryDefinitions.entrySet()) {
+//            if (!(queryDefinitionGroup instanceof Map))
+//                throw new InvalidValueException("Invalid group definition in " + yamlFileName + ". Expected Map but got: " + queryDefinitionGroup.getClass() + ": " + queryDefinitionGroup);
+                var queryName = queryDefinition.getKey();
+                var definitionArguments = queryDefinition.getValue();
+                System.out.println("\t" + queryName + ": " + definitionArguments);
+                var argTypes = new ArrayList<Class<?>>();
+                var args = new ArrayList<>();
+                argTypes.add(queryName.getClass());
+                args.add(queryName);
+                boolean varargsFound = false;
+                for (var argument: definitionArguments) {
+                    if (argument instanceof List) {
+                        argTypes.add(Object[].class);
+                        args.add(((List<?>)argument).toArray());
+                        varargsFound = true;
+                    } else {
+                        argTypes.add(argument.getClass());
+                        args.add(argument);
+                    }
+                }
+                Method method = null;
+                try {
+                    method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
+                } catch (NoSuchMethodException nsme) {
+                    if (varargsFound)
+                        throw nsme;
+                    argTypes.add(Object[].class);
+                    args.add(new Object[0]);
+                    method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
+                }
+                System.out.println("Found method: " + method + " and invoking it.");
+                method.invoke(this, args.toArray());
+            }
+        }
+/*
+        System.out.println("queryDefs = " + queryDefs.toString());
         System.out.println("Type of queryDefs = " + queryDefs.getClass().getName());
         System.out.println("Value of queryDefs = " + queryDefs);
         for (int defIndex = 0; defIndex < queryDefs.size(); defIndex++) {
@@ -376,5 +415,6 @@ public class Definer {
             for (int index = 1; index < nameAndArgs.size(); index++)
                System.out.println("Arg " + index + ": " + nameAndArgs.get(index));
         }
+ */
     }
 }

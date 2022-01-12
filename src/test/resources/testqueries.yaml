@@ -1,43 +1,39 @@
-- defineQueryForTable
-    - SelectABCWhere2
-    - $$abc
-    - SELECT * 
+---
+defineQueryForTable:
+    SelectABCWhere2:
+        - $$abc
+        - SELECT * 
             FROM $$abc 
             WHERE a = {aVal}
-    - 22
+        - [22]
 
-- defineQuery
-    - JoinABCXYZ2
-    - SELECT * FROM $$abc, $$xyz WHERE x = a
+defineQuery:
+    JoinABCXYZ2:
+        - SELECT * FROM $$abc, $$xyz WHERE x = a
 
-- defineQuery
-    - JoinABCXYZWhere2
-    - SELECT * 
-        FROM $$abc, $$xyz 
-        WHERE x = a 
-            AND x > {lower} 
-            AND x < {higher}
-    - 2
-    - 5
+    JoinABCXYZWhere2:
+        - SELECT * 
+            FROM $$abc, $$xyz 
+            WHERE x = a 
+                AND x > {lower} 
+                AND x < {higher}
+        - [2, 5]
 
-- defineUpdate
-    - ClearABC2
-    - DELETE FROM $$abc
+defineUpdate:
+    ClearABC2:
+        - DELETE FROM $$abc
 
-- defineUpdate
-    - ClearXYZ2
-    - DELETE FROM $$xyz
+    ClearXYZ2:
+        - DELETE FROM $$xyz
 
-- defineUpdate
-    - ClearABCWhere2
-    - DELETE FROM $$abc WHERE a = {aValue}
-    - 3
+    ClearABCWhere2:
+        - DELETE FROM $$abc WHERE a = {aValue}
+        - [3]
 
-- defineValueOf
-    - ValueOfABCb2
-    - SELECT b FROM $$abc
+defineValueOf:
+    ValueOfABCb2:
+        - SELECT b FROM $$abc
 
-- defineValueOf
-    - ValueOfXYZz2
-    - SELECT z FROM $$xyz WHERE x = {xValue}
-    - 33
+    ValueOfXYZz2:
+        - SELECT z FROM $$xyz WHERE x = {xValue}
+        - [33]
