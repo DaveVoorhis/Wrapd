@@ -1,4 +1,3 @@
----
 defineQueryForTable:
     SelectABCWhere2:
         - $$abc
