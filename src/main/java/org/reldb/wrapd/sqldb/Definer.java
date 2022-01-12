@@ -364,8 +364,7 @@ public class Definer {
             System.out.println("Query definition method name = " + methodName);
             var queryDefinitions = queryDefinitionGroup.getValue();
             for (var queryDefinition: queryDefinitions.entrySet()) {
-//            if (!(queryDefinitionGroup instanceof Map))
-//                throw new InvalidValueException("Invalid group definition in " + yamlFileName + ". Expected Map but got: " + queryDefinitionGroup.getClass() + ": " + queryDefinitionGroup);
+                // TODO only consider varargs as last argument
                 var queryName = queryDefinition.getKey();
                 var definitionArguments = queryDefinition.getValue();
                 System.out.println("\t" + queryName + ": " + definitionArguments);
@@ -387,18 +386,21 @@ public class Definer {
                 Method method = null;
                 try {
                     method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
-                } catch (NoSuchMethodException nsme) {
+                } catch (NoSuchMethodException noSuchMethodException) {
                     if (varargsFound)
-                        throw nsme;
+                        throw noSuchMethodException;
                     argTypes.add(Object[].class);
                     args.add(new Object[0]);
                     method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
                 }
-                System.out.println("Found method: " + method + " and invoking it.");
+                System.out.println("\tFound method: " + method + " and invoking it.");
                 method.invoke(this, args.toArray());
             }
         }
 /*
+//            if (!(queryDefinitionGroup instanceof Map))
+//                throw new InvalidValueException("Invalid group definition in " + yamlFileName + ". Expected Map but got: " + queryDefinitionGroup.getClass() + ": " + queryDefinitionGroup);
+
         System.out.println("queryDefs = " + queryDefs.toString());
         System.out.println("Type of queryDefs = " + queryDefs.getClass().getName());
         System.out.println("Value of queryDefs = " + queryDefs);
