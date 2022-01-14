@@ -74,7 +74,7 @@ ____
 
 ### ORM or SQL Amplifier? ###
 
-Need help deciding whether or not Wrapd is right for you?
+Need help deciding whether Wrapd is right for you?
 
 See [ORM or SQL Amplifier?](orm_or_sql_amplifier.md)
 
