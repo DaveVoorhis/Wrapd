@@ -19,6 +19,7 @@ The project integration tests explicitly verify that Wrapd works with MySQL, MS 
 - [What is Wrapd?](#what-is-wrapd)
 - [Why Wrapd?](#why-wrapd)
   - [Features and Benefits](#features-and-benefits)
+  - [ORM or SQL Amplifier?](#orm-or-sql-amplifier)
   - [Details](#details)
 - [How to Use Wrapd](#how-to-use-wrapd)
   - [Overview](#overview)
@@ -70,6 +71,12 @@ ____
 8. Easy, automatic schema migration keeps your code in sync with your database schema and vice versa.
 
 > Wrapd is SQL _amplified_, not obscured!
+
+### ORM or SQL Amplifier? ###
+
+Need help deciding whether or not Wrapd is right for you?
+
+See [ORM or SQL Amplifier?](orm_or_sql_amplifier.md)
 
 ### Details ###
 
