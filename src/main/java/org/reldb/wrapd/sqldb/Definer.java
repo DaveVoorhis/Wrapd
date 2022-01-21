@@ -381,7 +381,7 @@ public class Definer {
                         args.add(argument);
                     }
                 }
-                Method method = null;
+                Method method;
                 try {
                     method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
                 } catch (NoSuchMethodException noSuchMethodException) {
