@@ -364,7 +364,6 @@ public class Definer {
             System.out.println("Query definition method name = " + methodName);
             var queryDefinitions = queryDefinitionGroup.getValue();
             for (var queryDefinition: queryDefinitions.entrySet()) {
-                // TODO only consider varargs as last argument
                 var queryName = queryDefinition.getKey();
                 var definitionArguments = queryDefinition.getValue();
                 System.out.println("\t" + queryName + ": " + definitionArguments);
@@ -374,7 +373,7 @@ public class Definer {
                 args.add(queryName);
                 boolean varargsFound = false;
                 for (var argument: definitionArguments) {
-                    if (argument instanceof List) {
+                    if (argument instanceof List && args.size() == definitionArguments.size()) {
                         argTypes.add(Object[].class);
                         args.add(((List<?>)argument).toArray());
                         varargsFound = true;
@@ -397,26 +396,5 @@ public class Definer {
                 method.invoke(this, args.toArray());
             }
         }
-/*
-//            if (!(queryDefinitionGroup instanceof Map))
-//                throw new InvalidValueException("Invalid group definition in " + yamlFileName + ". Expected Map but got: " + queryDefinitionGroup.getClass() + ": " + queryDefinitionGroup);
-
-        System.out.println("queryDefs = " + queryDefs.toString());
-        System.out.println("Type of queryDefs = " + queryDefs.getClass().getName());
-        System.out.println("Value of queryDefs = " + queryDefs);
-        for (int defIndex = 0; defIndex < queryDefs.size(); defIndex++) {
-            Object def = queryDefs.get(defIndex);
-            System.out.println("Def " + defIndex + " is a " + def.getClass().getName());
-            if (!(def instanceof ArrayList))
-                throw new InvalidValueException("Invalid definition in " + yamlFileName + ": " + def);
-            ArrayList<String> nameAndArgs = (ArrayList<String>)def;
-            if (nameAndArgs.size() < 2) {
-                throw new InvalidValueException("Invalid definition in " + yamlFileName + ": " + nameAndArgs);
-            }
-            System.out.println("Method name: " + nameAndArgs.get(0));
-            for (int index = 1; index < nameAndArgs.size(); index++)
-               System.out.println("Arg " + index + ": " + nameAndArgs.get(index));
-        }
- */
     }
 }
