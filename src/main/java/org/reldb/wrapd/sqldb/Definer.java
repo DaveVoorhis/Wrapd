@@ -3,7 +3,6 @@ package org.reldb.wrapd.sqldb;
 import org.reldb.toolbox.il8n.Msg;
 import org.reldb.toolbox.il8n.Str;
 import org.reldb.toolbox.utilities.Directory;
-import org.reldb.wrapd.exceptions.InvalidValueException;
 import org.reldb.wrapd.generator.JavaGenerator;
 
 import org.yaml.snakeyaml.Yaml;
