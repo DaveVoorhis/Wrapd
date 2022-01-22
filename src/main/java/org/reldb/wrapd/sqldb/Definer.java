@@ -346,6 +346,7 @@ public class Definer {
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
     }
 
+    // TODO document this
     /**
      * Given the filespec of a YAML query definition file -- which actually specifies invocations of any
      * Definer methods (including define) -- run it to define queries.
