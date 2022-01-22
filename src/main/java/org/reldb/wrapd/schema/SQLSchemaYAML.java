@@ -40,6 +40,7 @@ public class SQLSchemaYAML extends SQLSchema {
                     return Result.OK;
                 });
             }
+            // TODO provide means to execute arbitrary Java code here?
         }
         updates = updateList.toArray(new Update[0]);
     }
