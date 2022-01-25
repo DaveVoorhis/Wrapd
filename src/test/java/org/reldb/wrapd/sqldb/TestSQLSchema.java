@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.reldb.toolbox.progress.ConsoleProgressIndicator;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.schema.SQLSchema;
+import org.reldb.wrapd.schema.SQLSchemaYAML;
 import org.reldb.wrapd.schema.VersionNumber;
 
 import java.sql.SQLException;
@@ -153,6 +154,21 @@ public class TestSQLSchema {
 		result2.printIfError();
 		assertTrue(result1.isOk());
 		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
+	}
+
+	@ParameterizedTest
+	@MethodSource("dbProvider")
+	public void yamlSchemaWorks(final Database database) {
+		clearDb(database, new String[] {
+				"$$__version",
+				"$$tester01",
+				"$$tester02"
+		});
+		var testSchema = new SQLSchemaYAML(database, "testschema.yaml");
+		var result = testSchema.setup(new ConsoleProgressIndicator());
+		result.printIfError();
+		assertTrue(result.isOk());
+		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
 }

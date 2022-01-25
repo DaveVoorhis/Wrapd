@@ -6,8 +6,9 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.util.ArrayList;
 
-// TODO - test and document this
-
+/**
+ * A SQLSchema with schema migrations defined in a YAML file.
+ */
 public class SQLSchemaYAML extends SQLSchema {
     final private Update[] updates;
 
@@ -29,14 +30,6 @@ public class SQLSchemaYAML extends SQLSchema {
                 var migrationQuery = (String)migration;
                 updateList.add(schema -> {
                     database.updateAll(migrationQuery);
-                    return Result.OK;
-                });
-            } else if (migration instanceof ArrayList) {
-                var migrationSpecification = (ArrayList<?>)migration;
-                var migrationQuery = (String)migrationSpecification.get(0);
-                var args = migrationSpecification.get(1);
-                updateList.add(schema -> {
-                    database.update(migrationQuery, args);
                     return Result.OK;
                 });
             }
