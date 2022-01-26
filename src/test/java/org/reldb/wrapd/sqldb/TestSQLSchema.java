@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -38,6 +39,7 @@ public class TestSQLSchema {
 		new DbHelper(org.reldb.wrapd.sqldb.sqlite.Configuration.dbName);
 	}
 
+	@DisplayName("Can we create a minimal schema?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void canCreateMinimalSchema(final Database database) {
@@ -53,6 +55,7 @@ public class TestSQLSchema {
 		assertTrue(result.isOk());
 	}
 
+	@DisplayName("Can we create a simple schema?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void canCreateSimpleSchema(final Database database) {
@@ -81,6 +84,7 @@ public class TestSQLSchema {
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
+	@DisplayName("Does schema migration stop at an invalid update?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void stopsAtInvalidUpdate(final Database database) {
@@ -111,6 +115,7 @@ public class TestSQLSchema {
 		assertEquals(1, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
+	@DisplayName("Do schema updates aka migrations work?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void versionUpdatesWork(final Database database) {
@@ -156,6 +161,7 @@ public class TestSQLSchema {
 		assertEquals(2, ((VersionNumber)testSchema01.getVersion()).value);
 	}
 
+	@DisplayName("Do YAML-based schema migration definitions work?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
 	public void yamlSchemaWorks(final Database database) {

@@ -1,2 +1,8 @@
+# Version 1
 - CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)
-- CREATE TABLE $$tester02 (a INT NOT NULL PRIMARY KEY, b INT NOT NULL)
+
+# Version 2
+- CREATE TABLE $$tester02 (
+    a INT NOT NULL PRIMARY KEY, 
+    b INT NOT NULL
+  )
