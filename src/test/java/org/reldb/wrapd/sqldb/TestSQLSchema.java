@@ -164,7 +164,7 @@ public class TestSQLSchema {
 	@DisplayName("Do YAML-based schema migration definitions work?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
-	public void yamlSchemaWorks(final Database database) {
+	public void yamlSchemaWorks(final Database database) throws Throwable {
 		clearDb(database, new String[] {
 				"$$__version",
 				"$$tester01",
@@ -175,6 +175,27 @@ public class TestSQLSchema {
 		result.printIfError();
 		assertTrue(result.isOk());
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
+	}
+
+	@DisplayName("Do YAML-based schema migration definitions with inline Java invocations work?")
+	@ParameterizedTest
+	@MethodSource("dbProvider")
+	public void yamlSchemaWithInlineJavaWorks(final Database database) throws Throwable {
+		clearDb(database, new String[] {
+				"$$__version",
+				"$$tester01",
+				"$$tester02"
+		});
+		var testSchema = new SQLSchemaYAML(database, "testschema2.yaml") {
+			public Result doMyMethod(Integer x, String y) {
+				System.out.println(">>>> doMyMethod invoked with " + x + ", " + y);
+				return Result.OK;
+			}
+		};
+		var result = testSchema.setup(new ConsoleProgressIndicator());
+		result.printIfError();
+		assertTrue(result.isOk());
+		assertEquals(3, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
 }
