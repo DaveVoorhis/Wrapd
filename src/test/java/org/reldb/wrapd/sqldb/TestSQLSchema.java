@@ -170,7 +170,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema = new SQLSchemaYAML(database, "testschema.yaml");
+		var testSchema = new SQLSchemaYAML(database, "testschema1.yaml");
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
 		assertTrue(result.isOk());
@@ -180,7 +180,7 @@ public class TestSQLSchema {
 	/**
 	 * Test schema.
 	 */
-	public static class TestSchema1 extends SQLSchemaYAML {
+	public static class TestSchema2 extends SQLSchemaYAML {
 		/**
 		 * Create an instance of a schema for a specified Database.
 		 *
@@ -188,7 +188,7 @@ public class TestSQLSchema {
 		 * @param yamlFileName YAML schema definition and migration file.
 		 * @throws Throwable Error.
 		 */
-		public TestSchema1(Database database, String yamlFileName) throws Throwable {
+		public TestSchema2(Database database, String yamlFileName) throws Throwable {
 			super(database, yamlFileName);
 		}
 
@@ -208,7 +208,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema = new TestSchema1(database, "testschema2.yaml");
+		var testSchema = new TestSchema2(database, "testschema2.yaml");
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
 		assertTrue(result.isOk());
