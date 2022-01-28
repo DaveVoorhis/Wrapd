@@ -348,13 +348,75 @@ public class Definer {
         return new DefineValueOfResult(type, valueOfGenerator.getMethods());
     }
 
-    // TODO document this
     /**
-     * Given the filespec of a YAML query definition file -- which actually specifies invocations of any
-     * Definer methods (including define) -- run it to define queries.
-     *
-     * @param yamlFileName YAML query definition file.
-     * @throws Throwable Error.
+     <p>Given the filespec of a YAML query definition file -- which actually specifies invocations of any
+     Definer methods (including define) -- run it to define queries.</p>
+
+     <p>An example YAML query definition file -- which might be called <i>testqueries.yaml</i> -- looks like this:</p>
+     <pre>
+     defineQueryForTable:
+         SelectABCWhere2:
+             - $$abc
+             - SELECT *
+                 FROM $$abc
+                 WHERE a = {aVal}
+             - [22]
+
+     defineQuery:
+         JoinABCXYZ2:
+             - SELECT * FROM $$abc, $$xyz WHERE x = a
+
+         JoinABCXYZWhere2:
+             - SELECT *
+                 FROM $$abc, $$xyz
+                 WHERE x = a
+                 AND x &gt; {lower}
+                 AND x &lt; {higher}
+             - [2, 5]
+
+     defineUpdate:
+         ClearABC2:
+             - DELETE FROM $$abc
+
+         ClearXYZ2:
+             - DELETE FROM $$xyz
+
+         ClearABCWhere2:
+             - DELETE FROM $$abc WHERE a = {aValue}
+             - [3]
+
+     defineValueOf:
+         ValueOfABCb2:
+             - SELECT b FROM $$abc
+
+         ValueOfXYZz2:
+             - SELECT z FROM $$xyz WHERE x = {xValue}
+             - [33]
+
+     </pre>
+
+     <p>
+     The file is defined as a set of keys, where each key is the name of a Definer method. E.g.,
+     <i>defineQueryForTable</i>, <i>defineQuery</i>, <i>defineUpdate</i>, <i>defineValueOf</i>, etc.
+     The <i>define</i> method may be specified here to include
+     other YAML query definition files within a YAML query definition file.
+     </p>
+     <p>
+     Within each key, query names are defined. E.g, <i>JoinABCXYZ2</i> and <i>JoinABCXYZWhere2</i> are
+     <i>defineQuery</i> queries.
+     </p>
+     <p>
+     Each query name specifies an array, where the first element must be the SQL text associated with the query name.
+     E.g., the query named by <i>JoinABCXYZWhere2</i> is:</p>
+     <pre>SELECT * FROM $$abc, $$xyz WHERE x = a AND x &gt; {lower} AND x &lt; {higher}</pre>
+     <p>The test arguments to the query parameters are optional, and if required are specified as the
+     second array element, which is itself an array of arguments. E.g, for the above query, the test arguments are
+     [2, 5]. Since the arguments are positional corresponding to the first appearance of the parameter
+     names, 2 will be the value passed to <i>lower</i> and 5 will be the value passed to <i>higher</i>.
+     </p>
+
+     @param yamlFileName YAML query definition file.
+     @throws Throwable Error.
      */
     public void define(String yamlFileName) throws Throwable {
         var inputStream = getClass()
