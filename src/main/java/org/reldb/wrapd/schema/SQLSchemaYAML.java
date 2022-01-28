@@ -23,11 +23,87 @@ public class SQLSchemaYAML extends SQLSchema {
     final private Update[] updates;
 
     /**
-     * Create an instance of a schema for a specified Database.
-     *
-     * @param yamlFileName YAML schema definition and migration file.
-     * @param database Database.
-     * @throws Throwable Error.
+     <p>Define a schema creation/migration for a specified Database.</p>
+
+     <p>The schema definitions and migrations are defined as a series of
+     SQL queries and/or Java method invocations in YAML format. A simple
+     example -- perhaps named <i>myschema.yaml</i> -- looks like this:</p>
+
+     <pre>
+     # Version 1
+     - CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)
+
+     # Version 2
+     - CREATE TABLE $$tester02 (
+         a INT NOT NULL PRIMARY KEY,
+         b INT NOT NULL
+       )
+     </pre>
+
+     <p>Note that the file defines an array of strings, where each string is a SQL query. Comments are
+     purely informative and may be omitted.</p>
+
+     <p><b>WARNING</b>: All new migrations <b>must</b> be added to the end or <b>schema migration will fail.</b></p>
+
+     <p>It may be invoked using this snippet:</p>
+     <pre>
+     ...
+     var testSchema = new SQLSchemaYAML(database, "myschema.yaml");
+     var result = testSchema.setup(new ConsoleProgressIndicator());
+     result.printIfError();
+     ...
+     </pre>
+
+     <p>It will automatically create or migrate a schema referenced by <i>database</i>.</p>
+
+     <p>More complex migrations may invoke Java methods in a SQLSchemaYAML-derived class. Define
+     a class like the following:</p>
+     <pre>
+     	public static class TestSchema2 extends SQLSchemaYAML {
+     		public TestSchema2(Database database, String yamlFileName) throws Throwable {
+     			super(database, yamlFileName);
+     		}
+     		public Result doMyMethod(Integer x, String y) {
+     			System.out.println(">>>> doMyMethod invoked with " + x + ", " + y);
+     			return Result.OK;
+     		}
+     	}
+     </pre>
+
+     <p>Then a schema migration defined in <i>myschema2.yaml</i> can be invoked by the following:</p>
+     <pre>
+     ...
+     var testSchema = new TestSchema2(database, "myschema2.yaml");
+     var result = testSchema.setup(new ConsoleProgressIndicator());
+     result.printIfError();
+     ...
+     </pre>
+
+     <p>The <i>myschema2.yaml</i> file might be defined as follows:</p>
+     <pre>
+     # Version 1
+     - CREATE TABLE $$tester01 (x INT NOT NULL PRIMARY KEY, y INT NOT NULL)
+
+     # Version 2 - invokes Java method in schema class
+     - [doMyMethod, 2, "blah"]
+
+     # Version 3
+     - CREATE TABLE $$tester02 (
+         a INT NOT NULL PRIMARY KEY,
+         b INT NOT NULL
+       )
+     </pre>
+
+     <p>Otherwise the same format as the first example, Java method invocations can be defined as
+     arrays where the first array element is the method name and any subsequent elements are parameter
+     arguments. Note that the Result-typed return value of the methods are ignored but must be provided.
+     If you want a method to fail, throw an unchecked exception.</p>
+
+     <p><b>WARNING</b>: All new migrations <b>must</b> be added to the end or <b>schema migration will fail.</b></p>
+
+     @param yamlFileName YAML schema definition and migration file.
+     @param database Database.
+     @throws Throwable Error.
      */
     public SQLSchemaYAML(Database database, String yamlFileName) throws Throwable {
         super(database);
