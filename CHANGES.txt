@@ -1,5 +1,6 @@
-1.0.1 (January 3, 2022)
- - Update test dependencies. NOT RELEASED.
+1.0.1 (January 28, 2022) NOT RELEASED
+ - Update test dependencies.
+ - Support YAML query and schema definitions.
 
 1.0.0 (October 20, 2021)
  - Initial release.
