@@ -21,7 +21,7 @@ public class SQLSchemaYAML extends SQLSchema {
      *
      * @param yamlFileName YAML schema definition and migration file.
      * @param database Database.
-     * @throws Throwable
+     * @throws Throwable Error.
      */
     public SQLSchemaYAML(Database database, String yamlFileName) throws Throwable {
         super(database);
