@@ -186,7 +186,7 @@ public class TestSQLSchema {
 		 *
 		 * @param database     Database.
 		 * @param yamlFileName YAML schema definition and migration file.
-		 * @throws Throwable
+		 * @throws Throwable Error.
 		 */
 		public TestSchema1(Database database, String yamlFileName) throws Throwable {
 			super(database, yamlFileName);
