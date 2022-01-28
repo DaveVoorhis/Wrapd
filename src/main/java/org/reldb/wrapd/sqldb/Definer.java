@@ -67,6 +67,8 @@ import java.util.*;
 public class Definer {
     private static final Msg MsgCodeDirectoryPurged = new Msg("Target {0} has been purged.");
     private static final Msg ErrCodeDirectoryPurgeFailed = new Msg("Unable to purge target {0}.");
+    private static final Msg MsgQueryDefinitionMethodName = new Msg("Query definition method name = {0}");
+    private static final Msg MsgFoundMethodAndInvokingIt = new Msg("Found method: {0} and invoking it.");
 
     private final Database database;
     private final String codeDirectory;
@@ -361,7 +363,7 @@ public class Definer {
         Map<String, Map<String, List<?>>> queryDefs = new Yaml().load(inputStream);
         for (var queryDefinitionGroup: queryDefs.entrySet()) {
             String methodName = queryDefinitionGroup.getKey();
-            System.out.println("Query definition method name = " + methodName);
+            System.out.println(Str.ing(MsgQueryDefinitionMethodName, methodName));
             var queryDefinitions = queryDefinitionGroup.getValue();
             for (var queryDefinition: queryDefinitions.entrySet()) {
                 var queryName = queryDefinition.getKey();
@@ -392,7 +394,7 @@ public class Definer {
                     args.add(new Object[0]);
                     method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
                 }
-                System.out.println("\tFound method: " + method + " and invoking it.");
+                System.out.println("\t" + Str.ing(MsgFoundMethodAndInvokingIt, method));
                 method.invoke(this, args.toArray());
             }
         }

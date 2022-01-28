@@ -1,9 +1,10 @@
 package org.reldb.wrapd.schema;
 
+import org.reldb.toolbox.il8n.Msg;
+import org.reldb.toolbox.il8n.Str;
 import org.reldb.wrapd.exceptions.FatalException;
 import org.reldb.wrapd.response.Result;
 import org.reldb.wrapd.sqldb.Database;
-import org.reldb.wrapd.sqldb.Definer;
 import org.yaml.snakeyaml.Yaml;
 
 import java.lang.reflect.Method;
@@ -14,6 +15,11 @@ import java.util.List;
  * A SQLSchema with schema migrations defined in a YAML file.
  */
 public class SQLSchemaYAML extends SQLSchema {
+    private static final Msg MsgMissingMethodNameIn = new Msg("Missing method name in {0}.");
+    private static final Msg MsgMethodMustHaveExpectedReturnType = new Msg("Method {0} must have return type Result.");
+    private static final Msg MsgFoundMethodAndSettingItUpAsAnUpdate = new Msg("Found method: {0} and setting it up as an Update.");
+    private static final Msg MsgUnrecognisedConstructFoundIn = new Msg("Unrecognised construct in {0}.");
+
     final private Update[] updates;
 
     /**
@@ -40,7 +46,7 @@ public class SQLSchemaYAML extends SQLSchema {
             } else if (migration instanceof ArrayList) {
                 var methodInvocationSpecification = (List<?>)migration;
                 if (methodInvocationSpecification.size() < 1)
-                    throw new FatalException("Missing method name in " + yamlFileName);
+                    throw new FatalException(Str.ing(MsgMissingMethodNameIn, yamlFileName));
                 String methodName = methodInvocationSpecification.get(0).toString();
                 var arguments = new ArrayList<>();
                 var argumentTypes = new ArrayList<Class<?>>();
@@ -58,12 +64,12 @@ public class SQLSchemaYAML extends SQLSchema {
                     method = getClass().getMethod(methodName, argumentTypes.toArray(new Class<?>[0]));
                 }
                 if (!method.getReturnType().isAssignableFrom(Result.class))
-                    throw new FatalException("Method " + method + " must have return type Result.");
-                System.out.println("Found method: " + method + " and setting it up as an Update.");
+                    throw new FatalException(Str.ing(MsgMethodMustHaveExpectedReturnType, method));
+                System.out.println(Str.ing(MsgFoundMethodAndSettingItUpAsAnUpdate, method));
                 final Method invocationTarget = method;
                 updateList.add(schema -> (Result)invocationTarget.invoke(this, arguments.toArray().clone()));
             } else
-                throw new FatalException("Unrecognised construct in " + yamlFileName);
+                throw new FatalException(Str.ing(MsgUnrecognisedConstructFoundIn, yamlFileName));
         }
         updates = updateList.toArray(new Update[0]);
     }
