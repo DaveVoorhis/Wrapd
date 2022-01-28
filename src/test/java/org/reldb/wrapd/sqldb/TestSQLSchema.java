@@ -177,6 +177,28 @@ public class TestSQLSchema {
 		assertEquals(2, ((VersionNumber)testSchema.getVersion()).value);
 	}
 
+	/**
+	 * Test schema.
+	 */
+	public static class TestSchema1 extends SQLSchemaYAML {
+		/**
+		 * Create an instance of a schema for a specified Database.
+		 *
+		 * @param database     Database.
+		 * @param yamlFileName YAML schema definition and migration file.
+		 * @throws Throwable
+		 */
+		public TestSchema1(Database database, String yamlFileName) throws Throwable {
+			super(database, yamlFileName);
+		}
+
+		// Demo method that can be invoked from the YAML database schema file.
+		public Result doMyMethod(Integer x, String y) {
+			System.out.println(">>>> doMyMethod invoked with " + x + ", " + y);
+			return Result.OK;
+		}
+	}
+
 	@DisplayName("Do YAML-based schema migration definitions with inline Java invocations work?")
 	@ParameterizedTest
 	@MethodSource("dbProvider")
@@ -186,12 +208,7 @@ public class TestSQLSchema {
 				"$$tester01",
 				"$$tester02"
 		});
-		var testSchema = new SQLSchemaYAML(database, "testschema2.yaml") {
-			public Result doMyMethod(Integer x, String y) {
-				System.out.println(">>>> doMyMethod invoked with " + x + ", " + y);
-				return Result.OK;
-			}
-		};
+		var testSchema = new TestSchema1(database, "testschema2.yaml");
 		var result = testSchema.setup(new ConsoleProgressIndicator());
 		result.printIfError();
 		assertTrue(result.isOk());
