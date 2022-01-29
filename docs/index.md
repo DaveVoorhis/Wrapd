@@ -36,7 +36,19 @@ An annotation-free, pure Java library that:
 1. Lets you define SQL queries in your Java code, tests them, and generates Java code to invoke them as conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
 2. Makes it easy to manage and migrate schema changes from your Java applications.
 
-It automatically turns simple, straightforward, readable, tested SQL query definitions you write like this...
+It automatically turns simple, straightforward, readable, tested SQL query definitions you write like this in YAML...
+
+```yaml
+# Define a query called 'JoinABCXYZWhere'
+defineQuery:
+    JoinABCXYZWhere:
+        - SELECT *
+            FROM ABC, XYZ
+            WHERE x = a AND x > {lower} AND x < {higher}
+        - [2, 5]
+```
+
+...or like this in Java...
 
 ```java
 // Define a query called 'JoinABCXYZWhere'.
@@ -61,7 +73,7 @@ ____
 
 ### Features and Benefits ###
 
-1. SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods. Database access is just Java, defined with straightforward SQL; no need for complex ORMs or frameworks.
+1. SQL queries are defined in Java and/or YAML, unit tested, and invoked with conventional type-safe Java methods. Database access is just Java, defined with straightforward SQL; no need for complex ORMs or frameworks.
 2. Code generation is part of the Wrapd library and integrates into your build pipeline. No external tools are required.
 3. Database access is kept in database abstraction layers to increase cohesion, reduce coupling, and promote separation of concerns.
 4. SQL text is exposed in query definitions but hidden in query invocations, making them safe, secure, and SQL-injection-free.
@@ -80,7 +92,7 @@ See [ORM or SQL Amplifier?](orm_or_sql_amplifier.md)
 
 ### Details ###
 
-#### SQL queries are defined in Java, unit tested, and invoked with conventional type-safe Java methods. #### 
+#### SQL queries are defined in Java and/or YAML, unit tested, and invoked with conventional type-safe Java methods. #### 
 
 Each SQL query definition in Wrapd acts as:
    - A unit test to run the query and verify that it works; and
