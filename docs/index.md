@@ -33,7 +33,7 @@ ____
 ## What is Wrapd? ##
 
 An annotation-free, pure Java library that:
-1. Lets you define SQL queries in your Java code, tests them, and generates Java code to invoke them as conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
+1. Lets you define SQL queries in your Java code or YAML files, tests them, and generates Java code to invoke your queries using conventional, Streams-compatible, SQL-injection-avoiding, high performance, statically-type-checked method invocations in your Java applications.
 2. Makes it easy to manage and migrate schema changes from your Java applications.
 
 It automatically turns simple, straightforward, readable, tested SQL query definitions you write like this in YAML...
