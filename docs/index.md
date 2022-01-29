@@ -239,11 +239,21 @@ reducing coupling between Java application code and SQL text, and promotes separ
 
 At run-time, queries are safe from inadvertent modification and safe from SQL injection.
 
-What you define is:
+Define SQL queries in Java like this:
 
 ```java
 defineQuery("JoinABCXYZWhere", 
   "SELECT * FROM ABC, XYZ WHERE x = a AND x > {lower} AND x < {higher}", 2, 5);
+```
+
+...or in YAML like this...
+
+```yaml
+JoinABCXYZWhere:
+    - SELECT *
+        FROM ABC, XYZ
+        WHERE x = a AND x > {lower} AND x < {higher}
+    - [2, 5]
 ```
 
 What you run is:
