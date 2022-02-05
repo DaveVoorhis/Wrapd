@@ -356,6 +356,13 @@ public class Definer {
 
      <p>An example YAML query definition file -- which might be called <i>testqueries.yaml</i> -- looks like this:</p>
      <pre>
+     defineTable:
+        $$abc:
+
+        $$xyz:
+            - x = {xvalue}
+            - [22]
+
      defineQueryForTable:
          SelectABCWhere2:
              - $$abc
@@ -437,16 +444,17 @@ public class Definer {
                 argTypes.add(queryName.getClass());
                 args.add(queryName);
                 boolean varargsFound = false;
-                for (var argument: definitionArguments) {
-                    if (argument instanceof List && args.size() == definitionArguments.size()) {
-                        argTypes.add(Object[].class);
-                        args.add(((List<?>)argument).toArray());
-                        varargsFound = true;
-                    } else {
-                        argTypes.add(argument.getClass());
-                        args.add(argument);
+                if (definitionArguments != null)
+                    for (var argument: definitionArguments) {
+                        if (argument instanceof List && args.size() == definitionArguments.size()) {
+                            argTypes.add(Object[].class);
+                            args.add(((List<?>)argument).toArray());
+                            varargsFound = true;
+                        } else {
+                            argTypes.add(argument.getClass());
+                            args.add(argument);
+                        }
                     }
-                }
                 Method method;
                 try {
                     method = Definer.class.getMethod(methodName, argTypes.toArray(new Class<?>[0]));
