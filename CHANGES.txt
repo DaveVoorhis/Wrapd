@@ -1,4 +1,4 @@
-1.0.2
+1.0.2 (February 5, 2022)
  - Fix defineTable in YAML query definitions.
 
 1.0.1 (January 28, 2022)
