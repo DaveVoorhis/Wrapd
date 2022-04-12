@@ -14,11 +14,11 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 dependencies {
     api 'org.reldb:Toolbox:1.0.0'
     implementation 'org.yaml:snakeyaml:1.30'
-    testImplementation 'org.eclipse.jdt:ecj:3.28.0'
+    testImplementation 'org.eclipse.jdt:ecj:3.29.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.platform:junit-platform-runner:1.8.2'
     testImplementation 'com.mchange:c3p0:0.9.5.5'
-    testRuntimeOnly 'org.apache.logging.log4j:log4j-core:2.17.0'
+    testRuntimeOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
     testRuntimeOnly 'org.postgresql:postgresql:42.3.1'
     testRuntimeOnly 'org.xerial:sqlite-jdbc:3.36.0.2'
     testRuntimeOnly 'mysql:mysql-connector-java:8.0.25'
