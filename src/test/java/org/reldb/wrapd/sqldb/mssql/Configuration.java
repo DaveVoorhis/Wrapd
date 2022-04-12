@@ -23,5 +23,5 @@ public class Configuration {
 	// End settings
 
 	public static final String dbURLPrefix = "jdbc:sqlserver";
-	public static final String dbURL = dbURLPrefix + "://" + dbHost; // + ";databaseName=" + dbDatabase;
+	public static final String dbURL = dbURLPrefix + "://" + dbHost + ";encrypt=true;trustServerCertificate=true;"; // + ";databaseName=" + dbDatabase;
 }
