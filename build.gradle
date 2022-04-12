@@ -21,7 +21,7 @@ dependencies {
     testRuntimeOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
     testRuntimeOnly 'org.postgresql:postgresql:42.3.3'
     testRuntimeOnly 'org.xerial:sqlite-jdbc:3.36.0.3'
-    testRuntimeOnly 'mysql:mysql-connector-java:8.0.25'
+    testRuntimeOnly 'mysql:mysql-connector-java:8.0.28'
     testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc:9.4.1.jre11'
 }
 
