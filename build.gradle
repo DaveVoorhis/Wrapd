@@ -19,10 +19,10 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-runner:1.8.2'
     testImplementation 'com.mchange:c3p0:0.9.5.5'
     testRuntimeOnly 'org.apache.logging.log4j:log4j-core:2.17.2'
-    testRuntimeOnly 'org.postgresql:postgresql:42.3.3'
+    testRuntimeOnly 'org.postgresql:postgresql:42.3.6'
     testRuntimeOnly 'org.xerial:sqlite-jdbc:3.36.0.3'
-    testRuntimeOnly 'mysql:mysql-connector-java:8.0.28'
-    testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre11'
+    testRuntimeOnly 'mysql:mysql-connector-java:8.0.29'
+    testRuntimeOnly 'com.microsoft.sqlserver:mssql-jdbc:10.2.1.jre11'
 }
 
 test {
