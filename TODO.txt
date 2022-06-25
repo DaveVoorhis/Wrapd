@@ -1,3 +1,4 @@
+- Fix schema migration messages with messy precision, e.g. 'Schema created: 33.33333333333333% complete.'
 - Provide 'safety' lock against inadvertent execution of Definer::defineUpdate(...)
   queries against prod dbs.
 - Be able to revert migrations with specified regression steps.
