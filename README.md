@@ -38,7 +38,7 @@ To extend, modify, customise or improve Wrapd, you'll need to download the sourc
 3. Build Wrapd:
     ```
     docker-compose up -d
-    sleep 10   # give DBMSs time to spool up
+    sleep 60   # give DBMSs time to spool up
     gradle clean build publishToMavenLocal
     docker-compose down -v
     ```
