@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   postgres-db:
-    image: postgres:14.2
+    image: postgres:14.4
     restart: always
     volumes:
       - db-data-wrapd_postgresql:/var/lib/postgresql/data
@@ -14,7 +14,7 @@ services:
       - "5432:5432"
 
   mysql-db:
-    image: mysql:8.0.28
+    image: mysql:8.0.29
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     volumes:
@@ -28,7 +28,7 @@ services:
       - "3306:3306"
 
   sqlserver-db:
-    image: mcr.microsoft.com/mssql/server:2019-latest
+    image: mcr.microsoft.com/mssql/server:2022-latest
     restart: always
     volumes:
       - mssqlvolume:/var/opt/mssql
