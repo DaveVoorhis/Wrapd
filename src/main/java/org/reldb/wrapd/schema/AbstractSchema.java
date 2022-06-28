@@ -109,15 +109,15 @@ public abstract class AbstractSchema {
             progress.move(0, Str.ing(MsgCreatingSchema));
             var createResult = create();
             if (createResult.isError()) {
-                progress.move(progress.getValue(), Str.ing(MsgCreatingSchemaFailed));
+                progress.move(progress.getPosition(), Str.ing(MsgCreatingSchemaFailed));
                 return createResult;
             }
             var setVersionResult = setVersion(new VersionNumber(0));
             if (setVersionResult.isError()) {
-                progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
+                progress.move(progress.getPosition(), Str.ing(ErrFailedToRecordUpdateToVersion, 0));
                 return Result.is(new FatalException(Str.ing(ErrUnableToSetVersion, 0), setVersionResult.error));
             }
-            progress.move(progress.getValue() + 1, Str.ing(MsgSchemaCreated));
+            progress.move(progress.getPosition() + 1, Str.ing(MsgSchemaCreated));
         } else {
             if (!(version instanceof VersionNumber))
                 return Result.is(new FatalException(Str.ing(ErrUnrecognisedVersionType, version.getClass().getName())));
@@ -127,7 +127,7 @@ public abstract class AbstractSchema {
         var result = Result.OK;
         for (int update = versionNumber + 1; update <= updates.length && result.isOk(); update++) {
             var transaction = getTransaction();
-            progress.move(progress.getValue(), Str.ing(MsgUpdatingToVersion, update));
+            progress.move(progress.getPosition(), Str.ing(MsgUpdatingToVersion, update));
             final int updateNumber = update;
             result = transaction.run(() -> {
                 var updateSpecification = updates[updateNumber - 1];
@@ -135,22 +135,22 @@ public abstract class AbstractSchema {
                 try {
                     updateResult = updateSpecification.apply(this);
                 } catch (Throwable t) {
-                    progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
+                    progress.move(progress.getPosition(), Str.ing(ErrFailedToUpdateToVersionDueToException, updateNumber));
                     return Result.is(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), t));
                 }
                 if (updateResult.isError()) {
-                    progress.move(progress.getValue(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
+                    progress.move(progress.getPosition(), Str.ing(ErrFailedToUpdateToVersionDueToFalse, updateNumber));
                     return Result.is(new FatalException(Str.ing(ErrUnableToUpdateToVersion, updateNumber), updateResult.error));
                 }
                 var setVersionResult = setVersion(new VersionNumber(updateNumber));
                 if (setVersionResult.isError()) {
-                    progress.move(progress.getValue(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
+                    progress.move(progress.getPosition(), Str.ing(ErrFailedToRecordUpdateToVersion, updateNumber));
                     return Result.is(new FatalException(Str.ing(ErrUnableToSetVersion, updateNumber), setVersionResult.error));
                 }
                 return updateResult;
             });
             if (result.isOk())
-                progress.move(progress.getValue() + 1, Str.ing(MsgUpdatedToVersion, update));
+                progress.move(progress.getPosition() + 1, Str.ing(MsgUpdatedToVersion, update));
         }
         return result;
     }
